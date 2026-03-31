@@ -5,27 +5,6 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
 import styles from './index.module.css';
 
-const coreFeatures = [
-  {
-    title: 'Core API',
-    icon: '⚙️',
-    description: 'Analytics, Events, Sessions, Apps, and other foundational endpoints that power the Countly platform.',
-    link: '/core',
-  },
-  {
-    title: 'User Management',
-    icon: '👥',
-    description: 'App Users, Cohorts, User Profiles — manage and segment your user base programmatically.',
-    link: '/core/app-users',
-  },
-  {
-    title: 'Push Notifications',
-    icon: '🔔',
-    description: 'Create, schedule, and manage push notification campaigns across iOS, Android, and web platforms.',
-    link: '/api/push',
-  },
-];
-
 const pluginCategories = [
   {
     title: 'Analytics & Insights',
@@ -98,21 +77,40 @@ function HomepageHeader() {
   );
 }
 
-function CoreFeatures() {
+function QuickLinks() {
   return (
     <section className={styles.section}>
       <div className="container">
-        <h2 className={styles.sectionTitle}>Core Platform</h2>
-        <div className="row">
-          {coreFeatures.map((feature, idx) => (
-            <div className="col col--4" key={idx}>
-              <Link to={feature.link} className={styles.featureCard}>
-                <div className={styles.featureIcon}>{feature.icon}</div>
-                <h3>{feature.title}</h3>
-                <p>{feature.description}</p>
-              </Link>
-            </div>
-          ))}
+        <h2 className={styles.sectionTitle}>Quick Links</h2>
+        <div className={clsx('row', styles.quickLinks)}>
+          <div className="col col--3">
+            <Link to="/api" className={styles.quickLink}>
+              <span>📖</span>
+              <strong>API Overview</strong>
+              <small>Start here</small>
+            </Link>
+          </div>
+          <div className="col col--3">
+            <Link to="/api#authentication" className={styles.quickLink}>
+              <span>🔑</span>
+              <strong>Authentication</strong>
+              <small>API keys & tokens</small>
+            </Link>
+          </div>
+          <div className="col col--3">
+            <Link to="/api/sdk" className={styles.quickLink}>
+              <span>📡</span>
+              <strong>SDK Integration</strong>
+              <small>Client & server SDKs</small>
+            </Link>
+          </div>
+          <div className="col col--3">
+            <a href="https://support.countly.com/hc/en-us" target="_blank" rel="noopener noreferrer" className={styles.quickLink}>
+              <span>📚</span>
+              <strong>Documentation</strong>
+              <small>Help center</small>
+            </a>
+          </div>
         </div>
       </div>
     </section>
@@ -149,46 +147,6 @@ function PluginCategories() {
   );
 }
 
-function QuickLinks() {
-  return (
-    <section className={styles.section}>
-      <div className="container">
-        <h2 className={styles.sectionTitle}>Quick Links</h2>
-        <div className={clsx('row', styles.quickLinks)}>
-          <div className="col col--3">
-            <Link to="/api" className={styles.quickLink}>
-              <span>📖</span>
-              <strong>API Overview</strong>
-              <small>Start here</small>
-            </Link>
-          </div>
-          <div className="col col--3">
-            <Link to="/core/token" className={styles.quickLink}>
-              <span>🔑</span>
-              <strong>Authentication</strong>
-              <small>API keys & tokens</small>
-            </Link>
-          </div>
-          <div className="col col--3">
-            <Link to="/api/sdk" className={styles.quickLink}>
-              <span>📡</span>
-              <strong>SDK Integration</strong>
-              <small>Client & server SDKs</small>
-            </Link>
-          </div>
-          <div className="col col--3">
-            <Link to="/api/guides" className={styles.quickLink}>
-              <span>🛠️</span>
-              <strong>Guides</strong>
-              <small>How-to articles</small>
-            </Link>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 export default function Home() {
   const {siteConfig} = useDocusaurusContext();
   return (
@@ -197,9 +155,8 @@ export default function Home() {
       description="Comprehensive API reference for Countly Enterprise">
       <HomepageHeader />
       <main>
-        <CoreFeatures />
-        <PluginCategories />
         <QuickLinks />
+        <PluginCategories />
       </main>
     </Layout>
   );
