@@ -41,6 +41,7 @@ const config = {
       ({
         docs: {
           path: path.join(__dirname, 'docs'),
+          routeBasePath: '/',
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
@@ -98,7 +99,7 @@ const config = {
             items: [
               {
                 label: 'API Documentation',
-                to: '/docs/api/',
+                to: '/api/',
               },
             ],
           },

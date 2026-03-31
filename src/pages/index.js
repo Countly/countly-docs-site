@@ -10,19 +10,19 @@ const coreFeatures = [
     title: 'Core API',
     icon: '⚙️',
     description: 'Analytics, Events, Sessions, Apps, and other foundational endpoints that power the Countly platform.',
-    link: '/docs/core',
+    link: '/core',
   },
   {
     title: 'User Management',
     icon: '👥',
     description: 'App Users, Cohorts, User Profiles — manage and segment your user base programmatically.',
-    link: '/docs/core/app-users',
+    link: '/core/app-users',
   },
   {
     title: 'Push Notifications',
     icon: '🔔',
     description: 'Create, schedule, and manage push notification campaigns across iOS, Android, and web platforms.',
-    link: '/docs/api/push',
+    link: '/api/push',
   },
 ];
 
@@ -31,50 +31,50 @@ const pluginCategories = [
     title: 'Analytics & Insights',
     icon: '📊',
     items: [
-      { label: 'Drill', link: '/docs/api/drill' },
-      { label: 'Funnels', link: '/docs/api/funnels' },
-      { label: 'Flows', link: '/docs/api/flows' },
-      { label: 'Retention Segments', link: '/docs/api/retention_segments' },
-      { label: 'Formulas', link: '/docs/api/formulas' },
-      { label: 'Active Users', link: '/docs/api/active_users' },
-      { label: 'Concurrent Users', link: '/docs/api/concurrent_users' },
+      { label: 'Drill', link: '/api/drill' },
+      { label: 'Funnels', link: '/api/funnels' },
+      { label: 'Flows', link: '/api/flows' },
+      { label: 'Retention Segments', link: '/api/retention_segments' },
+      { label: 'Formulas', link: '/api/formulas' },
+      { label: 'Active Users', link: '/api/active_users' },
+      { label: 'Concurrent Users', link: '/api/concurrent_users' },
     ],
   },
   {
     title: 'User Engagement',
     icon: '🎯',
     items: [
-      { label: 'Surveys', link: '/docs/api/surveys' },
-      { label: 'Remote Config', link: '/docs/api/remote-config' },
-      { label: 'AB Testing', link: '/docs/api/ab-testing' },
-      { label: 'Content', link: '/docs/api/content' },
-      { label: 'Journey Engine', link: '/docs/api/journey_engine' },
-      { label: 'Push Approver', link: '/docs/api/push_approver' },
+      { label: 'Surveys', link: '/api/surveys' },
+      { label: 'Remote Config', link: '/api/remote-config' },
+      { label: 'AB Testing', link: '/api/ab-testing' },
+      { label: 'Content', link: '/api/content' },
+      { label: 'Journey Engine', link: '/api/journey_engine' },
+      { label: 'Push Approver', link: '/api/push_approver' },
     ],
   },
   {
     title: 'Security & Auth',
     icon: '🔐',
     items: [
-      { label: 'LDAP', link: '/docs/api/ldap' },
-      { label: 'OIDC', link: '/docs/api/oidc' },
-      { label: 'Okta', link: '/docs/api/okta' },
-      { label: 'Active Directory', link: '/docs/api/active_directory' },
-      { label: 'Cognito', link: '/docs/api/cognito' },
-      { label: 'Two-Factor Auth', link: '/docs/api/two-factor-auth' },
-      { label: 'reCAPTCHA', link: '/docs/api/recaptcha' },
+      { label: 'LDAP', link: '/api/ldap' },
+      { label: 'OIDC', link: '/api/oidc' },
+      { label: 'Okta', link: '/api/okta' },
+      { label: 'Active Directory', link: '/api/active_directory' },
+      { label: 'Cognito', link: '/api/cognito' },
+      { label: 'Two-Factor Auth', link: '/api/two-factor-auth' },
+      { label: 'reCAPTCHA', link: '/api/recaptcha' },
     ],
   },
   {
     title: 'Data & Infrastructure',
     icon: '🗄️',
     items: [
-      { label: 'ClickHouse', link: '/docs/api/clickhouse' },
-      { label: 'Kafka', link: '/docs/api/kafka' },
-      { label: 'Data Manager', link: '/docs/api/data-manager' },
-      { label: 'Data Migration', link: '/docs/api/data_migration' },
-      { label: 'Config Transfer', link: '/docs/api/config-transfer' },
-      { label: 'DBViewer', link: '/docs/api/dbviewer' },
+      { label: 'ClickHouse', link: '/api/clickhouse' },
+      { label: 'Kafka', link: '/api/kafka' },
+      { label: 'Data Manager', link: '/api/data-manager' },
+      { label: 'Data Migration', link: '/api/data_migration' },
+      { label: 'Config Transfer', link: '/api/config-transfer' },
+      { label: 'DBViewer', link: '/api/dbviewer' },
     ],
   },
 ];
@@ -89,7 +89,7 @@ function HomepageHeader() {
         <div className={styles.buttons}>
           <Link
             className="button button--secondary button--lg"
-            to="/docs/api">
+            to="/api">
             Get Started
           </Link>
         </div>
@@ -156,28 +156,28 @@ function QuickLinks() {
         <h2 className={styles.sectionTitle}>Quick Links</h2>
         <div className={clsx('row', styles.quickLinks)}>
           <div className="col col--3">
-            <Link to="/docs/api" className={styles.quickLink}>
+            <Link to="/api" className={styles.quickLink}>
               <span>📖</span>
               <strong>API Overview</strong>
               <small>Start here</small>
             </Link>
           </div>
           <div className="col col--3">
-            <Link to="/docs/core/token" className={styles.quickLink}>
+            <Link to="/core/token" className={styles.quickLink}>
               <span>🔑</span>
               <strong>Authentication</strong>
               <small>API keys & tokens</small>
             </Link>
           </div>
           <div className="col col--3">
-            <Link to="/docs/api/sdk" className={styles.quickLink}>
+            <Link to="/api/sdk" className={styles.quickLink}>
               <span>📡</span>
               <strong>SDK Integration</strong>
               <small>Client & server SDKs</small>
             </Link>
           </div>
           <div className="col col--3">
-            <Link to="/docs/api/guides" className={styles.quickLink}>
+            <Link to="/api/guides" className={styles.quickLink}>
               <span>🛠️</span>
               <strong>Guides</strong>
               <small>How-to articles</small>
