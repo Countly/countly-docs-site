@@ -1,5 +1,6 @@
 ---
-sidebar_label: "Main Data Ingestion"
+sidebar_position: 2
+sidebar_label: "Data Ingestion"
 ---
 
 # /i

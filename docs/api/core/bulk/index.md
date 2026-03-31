@@ -11,8 +11,8 @@ Ingestion endpoints collect SDK traffic for sessions, events, user properties, a
 
 ## Quick Links
 
-- [Data Ingestion - Main Data Ingestion](./ingestion.md) - `/i`
-- [Data Ingestion - Bulk Ingestion](./i-bulk.md) - `/i/bulk`
+- [Data Ingestion](./ingestion.md) - `/i`
+- [Bulk Ingestion](./i-bulk.md) - `/i/bulk`
 
 ## Data Flow Summary
 

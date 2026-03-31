@@ -13,11 +13,19 @@ SDK feature manages runtime SDK configuration, enforcement overrides, and SDK me
 
 | Collection | Purpose |
 |---|---|
+| `countly.apps` | Resolves app by `app_key`, app settings, and checksum salt fields. |
+| `countly.app_users{appId}` | Loads app-user context for current `device_id` hash. |
 | `countly_out.sdk_configs` | Stores per-app SDK configuration object. |
 | `countly_out.sdk_enforcement` | Stores per-app enforcement overrides. |
 | `countly.sdks` | Stores SDK analytics metrics. |
 
 ## Endpoints
+
+### Core
+
+- [SDK Fetch Read](o-sdk.md) - `/o/sdk`
+
+### Configuration & Enforcement
 
 - [SDK - SDK Config Read](o-sdk-config.md) - `/o/sdk?method=sc`
 - [SDK - Config Read](o-sdk-config-read.md) - `/o?method=sdk-config`

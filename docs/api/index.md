@@ -71,7 +71,7 @@ The core platform ships with every Countly installation.
 | [User Management](./core/users/index.md) | Dashboard user accounts and permissions |
 | [Token](./core/token/index.md) | Authentication token management |
 | [Tasks](./core/tasks/index.md) | Long-running task status and results |
-| [SDK](./core/sdk/index.md) | SDK configuration endpoints |
+| [SDK](./sdk/index.md) | SDK configuration endpoints |
 | [System](./core/system/index.md) | Server health, jobs, and configuration |
 | [Plugins](./plugins/index.md) | Plugin state and management |
 

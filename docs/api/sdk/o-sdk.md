@@ -170,7 +170,7 @@ Example wrapped success (method-dependent):
 
 ## Related Endpoints
 
-- [SDK Ingestion](../bulk/ingestion.md)
+- [SDK Ingestion](../core/bulk/ingestion.md)
 
 ## Last Updated
 
