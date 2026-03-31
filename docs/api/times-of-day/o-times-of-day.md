@@ -106,10 +106,6 @@ Requires `times_of_day` `Read` permission.
 /o?method=times-of-day&api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&tod_type=purchase&date_range=2025:01,2025:02
 ```
 
-## Related Endpoints
-
-- [Times Of Day - Ingestion](i-times-of-day.md)
-
 ## Last Updated
 
 2026-03-05
