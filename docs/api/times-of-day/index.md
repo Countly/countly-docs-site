@@ -19,7 +19,6 @@ Times Of Day provides a 7x24 activity heatmap by weekday and hour for sessions a
 ## Endpoints
 
 - [Times Of Day - Query](o-times-of-day.md) - `/o?method=times-of-day`
-- [Times Of Day - Ingestion](i-times-of-day.md) - `/i`
 
 ## Last Updated
 
