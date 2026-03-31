@@ -128,6 +128,8 @@ const config = {
         hashed: true,
         language: ['en'],
         highlightSearchTermsOnTargetPage: true,
+        docsRouteBasePath: '/',
+        indexBlog: false,
       },
     ],
   ],
