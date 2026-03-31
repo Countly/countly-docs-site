@@ -10,18 +10,20 @@ Welcome to the Countly Server API reference. This documentation covers all read 
 
 ## Authentication
 
-All API calls require authentication. There are three ways to authenticate:
+All API calls require authentication. There are multiple ways to authenticate depending on the type of endpoint.
 
-### 1. API Key / App Key
+### API Key vs App Key
 
-Pass as a query parameter or in the request body:
+Countly uses two different keys for different purposes:
 
-| Key | Scope | How to obtain |
-|-----|-------|---------------|
-| `api_key` | Full access for the user | **Management → API Key** in the dashboard |
-| `app_key` | App-level SDK writes | **Management → Apps → App Key** |
+| Key | Purpose | Used by | How to obtain |
+|-----|---------|---------|---------------|
+| `api_key` | **Dashboard / server-side access.** Grants full read & write access as the associated user. Use for management, analytics reads, and any server-to-server call. | Server / admin scripts | **Management → API Key** in the dashboard |
+| `app_key` | **SDK / client-side access.** Identifies the application and allows only data ingestion (write) endpoints (`/i`, `/i/...`). It is safe to embed in client apps because it cannot read data. | SDKs, client apps | **Management → Apps → App Key** |
 
-### 2. Auth Token (parameter)
+> **Rule of thumb:** if the endpoint path starts with `/i` and is called from a client device or SDK, use `app_key`. For everything else (reading data via `/o`, managing apps, users, etc.) use `api_key` or an auth token.
+
+### Auth Token (parameter)
 
 Instead of `api_key`, you can pass an auth token as the `auth_token` query parameter or in the request body:
 
@@ -31,9 +33,9 @@ GET /o?auth_token=YOUR_TOKEN&app_id=APP_ID&method=...
 
 Auth tokens can be scoped to specific apps, endpoints, and have a configurable TTL. Create them via the [Token API](../core/token/index.md).
 
-### 3. Auth Token (header)
+### Auth Token (header)
 
-You can also pass the auth token in the HTTP header:
+You can also pass the auth token in the HTTP `Authorization` header:
 
 ```
 GET /o?app_id=APP_ID&method=...
@@ -41,6 +43,16 @@ Authorization: YOUR_TOKEN
 ```
 
 This is the recommended approach for server-to-server integrations as it keeps tokens out of URLs and server logs.
+
+### Quick Reference
+
+| Scenario | Key / Token | Example parameter |
+|----------|-------------|-------------------|
+| SDK sending events | `app_key` | `app_key=APP_KEY` |
+| SDK sending crash data | `app_key` | `app_key=APP_KEY` |
+| Reading analytics from server | `api_key` or `auth_token` | `api_key=API_KEY` |
+| Managing apps / users | `api_key` or `auth_token` | `Authorization: TOKEN` |
+| Scoped, time-limited access | `auth_token` | `auth_token=TOKEN` |
 
 ---
 
