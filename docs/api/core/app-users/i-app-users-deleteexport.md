@@ -2,12 +2,12 @@
 sidebar_label: "Export Delete"
 ---
 
-# `/i/app_users/deleteExport/{id}`
+# `/i/app_users/deleteExport/\{id\}`
 
 ## Endpoint
 
 ```plaintext
-/i/app_users/deleteExport/{id}
+/i/app_users/deleteExport/\{id\}
 ```
 
 ## Overview
@@ -92,14 +92,14 @@ Delete an existing app-user export artifact.
 
 | Mode | Trigger | Processing Path | Response Shape |
 |---|---|---|---|
-| Single-user export cleanup | `id` matches `appUser_{appId}_{uid}` | Deletes export artifacts and unsets `appUserExport` on matching user. | Wrapped string: `{ "result": "Export deleted" }` |
+| Single-user export cleanup | `id` matches `appUser_\{appId\}_{uid}` | Deletes export artifacts and unsets `appUserExport` on matching user. | Wrapped string: `{ "result": "Export deleted" }` |
 | Multi-user/hash export cleanup | `id` matches hash export format | Deletes export artifacts without user-profile field update. | Wrapped string: `{ "result": "Export deleted" }` |
 | Invalid filename | `id` format does not match expected prefix | Request is rejected before cleanup. | Wrapped error string: `{ "result": "invalid filename" }` |
 
 ### Impact on Other Data
 
 - Removes export payload records from `countly.exports`.
-- For single-user exports, updates `countly.app_users{appId}` to remove stored `appUserExport` path.
+- For single-user exports, updates `countly.app_users\{appId\}` to remove stored `appUserExport` path.
 
 ## Audit & System Logs
 
@@ -113,7 +113,7 @@ Delete an existing app-user export artifact.
 |---|---|---|
 | `countly.members` | Authentication and permission validation | Reads member identity and app-level write permissions. |
 | `countly.exports` | Export payload cleanup | Deletes records where `_eid` matches the export identifier. |
-| `countly.app_users{appId}` | Single-user export metadata cleanup | Unsets `appUserExport` when the deleted export belongs to one user. |
+| `countly.app_users\{appId\}` | Single-user export metadata cleanup | Unsets `appUserExport` when the deleted export belongs to one user. |
 | `countly_fs` | Export archive cleanup | Deletes archive objects from GridFS `appUsers` bucket when present. |
 
 ---

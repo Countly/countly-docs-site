@@ -2,12 +2,12 @@
 sidebar_label: "Download Export"
 ---
 
-# `/o/export/download/{task_id}`
+# `/o/export/download/\{task_id\}`
 
 ## Endpoint
 
 ```plaintext
-/o/export/download/{task_id}
+/o/export/download/\{task_id\}
 ```
 
 ## Overview
@@ -32,7 +32,7 @@ Downloads a previously generated export file by task ID.
 | `api_key` | String | Yes (or use `auth_token`) | Dashboard API authentication key. |
 | `auth_token` | String | Yes (or use `api_key`) | Dashboard auth token. |
 | `app_id` | String | Yes (for non-global users) | App context used in access validation. |
-| `{task_id}` | String | Yes | Long task ID from `/o/export/requestQuery` response. |
+| `\{task_id\}` | String | Yes | Long task ID from `/o/export/requestQuery` response. |
 
 ## Response
 

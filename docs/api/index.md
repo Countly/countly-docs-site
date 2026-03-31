@@ -31,7 +31,7 @@ Instead of `api_key`, you can pass an auth token as the `auth_token` query param
 GET /o?auth_token=YOUR_TOKEN&app_id=APP_ID&method=...
 ```
 
-Auth tokens can be scoped to specific apps, endpoints, and have a configurable TTL. Create them via the [Token API](../core/token/index.md).
+Auth tokens can be scoped to specific apps, endpoints, and have a configurable TTL. Create them via the [Token API](./core/token/index.md).
 
 ### Auth Token (header)
 
@@ -62,17 +62,17 @@ The core platform ships with every Countly installation.
 
 | Category | Description |
 |----------|-------------|
-| [Analytics](../core/analytics/index.md) | Sessions, users, and technology metrics |
-| [App Users](../core/app-users/index.md) | User profiles, exports, and data subjects |
-| [Apps](../core/apps/index.md) | Create, update, and delete applications |
-| [Bulk](../core/bulk/index.md) | Batch request ingestion |
-| [Events](../core/events/index.md) | Custom event tracking and management |
-| [Export](../core/export/index.md) | Data export and downloads |
-| [User Management](../core/users/index.md) | Dashboard user accounts and permissions |
-| [Token](../core/token/index.md) | Authentication token management |
-| [Tasks](../core/tasks/index.md) | Long-running task status and results |
-| [SDK](../core/sdk/index.md) | SDK configuration endpoints |
-| [System](../core/system/index.md) | Server health, jobs, and configuration |
+| [Analytics](./core/analytics/index.md) | Sessions, users, and technology metrics |
+| [App Users](./core/app-users/index.md) | User profiles, exports, and data subjects |
+| [Apps](./core/apps/index.md) | Create, update, and delete applications |
+| [Bulk](./core/bulk/index.md) | Batch request ingestion |
+| [Events](./core/events/index.md) | Custom event tracking and management |
+| [Export](./core/export/index.md) | Data export and downloads |
+| [User Management](./core/users/index.md) | Dashboard user accounts and permissions |
+| [Token](./core/token/index.md) | Authentication token management |
+| [Tasks](./core/tasks/index.md) | Long-running task status and results |
+| [SDK](./core/sdk/index.md) | SDK configuration endpoints |
+| [System](./core/system/index.md) | Server health, jobs, and configuration |
 | [Plugins](./plugins/index.md) | Plugin state and management |
 
 ---

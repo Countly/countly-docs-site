@@ -84,14 +84,14 @@ Retrieve online user metrics in multiple time modes, including real-time counts,
 | Field | Type | Description |
 |---|---|---|
 | ns_o | Object | Existing user metrics (keys are app IDs) |
-| `ns_o.{appId}.o` | Number | Current count of existing online users |
-| `ns_o.{appId}.m` | Object | Metrics breakdown object |
-| `ns_o.{appId}.m.cc` | Object | Online users by country code |
-| `ns_o.{appId}.m.lv` | Object | Online users by device type |
-| `ns_o.{appId}.m.src` | Object | Online users by traffic source |
+| `ns_o.\{appId\}.o` | Number | Current count of existing online users |
+| `ns_o.\{appId\}.m` | Object | Metrics breakdown object |
+| `ns_o.\{appId\}.m.cc` | Object | Online users by country code |
+| `ns_o.\{appId\}.m.lv` | Object | Online users by device type |
+| `ns_o.\{appId\}.m.src` | Object | Online users by traffic source |
 | ns_n | Object | New user metrics (keys are app IDs); only present if `add_new=true` |
-| `ns_n.{appId}.o` | Number | Current count of new online users |
-| `ns_n.{appId}.m` | Object | Metrics breakdown for new users (same structure as ns_o.m) |
+| `ns_n.\{appId\}.o` | Number | Current count of new online users |
+| `ns_n.\{appId\}.m` | Object | Metrics breakdown for new users (same structure as ns_o.m) |
 
 **For modes 2-4 (time series)**: Returns arrays of data points; each point includes `data` (count) and `time` (timestamp).
 
@@ -117,7 +117,7 @@ Retrieve online user metrics in multiple time modes, including real-time counts,
 |---|---|---|
 | `countly.concurrent_users_active` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 | `countly.concurrent_users_max` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
-| `countly.app_users{appId}` | Per-app user profiles | Stores user-level properties and profile fields affected by this endpoint. |
+| `countly.app_users\{appId\}` | Per-app user profiles | Stores user-level properties and profile fields affected by this endpoint. |
 
 ## Limitations
 
