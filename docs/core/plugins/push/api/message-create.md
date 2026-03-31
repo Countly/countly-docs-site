@@ -82,6 +82,74 @@ Create a new push notification campaign. Supports various trigger types (schedul
 | `info.title` | String | No | Campaign title for UI (internal name) |
 | `demo` | Boolean | No | Mark as demo message (for testing/populator) |
 
+### Filter Structure
+
+The `filter` object defines the target audience for the push notification:
+
+```json
+{
+  "user": {
+    "and": [
+      {"sg.app_version": {"$in": ["2.0", "2.1"]}},
+      {"sg.country": {"$eq": "US"}},
+      {"up.premium": {"$eq": true}}
+    ]
+  },
+  "drill": {
+    "queryObject": {
+      "chr.platform": {"$in": ["Android", "iOS"]}
+    }
+  },
+  "geos": ["507f1f77bcf86cd799439011"],
+  "cohorts": ["cohort_id_1"]
+}
+```
+
+**Filter Fields**:
+- **`user`**: MongoDB query on `app_users` collection — filters on user properties, segments, and push tokens
+- **`drill`**: Drill plugin filter on events/sessions data (requires Drill plugin)
+- **`geos`**: Array of geo-fence ObjectIDs for location-based targeting
+- **`cohorts`**: Array of cohort IDs for behavioral targeting
+
+If `filter` is omitted or empty, the campaign targets all users with valid push tokens.
+
+### Contents Structure
+
+The `contents` array defines the notification content, with support for platform and language overrides:
+
+```json
+[
+  {
+    "message": "Your order has been shipped!",
+    "title": "Order Update",
+    "sound": "default",
+    "badge": 1,
+    "url": "https://example.com/orders",
+    "media": "https://example.com/img/shipped.png",
+    "mediaMime": "image/png",
+    "data": "{\"orderId\": \"12345\"}",
+    "buttons": [
+      {"title": "View Order", "url": "https://example.com/orders/12345"}
+    ]
+  },
+  {
+    "p": "i",
+    "message": "iOS-specific message",
+    "specific": {"subtitle": "Order #12345"}
+  },
+  {
+    "la": "es",
+    "message": "¡Tu pedido ha sido enviado!",
+    "title": "Actualización de pedido"
+  }
+]
+```
+
+- The first object (no `p` or `la` keys) is the **default content** — required.
+- Objects with `p` override content for a specific platform (`i`, `a`, `w`, `h`).
+- Objects with `la` override content for a specific language (2-letter ISO code).
+- Platform and language overrides are merged with the default; only specified fields are replaced.
+
 ## Response
 
 #### Success Response - Campaign Created

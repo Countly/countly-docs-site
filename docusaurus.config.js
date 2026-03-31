@@ -10,7 +10,7 @@ const path = require('path');
 const config = {
   title: 'Countly Enterprise API Documentation',
   tagline: 'Comprehensive API reference for Countly Enterprise Plugins',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/favicon.svg',
 
   // Set the production url of your site here
   url: 'https://your-domain.com',
@@ -21,7 +21,7 @@ const config = {
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
   organizationName: 'countly', // Usually your GitHub org/user name.
-  projectName: 'countly-docs', // Usually your repo name.
+  projectName: 'countly-docs-site', // Usually your repo name.
 
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
@@ -45,14 +45,14 @@ const config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/countly/countly-enterprise-plugins/tree/master',
+            'https://github.com/Countly/countly-docs-site/blob/main/',
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/countly/countly-enterprise-plugins/tree/master',
+            'https://github.com/Countly/countly-docs-site/blob/main/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
@@ -84,7 +84,7 @@ const config = {
             position: 'right',
           },
           {
-            href: 'https://github.com/countly/countly-enterprise-plugins',
+            href: 'https://github.com/Countly/countly-docs-site',
             label: 'GitHub',
             position: 'right',
           },
@@ -107,7 +107,7 @@ const config = {
             items: [
               {
                 label: 'GitHub',
-                href: 'https://github.com/countly/countly-enterprise-plugins',
+                href: 'https://github.com/Countly/countly-server',
               },
             ],
           },
