@@ -35,11 +35,11 @@ Auth tokens can be scoped to specific apps, endpoints, and have a configurable T
 
 ### Auth Token (header)
 
-You can also pass the auth token in the HTTP `Authorization` header:
+You can also pass the auth token in the `countly-token` HTTP header:
 
 ```
 GET /o?app_id=APP_ID&method=...
-Authorization: YOUR_TOKEN
+countly-token: YOUR_TOKEN
 ```
 
 This is the recommended approach for server-to-server integrations as it keeps tokens out of URLs and server logs.
@@ -51,7 +51,7 @@ This is the recommended approach for server-to-server integrations as it keeps t
 | SDK sending events | `app_key` | `app_key=APP_KEY` |
 | SDK sending crash data | `app_key` | `app_key=APP_KEY` |
 | Reading analytics from server | `api_key` or `auth_token` | `api_key=API_KEY` |
-| Managing apps / users | `api_key` or `auth_token` | `Authorization: TOKEN` |
+| Managing apps / users | `api_key` or `auth_token` | `countly-token: TOKEN` |
 | Scoped, time-limited access | `auth_token` | `auth_token=TOKEN` |
 
 ---
