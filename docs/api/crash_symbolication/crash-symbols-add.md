@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Add"
+keywords:
+  - "/i/crash_symbols/add_symbol"
+  - "add_symbol"
+  - "crash_symbols"
 ---
 
 # Add symbol

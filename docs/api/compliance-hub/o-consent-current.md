@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Consent Current"
+keywords:
+  - "/o/consent/current"
+  - "current"
+  - "consent"
 ---
 
 # Compliance Hub - Consent Current

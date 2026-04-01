@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Category Create"
+keywords:
+  - "/i/data-manager/category/create"
+  - "create"
+  - "data-manager"
+  - "category"
 ---
 
 # /i/data-manager/category/create

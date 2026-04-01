@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Event Category Update"
+keywords:
+  - "/i/data-manager/event/change-category"
+  - "change-category"
+  - "data-manager"
+  - "event"
 ---
 
 # /i/data-manager/event/change-category

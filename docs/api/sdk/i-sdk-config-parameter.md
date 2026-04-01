@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Config Parameter Update"
+keywords:
+  - "/i/sdk-config/update-parameter"
+  - "update-parameter"
+  - "sdk-config"
 ---
 
 # SDK - Config Parameter Update

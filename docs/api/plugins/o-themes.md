@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Themes List"
+keywords:
+  - "/o/themes"
+  - "themes"
 ---
 
 # /o/themes

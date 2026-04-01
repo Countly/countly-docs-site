@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Connection Validate"
+keywords:
+  - "/o/datamigration/validateconnection"
+  - "validateconnection"
+  - "datamigration"
 ---
 
 # Data Migration - Validate Remote Connection

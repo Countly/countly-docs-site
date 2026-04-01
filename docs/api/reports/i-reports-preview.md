@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Preview HTML"
+keywords:
+  - "/i/reports/preview"
+  - "preview"
+  - "reports"
 ---
 
 # Reports - Preview HTML

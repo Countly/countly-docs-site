@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Databases List"
+keywords:
+  - "/o/db"
+  - "db"
 ---
 
 # DB Viewer - Databases List

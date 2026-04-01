@@ -1,5 +1,11 @@
 ---
 sidebar_label: "Stats Performance Read"
+keywords:
+  - "/o/journey-engine/stats/performance"
+  - "GET /o/journey-engine/stats/performance"
+  - "performance"
+  - "journey-engine"
+  - "stats"
 ---
 
 # Journey Engine - Stats Performance

@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Users List"
+keywords:
+  - "/o/users/all"
+  - "all"
+  - "users"
 ---
 
 # Users Management - Users List

@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Callback"
+keywords:
+  - "/i/crashes-jira"
+  - "crashes-jira"
 ---
 
 # OAuth callback

@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Read Metric"
+keywords:
+  - "/o/analytics/metric"
+  - "metric"
+  - "analytics"
 ---
 
 # /o/analytics/metric

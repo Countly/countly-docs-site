@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Read Countries"
+keywords:
+  - "/o/analytics/countries"
+  - "countries"
+  - "analytics"
 ---
 
 # /o/analytics/countries

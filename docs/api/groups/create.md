@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Create"
+keywords:
+  - "/i/groups/create"
+  - "create"
+  - "groups"
 ---
 
 # Create Group

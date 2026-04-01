@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Health Check"
+keywords:
+  - "/o/ping"
+  - "ping"
 ---
 
 # Ping - Health Check

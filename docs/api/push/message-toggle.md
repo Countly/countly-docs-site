@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Message Toggle"
+keywords:
+  - "/i/push/message/toggle"
+  - "toggle"
+  - "push"
+  - "message"
 ---
 
 # Push - Message Toggle

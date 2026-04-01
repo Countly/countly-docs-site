@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Data Points Read"
+keywords:
+  - "/o/server-stats/data-points"
+  - "data-points"
+  - "server-stats"
 ---
 
 # /o/server-stats/data-points

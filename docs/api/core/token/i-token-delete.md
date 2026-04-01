@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Token Delete"
+keywords:
+  - "/i/token/delete"
+  - "delete"
+  - "token"
 ---
 
 # Token - Token Delete

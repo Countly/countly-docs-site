@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Read Sessions"
+keywords:
+  - "/o/analytics/sessions"
+  - "sessions"
+  - "analytics"
 ---
 
 # /o/analytics/sessions

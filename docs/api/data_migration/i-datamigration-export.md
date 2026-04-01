@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Export Start"
+keywords:
+  - "/i/datamigration/export"
+  - "export"
+  - "datamigration"
 ---
 
 # Data Migration - Export

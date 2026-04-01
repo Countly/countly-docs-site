@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Crash Resolve"
+keywords:
+  - "/i/crashes/resolve"
+  - "resolve"
+  - "crashes"
 ---
 
 # Crashes - Resolve Crash Groups

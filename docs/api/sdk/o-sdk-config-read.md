@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Config Read"
+keywords:
+  - "/o"
+  - "o"
 ---
 
 # SDK - Config Read

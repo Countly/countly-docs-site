@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Profiler Stop"
+keywords:
+  - "/i/profiler/stop"
+  - "stop"
+  - "profiler"
 ---
 
 # System Utility - Stop Profiler

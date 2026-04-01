@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Template Create"
+keywords:
+  - "/i/populator/templates/create"
+  - "create"
+  - "populator"
+  - "templates"
 ---
 
 # Populator - Template Create

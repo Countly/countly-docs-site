@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Dashboard Delete"
+keywords:
+  - "/i/dashboards/delete"
+  - "delete"
+  - "dashboards"
 ---
 
 # Dashboards - Delete

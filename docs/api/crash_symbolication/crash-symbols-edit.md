@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Edit"
+keywords:
+  - "/i/crash_symbols/edit_symbol"
+  - "edit_symbol"
+  - "crash_symbols"
 ---
 
 # Edit symbol

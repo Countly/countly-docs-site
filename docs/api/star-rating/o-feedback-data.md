@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Get Feedback Data"
+keywords:
+  - "/o/feedback/data"
+  - "data"
+  - "feedback"
 ---
 
 # Star Rating - Get Feedback Data

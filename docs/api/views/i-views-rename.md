@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Rename"
+keywords:
+  - "/i/views"
+  - "views"
 ---
 
 # Views - Rename

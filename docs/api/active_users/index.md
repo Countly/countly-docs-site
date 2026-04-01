@@ -1,6 +1,9 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+keywords:
+  - "/o/active_users"
+  - "active_users"
 ---
 
 # Active Users

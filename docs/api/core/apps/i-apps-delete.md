@@ -1,5 +1,9 @@
 ---
 sidebar_label: "App Delete"
+keywords:
+  - "/i/apps/delete"
+  - "delete"
+  - "apps"
 ---
 
 # /i/apps/delete

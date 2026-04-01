@@ -1,5 +1,11 @@
 ---
 sidebar_label: "Version Delete"
+keywords:
+  - "/i/journey-engine/versions/delete"
+  - "POST /i/journey-engine/versions/delete"
+  - "delete"
+  - "journey-engine"
+  - "versions"
 ---
 
 # Journey Engine - Versions Delete

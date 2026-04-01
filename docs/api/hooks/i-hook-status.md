@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Hook Status"
+keywords:
+  - "/i/hook/status"
+  - "status"
+  - "hook"
 ---
 
 # Hooks - Update Status

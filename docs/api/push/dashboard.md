@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Read Dashboard"
+keywords:
+  - "/o/push/dashboard"
+  - "dashboard"
+  - "push"
 ---
 
 # /o/push/dashboard

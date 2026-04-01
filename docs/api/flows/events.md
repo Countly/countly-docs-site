@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Read"
+keywords:
+  - "/o/flows"
+  - "flows"
 ---
 
 # Get flow events catalog

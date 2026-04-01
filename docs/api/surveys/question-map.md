@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Question Map"
+keywords:
+  - "/o/surveys/survey/question_map"
+  - "question_map"
+  - "surveys"
+  - "survey"
 ---
 
 # Surveys - Question Map

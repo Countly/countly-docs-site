@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Message Update"
+keywords:
+  - "/i/push/message/update"
+  - "update"
+  - "push"
+  - "message"
 ---
 
 # /i/push/message/update

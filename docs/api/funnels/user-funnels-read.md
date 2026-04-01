@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Read User"
+keywords:
+  - "/o"
+  - "o"
 ---
 
 # Read user funnels

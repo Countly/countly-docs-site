@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Token List"
+keywords:
+  - "/o/token/list"
+  - "list"
+  - "token"
 ---
 
 # Token - Token List

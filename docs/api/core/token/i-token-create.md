@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Token Create"
+keywords:
+  - "/i/token/create"
+  - "create"
+  - "token"
 ---
 
 # Token - Token Create

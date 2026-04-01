@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Export"
+keywords:
+  - "/o/export"
+  - "export"
 ---
 
 # Export Configuration

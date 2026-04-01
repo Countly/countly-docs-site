@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Event Segment Whitelist"
+keywords:
+  - "/i/events/whitelist_segments"
+  - "whitelist_segments"
+  - "events"
 ---
 
 # /i/events/whitelist_segments

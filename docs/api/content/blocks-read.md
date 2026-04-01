@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Content Blocks - Read"
+keywords:
+  - "/o/content"
+  - "content"
 ---
 
 # Retrieve content blocks

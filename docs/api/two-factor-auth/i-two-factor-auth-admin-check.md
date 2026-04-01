@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Admin Check"
+keywords:
+  - "/i/two-factor-auth"
+  - "two-factor-auth"
 ---
 
 # Two Factor Auth - Admin Check

@@ -1,5 +1,9 @@
 ---
 sidebar_label: "List"
+keywords:
+  - "/o/calculated_metrics/metrics"
+  - "metrics"
+  - "calculated_metrics"
 ---
 
 # List formulas

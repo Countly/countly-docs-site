@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Fetch Available Variants"
+keywords:
+  - "/o/sdk"
+  - "sdk"
 ---
 
 # Fetch Available Variants

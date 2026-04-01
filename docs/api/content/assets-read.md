@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Assets - Read"
+keywords:
+  - "/o/content/assets"
+  - "assets"
+  - "content"
 ---
 
 # Retrieve all assets

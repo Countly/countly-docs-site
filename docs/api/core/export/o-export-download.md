@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Download Export"
+keywords:
+  - "/o/export/download/{task_id}"
+  - "download"
+  - "export"
+  - "{task_id}"
 ---
 
 # `/o/export/download/\{task_id\}`

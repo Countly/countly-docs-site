@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Data NPS"
+keywords:
+  - "/o/surveys/nps/data"
+  - "data"
+  - "surveys"
+  - "nps"
 ---
 
 # Surveys - NPS Data

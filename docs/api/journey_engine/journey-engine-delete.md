@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Journey Delete"
+keywords:
+  - "/i/journey-engine/delete"
+  - "delete"
+  - "journey-engine"
 ---
 
 # Delete Journey

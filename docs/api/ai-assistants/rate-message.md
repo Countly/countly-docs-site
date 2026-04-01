@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Rate Message"
+keywords:
+  - "/i/ai-assistants/rate-message"
+  - "rate-message"
+  - "ai-assistants"
 ---
 
 # AI Assistants - Rate Message

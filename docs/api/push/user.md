@@ -1,5 +1,9 @@
 ---
 sidebar_label: "User History"
+keywords:
+  - "/o/push/user"
+  - "user"
+  - "push"
 ---
 
 # /o/push/user

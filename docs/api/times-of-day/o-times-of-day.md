@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Times Of Day Query"
+keywords:
+  - "/o"
+  - "o"
 ---
 
 # Times Of Day - Query

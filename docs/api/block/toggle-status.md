@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Toggle Status"
+keywords:
+  - "/i/blocks/toggle_status"
+  - "toggle_status"
+  - "blocks"
 ---
 
 # Filtering Rules - Toggle Status

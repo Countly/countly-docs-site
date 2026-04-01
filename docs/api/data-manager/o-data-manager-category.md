@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Categories Read"
+keywords:
+  - "/o/data-manager/category"
+  - "category"
+  - "data-manager"
 ---
 
 # /o/data-manager/category

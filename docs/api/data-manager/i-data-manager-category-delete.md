@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Category Delete"
+keywords:
+  - "/i/data-manager/category/delete"
+  - "delete"
+  - "data-manager"
+  - "category"
 ---
 
 # /i/data-manager/category/delete

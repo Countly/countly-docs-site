@@ -1,5 +1,11 @@
 ---
 sidebar_label: "Kafka Events Meta"
+keywords:
+  - "/o/system/kafka/events/meta"
+  - "meta"
+  - "system"
+  - "kafka"
+  - "events"
 ---
 
 # System - Kafka Events Meta Read

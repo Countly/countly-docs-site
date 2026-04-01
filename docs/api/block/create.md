@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Create"
+keywords:
+  - "/i/blocks/create"
+  - "create"
+  - "blocks"
 ---
 
 # Filtering Rules - Create

@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Widget Add"
+keywords:
+  - "/i/dashboards/add-widget"
+  - "add-widget"
+  - "dashboards"
 ---
 
 # Dashboards - Add Widget

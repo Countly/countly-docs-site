@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Receive"
+keywords:
+  - "/i/adjust"
+  - "adjust"
 ---
 
 # Adjust - Receive Callback

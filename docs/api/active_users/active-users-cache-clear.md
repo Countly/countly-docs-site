@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Clear Cache"
+keywords:
+  - "/i/active_users/clear_active_users_cache"
+  - "clear_active_users_cache"
+  - "active_users"
 ---
 
 # Clear Cache

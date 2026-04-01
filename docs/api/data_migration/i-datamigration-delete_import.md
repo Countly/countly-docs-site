@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Delete Import"
+keywords:
+  - "/i/datamigration/delete_import"
+  - "delete_import"
+  - "datamigration"
 ---
 
 # Data Migration - Delete Import

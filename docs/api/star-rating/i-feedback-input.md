@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Record Feedback"
+keywords:
+  - "/i/feedback/input"
+  - "GET /i/feedback/input"
+  - "input"
+  - "feedback"
 ---
 
 # Star Rating - Record Feedback

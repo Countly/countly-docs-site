@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Queue - Debug"
+keywords:
+  - "/o/content/debug"
+  - "debug"
+  - "content"
 ---
 
 # Get queue debug info

@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Parameter Delete"
+keywords:
+  - "/i/remote-config/remove-parameter"
+  - "remove-parameter"
+  - "remote-config"
 ---
 
 # Remote Config - Parameter Delete

@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Name Task"
+keywords:
+  - "/i/tasks/name"
+  - "name"
+  - "tasks"
 ---
 
 # /i/tasks/name

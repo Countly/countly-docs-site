@@ -1,5 +1,12 @@
 ---
 sidebar_label: "Read Detail"
+keywords:
+  - "/o/journey-engine/stats/active-users/detail"
+  - "GET /o/journey-engine/stats/active-users/detail"
+  - "detail"
+  - "journey-engine"
+  - "stats"
+  - "active-users"
 ---
 
 # Journey Engine - Stats Active Users Detail

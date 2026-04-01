@@ -1,5 +1,8 @@
 ---
 sidebar_label: "AB Enrollment"
+keywords:
+  - "/o/sdk"
+  - "sdk"
 ---
 
 # Remote Config - AB Enrollment

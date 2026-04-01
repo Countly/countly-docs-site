@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Feature State Update"
+keywords:
+  - "/i/plugins"
+  - "plugins"
 ---
 
 # /i/plugins

@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Note Save"
+keywords:
+  - "/i/notes/save"
+  - "save"
+  - "notes"
 ---
 
 # Notes - Note Save

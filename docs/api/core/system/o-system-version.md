@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Version Read"
+keywords:
+  - "/o/system/version"
+  - "version"
+  - "system"
 ---
 
 # System - Version Read

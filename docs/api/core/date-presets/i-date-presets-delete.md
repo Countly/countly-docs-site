@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Preset Delete"
+keywords:
+  - "/i/date_presets/delete"
+  - "delete"
+  - "date_presets"
 ---
 
 # /i/date_presets/delete

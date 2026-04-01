@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Delete All Files"
+keywords:
+  - "/i/datamigration/delete_all"
+  - "delete_all"
+  - "datamigration"
 ---
 
 # Data Migration - Delete All Migration Files

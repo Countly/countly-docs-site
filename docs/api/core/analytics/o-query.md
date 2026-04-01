@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Run Query"
+keywords:
+  - "/o"
+  - "o"
 ---
 
 # /o

@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Content Blocks - Create"
+keywords:
+  - "/i/content/save"
+  - "save"
+  - "content"
 ---
 
 # Create content block

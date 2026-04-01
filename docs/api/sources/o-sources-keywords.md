@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Search Keywords Read"
+keywords:
+  - "/o/keywords"
+  - "keywords"
 ---
 
 # Sources - Search Keywords Read

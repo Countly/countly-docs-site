@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Schema Export"
+keywords:
+  - "/i/data-manager/export-schema"
+  - "export-schema"
+  - "data-manager"
 ---
 # Export event schema as CSV
 

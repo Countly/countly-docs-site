@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Alert Delete"
+keywords:
+  - "/i/alert/delete"
+  - "delete"
+  - "alert"
 ---
 
 # Alerts - Delete

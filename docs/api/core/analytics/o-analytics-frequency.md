@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Read Frequency"
+keywords:
+  - "/o/analytics/frequency"
+  - "frequency"
+  - "analytics"
 ---
 
 # /o/analytics/frequency

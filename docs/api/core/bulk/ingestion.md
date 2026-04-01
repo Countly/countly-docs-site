@@ -1,6 +1,9 @@
 ---
 sidebar_position: 2
 sidebar_label: "Data Ingestion"
+keywords:
+  - "/i"
+  - "i"
 ---
 
 # /i

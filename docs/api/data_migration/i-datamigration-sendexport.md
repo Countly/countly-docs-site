@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Export Send"
+keywords:
+  - "/i/datamigration/sendexport"
+  - "sendexport"
+  - "datamigration"
 ---
 
 # Data Migration - Send Existing Export

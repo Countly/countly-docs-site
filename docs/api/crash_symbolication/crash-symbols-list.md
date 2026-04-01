@@ -1,5 +1,8 @@
 ---
 sidebar_label: "List Symbols"
+keywords:
+  - "/o"
+  - "o"
 ---
 
 # List symbols

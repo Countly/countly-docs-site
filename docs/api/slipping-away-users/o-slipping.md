@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Slipping Read"
+keywords:
+  - "/o/slipping"
+  - "slipping"
 ---
 
 # /o/slipping

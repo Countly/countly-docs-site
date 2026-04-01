@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Data"
+keywords:
+  - "/o/flows"
+  - "flows"
 ---
 
 # Get flow data

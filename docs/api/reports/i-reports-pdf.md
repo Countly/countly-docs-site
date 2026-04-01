@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Generate PDF"
+keywords:
+  - "/i/reports/pdf"
+  - "pdf"
+  - "reports"
 ---
 
 # Reports - Generate PDF

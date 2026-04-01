@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Get Ratings Widgets"
+keywords:
+  - "/o/sdk"
+  - "sdk"
 ---
 
 # Star Rating - Get Ratings Widgets

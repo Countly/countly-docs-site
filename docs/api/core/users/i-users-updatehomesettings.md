@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Home Settings Update"
+keywords:
+  - "/i/users/updateHomeSettings"
+  - "updateHomeSettings"
+  - "users"
 ---
 
 # Users Management - Home Settings Update

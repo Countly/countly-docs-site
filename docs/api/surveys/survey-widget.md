@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Widget Survey"
+keywords:
+  - "/o/surveys/survey/widget"
+  - "widget"
+  - "surveys"
+  - "survey"
 ---
 
 # Surveys - Survey Widget

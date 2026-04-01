@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Parameter Create"
+keywords:
+  - "/i/remote-config/add-parameter"
+  - "add-parameter"
+  - "remote-config"
 ---
 
 # Remote Config - Parameter Create

@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Check Login"
+keywords:
+  - "/i/crashes-jira"
+  - "crashes-jira"
 ---
 
 # Check JIRA login

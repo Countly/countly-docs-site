@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Read All Tasks"
+keywords:
+  - "/o/tasks/all"
+  - "all"
+  - "tasks"
 ---
 
 # /o/tasks/all

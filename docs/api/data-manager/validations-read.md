@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Validation Read"
+keywords:
+  - "/o/data-manager/validations"
+  - "validations"
+  - "data-manager"
 ---
 # Data Manager Validations - Read Unresolved
 

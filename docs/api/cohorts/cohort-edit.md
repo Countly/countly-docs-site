@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Update"
+keywords:
+  - "/i/cohorts/edit"
+  - "edit"
+  - "cohorts"
 ---
 
 # Update Cohort

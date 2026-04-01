@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Profiler Start"
+keywords:
+  - "/i/profiler/start"
+  - "start"
+  - "profiler"
 ---
 
 # System Utility - Start Profiler

@@ -1,5 +1,11 @@
 ---
 sidebar_label: "Resume"
+keywords:
+  - "/i/journey-engine/journeys/resume"
+  - "POST /i/journey-engine/journeys/resume"
+  - "resume"
+  - "journey-engine"
+  - "journeys"
 ---
 
 # Journey Engine - Journeys Resume

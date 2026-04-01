@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Time Ban Reset"
+keywords:
+  - "/o/users/reset_timeban"
+  - "reset_timeban"
+  - "users"
 ---
 
 # Users Management - Time Ban Reset

@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Run"
+keywords:
+  - "/i/crash_symbols/symbolicate"
+  - "symbolicate"
+  - "crash_symbols"
 ---
 
 # Run symbolication

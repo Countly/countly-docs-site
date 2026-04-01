@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Events Read"
+keywords:
+  - "/o/data-manager/events"
+  - "events"
+  - "data-manager"
 ---
 
 # /o/data-manager/events

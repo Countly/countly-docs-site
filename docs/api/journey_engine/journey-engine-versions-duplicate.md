@@ -1,5 +1,11 @@
 ---
 sidebar_label: "Duplicate"
+keywords:
+  - "/i/journey-engine/versions/duplicate"
+  - "POST /i/journey-engine/versions/duplicate"
+  - "duplicate"
+  - "journey-engine"
+  - "versions"
 ---
 
 # Journey Engine - Versions Duplicate

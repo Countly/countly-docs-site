@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Template Edit"
+keywords:
+  - "/i/populator/templates/edit"
+  - "edit"
+  - "populator"
+  - "templates"
 ---
 
 # Populator - Template Edit

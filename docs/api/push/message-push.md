@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Send"
+keywords:
+  - "/i/push/message/push"
+  - "push"
+  - "message"
 ---
 
 # /i/push/message/push

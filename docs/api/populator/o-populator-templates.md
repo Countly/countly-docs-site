@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Template Read"
+keywords:
+  - "/o/populator/templates"
+  - "templates"
+  - "populator"
 ---
 
 # Populator - Template Read

@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Language Map Read"
+keywords:
+  - "/o/langmap"
+  - "langmap"
 ---
 
 # Locale - Language Map Read

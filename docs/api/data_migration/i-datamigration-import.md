@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Import Start"
+keywords:
+  - "/i/datamigration/import"
+  - "import"
+  - "datamigration"
 ---
 
 # Data Migration - Import

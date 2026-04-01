@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Apps Compare"
+keywords:
+  - "/o/compare/apps"
+  - "apps"
+  - "compare"
 ---
 
 # Compare - Apps

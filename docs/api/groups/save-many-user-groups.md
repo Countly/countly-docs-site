@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Assign Many"
+keywords:
+  - "/i/groups/save-many-user-group"
+  - "save-many-user-group"
+  - "groups"
 ---
 
 # Assign Many Users to a Group

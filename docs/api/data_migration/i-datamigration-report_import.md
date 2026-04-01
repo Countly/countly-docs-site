@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Import Report"
+keywords:
+  - "/i/datamigration/report_import"
+  - "report_import"
+  - "datamigration"
 ---
 
 # Data Migration - Report Import Status

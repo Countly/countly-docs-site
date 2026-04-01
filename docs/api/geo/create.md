@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Create"
+keywords:
+  - "/i/geolocations/create"
+  - "create"
+  - "geolocations"
 ---
 
 # Create Geo Location

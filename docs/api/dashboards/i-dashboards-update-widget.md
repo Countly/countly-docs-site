@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Widget Update"
+keywords:
+  - "/i/dashboards/update-widget"
+  - "update-widget"
+  - "dashboards"
 ---
 
 # Dashboards - Update Widget

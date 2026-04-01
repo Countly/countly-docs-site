@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Segment Status Update"
+keywords:
+  - "/i/data-manager/segment/toggle-status"
+  - "toggle-status"
+  - "data-manager"
+  - "segment"
 ---
 # Update segment status
 

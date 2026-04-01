@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Browser Read"
+keywords:
+  - "/o"
+  - "o"
 ---
 
 # Browser - Read

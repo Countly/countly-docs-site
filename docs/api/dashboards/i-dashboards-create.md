@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Dashboard Create"
+keywords:
+  - "/i/dashboards/create"
+  - "create"
+  - "dashboards"
 ---
 
 # Dashboards - Create

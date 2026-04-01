@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Get Report"
+keywords:
+  - "/o"
+  - "o"
 ---
 
 # Get crash report

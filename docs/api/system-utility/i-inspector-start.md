@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Inspector Start"
+keywords:
+  - "/i/inspector/start"
+  - "start"
+  - "inspector"
 ---
 
 # System Utility - Start Inspector

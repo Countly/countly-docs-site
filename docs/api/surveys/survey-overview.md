@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Overview Survey"
+keywords:
+  - "/o/surveys/survey/overview"
+  - "overview"
+  - "surveys"
+  - "survey"
 ---
 
 # Surveys - Survey Overview Metrics

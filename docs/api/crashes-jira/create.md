@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Create"
+keywords:
+  - "/i/crashes-jira"
+  - "crashes-jira"
 ---
 
 # Create JIRA issue

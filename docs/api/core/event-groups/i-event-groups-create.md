@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Group Create"
+keywords:
+  - "/i/event_groups/create"
+  - "create"
+  - "event_groups"
 ---
 
 # /i/event_groups/create

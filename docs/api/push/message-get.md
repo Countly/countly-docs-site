@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Message Get"
+keywords:
+  - "/o/push/message"
+  - "message"
+  - "push"
 ---
 
 # Push - Message Get

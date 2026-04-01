@@ -1,5 +1,8 @@
 ---
 sidebar_label: "User Crashes Read"
+keywords:
+  - "/o"
+  - "o"
 ---
 
 # Crashes - User Crash Groups Read

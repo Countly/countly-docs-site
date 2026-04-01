@@ -1,5 +1,9 @@
 ---
 sidebar_label: "App Read Plugins"
+keywords:
+  - "/o/apps/plugins"
+  - "plugins"
+  - "apps"
 ---
 
 # /o/apps/plugins

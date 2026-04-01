@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Permissions Metadata Read"
+keywords:
+  - "/o/users/permissions"
+  - "permissions"
+  - "users"
 ---
 
 # Users Management - Permissions Metadata Read

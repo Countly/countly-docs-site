@@ -1,5 +1,8 @@
 ---
 sidebar_label: "List"
+keywords:
+  - "/o"
+  - "o"
 ---
 
 # List Geo Locations

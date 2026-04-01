@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Metadata Cleanup - Update"
+keywords:
+  - "/i/drill/cleanup_meta"
+  - "cleanup_meta"
+  - "drill"
 ---
 # Start metadata cleanup
 

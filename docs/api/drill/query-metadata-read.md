@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Query Metadata - Read"
+keywords:
+  - "/o"
+  - "o"
 ---
 # Read segmentation metadata
 

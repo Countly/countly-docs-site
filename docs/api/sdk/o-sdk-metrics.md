@@ -1,5 +1,8 @@
 ---
 sidebar_label: "SDK Metrics Read"
+keywords:
+  - "/o"
+  - "o"
 ---
 
 # SDK - SDK Metrics Read

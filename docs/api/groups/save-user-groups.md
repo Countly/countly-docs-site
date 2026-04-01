@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Assign User"
+keywords:
+  - "/i/groups/save-user-group"
+  - "save-user-group"
+  - "groups"
 ---
 
 # Assign User to Groups

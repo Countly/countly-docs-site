@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Create"
+keywords:
+  - "/i/journey-engine/event"
+  - "event"
+  - "journey-engine"
 ---
 
 # Create Custom Event

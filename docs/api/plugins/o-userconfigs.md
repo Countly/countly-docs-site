@@ -1,5 +1,8 @@
 ---
 sidebar_label: "User Config Read"
+keywords:
+  - "/o/userconfigs"
+  - "userconfigs"
 ---
 
 # Features - User Config Read

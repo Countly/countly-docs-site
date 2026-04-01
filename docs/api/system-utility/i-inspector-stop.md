@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Inspector Stop"
+keywords:
+  - "/i/inspector/stop"
+  - "stop"
+  - "inspector"
 ---
 
 # System Utility - Stop Inspector

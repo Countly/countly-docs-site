@@ -1,5 +1,8 @@
 ---
 sidebar_label: "System Log Record"
+keywords:
+  - "/i/systemlogs"
+  - "systemlogs"
 ---
 
 # System Logs - Record

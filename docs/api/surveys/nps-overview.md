@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Overview NPS"
+keywords:
+  - "/o/surveys/nps/overview"
+  - "overview"
+  - "surveys"
+  - "nps"
 ---
 
 # Surveys - NPS Overview Metrics

@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Remove User"
+keywords:
+  - "/i/groups/remove-user-group"
+  - "remove-user-group"
+  - "groups"
 ---
 
 # Remove User from Group

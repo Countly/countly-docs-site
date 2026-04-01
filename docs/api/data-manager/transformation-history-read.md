@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Transformation Run History"
+keywords:
+  - "/i/data-manager/transform-history"
+  - "transform-history"
+  - "data-manager"
 ---
 # Data Transformations - Run on Historical Range
 

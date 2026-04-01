@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Count Tasks"
+keywords:
+  - "/o/tasks/count"
+  - "count"
+  - "tasks"
 ---
 
 # /o/tasks/count

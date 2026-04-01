@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Cache Clear"
+keywords:
+  - "/i/cms/clear"
+  - "clear"
+  - "cms"
 ---
 
 # /i/cms/clear

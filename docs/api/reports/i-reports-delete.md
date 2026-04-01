@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Report Delete"
+keywords:
+  - "/i/reports/delete"
+  - "delete"
+  - "reports"
 ---
 
 # Reports - Report Delete

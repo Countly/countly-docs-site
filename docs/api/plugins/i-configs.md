@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Global Config Update"
+keywords:
+  - "/i/configs"
+  - "configs"
 ---
 
 # /i/configs

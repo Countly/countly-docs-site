@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Create Thread"
+keywords:
+  - "/i/ai-assistants/create-thread"
+  - "create-thread"
+  - "ai-assistants"
 ---
 
 # AI Assistants - Create Thread

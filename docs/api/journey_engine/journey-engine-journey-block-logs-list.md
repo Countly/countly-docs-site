@@ -1,5 +1,11 @@
 ---
 sidebar_label: "Journey Block Logs List"
+keywords:
+  - "/o/journey-engine/journey-block-logs/list"
+  - "GET /o/journey-engine/journey-block-logs/list"
+  - "list"
+  - "journey-engine"
+  - "journey-block-logs"
 ---
 
 # Journey Engine - Journey Block Logs List

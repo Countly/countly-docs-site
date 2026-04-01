@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Enable"
+keywords:
+  - "/i/two-factor-auth"
+  - "two-factor-auth"
 ---
 
 # Two Factor Auth - Enable

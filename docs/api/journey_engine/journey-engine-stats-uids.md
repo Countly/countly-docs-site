@@ -1,5 +1,11 @@
 ---
 sidebar_label: "Stats UIDs Read"
+keywords:
+  - "/o/journey-engine/stats/uids"
+  - "GET /o/journey-engine/stats/uids"
+  - "uids"
+  - "journey-engine"
+  - "stats"
 ---
 
 # Journey Engine - Stats Uids

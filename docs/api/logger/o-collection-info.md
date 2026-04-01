@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Collection Info Read"
+keywords:
+  - "/o"
+  - "o"
 ---
 
 # Logger - Collection Info Read

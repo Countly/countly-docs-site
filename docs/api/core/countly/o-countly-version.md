@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Version Diagnostics"
+keywords:
+  - "/o/countly_version"
+  - "countly_version"
 ---
 
 # Countly Diagnostics - Version Read

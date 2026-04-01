@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Init"
+keywords:
+  - "/i/journey-engine/init"
+  - "init"
+  - "journey-engine"
 ---
 
 # Initialize Journey Engine

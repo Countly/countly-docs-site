@@ -1,5 +1,9 @@
 ---
 sidebar_label: "MongoDB Stat"
+keywords:
+  - "/o/db/mongostat"
+  - "mongostat"
+  - "db"
 ---
 
 # DB Viewer - MongoDB Stat

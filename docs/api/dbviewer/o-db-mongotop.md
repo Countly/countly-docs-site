@@ -1,5 +1,9 @@
 ---
 sidebar_label: "MongoDB Top"
+keywords:
+  - "/o/db/mongotop"
+  - "mongotop"
+  - "db"
 ---
 
 # DB Viewer - MongoDB Top

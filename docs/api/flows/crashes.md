@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Crashes"
+keywords:
+  - "/o/flows"
+  - "flows"
 ---
 
 # Get flow crash groups

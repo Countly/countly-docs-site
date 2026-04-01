@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Message List"
+keywords:
+  - "/o/push/message/all"
+  - "all"
+  - "push"
+  - "message"
 ---
 
 # /o/push/message/all

@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Feature State Check"
+keywords:
+  - "/o/plugins-check"
+  - "plugins-check"
 ---
 
 # /o/plugins-check

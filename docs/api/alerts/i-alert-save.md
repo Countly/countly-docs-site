@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Alert Save"
+keywords:
+  - "/i/alert/save"
+  - "save"
+  - "alert"
 ---
 
 # Alerts - Save

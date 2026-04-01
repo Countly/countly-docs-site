@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Dashboard Read"
+keywords:
+  - "/o/dashboards"
+  - "dashboards"
 ---
 
 # Dashboards - Read

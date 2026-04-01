@@ -1,5 +1,11 @@
 ---
 sidebar_label: "Rename"
+keywords:
+  - "/i/journey-engine/versions/rename"
+  - "POST /i/journey-engine/versions/rename"
+  - "rename"
+  - "journey-engine"
+  - "versions"
 ---
 
 # Journey Engine - Versions Rename

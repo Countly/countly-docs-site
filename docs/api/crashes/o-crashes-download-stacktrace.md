@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Stacktrace Download"
+keywords:
+  - "/o/crashes/download_stacktrace"
+  - "download_stacktrace"
+  - "crashes"
 ---
 
 # Crashes - Download Stacktrace

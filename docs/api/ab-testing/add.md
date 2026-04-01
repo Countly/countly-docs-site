@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Create Experiment"
+keywords:
+  - "/i/ab-testing/add-experiment"
+  - "add-experiment"
+  - "ab-testing"
 ---
 
 # Create Experiment

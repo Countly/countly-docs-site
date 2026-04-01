@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Opt Out from Experiments"
+keywords:
+  - "/i/sdk"
+  - "sdk"
 ---
 
 # Opt Out from Experiments

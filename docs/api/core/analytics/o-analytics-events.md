@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Read Events"
+keywords:
+  - "/o/analytics/events"
+  - "events"
+  - "analytics"
 ---
 
 # /o/analytics/events

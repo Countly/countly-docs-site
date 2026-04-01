@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Config Read"
+keywords:
+  - "/o/datamigration/get_config"
+  - "get_config"
+  - "datamigration"
 ---
 
 # Data Migration - Get Runtime Config

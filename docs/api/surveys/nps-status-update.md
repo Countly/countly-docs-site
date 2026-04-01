@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Status NPS"
+keywords:
+  - "/i/surveys/nps/status"
+  - "status"
+  - "surveys"
+  - "nps"
 ---
 
 # Surveys - Update NPS Status

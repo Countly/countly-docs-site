@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Global Config Read"
+keywords:
+  - "/o/configs"
+  - "configs"
 ---
 
 # /o/configs

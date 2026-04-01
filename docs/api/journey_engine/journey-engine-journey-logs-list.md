@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Journey Logs List"
+keywords:
+  - "/o/journey-enginge/journey-logs/list"
+  - "list"
+  - "journey-enginge"
+  - "journey-logs"
 ---
 
 # List Journey Logs

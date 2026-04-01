@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Event Delete"
+keywords:
+  - "/i/events/delete_events"
+  - "delete_events"
+  - "events"
 ---
 
 # /i/events/delete_events

@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Read Table"
+keywords:
+  - "/o"
+  - "o"
 ---
 
 # User Profiles - Events Table

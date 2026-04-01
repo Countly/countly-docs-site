@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Fetch Active Experiments"
+keywords:
+  - "/o/sdk"
+  - "sdk"
 ---
 
 # Fetch Active Experiments

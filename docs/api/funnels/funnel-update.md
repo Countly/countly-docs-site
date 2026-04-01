@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Update"
+keywords:
+  - "/i/funnels/edit"
+  - "edit"
+  - "funnels"
 ---
 
 # Update funnel

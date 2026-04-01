@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Bulk Ingestion"
+keywords:
+  - "/i/bulk"
+  - "bulk"
 ---
 
 # /i/bulk

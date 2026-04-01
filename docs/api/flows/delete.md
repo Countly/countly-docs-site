@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Delete"
+keywords:
+  - "/i/flows/delete"
+  - "delete"
+  - "flows"
 ---
 
 # Delete flow

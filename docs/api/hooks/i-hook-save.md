@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Hook Save"
+keywords:
+  - "/i/hook/save"
+  - "save"
+  - "hook"
 ---
 
 # Hooks - Save

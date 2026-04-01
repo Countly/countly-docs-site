@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Preset Update"
+keywords:
+  - "/i/date_presets/update"
+  - "update"
+  - "date_presets"
 ---
 
 # /i/date_presets/update

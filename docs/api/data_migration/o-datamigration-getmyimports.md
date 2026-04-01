@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Import List"
+keywords:
+  - "/o/datamigration/getmyimports"
+  - "getmyimports"
+  - "datamigration"
 ---
 
 # Data Migration - Get My Imports

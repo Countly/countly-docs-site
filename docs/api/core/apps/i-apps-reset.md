@@ -1,5 +1,9 @@
 ---
 sidebar_label: "App Reset"
+keywords:
+  - "/i/apps/reset"
+  - "reset"
+  - "apps"
 ---
 
 # /i/apps/reset

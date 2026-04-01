@@ -1,5 +1,11 @@
 ---
 sidebar_label: "Pause"
+keywords:
+  - "/i/journey-engine/journeys/pause"
+  - "POST /i/journey-engine/journeys/pause"
+  - "pause"
+  - "journey-engine"
+  - "journeys"
 ---
 
 # Journey Engine - Journeys Pause

@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Data Survey"
+keywords:
+  - "/o/surveys/survey/data"
+  - "data"
+  - "surveys"
+  - "survey"
 ---
 
 # Surveys - Survey Data

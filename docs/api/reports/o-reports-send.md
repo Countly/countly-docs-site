@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Send Now"
+keywords:
+  - "/o/reports/send"
+  - "send"
+  - "reports"
 ---
 
 # /o/reports/send

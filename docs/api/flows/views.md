@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Views"
+keywords:
+  - "/o/flows"
+  - "flows"
 ---
 
 # Get flow views catalog

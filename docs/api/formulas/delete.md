@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Delete"
+keywords:
+  - "/i/calculated_metrics/delete"
+  - "delete"
+  - "calculated_metrics"
 ---
 
 # Delete formula

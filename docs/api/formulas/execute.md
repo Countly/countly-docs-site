@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Execute"
+keywords:
+  - "/o"
+  - "o"
 ---
 
 # Execute formula

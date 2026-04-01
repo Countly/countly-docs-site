@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Export Create"
+keywords:
+  - "/i/app_users/export"
+  - "export"
+  - "app_users"
 ---
 
 # /i/app_users/export

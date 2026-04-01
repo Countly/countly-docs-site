@@ -1,5 +1,8 @@
 ---
 sidebar_label: "List Jobs"
+keywords:
+  - "/o"
+  - "o"
 ---
 
 # List symbolication jobs

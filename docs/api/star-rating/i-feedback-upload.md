@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Upload Logo"
+keywords:
+  - "/i/feedback/upload"
+  - "upload"
+  - "feedback"
 ---
 
 # Star Rating - Upload Logo

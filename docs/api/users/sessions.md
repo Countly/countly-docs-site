@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Sessions"
+keywords:
+  - "/o"
+  - "o"
 ---
 
 # User Profiles - Sessions

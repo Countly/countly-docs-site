@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Health Check"
+keywords:
+  - "/o/system/healthcheck"
+  - "healthcheck"
+  - "system"
 ---
 
 # System Utility - Health Check

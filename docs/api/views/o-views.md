@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Views Query"
+keywords:
+  - "/o"
+  - "o"
 ---
 
 # Views - Query

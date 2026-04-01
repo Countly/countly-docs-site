@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Read Durations"
+keywords:
+  - "/o/analytics/durations"
+  - "durations"
+  - "analytics"
 ---
 
 # /o/analytics/durations

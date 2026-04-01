@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Load Thread"
+keywords:
+  - "/o/ai-assistants/load-thread"
+  - "load-thread"
+  - "ai-assistants"
 ---
 
 # AI Assistants - Load Thread

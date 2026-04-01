@@ -1,5 +1,8 @@
 ---
 sidebar_label: "SDK Fetch Read"
+keywords:
+  - "/o/sdk"
+  - "sdk"
 ---
 
 # SDK Fetch - Read

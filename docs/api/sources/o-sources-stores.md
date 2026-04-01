@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Store Mapping Read"
+keywords:
+  - "/o/sources"
+  - "sources"
 ---
 
 # Sources - Store Mapping Read

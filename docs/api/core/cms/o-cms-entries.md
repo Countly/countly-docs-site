@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Entries Read"
+keywords:
+  - "/o/cms/entries"
+  - "entries"
+  - "cms"
 ---
 
 # /o/cms/entries

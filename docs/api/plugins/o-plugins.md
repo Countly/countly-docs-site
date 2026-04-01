@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Features List"
+keywords:
+  - "/o/plugins"
+  - "plugins"
 ---
 
 # /o/plugins

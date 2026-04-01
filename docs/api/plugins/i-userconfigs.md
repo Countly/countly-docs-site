@@ -1,5 +1,8 @@
 ---
 sidebar_label: "User Config Update"
+keywords:
+  - "/i/userconfigs"
+  - "userconfigs"
 ---
 
 # /i/userconfigs

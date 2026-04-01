@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Download"
+keywords:
+  - "/o"
+  - "o"
 ---
 
 # Download symbol file

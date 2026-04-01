@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Edit Task"
+keywords:
+  - "/i/tasks/edit"
+  - "edit"
+  - "tasks"
 ---
 
 # /i/tasks/edit

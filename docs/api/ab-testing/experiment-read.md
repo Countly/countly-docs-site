@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Get Specific Experiments"
+keywords:
+  - "/o/ab-testing/experiment"
+  - "experiment"
+  - "ab-testing"
 ---
 
 # Get Specific Experiments

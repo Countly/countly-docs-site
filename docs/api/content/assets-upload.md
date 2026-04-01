@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Assets - Upload"
+keywords:
+  - "/i/content/asset-upload"
+  - "asset-upload"
+  - "content"
 ---
 
 # Upload asset

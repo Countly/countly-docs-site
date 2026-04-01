@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Screenshot Create"
+keywords:
+  - "/o/render"
+  - "render"
 ---
 
 # Render - Screenshot Create

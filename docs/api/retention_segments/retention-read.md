@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Retention - Read"
+keywords:
+  - "/o"
+  - "o"
 ---
 
 # Retention Segments - Read

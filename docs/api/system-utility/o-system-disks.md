@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Disk Stats"
+keywords:
+  - "/o/system/disks"
+  - "disks"
+  - "system"
 ---
 
 # System Utility - Disk Stats

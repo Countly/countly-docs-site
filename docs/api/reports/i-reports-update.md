@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Report Update"
+keywords:
+  - "/i/reports/update"
+  - "update"
+  - "reports"
 ---
 
 # Reports - Report Update

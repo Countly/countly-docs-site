@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Check Bayesian Models"
+keywords:
+  - "/o/ab-testing/check-models"
+  - "check-models"
+  - "ab-testing"
 ---
 
 # Check Bayesian Models

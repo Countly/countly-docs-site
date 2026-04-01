@@ -1,5 +1,9 @@
 ---
 sidebar_label: "App User Loyalty Read"
+keywords:
+  - "/o/app_users/loyalty"
+  - "loyalty"
+  - "app_users"
 ---
 
 # /o/app_users/loyalty

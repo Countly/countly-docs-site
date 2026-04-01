@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Message Create"
+keywords:
+  - "/i/push/message/create"
+  - "create"
+  - "push"
+  - "message"
 ---
 
 # /i/push/message/create

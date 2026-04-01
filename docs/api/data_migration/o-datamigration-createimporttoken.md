@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Import Token Create"
+keywords:
+  - "/o/datamigration/createimporttoken"
+  - "createimporttoken"
+  - "datamigration"
 ---
 
 # Data Migration - Create Import Token

@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Update Properties"
+keywords:
+  - "/i"
+  - "i"
 ---
 
 # User Profiles - Update Properties (SDK)

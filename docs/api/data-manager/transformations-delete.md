@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Transformation Delete"
+keywords:
+  - "/i/data-manager/transformation/delete"
+  - "delete"
+  - "data-manager"
+  - "transformation"
 ---
 # Data Transformations - Delete Rule
 

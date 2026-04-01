@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Edit NPS"
+keywords:
+  - "/i/surveys/nps/edit"
+  - "edit"
+  - "surveys"
+  - "nps"
 ---
 
 # Surveys - Edit NPS

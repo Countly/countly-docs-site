@@ -1,5 +1,9 @@
 ---
 sidebar_label: "App User Create"
+keywords:
+  - "/i/app_users/create"
+  - "create"
+  - "app_users"
 ---
 
 # /i/app_users/create

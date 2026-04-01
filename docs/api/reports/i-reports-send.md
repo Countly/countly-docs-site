@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Report Send"
+keywords:
+  - "/i/reports/send"
+  - "send"
+  - "reports"
 ---
 
 # Reports - Report Send

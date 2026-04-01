@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Condition Create"
+keywords:
+  - "/i/remote-config/add-condition"
+  - "add-condition"
+  - "remote-config"
 ---
 
 # Remote Config - Condition Create

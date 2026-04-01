@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Create Survey"
+keywords:
+  - "/i/surveys/survey/create"
+  - "create"
+  - "surveys"
+  - "survey"
 ---
 
 # Surveys - Create Survey

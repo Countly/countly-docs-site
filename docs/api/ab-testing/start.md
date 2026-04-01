@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Start Experiment"
+keywords:
+  - "/i/ab-testing/start-experiment"
+  - "start-experiment"
+  - "ab-testing"
 ---
 
 # Start Experiment

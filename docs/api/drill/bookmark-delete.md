@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Bookmark - Delete"
+keywords:
+  - "/i/drill/delete_bookmark"
+  - "delete_bookmark"
+  - "drill"
 ---
 # Delete bookmark
 

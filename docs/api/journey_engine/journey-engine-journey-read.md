@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Journey Read"
+keywords:
+  - "/o/journey-engine/journey"
+  - "journey"
+  - "journey-engine"
 ---
 
 # Journey Engine - Journey Read

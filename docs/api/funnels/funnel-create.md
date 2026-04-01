@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Create"
+keywords:
+  - "/i/funnels/add"
+  - "add"
+  - "funnels"
 ---
 
 # Create funnel

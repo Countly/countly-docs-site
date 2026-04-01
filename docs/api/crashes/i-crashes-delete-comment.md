@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Comment Delete"
+keywords:
+  - "/i/crashes/delete_comment"
+  - "delete_comment"
+  - "crashes"
 ---
 
 # Crashes - Delete Comment

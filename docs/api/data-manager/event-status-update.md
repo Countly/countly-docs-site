@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Event Status Update"
+keywords:
+  - "/i/data-manager/event/toggle-status"
+  - "toggle-status"
+  - "data-manager"
+  - "event"
 ---
 # Update event status
 

@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Delete Task"
+keywords:
+  - "/i/tasks/delete"
+  - "delete"
+  - "tasks"
 ---
 
 # /i/tasks/delete

@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Dashboard User Create"
+keywords:
+  - "/i/users/create"
+  - "create"
+  - "users"
 ---
 
 # Users Management - User Create

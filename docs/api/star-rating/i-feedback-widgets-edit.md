@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Edit Widget"
+keywords:
+  - "/i/feedback/widgets/edit"
+  - "edit"
+  - "feedback"
+  - "widgets"
 ---
 
 # Star Rating - Edit Widget

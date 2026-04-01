@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Debug"
+keywords:
+  - "/o/journey-engine/debug"
+  - "GET /o/journey-engine/debug"
+  - "debug"
+  - "journey-engine"
 ---
 
 # Journey Engine - Debug

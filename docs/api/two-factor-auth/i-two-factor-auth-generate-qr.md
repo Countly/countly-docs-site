@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Generate QR Code"
+keywords:
+  - "/i/two-factor-auth"
+  - "two-factor-auth"
 ---
 
 # /i/two-factor-auth?method=generate-qr-code

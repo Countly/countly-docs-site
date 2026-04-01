@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Notes List"
+keywords:
+  - "/o/notes"
+  - "notes"
 ---
 
 # Notes - Notes List

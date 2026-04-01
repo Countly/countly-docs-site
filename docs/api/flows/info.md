@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Info"
+keywords:
+  - "/o/flows"
+  - "flows"
 ---
 
 # Get flow info

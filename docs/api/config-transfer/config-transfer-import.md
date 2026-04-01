@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Import"
+keywords:
+  - "/i/import"
+  - "import"
 ---
 
 # Import Configuration

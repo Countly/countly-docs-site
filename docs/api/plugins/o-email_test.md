@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Email Test"
+keywords:
+  - "/o/email_test"
+  - "email_test"
 ---
 
 # /o/email_test

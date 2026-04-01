@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Parameter Update"
+keywords:
+  - "/i/remote-config/update-parameter"
+  - "update-parameter"
+  - "remote-config"
 ---
 
 # Remote Config - Parameter Update

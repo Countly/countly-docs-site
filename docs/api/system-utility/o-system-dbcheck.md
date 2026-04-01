@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Database Check"
+keywords:
+  - "/o/system/dbcheck"
+  - "dbcheck"
+  - "system"
 ---
 
 # System Utility - Database Check

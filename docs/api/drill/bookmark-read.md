@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Bookmark - Read"
+keywords:
+  - "/o"
+  - "o"
 ---
 # Read single bookmark
 

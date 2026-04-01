@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Disable"
+keywords:
+  - "/i/two-factor-auth"
+  - "two-factor-auth"
 ---
 
 # Two Factor Auth - Disable

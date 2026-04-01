@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Preset Create"
+keywords:
+  - "/i/date_presets/create"
+  - "create"
+  - "date_presets"
 ---
 
 # /i/date_presets/create

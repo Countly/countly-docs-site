@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Note Delete"
+keywords:
+  - "/i/notes/delete"
+  - "delete"
+  - "notes"
 ---
 
 # Notes - Note Delete

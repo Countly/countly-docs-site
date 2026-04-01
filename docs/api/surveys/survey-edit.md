@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Edit Survey"
+keywords:
+  - "/i/surveys/survey/edit"
+  - "edit"
+  - "surveys"
+  - "survey"
 ---
 
 # Surveys - Edit Survey

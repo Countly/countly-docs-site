@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Top Read"
+keywords:
+  - "/o/server-stats/top"
+  - "top"
+  - "server-stats"
 ---
 
 # /o/server-stats/top

@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Update Experiment"
+keywords:
+  - "/i/ab-testing/update-experiment"
+  - "update-experiment"
+  - "ab-testing"
 ---
 
 # Update Experiment

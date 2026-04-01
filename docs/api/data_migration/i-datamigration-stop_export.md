@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Export Stop"
+keywords:
+  - "/i/datamigration/stop_export"
+  - "stop_export"
+  - "datamigration"
 ---
 
 # Data Migration - Stop Export

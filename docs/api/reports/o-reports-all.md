@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Reports Read"
+keywords:
+  - "/o/reports/all"
+  - "all"
+  - "reports"
 ---
 
 # Reports - Reports Read

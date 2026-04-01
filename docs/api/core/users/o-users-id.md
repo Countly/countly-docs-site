@@ -1,5 +1,9 @@
 ---
 sidebar_label: "User Read By ID"
+keywords:
+  - "/o/users/id"
+  - "id"
+  - "users"
 ---
 
 # Users Management - User Read By ID

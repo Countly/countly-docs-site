@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Languages - Read"
+keywords:
+  - "/o/content/langs"
+  - "langs"
+  - "content"
 ---
 
 # Get eligible languages

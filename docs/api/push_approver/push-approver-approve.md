@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Approve or Reject"
+keywords:
+  - "/i/push/approve"
+  - "approve"
+  - "push"
 ---
 
 # Push Approver - Approve or Reject Message

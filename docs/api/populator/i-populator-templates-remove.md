@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Template Remove"
+keywords:
+  - "/i/populator/templates/remove"
+  - "remove"
+  - "populator"
+  - "templates"
 ---
 
 # Populator - Template Remove

@@ -1,5 +1,11 @@
 ---
 sidebar_label: "Activate"
+keywords:
+  - "/i/journey-engine/versions/activate"
+  - "POST /i/journey-engine/versions/activate"
+  - "activate"
+  - "journey-engine"
+  - "versions"
 ---
 
 # Journey Engine - Versions Activate

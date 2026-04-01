@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Enforcement Read"
+keywords:
+  - "/o"
+  - "o"
 ---
 
 # SDK - Enforcement Read

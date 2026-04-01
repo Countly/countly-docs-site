@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Delete NPS"
+keywords:
+  - "/i/surveys/nps/delete"
+  - "delete"
+  - "surveys"
+  - "nps"
 ---
 
 # Surveys - Delete NPS

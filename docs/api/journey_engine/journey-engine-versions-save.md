@@ -1,5 +1,11 @@
 ---
 sidebar_label: "Version Save"
+keywords:
+  - "/i/journey-engine/versions/save"
+  - "POST /i/journey-engine/versions/save"
+  - "save"
+  - "journey-engine"
+  - "versions"
 ---
 
 # Journey Engine - Versions Save

@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Entries Save"
+keywords:
+  - "/i/cms/save_entries"
+  - "save_entries"
+  - "cms"
 ---
 
 # /i/cms/save_entries

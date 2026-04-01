@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Validation Delete"
+keywords:
+  - "/o/data-manager/validations/delete"
+  - "delete"
+  - "data-manager"
+  - "validations"
 ---
 # Data Manager Validations - Resolve by Deletion
 

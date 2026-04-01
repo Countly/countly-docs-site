@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Content Blocks - Delete"
+keywords:
+  - "/i/content/delete"
+  - "delete"
+  - "content"
 ---
 
 # Delete content block

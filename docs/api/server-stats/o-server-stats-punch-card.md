@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Punch Card Read"
+keywords:
+  - "/o/server-stats/punch-card"
+  - "punch-card"
+  - "server-stats"
 ---
 
 # /o/server-stats/punch-card

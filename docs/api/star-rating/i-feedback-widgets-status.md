@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Toggle Widget Status"
+keywords:
+  - "/i/feedback/widgets/status"
+  - "status"
+  - "feedback"
+  - "widgets"
 ---
 
 # Star Rating - Toggle Widget Status

@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Get Widget Details"
+keywords:
+  - "/o/feedback/widget"
+  - "widget"
+  - "feedback"
 ---
 
 # Star Rating - Get Widget Details

@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Comment Create"
+keywords:
+  - "/i/crashes/add_comment"
+  - "add_comment"
+  - "crashes"
 ---
 
 # Crashes - Add Comment

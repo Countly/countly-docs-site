@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Journey List"
+keywords:
+  - "/o/journey-engine/list"
+  - "GET /o/journey-engine/list"
+  - "list"
+  - "journey-engine"
 ---
 
 # Journey Engine - List

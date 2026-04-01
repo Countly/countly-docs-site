@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Update Task"
+keywords:
+  - "/i/tasks/update"
+  - "update"
+  - "tasks"
 ---
 
 # /i/tasks/update

@@ -1,5 +1,11 @@
 ---
 sidebar_label: "Publish"
+keywords:
+  - "/i/journey-engine/journeys/publish"
+  - "POST /i/journey-engine/journeys/publish"
+  - "publish"
+  - "journey-engine"
+  - "journeys"
 ---
 
 # Journey Engine - Journeys Publish

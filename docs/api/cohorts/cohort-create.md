@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Create"
+keywords:
+  - "/i/cohorts/add"
+  - "add"
+  - "cohorts"
 ---
 
 # Create New Cohort

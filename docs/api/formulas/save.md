@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Save"
+keywords:
+  - "/i/calculated_metrics/save"
+  - "save"
+  - "calculated_metrics"
 ---
 
 # Save formula

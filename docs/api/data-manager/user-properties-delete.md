@@ -1,5 +1,10 @@
 ---
 sidebar_label: "User Properties Delete"
+keywords:
+  - "/i/data-manager/user-properties/delete"
+  - "delete"
+  - "data-manager"
+  - "user-properties"
 ---
 # Delete user properties
 

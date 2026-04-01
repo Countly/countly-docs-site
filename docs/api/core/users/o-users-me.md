@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Current User Read"
+keywords:
+  - "/o/users/me"
+  - "me"
+  - "users"
 ---
 
 # Users Management - Current User Read

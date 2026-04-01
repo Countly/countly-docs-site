@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Events Extended Read"
+keywords:
+  - "/o/data-manager/events-extended"
+  - "events-extended"
+  - "data-manager"
 ---
 # Read extended event metadata
 

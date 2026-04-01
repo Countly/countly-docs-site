@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Profiler Download"
+keywords:
+  - "/i/profiler/download-all"
+  - "download-all"
+  - "profiler"
 ---
 
 # System Utility - Download All Profiler Files

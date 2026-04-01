@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Counts"
+keywords:
+  - "/o"
+  - "o"
 ---
 
 # User Profiles - Counts

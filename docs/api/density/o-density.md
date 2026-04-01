@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Density Read"
+keywords:
+  - "/o"
+  - "o"
 ---
 
 # /o?method=density

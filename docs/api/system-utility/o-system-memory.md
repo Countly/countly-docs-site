@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Memory Stats"
+keywords:
+  - "/o/system/memory"
+  - "memory"
+  - "system"
 ---
 
 # System Utility - Memory Stats

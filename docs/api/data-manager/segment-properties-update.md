@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Segment Update"
+keywords:
+  - "/i/data-manager/segment/edit"
+  - "edit"
+  - "data-manager"
+  - "segment"
 ---
 # Update segment metadata
 

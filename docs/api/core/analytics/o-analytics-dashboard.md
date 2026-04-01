@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Read Dashboard"
+keywords:
+  - "/o/analytics/dashboard"
+  - "dashboard"
+  - "analytics"
 ---
 
 # /o/analytics/dashboard

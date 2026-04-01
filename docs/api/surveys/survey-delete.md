@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Delete Survey"
+keywords:
+  - "/i/surveys/survey/delete"
+  - "delete"
+  - "surveys"
+  - "survey"
 ---
 
 # Surveys - Delete Survey

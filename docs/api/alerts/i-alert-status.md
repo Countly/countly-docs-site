@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Alert Status"
+keywords:
+  - "/i/alert/status"
+  - "status"
+  - "alert"
 ---
 
 # Alerts - Update Status

@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Environment Remove"
+keywords:
+  - "/o/populator/environment/remove"
+  - "remove"
+  - "populator"
+  - "environment"
 ---
 
 # Populator - Environment Remove

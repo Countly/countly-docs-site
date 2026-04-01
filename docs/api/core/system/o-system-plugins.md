@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Features List"
+keywords:
+  - "/o/system/plugins"
+  - "plugins"
+  - "system"
 ---
 
 # System - Enabled Features List

@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Crash Hide"
+keywords:
+  - "/i/crashes/hide"
+  - "hide"
+  - "crashes"
 ---
 
 # Crashes - Hide Crash Groups

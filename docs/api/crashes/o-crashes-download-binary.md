@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Binary Download"
+keywords:
+  - "/o/crashes/download_binary"
+  - "download_binary"
+  - "crashes"
 ---
 
 # Crashes - Download Binary Dump

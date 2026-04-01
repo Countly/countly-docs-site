@@ -1,5 +1,8 @@
 ---
 sidebar_label: "History"
+keywords:
+  - "/o"
+  - "o"
 ---
 
 # User Profiles - History

@@ -1,5 +1,8 @@
 ---
 sidebar_label: "SDK Read"
+keywords:
+  - "/o/sdk"
+  - "sdk"
 ---
 
 # Remote Config - SDK Read

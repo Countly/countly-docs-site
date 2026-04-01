@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Languages Read"
+keywords:
+  - "/o"
+  - "o"
 ---
 
 # Locale - Languages Read

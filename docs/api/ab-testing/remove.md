@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Remove Experiment"
+keywords:
+  - "/i/ab-testing/remove-experiment"
+  - "remove-experiment"
+  - "ab-testing"
 ---
 
 # Remove Experiment

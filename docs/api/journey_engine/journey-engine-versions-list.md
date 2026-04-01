@@ -1,5 +1,11 @@
 ---
 sidebar_label: "Version List"
+keywords:
+  - "/o/journey-engine/versions/list"
+  - "GET /o/journey-engine/versions/list"
+  - "list"
+  - "journey-engine"
+  - "versions"
 ---
 
 # Journey Engine - Versions List

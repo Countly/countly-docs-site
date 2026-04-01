@@ -1,5 +1,10 @@
 ---
 sidebar_label: "MIME Type Validation"
+keywords:
+  - "/o/push/message/mime"
+  - "mime"
+  - "push"
+  - "message"
 ---
 
 # Push - MIME Type Validation

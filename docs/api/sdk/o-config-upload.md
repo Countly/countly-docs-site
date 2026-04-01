@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Config Upload"
+keywords:
+  - "/o"
+  - "o"
 ---
 
 # SDK - Config Upload

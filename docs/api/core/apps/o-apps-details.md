@@ -1,5 +1,9 @@
 ---
 sidebar_label: "App Read Details"
+keywords:
+  - "/o/apps/details"
+  - "details"
+  - "apps"
 ---
 
 # /o/apps/details

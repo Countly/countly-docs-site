@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Alert List"
+keywords:
+  - "/o/alert/list"
+  - "list"
+  - "alert"
 ---
 
 # Alerts - List

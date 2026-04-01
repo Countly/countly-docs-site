@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Kafka Status"
+keywords:
+  - "/o/system/kafka"
+  - "kafka"
+  - "system"
 ---
 
 # System - Kafka Status Read

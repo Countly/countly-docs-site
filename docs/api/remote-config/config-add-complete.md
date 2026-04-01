@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Config Rollout"
+keywords:
+  - "/i/remote-config/add-complete-config"
+  - "add-complete-config"
+  - "remote-config"
 ---
 
 # Remote Config - Config Rollout

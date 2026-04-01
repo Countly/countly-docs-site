@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Share Modify"
+keywords:
+  - "/i/crashes/modify_share"
+  - "modify_share"
+  - "crashes"
 ---
 
 # Crashes - Modify Share Data

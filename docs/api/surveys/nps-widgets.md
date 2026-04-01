@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Widgets NPS"
+keywords:
+  - "/o/surveys/nps/widgets"
+  - "widgets"
+  - "surveys"
+  - "nps"
 ---
 
 # Surveys - NPS Widgets

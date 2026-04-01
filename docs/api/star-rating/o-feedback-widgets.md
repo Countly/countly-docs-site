@@ -1,5 +1,9 @@
 ---
 sidebar_label: "List All Widgets"
+keywords:
+  - "/o/feedback/widgets"
+  - "widgets"
+  - "feedback"
 ---
 
 # Star Rating - List All Widgets

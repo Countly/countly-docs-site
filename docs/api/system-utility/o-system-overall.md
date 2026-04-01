@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Overall Stats"
+keywords:
+  - "/o/system/overall"
+  - "overall"
+  - "system"
 ---
 
 # System Utility - Overall Stats

@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Content Blocks - Update"
+keywords:
+  - "/i/content/save"
+  - "save"
+  - "content"
 ---
 
 # Update content block

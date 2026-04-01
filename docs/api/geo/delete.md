@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Delete"
+keywords:
+  - "/i/geolocations/delete"
+  - "delete"
+  - "geolocations"
 ---
 
 # Delete Geo Location

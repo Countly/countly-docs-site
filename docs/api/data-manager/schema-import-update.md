@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Schema Import"
+keywords:
+  - "/i/data-manager/import-schema"
+  - "import-schema"
+  - "data-manager"
 ---
 # Import event schema from CSV
 

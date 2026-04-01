@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Analyze"
+keywords:
+  - "/o"
+  - "o"
 ---
 
 # Analyze funnel

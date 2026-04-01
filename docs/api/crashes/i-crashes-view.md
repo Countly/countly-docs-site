@@ -1,5 +1,9 @@
 ---
 sidebar_label: "View Mark"
+keywords:
+  - "/i/crashes/view"
+  - "view"
+  - "crashes"
 ---
 
 # Crashes - Mark Viewed

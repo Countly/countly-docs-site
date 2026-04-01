@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Kafka Events List"
+keywords:
+  - "/o/system/kafka/events"
+  - "events"
+  - "system"
+  - "kafka"
 ---
 
 # System - Kafka Events List

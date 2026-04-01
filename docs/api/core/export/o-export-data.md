@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Export Data"
+keywords:
+  - "/o/export/data"
+  - "data"
+  - "export"
 ---
 
 # /o/export/data

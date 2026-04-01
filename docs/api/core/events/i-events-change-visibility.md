@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Event Visibility Update"
+keywords:
+  - "/i/events/change_visibility"
+  - "change_visibility"
+  - "events"
 ---
 
 # /i/events/change_visibility

@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Environment Check"
+keywords:
+  - "/o/populator/environment/check"
+  - "check"
+  - "populator"
+  - "environment"
 ---
 
 # Populator - Environment Check

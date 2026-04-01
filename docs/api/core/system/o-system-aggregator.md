@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Aggregator Status"
+keywords:
+  - "/o/system/aggregator"
+  - "aggregator"
+  - "system"
 ---
 
 # System - Aggregator Status Read

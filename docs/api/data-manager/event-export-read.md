@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Event Export"
+keywords:
+  - "/i/data-manager/export-event-to-populator"
+  - "export-event-to-populator"
+  - "data-manager"
 ---
 # Export events for populator template
 

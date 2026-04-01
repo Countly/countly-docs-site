@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Event Mapping Update"
+keywords:
+  - "/i/events/edit_map"
+  - "edit_map"
+  - "events"
 ---
 
 # /i/events/edit_map

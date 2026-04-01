@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Comment Update"
+keywords:
+  - "/i/crashes/edit_comment"
+  - "edit_comment"
+  - "crashes"
 ---
 
 # Crashes - Edit Comment

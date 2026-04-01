@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Export Database"
+keywords:
+  - "/o/export/db"
+  - "db"
+  - "export"
 ---
 
 # /o/export/db

@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Callback"
+keywords:
+  - "/i/crash_symbols/symbolicatation_result"
+  - "symbolicatation_result"
+  - "crash_symbols"
 ---
 
 # Symbolication result callback

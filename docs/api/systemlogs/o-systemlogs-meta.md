@@ -1,5 +1,8 @@
 ---
 sidebar_label: "System Logs Metadata"
+keywords:
+  - "/o"
+  - "o"
 ---
 
 # System Logs - Metadata

@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Database Stats"
+keywords:
+  - "/o/system/database"
+  - "database"
+  - "system"
 ---
 
 # System Utility - Database Stats

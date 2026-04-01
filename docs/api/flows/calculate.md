@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Calculate"
+keywords:
+  - "/i/flows/calculate"
+  - "calculate"
+  - "flows"
 ---
 
 # Calculate flow

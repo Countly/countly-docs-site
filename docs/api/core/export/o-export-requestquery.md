@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Export Request Query"
+keywords:
+  - "/o/export/requestQuery"
+  - "requestQuery"
+  - "export"
 ---
 
 # /o/export/requestQuery

@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Positioning - Calculate"
+keywords:
+  - "/o/content/iframeDim"
+  - "iframeDim"
+  - "content"
 ---
 
 # Calculate widget positioning

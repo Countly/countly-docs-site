@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Details"
+keywords:
+  - "/o/groups/group-details"
+  - "group-details"
+  - "groups"
 ---
 
 # Get Group Details

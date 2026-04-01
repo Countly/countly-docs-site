@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Collection Query"
+keywords:
+  - "/o/db"
+  - "db"
 ---
 
 # DB Viewer - Collection Query

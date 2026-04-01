@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Read"
+keywords:
+  - "/o/groups/group-users"
+  - "group-users"
+  - "groups"
 ---
 
 # Get Group Users

@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Analytics Loyalty Read"
+keywords:
+  - "/o/analytics/loyalty"
+  - "loyalty"
+  - "analytics"
 ---
 
 # /o/analytics/loyalty

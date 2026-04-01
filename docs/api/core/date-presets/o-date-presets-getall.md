@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Preset Read All"
+keywords:
+  - "/o/date_presets/getAll"
+  - "getAll"
+  - "date_presets"
 ---
 
 # /o/date_presets/getAll

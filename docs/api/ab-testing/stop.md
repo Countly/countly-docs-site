@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Stop Experiment"
+keywords:
+  - "/i/ab-testing/stop-experiment"
+  - "stop-experiment"
+  - "ab-testing"
 ---
 
 # Stop Experiment

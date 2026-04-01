@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Enroll User in Variant"
+keywords:
+  - "/i/sdk"
+  - "sdk"
 ---
 
 # Enroll User in Variant

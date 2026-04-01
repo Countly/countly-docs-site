@@ -1,5 +1,9 @@
 ---
 sidebar_label: "App Users Consents"
+keywords:
+  - "/o/app_users/consents"
+  - "consents"
+  - "app_users"
 ---
 
 # Compliance Hub - App Users Consents

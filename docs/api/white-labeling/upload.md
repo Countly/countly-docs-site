@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Upload Assets"
+keywords:
+  - "/i/whitelabeling/upload"
+  - "upload"
+  - "whitelabeling"
 ---
 
 # White Labeling - Upload Assets

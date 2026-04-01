@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Update Group"
+keywords:
+  - "/i/funnels/group"
+  - "group"
+  - "funnels"
 ---
 
 # Update funnel groups

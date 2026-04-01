@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Assets - Delete"
+keywords:
+  - "/i/content/asset-delete"
+  - "asset-delete"
+  - "content"
 ---
 
 # Delete asset

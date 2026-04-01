@@ -1,5 +1,9 @@
 ---
 sidebar_label: "App User Delete"
+keywords:
+  - "/i/app_users/delete"
+  - "delete"
+  - "app_users"
 ---
 
 # /i/app_users/delete

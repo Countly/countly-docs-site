@@ -1,5 +1,9 @@
 ---
 sidebar_label: "App Update"
+keywords:
+  - "/i/apps/update"
+  - "update"
+  - "apps"
 ---
 
 # /i/apps/update

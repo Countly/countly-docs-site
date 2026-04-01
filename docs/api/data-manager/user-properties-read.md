@@ -1,5 +1,9 @@
 ---
 sidebar_label: "User Properties Read"
+keywords:
+  - "/o/data-manager/user-properties"
+  - "user-properties"
+  - "data-manager"
 ---
 # Read user property definitions
 

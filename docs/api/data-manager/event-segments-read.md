@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Event Segments Read"
+keywords:
+  - "/o/data-manager/event-segment"
+  - "event-segment"
+  - "data-manager"
 ---
 # Read event segment metadata
 

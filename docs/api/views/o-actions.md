@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Actions or Heatmap"
+keywords:
+  - "/o/actions"
+  - "actions"
 ---
 
 # Views - Actions/Heatmap Read

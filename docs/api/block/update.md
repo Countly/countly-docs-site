@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Update"
+keywords:
+  - "/i/blocks/update"
+  - "update"
+  - "blocks"
 ---
 
 # Filtering Rules - Update

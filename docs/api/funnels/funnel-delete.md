@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Delete"
+keywords:
+  - "/i/funnels/delete"
+  - "delete"
+  - "funnels"
 ---
 
 # Delete funnel

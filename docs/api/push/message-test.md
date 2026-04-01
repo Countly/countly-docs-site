@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Message Test"
+keywords:
+  - "/i/push/message/test"
+  - "test"
+  - "push"
+  - "message"
 ---
 
 # /i/push/message/test

@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Own Account Delete"
+keywords:
+  - "/i/users/deleteOwnAccount"
+  - "deleteOwnAccount"
+  - "users"
 ---
 
 # Users Management - Own Account Delete

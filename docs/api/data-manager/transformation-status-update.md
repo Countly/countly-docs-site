@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Transformation Toggle Status"
+keywords:
+  - "/i/data-manager/transformation/toggle-status"
+  - "toggle-status"
+  - "data-manager"
+  - "transformation"
 ---
 # Data Transformations - Toggle Status
 

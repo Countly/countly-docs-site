@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Test"
+keywords:
+  - "/o/symbolication/test_symbolication_connection"
+  - "test_symbolication_connection"
+  - "symbolication"
 ---
 
 # Test symbolication server

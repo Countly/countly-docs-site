@@ -1,5 +1,8 @@
 ---
 sidebar_label: "System Logs Query"
+keywords:
+  - "/o"
+  - "o"
 ---
 
 # System Logs - Query

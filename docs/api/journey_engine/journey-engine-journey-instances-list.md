@@ -1,5 +1,11 @@
 ---
 sidebar_label: "Journey Instances List"
+keywords:
+  - "/o/journey-engine/journey-instances/list"
+  - "GET /o/journey-engine/journey-instances/list"
+  - "list"
+  - "journey-engine"
+  - "journey-instances"
 ---
 
 # Journey Engine - Journey Instances List

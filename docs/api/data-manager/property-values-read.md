@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Property Values Read"
+keywords:
+  - "/o/data-manager/list-values"
+  - "list-values"
+  - "data-manager"
 ---
 # Read property value list
 

@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Log Clear"
+keywords:
+  - "/i/errorlogs"
+  - "errorlogs"
 ---
 
 # Error Logs - Log Clear

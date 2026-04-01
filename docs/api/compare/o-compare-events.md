@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Events Compare"
+keywords:
+  - "/o/compare/events"
+  - "events"
+  - "compare"
 ---
 
 # Compare - Events

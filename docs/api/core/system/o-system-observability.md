@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Observability Read"
+keywords:
+  - "/o/system/observability"
+  - "observability"
+  - "system"
 ---
 
 # System - Observability Read

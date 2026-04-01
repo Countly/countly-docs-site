@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Edit"
+keywords:
+  - "/i/flows/edit"
+  - "edit"
+  - "flows"
 ---
 
 # Edit flow

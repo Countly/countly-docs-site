@@ -1,5 +1,9 @@
 ---
 sidebar_label: "SDK Read - Content Delivery"
+keywords:
+  - "/o/sdk/content"
+  - "content"
+  - "sdk"
 ---
 
 # SDK Read - Content Delivery

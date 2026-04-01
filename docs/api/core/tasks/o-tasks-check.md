@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Check Task Status"
+keywords:
+  - "/o/tasks/check"
+  - "check"
+  - "tasks"
 ---
 
 # /o/tasks/check

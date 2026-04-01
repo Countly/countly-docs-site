@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Export Delete"
+keywords:
+  - "/i/app_users/deleteExport/{id}"
+  - "deleteExport"
+  - "app_users"
+  - "{id}"
 ---
 
 # `/i/app_users/deleteExport/\{id\}`

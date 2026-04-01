@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Condition Delete"
+keywords:
+  - "/i/remote-config/remove-condition"
+  - "remove-condition"
+  - "remote-config"
 ---
 
 # Remote Config - Condition Delete

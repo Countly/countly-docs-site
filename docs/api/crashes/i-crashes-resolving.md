@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Resolving Update"
+keywords:
+  - "/i/crashes/resolving"
+  - "resolving"
+  - "crashes"
 ---
 
 # Crashes - Mark Resolving

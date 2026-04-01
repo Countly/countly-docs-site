@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Heap Snapshot"
+keywords:
+  - "/i/profiler/take-heap-snapshot"
+  - "take-heap-snapshot"
+  - "profiler"
 ---
 
 # System Utility - Take Heap Snapshot

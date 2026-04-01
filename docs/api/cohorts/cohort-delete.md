@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Delete"
+keywords:
+  - "/i/cohorts/delete"
+  - "delete"
+  - "cohorts"
 ---
 
 # Delete Cohort

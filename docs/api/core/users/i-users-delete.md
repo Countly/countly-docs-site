@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Dashboard User Delete"
+keywords:
+  - "/i/users/delete"
+  - "delete"
+  - "users"
 ---
 
 # Users Management - User Delete

@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Omit Segments"
+keywords:
+  - "/i/views"
+  - "views"
 ---
 
 # Views - Omit Segments

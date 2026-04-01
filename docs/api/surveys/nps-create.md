@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Create NPS"
+keywords:
+  - "/i/surveys/nps/create"
+  - "create"
+  - "surveys"
+  - "nps"
 ---
 
 # Surveys - Create NPS

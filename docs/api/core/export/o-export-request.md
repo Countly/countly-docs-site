@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Export Request"
+keywords:
+  - "/o/export/request"
+  - "request"
+  - "export"
 ---
 
 # /o/export/request

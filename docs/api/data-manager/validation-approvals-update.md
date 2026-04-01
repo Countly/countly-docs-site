@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Validation Approve"
+keywords:
+  - "/o/data-manager/validations/approve"
+  - "approve"
+  - "data-manager"
+  - "validations"
 ---
 # Data Manager Validations - Approve
 

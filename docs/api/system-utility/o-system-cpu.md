@@ -1,5 +1,9 @@
 ---
 sidebar_label: "CPU Stats"
+keywords:
+  - "/o/system/cpu"
+  - "cpu"
+  - "system"
 ---
 
 # System Utility - CPU Stats

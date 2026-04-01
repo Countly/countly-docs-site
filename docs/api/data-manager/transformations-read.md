@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Transformation Read"
+keywords:
+  - "/o/data-manager/transformation"
+  - "transformation"
+  - "data-manager"
 ---
 # Data Transformations - Read Rules
 

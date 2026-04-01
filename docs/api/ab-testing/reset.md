@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Reset Experiment"
+keywords:
+  - "/i/ab-testing/reset-experiment"
+  - "reset-experiment"
+  - "ab-testing"
 ---
 
 # Reset Experiment

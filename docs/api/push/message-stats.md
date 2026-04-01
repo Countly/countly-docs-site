@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Message Stats (Periodic)"
+keywords:
+  - "/o/push/message/stats"
+  - "stats"
+  - "push"
+  - "message"
 ---
 
 # /o/push/message/stats

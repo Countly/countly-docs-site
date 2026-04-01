@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Property Expiration Update"
+keywords:
+  - "/i/data-manager/property-expire"
+  - "property-expire"
+  - "data-manager"
 ---
 # Update custom property expiration
 

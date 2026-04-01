@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Status Survey"
+keywords:
+  - "/i/surveys/survey/status"
+  - "status"
+  - "surveys"
+  - "survey"
 ---
 
 # Surveys - Update Survey Status

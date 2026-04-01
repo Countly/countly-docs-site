@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Internal Events Read"
+keywords:
+  - "/o/internal-events"
+  - "internal-events"
 ---
 
 # /o/internal-events

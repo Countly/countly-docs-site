@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Condition Update"
+keywords:
+  - "/i/remote-config/update-condition"
+  - "update-condition"
+  - "remote-config"
 ---
 
 # Remote Config - Condition Update

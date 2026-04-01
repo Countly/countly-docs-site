@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Profiler Files"
+keywords:
+  - "/i/profiler/list-files"
+  - "list-files"
+  - "profiler"
 ---
 
 # System Utility - List Profiler Files

@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Remove"
+keywords:
+  - "/i/crash_symbols/remove_symbol"
+  - "remove_symbol"
+  - "crash_symbols"
 ---
 
 # Remove symbol

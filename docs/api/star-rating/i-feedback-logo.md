@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Set Widget Logo"
+keywords:
+  - "/i/feedback/logo"
+  - "logo"
+  - "feedback"
 ---
 
 # Star Rating - Set Widget Logo

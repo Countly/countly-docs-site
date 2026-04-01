@@ -1,5 +1,11 @@
 ---
 sidebar_label: "Journey Save"
+keywords:
+  - "/i/journey-engine/journeys/save"
+  - "POST /i/journey-engine/journeys/save"
+  - "save"
+  - "journey-engine"
+  - "journeys"
 ---
 
 # Journey Engine - Journeys Save

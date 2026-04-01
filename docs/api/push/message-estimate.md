@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Message Estimate"
+keywords:
+  - "/o/push/message/estimate"
+  - "estimate"
+  - "push"
+  - "message"
 ---
 
 # /o/push/message/estimate

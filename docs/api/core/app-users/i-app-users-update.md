@@ -1,5 +1,9 @@
 ---
 sidebar_label: "App User Update"
+keywords:
+  - "/i/app_users/update"
+  - "update"
+  - "app_users"
 ---
 
 # /i/app_users/update

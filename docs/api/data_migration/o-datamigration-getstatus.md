@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Status Read"
+keywords:
+  - "/o/datamigration/getstatus"
+  - "getstatus"
+  - "datamigration"
 ---
 
 # Data Migration - Get Status

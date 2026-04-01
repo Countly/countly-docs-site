@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Upload"
+keywords:
+  - "/i/crash_symbols/upload_symbol"
+  - "upload_symbol"
+  - "crash_symbols"
 ---
 
 # Upload symbol (SDK)

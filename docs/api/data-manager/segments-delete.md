@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Segments Delete"
+keywords:
+  - "/i/data-manager/segment/delete"
+  - "delete"
+  - "data-manager"
+  - "segment"
 ---
 # Delete event segments
 

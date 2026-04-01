@@ -1,5 +1,11 @@
 ---
 sidebar_label: "Stats Summary Read"
+keywords:
+  - "/o/journey-engine/stats/summary"
+  - "GET /o/journey-engine/stats/summary"
+  - "summary"
+  - "journey-engine"
+  - "stats"
 ---
 
 # Journey Engine - Stats Summary

@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Group Delete"
+keywords:
+  - "/i/event_groups/delete"
+  - "delete"
+  - "event_groups"
 ---
 
 # /i/event_groups/delete

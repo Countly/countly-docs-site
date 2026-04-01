@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Token Check"
+keywords:
+  - "/o/token/check"
+  - "check"
+  - "token"
 ---
 
 # Token - Token Check

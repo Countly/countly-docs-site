@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Widget Data Read"
+keywords:
+  - "/o/dashboard/data"
+  - "data"
+  - "dashboard"
 ---
 
 # Dashboards - Read Widget Data

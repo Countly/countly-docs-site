@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Event Create"
+keywords:
+  - "/i/data-manager/event"
+  - "event"
+  - "data-manager"
 ---
 # Create event metadata
 

@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Crash Show"
+keywords:
+  - "/i/crashes/show"
+  - "show"
+  - "crashes"
 ---
 
 # Crashes - Show Crash Groups

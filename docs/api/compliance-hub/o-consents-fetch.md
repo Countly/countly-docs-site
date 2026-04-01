@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Consents Read"
+keywords:
+  - "/o"
+  - "o"
 ---
 
 # Compliance Hub - Consents Read

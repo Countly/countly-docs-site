@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Read"
+keywords:
+  - "/o/revenue"
+  - "revenue"
 ---
 
 # Revenue - Analytics

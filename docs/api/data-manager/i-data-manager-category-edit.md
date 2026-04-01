@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Category Edit"
+keywords:
+  - "/i/data-manager/category/edit"
+  - "edit"
+  - "data-manager"
+  - "category"
 ---
 
 # /i/data-manager/category/edit

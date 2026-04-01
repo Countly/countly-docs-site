@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Delete"
+keywords:
+  - "/i/groups/delete"
+  - "delete"
+  - "groups"
 ---
 
 # Delete Group

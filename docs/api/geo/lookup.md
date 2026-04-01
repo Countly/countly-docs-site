@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Lookup"
+keywords:
+  - "/o"
+  - "o"
 ---
 
 # Lookup IP Address

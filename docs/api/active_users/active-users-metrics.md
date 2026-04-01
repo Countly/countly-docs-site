@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Read"
+keywords:
+  - "/o/active_users"
+  - "active_users"
 ---
 
 # Read

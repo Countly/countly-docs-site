@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Crash Delete"
+keywords:
+  - "/i/crashes/delete"
+  - "delete"
+  - "crashes"
 ---
 
 # Crashes - Delete Crash Groups

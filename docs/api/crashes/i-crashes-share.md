@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Crash Share"
+keywords:
+  - "/i/crashes/share"
+  - "share"
+  - "crashes"
 ---
 
 # Crashes - Share Crash Group

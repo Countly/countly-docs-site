@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Dashboard Read"
+keywords:
+  - "/o"
+  - "o"
 ---
 
 # Remote Config - Dashboard Read

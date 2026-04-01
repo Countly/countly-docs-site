@@ -1,5 +1,8 @@
 ---
 sidebar_label: "SDK Fetch (Legacy)"
+keywords:
+  - "/o/sdk"
+  - "sdk"
 ---
 
 # Remote Config - SDK Fetch (Legacy Alias)

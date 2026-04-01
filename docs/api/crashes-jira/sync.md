@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Sync"
+keywords:
+  - "/i/crashes-jira"
+  - "crashes-jira"
 ---
 
 # Sync crash and JIRA status

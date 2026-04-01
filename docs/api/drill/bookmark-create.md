@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Bookmark - Create"
+keywords:
+  - "/i/drill/add_bookmark"
+  - "add_bookmark"
+  - "drill"
 ---
 # Create bookmark
 

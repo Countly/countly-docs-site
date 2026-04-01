@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Bookmark - Update"
+keywords:
+  - "/i/drill/edit_bookmark"
+  - "edit_bookmark"
+  - "drill"
 ---
 # Update bookmark
 

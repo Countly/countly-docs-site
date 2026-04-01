@@ -1,5 +1,8 @@
 ---
 sidebar_label: "List/Profile"
+keywords:
+  - "/o"
+  - "o"
 ---
 
 # User Profiles - List or Profile

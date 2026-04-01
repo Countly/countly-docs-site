@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Environment Read"
+keywords:
+  - "/o/populator/environment/get"
+  - "get"
+  - "populator"
+  - "environment"
 ---
 
 # Populator - Environment Read

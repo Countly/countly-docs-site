@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Read Data"
+keywords:
+  - "/o"
+  - "o"
 ---
 
 # Read funnel overview data

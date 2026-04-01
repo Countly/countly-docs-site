@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Environment List"
+keywords:
+  - "/o/populator/environment/list"
+  - "list"
+  - "populator"
+  - "environment"
 ---
 
 # Populator - Environment List

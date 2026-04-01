@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Events Visibility Update"
+keywords:
+  - "/i/data-manager/events/change_visibility"
+  - "change_visibility"
+  - "data-manager"
+  - "events"
 ---
 # Update event visibility
 

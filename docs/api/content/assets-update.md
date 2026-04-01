@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Assets - Update"
+keywords:
+  - "/i/content/asset-update"
+  - "asset-update"
+  - "content"
 ---
 
 # Update asset metadata

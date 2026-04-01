@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Read Tops"
+keywords:
+  - "/o/analytics/tops"
+  - "tops"
+  - "analytics"
 ---
 
 # /o/analytics/tops

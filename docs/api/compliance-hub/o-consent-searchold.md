@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Consent Search Old"
+keywords:
+  - "/o/consent/searchOld"
+  - "searchOld"
+  - "consent"
 ---
 
 # Compliance Hub - Consent Search Old

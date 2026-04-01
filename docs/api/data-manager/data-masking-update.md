@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Masking Update"
+keywords:
+  - "/i/data-manager/mask-data"
+  - "mask-data"
+  - "data-manager"
 ---
 # Update data masking rules
 

@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Delete"
+keywords:
+  - "/i/blocks/delete"
+  - "delete"
+  - "blocks"
 ---
 
 # Filtering Rules - Delete

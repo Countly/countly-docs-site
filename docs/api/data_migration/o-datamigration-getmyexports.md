@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Export List"
+keywords:
+  - "/o/datamigration/getmyexports"
+  - "getmyexports"
+  - "datamigration"
 ---
 
 # Data Migration - Get My Exports

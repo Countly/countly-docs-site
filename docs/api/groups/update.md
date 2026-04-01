@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Update"
+keywords:
+  - "/i/groups/update"
+  - "update"
+  - "groups"
 ---
 
 # Update Group

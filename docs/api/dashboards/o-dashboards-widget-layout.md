@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Widget Layout Read"
+keywords:
+  - "/o/dashboards/widget-layout"
+  - "widget-layout"
+  - "dashboards"
 ---
 
 # Dashboards - Read Widget Layout

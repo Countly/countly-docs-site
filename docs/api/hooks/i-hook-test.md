@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Hook Test"
+keywords:
+  - "/i/hook/test"
+  - "test"
+  - "hook"
 ---
 
 # Hooks - Test

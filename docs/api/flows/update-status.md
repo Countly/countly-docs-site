@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Update Status"
+keywords:
+  - "/i/flows/updateDisabled"
+  - "updateDisabled"
+  - "flows"
 ---
 
 # Update flow disabled status

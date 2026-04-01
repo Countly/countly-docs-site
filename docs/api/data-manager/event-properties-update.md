@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Event Update"
+keywords:
+  - "/i/data-manager/event/edit"
+  - "edit"
+  - "data-manager"
+  - "event"
 ---
 # Update event metadata
 

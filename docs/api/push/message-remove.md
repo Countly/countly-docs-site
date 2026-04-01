@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Message Delete"
+keywords:
+  - "/i/push/message/remove"
+  - "remove"
+  - "push"
+  - "message"
 ---
 
 # Push - Message Delete

@@ -1,5 +1,11 @@
 ---
 sidebar_label: "Stats Table Read"
+keywords:
+  - "/o/journey-engine/stats/table"
+  - "GET /o/journey-engine/stats/table"
+  - "table"
+  - "journey-engine"
+  - "stats"
 ---
 
 # Journey Engine - Stats Table

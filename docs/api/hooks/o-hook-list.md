@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Hooks Read"
+keywords:
+  - "/o/hook/list"
+  - "list"
+  - "hook"
 ---
 
 # Hooks - Read List

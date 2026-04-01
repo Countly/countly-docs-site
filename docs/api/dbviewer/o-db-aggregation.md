@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Aggregation Query"
+keywords:
+  - "/o/db"
+  - "db"
 ---
 
 # DB Viewer - Aggregation Query

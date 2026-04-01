@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Indexes Read"
+keywords:
+  - "/o/db"
+  - "db"
 ---
 
 # DB Viewer - Indexes Read

@@ -1,5 +1,8 @@
 ---
 sidebar_label: "View Delete"
+keywords:
+  - "/i/views"
+  - "views"
 ---
 
 # Views - Delete

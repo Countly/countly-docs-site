@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Hook Delete"
+keywords:
+  - "/i/hook/delete"
+  - "delete"
+  - "hook"
 ---
 
 # Hooks - Delete

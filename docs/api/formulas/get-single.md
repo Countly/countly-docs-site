@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Read"
+keywords:
+  - "/o/calculated_metrics/metric"
+  - "metric"
+  - "calculated_metrics"
 ---
 
 # Read formula

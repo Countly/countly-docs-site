@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Document Read"
+keywords:
+  - "/o/db"
+  - "db"
 ---
 
 # DB Viewer - Document Read

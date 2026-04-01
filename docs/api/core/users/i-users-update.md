@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Dashboard User Update"
+keywords:
+  - "/i/users/update"
+  - "update"
+  - "users"
 ---
 
 # Users Management - User Update

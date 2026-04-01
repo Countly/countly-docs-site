@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Get Multiple Widgets"
+keywords:
+  - "/o/feedback/multiple-widgets-by-id"
+  - "multiple-widgets-by-id"
+  - "feedback"
 ---
 
 # Star Rating - Get Multiple Widgets

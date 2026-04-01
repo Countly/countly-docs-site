@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Logs Read"
+keywords:
+  - "/o"
+  - "o"
 ---
 
 # Logger - Logs Read

@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Report Create"
+keywords:
+  - "/i/reports/create"
+  - "create"
+  - "reports"
 ---
 
 # Reports - Report Create

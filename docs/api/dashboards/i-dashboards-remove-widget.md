@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Widget Remove"
+keywords:
+  - "/i/dashboards/remove-widget"
+  - "remove-widget"
+  - "dashboards"
 ---
 
 # Dashboards - Remove Widget

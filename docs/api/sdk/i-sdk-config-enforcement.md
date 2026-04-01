@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Enforcement Update"
+keywords:
+  - "/i/sdk-config/update-enforcement"
+  - "update-enforcement"
+  - "sdk-config"
 ---
 
 # SDK - Enforcement Update

@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Create"
+keywords:
+  - "/i/flows/create"
+  - "create"
+  - "flows"
 ---
 
 # Create flow

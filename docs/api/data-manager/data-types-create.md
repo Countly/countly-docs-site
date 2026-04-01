@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Data Type Create"
+keywords:
+  - "/i/data-manager/data-type"
+  - "data-type"
+  - "data-manager"
 ---
 # Update property or segment data types
 

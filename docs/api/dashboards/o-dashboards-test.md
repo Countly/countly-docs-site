@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Widget Test"
+keywords:
+  - "/o/dashboards/test"
+  - "test"
+  - "dashboards"
 ---
 
 # Dashboards - Test Widgets

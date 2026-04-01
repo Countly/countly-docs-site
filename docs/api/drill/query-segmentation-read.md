@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Query Segmentation - Read"
+keywords:
+  - "/o"
+  - "o"
 ---
 # Run segmentation query
 

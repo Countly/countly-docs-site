@@ -1,5 +1,10 @@
 ---
 sidebar_label: "Transformation Update"
+keywords:
+  - "/i/data-manager/transformation/edit"
+  - "edit"
+  - "data-manager"
+  - "transformation"
 ---
 # Data Transformations - Update Rule
 

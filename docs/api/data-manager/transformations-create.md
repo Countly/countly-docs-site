@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Transformation Create"
+keywords:
+  - "/i/data-manager/transformation"
+  - "transformation"
+  - "data-manager"
 ---
 
 # Data Transformations - Create Rule

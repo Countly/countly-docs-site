@@ -1,5 +1,9 @@
 ---
 sidebar_label: "Send Message"
+keywords:
+  - "/i/ai-assistants/send-message"
+  - "send-message"
+  - "ai-assistants"
 ---
 
 # AI Assistants - Send Message

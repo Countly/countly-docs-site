@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Reports Read"
+keywords:
+  - "/o"
+  - "o"
 ---
 
 # Crashes - Reports Read

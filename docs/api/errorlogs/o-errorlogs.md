@@ -1,5 +1,8 @@
 ---
 sidebar_label: "Logs Read"
+keywords:
+  - "/o/errorlogs"
+  - "errorlogs"
 ---
 
 # Error Logs - Logs Read
