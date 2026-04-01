@@ -3,14 +3,15 @@ sidebar_position: 1
 sidebar_label: "Overview"
 ---
 
-# Countly Diagnostics - API Documentation
+# Countly Core Utilities - API Documentation
 
 ## Overview
 
-Diagnostics endpoint for Countly version and migration marker visibility.
+Core utility endpoints for API key retrieval and Countly version diagnostics.
 
 ## Endpoint Index
 
+- [API Key Read](api-key.md) - `/api-key`
 - [Version Diagnostics](o-countly-version.md) - `/o/countly_version`
 
 ## Data Sources
@@ -22,4 +23,4 @@ Diagnostics endpoint for Countly version and migration marker visibility.
 
 ## Last Updated
 
-2026-02-17
+2026-04-01
