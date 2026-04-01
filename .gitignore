@@ -4,6 +4,8 @@ node_modules/
 # Build output
 build/
 .docusaurus/
+countly-server
+countly-enterprise-plugins
 
 # OS files
 .DS_Store
