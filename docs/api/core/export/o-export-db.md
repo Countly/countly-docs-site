@@ -45,14 +45,19 @@ Exports documents from an accessible collection and returns them as a downloadab
 | `sort` | JSON String (Object) | No | Sort object. Example: `{"ts": -1}`. |
 | `limit` | Number | No | Max returned document count. Clamped by `api.export_limit`. |
 | `skip` | Number | No | Number of matching documents to skip. |
-| `type` | String | No | Export type. Common values: `json`, `csv`, `xls`, `xlsx`. |
+| `type` | String | No | Export file type. Common values: `json`, `csv`, `xls`, `xlsx`. |
 | `filename` | String | No | Download file name prefix. |
-| `formatFields` | JSON String (Object) | No | Field-format mapping used by export conversion. |
+| `formatFields` | JSON String (Object) | No | Field-format mapping used to transform exported field values. |
 | `get_index` | JSON String (Boolean/Object) | No | If truthy and parsable, returns index metadata export instead of collection document export. |
 
 ## Parameter Semantics
 
 - `filter` is parsed first; if omitted, `query` is used.
+- `query` and `filter` are Mongo-style JSON objects serialized into the request URL. Use operators such as `$gte`, `$lte`, `$in`, and `$regex` inside that JSON.
+- `type` controls the downloaded file format, while `formatFields` controls how field values are rendered inside that file.
+- `projection` follows Mongo projection rules, but this export path force-adds `_id` whenever a non-empty projection is provided.
+- `sort` is a Mongo-style sort object where `1` means ascending and `-1` means descending.
+- `get_index` switches the endpoint from document export mode to index metadata export mode.
 - Invalid `projection`, `project`, `sort`, `formatFields`, or `get_index` values are ignored (set to `null`) rather than returning parse errors.
 - Non-global users are restricted to accessible collections; additional base filtering is applied for event-heavy collections.
 - If request `query` already includes a base-filtered key, both constraints are merged with `$and` to prevent scope bypass.
@@ -180,6 +185,95 @@ JSON export example (file content):
   filename=drill-events
 ```
 
+### Example 3: Filter by date range and status
+
+`query` is a JSON object, not a SQL fragment. This example exports users created on or after a Unix-millisecond timestamp and with one of two statuses:
+
+```plaintext
+/o/export/db?
+  api_key=YOUR_API_KEY&
+  collection=app_users6991c75b024cb89cdc04efd2&
+  query={"created_at":{"$gte":1711929600000},"status":{"$in":["active","trial"]}}&
+  type=json&
+  filename=filtered-users
+```
+
+### Example 4: Return only selected fields
+
+Use `projection` to limit exported columns. A value of `1` includes the field.
+
+```plaintext
+/o/export/db?
+  api_key=YOUR_API_KEY&
+  collection=app_users6991c75b024cb89cdc04efd2&
+  query={"email":{"$regex":"@example.com$"}}&
+  projection={"email":1,"name":1,"lac":1}&
+  type=csv&
+  filename=user-emails
+```
+
+This produces a CSV with only the projected fields plus `_id`.
+
+### Example 5: Sort and paginate the export
+
+Use `sort`, `skip`, and `limit` together to export a specific slice of a larger result set.
+
+```plaintext
+/o/export/db?
+  api_key=YOUR_API_KEY&
+  collection=events&
+  sort={"c":-1}&
+  skip=100&
+  limit=50&
+  type=xlsx&
+  filename=top-events-page-3
+```
+
+This example sorts by `c` descending, skips the first 100 matching documents, and exports the next 50.
+
+### Example 6: Format timestamp and numeric fields
+
+`formatFields` does not filter data. It transforms field values in the exported file. This example converts Unix timestamps into formatted dates, formats a number field, and formats a duration field expressed in seconds.
+
+```plaintext
+/o/export/db?
+  api_key=YOUR_API_KEY&
+  collection=app_users6991c75b024cb89cdc04efd2&
+  projection={"uid":1,"lac":1,"tsd":1,"sc":1}&
+  formatFields={
+    "tz":"Europe/Riga",
+    "fields":{
+      "lac":{"to":"time","format":"YYYY-MM-DD HH:mm:ss"},
+      "tsd":{"type":"second"},
+      "sc":{"type":"number"}
+    }
+  }&
+  type=csv&
+  filename=formatted-users
+```
+
+Supported transformations in `formatFields.fields.FIELD_NAME` include:
+
+- `{"to":"time"}` to render timestamps as dates in the provided `tz`
+- `{"type":"number"}` to format a numeric value
+- `{"type":"second"}` to format a duration stored in seconds
+- `{"formula":{"$eq":"other_field"}}` to copy another field into a calculated export column
+
+### Example 7: Export index metadata instead of documents
+
+Set `get_index` to a truthy JSON value to export collection indexes.
+
+```plaintext
+/o/export/db?
+  api_key=YOUR_API_KEY&
+  collection=events_data&
+  get_index=true&
+  type=json&
+  filename=events-data-indexes
+```
+
+This returns index definitions for the collection instead of matching documents.
+
 ## Operational Considerations
 
 - Large exports can be expensive on large collections.
@@ -202,4 +296,4 @@ JSON export example (file content):
 
 ## Last Updated
 
-2026-02-17
+2026-04-01
