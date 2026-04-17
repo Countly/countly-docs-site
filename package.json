@@ -8,6 +8,7 @@
     "serve": "docusaurus serve",
     "deploy": "docusaurus deploy",
     "swizzle": "docusaurus swizzle",
+    "test:docs-api": "node tests/validate-api-docs.mjs",
     "postinstall": "node scripts/patch-search.js"
   },
   "keywords": [],

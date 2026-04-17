@@ -2,6 +2,8 @@
 sidebar_label: "Create or Update Alert"
 ---
 
+# Concurrent Users - Create Or Update Alert
+
 ## Endpoint
 
 `/i/concurrent_alert/save`

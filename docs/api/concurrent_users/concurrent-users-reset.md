@@ -2,6 +2,8 @@
 sidebar_label: "Reset Maximum"
 ---
 
+# Concurrent Users - Reset Maximum
+
 ## Endpoint
 
 `/i/concurrent_users_max/reset`

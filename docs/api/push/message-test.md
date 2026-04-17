@@ -42,6 +42,9 @@ Send test push notifications to configured test users or cohorts without creatin
 | `app` | ObjectID | Yes | Application ID (MongoDB ObjectID) |
 | `platforms` | String[] | Yes | Platforms to send to: `["i", "a", "w", "h"]` (iOS, Android, Web, Huawei) |
 | `test` | Boolean | Yes | Must be `true` to indicate test mode |
+| `triggers` | Object[] | Yes | Required by push message validation. The handler replaces it internally with an immediate plain trigger for the actual test send. |
+| `triggers[].kind` | String | Yes | Use `"plain"` for compatibility with validation. |
+| `triggers[].start` | Date | Yes | Any valid ISO date/time accepted by push message validation. |
 | `contents` | Object[] | Yes | Array of content objects (min: 1) |
 | `contents[0]` | Object | Yes | Default content (no `p` or `la` keys) |
 | `contents[].p` | String | No | Platform this content applies to: `i`, `a`, `w`, `h` |
@@ -110,6 +113,7 @@ Send test push notifications to configured test users or cohorts without creatin
   "kind": "ValidationError",
   "errors": [
     "platforms is required",
+    "triggers is required",
     "contents is required",
     "test must be true"
   ]
@@ -161,7 +165,7 @@ Send test push notifications to configured test users or cohorts without creatin
 
 1. **Validation**
    - Verifies `test` parameter is `true`
-   - Validates all required fields (`platforms`, `contents`)
+   - Validates all required fields (`platforms`, `triggers`, `contents`)
    - Validates content structure (message, title, etc.)
 
 2. **Test Configuration Loading**
@@ -188,6 +192,9 @@ Send test push notifications to configured test users or cohorts without creatin
 
 6. **Notification Sending**
    - Creates in-memory temporary message object (not saved to DB)
+   - Replaces provided audience filter with configured test users or configured test cohorts
+   - Replaces provided triggers with an immediate internal plain trigger
+   - Forces message status to active for the test run
    - Sends notifications immediately via push queue
    - Tracks send results (sent, failed, errors)
 
@@ -302,6 +309,21 @@ The optional `userConditions` parameter allows additional filtering of test user
 
 This MongoDB query is AND-ed with the test user/cohort selection, so only test users matching the conditions will receive the test notification.
 
+### Minimal Trigger Example
+
+Use a simple plain trigger to satisfy request validation:
+
+```json
+[
+  {
+    "kind": "plain",
+    "start": "2026-04-09T10:00:00.000Z"
+  }
+]
+```
+
+The server replaces this trigger internally during test execution.
+
 ---
 
 ## Examples
@@ -319,6 +341,10 @@ curl -X POST "https://your-server.com/i/push/message/test" \
     "app": "507f1f77bcf86cd799439012",
     "platforms": ["i", "a"],
     "test": true,
+    "triggers": [{
+      "kind": "plain",
+      "start": "2026-04-09T10:00:00.000Z"
+    }],
     "contents": [{
       "message": "This is a test notification",
       "title": "Test",
@@ -357,6 +383,10 @@ curl -X POST "https://your-server.com/i/push/message/test" \
     "app": "507f1f77bcf86cd799439012",
     "platforms": ["i"],
     "test": true,
+    "triggers": [{
+      "kind": "plain",
+      "start": "2026-04-09T10:00:00.000Z"
+    }],
     "contents": [{
       "message": " {first_name}, your order is ready!",
       "messagePers": {
@@ -403,6 +433,10 @@ curl -X POST "https://your-server.com/i/push/message/test" \
     "app": "507f1f77bcf86cd799439012",
     "platforms": ["i", "a"],
     "test": true,
+    "triggers": [{
+      "kind": "plain",
+      "start": "2026-04-09T10:00:00.000Z"
+    }],
     "contents": [{
       "message": "Check out this amazing photo!",
       "title": "New Content",
@@ -631,7 +665,7 @@ curl -X POST "https://your-server.com/i/push/message/test" \
 |-------------|-----------|----------|
 | `200` | Success - test sent | Send results with counts |
 | `400` | Test parameter not true | `{"kind": "ValidationError", "errors": ["test must be true"]}` |
-| `400` | Missing required parameters | `{"kind": "ValidationError", "errors": ["platforms is required"]}` |
+| `400` | Missing required parameters | `{"kind": "ValidationError", "errors": ["platforms is required", "triggers is required"]}` |
 | `400` | No test users configured | `{"kind": "ValidationError", "errors": ["Test users/cohorts not set for this app"]}` |
 | `400` | No push credentials | `{"kind": "ValidationError", "errors": ["No push credentials for iOS platform"]}` |
 | `400` | Invalid platform | `{"kind": "ValidationError", "errors": ["Invalid platform: x"]}` |
@@ -658,4 +692,4 @@ curl -X POST "https://your-server.com/i/push/message/test" \
 
 ## Last Updated
 
-February 2026
+2026-04-09

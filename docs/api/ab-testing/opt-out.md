@@ -1,8 +1,8 @@
 ---
 sidebar_label: "Opt Out from Experiments"
 keywords:
-  - "/i/sdk"
-  - "sdk"
+  - "/i"
+  - "ab_opt_out"
 ---
 
 # Opt Out from Experiments
@@ -10,7 +10,7 @@ keywords:
 ## Endpoint
 
 ```
-/i/sdk?method=ab_opt_out
+/i?method=ab_opt_out
 ```
 
 > Ⓔ **Enterprise Only**  
@@ -81,7 +81,7 @@ Opt a user out of specific running experiments or all running experiments. When 
 
 **Request**:
 ```bash
-curl "https://your-server.com/i/sdk?method=ab_opt_out" \
+curl "https://your-server.com/i?method=ab_opt_out" \
   -d "app_key=YOUR_APP_KEY" \
   -d "device_id=DEVICE_ID"
 ```
@@ -90,7 +90,7 @@ curl "https://your-server.com/i/sdk?method=ab_opt_out" \
 
 **Request**:
 ```bash
-curl "https://your-server.com/i/sdk?method=ab_opt_out" \
+curl "https://your-server.com/i?method=ab_opt_out" \
   -d "app_key=YOUR_APP_KEY" \
   -d "device_id=DEVICE_ID" \
   -d 'keys=["button_text","header_text"]'
@@ -119,4 +119,4 @@ This feature is part of **Countly Enterprise**.
 
 ## Last Updated
 
-2026-02-16
+2026-04-08

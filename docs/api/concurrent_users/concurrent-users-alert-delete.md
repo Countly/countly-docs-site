@@ -2,6 +2,8 @@
 sidebar_label: "Delete Alert"
 ---
 
+# Concurrent Users - Delete Alert
+
 ## Endpoint
 
 `/i/concurrent_alert/delete`

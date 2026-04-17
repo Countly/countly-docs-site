@@ -39,6 +39,7 @@ Requires Global Admin access.
 | `method` | String | Yes | Must be `systemlogs`. |
 | `api_key` | String | Yes (or use `auth_token`) | API key for authentication. |
 | `auth_token` | String | No | Auth token as query parameter or `countly-token` header. |
+| `app_id` | String | Yes | App id required by the global-admin read validation path. |
 | `query` | String (JSON Object) | No | JSON filter applied to `countly.systemlogs`. Invalid JSON is ignored and treated as `{}`. |
 | `sSearch` | String | No | Regex-style case-insensitive search applied to action field `a`. |
 | `period` | String | No | Countly period value used to build `ts` range query. |
@@ -201,19 +202,19 @@ Export mode (`export=true`):
 ### Query last 50 system log records
 
 ```plaintext
-/o?method=systemlogs&api_key=YOUR_API_KEY&iDisplayStart=0&iDisplayLength=50&sEcho=1
+/o?method=systemlogs&api_key=YOUR_API_KEY&app_id=APP_ID&iDisplayStart=0&iDisplayLength=50&sEcho=1
 ```
 
 ### Query app-related updates in selected period
 
 ```plaintext
-/o?method=systemlogs&api_key=YOUR_API_KEY&period=30days&query={"a":"app_updated","app_id":"6991c75b024cb89cdc04efd2"}
+/o?method=systemlogs&api_key=YOUR_API_KEY&app_id=APP_ID&period=30days&query={"a":"app_updated","app_id":"6991c75b024cb89cdc04efd2"}
 ```
 
 ### Export filtered results
 
 ```plaintext
-/o?method=systemlogs&api_key=YOUR_API_KEY&query={"a":{"$in":["user_created","user_deleted"]}}&export=true
+/o?method=systemlogs&api_key=YOUR_API_KEY&app_id=APP_ID&query={"a":{"$in":["user_created","user_deleted"]}}&export=true
 ```
 
 ## Limitations

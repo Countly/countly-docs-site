@@ -1,0 +1,2 @@
+Event Key,Event Display Name,Event Description,Category,Status,#of Segments,Segment Name,Segment Description,Segment Type,Segment Status,Segment Required,Segment List Options,Segment Regex
+docs_validator_import,Docs Validator Import,Temporary import event,Docs Validator,created,1,docs_validator_segment,Temporary import segment,s,created,FALSE,,

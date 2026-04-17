@@ -2,6 +2,8 @@
 sidebar_label: "Get Alerts"
 ---
 
+# Concurrent Users - Get Alerts
+
 ## Endpoint
 
 `/o?method=concurrent_alerts`
@@ -29,6 +31,7 @@ Retrieve all online user alerts accessible to your user. Results include alerts 
 |---|---|---|---|
 | api_key | String | Yes (or auth_token) | API key for authentication |
 | auth_token | String | Yes (or api_key) | Auth token for authentication |
+| app_id | String | Yes | Application ID used by the read-permission validator before listing visible alerts |
 
 ## Configuration Impact
 
@@ -114,14 +117,15 @@ Retrieve all online user alerts accessible to your user. Results include alerts 
 
 ```bash
 curl "https://your-server.com/o?method=concurrent_alerts" \
-  -d "api_key=YOUR_API_KEY"
+  -d "api_key=YOUR_API_KEY" \
+  -d "app_id=YOUR_APP_ID"
 ```
 
 ### Example: List alerts with auth token header
 
 ```bash
 curl -H "countly-token: YOUR_AUTH_TOKEN" \
-  "https://your-server.com/o?method=concurrent_alerts"
+  "https://your-server.com/o?method=concurrent_alerts&app_id=YOUR_APP_ID"
 ```
 
 ## Related Endpoints

@@ -2,6 +2,8 @@
 sidebar_label: "Update Alert Status"
 ---
 
+# Concurrent Users - Update Alert Status
+
 ## Endpoint
 
 `/i/concurrent_alert/status`

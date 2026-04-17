@@ -1,7 +1,8 @@
 ---
 sidebar_label: "Message Get"
 keywords:
-  - "/o/push/message"
+  - "/o/push/message/{_id}"
+  - "/o/push/message/67a3d2f5c1a23b0f4d6c0101"
   - "message"
   - "push"
 ---
@@ -11,7 +12,7 @@ keywords:
 ## Endpoint
 
 ```plaintext
-/o/push/message
+/o/push/message/{_id}
 ```
 
 ## Overview
@@ -38,7 +39,7 @@ Requires `push` `Read` permission.
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
 | `app_id` | String | Yes | App ID used by permission validation. |
-| `_id` | String (ObjectID) | Yes | Message ID to fetch. |
+| `{_id}` | String (ObjectID) | Yes | Message ID path parameter. |
 
 ## Response
 
@@ -95,8 +96,9 @@ Standard authentication/authorization errors from read validation can also be re
 
 ## Behavior/Processing
 
-- Validates `_id` as ObjectID.
-- Loads message with `Message.findOne(_id)`.
+- Validates the message ID as ObjectID.
+- Reads the message by ID and joins recent `message_schedules` records.
+- Recomputes the returned `status` from the message plus latest schedule.
 - Returns raw message JSON payload via raw response body.
 
 ## Database Collections
@@ -110,10 +112,9 @@ Standard authentication/authorization errors from read validation can also be re
 ### Read one message
 
 ```plaintext
-/o/push/message?
+/o/push/message/67a3d2f5c1a23b0f4d6c0101?
   api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  _id=67a3d2f5c1a23b0f4d6c0101
+  app_id=6991c75b024cb89cdc04efd2
 ```
 
 ## Related Endpoints
@@ -123,4 +124,4 @@ Standard authentication/authorization errors from read validation can also be re
 
 ## Last Updated
 
-2026-03-07
+2026-04-09

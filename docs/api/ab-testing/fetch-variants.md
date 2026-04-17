@@ -35,6 +35,7 @@ Fetch available variant names and values for active experiments (documents with 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `app_key` | String | Yes | Application key |
+| `device_id` | String | Yes | Device identifier used by the SDK request context; required by the live handler. |
 | `keys` | String | No | JSON array of parameter names to filter by (empty array returns all) |
 
 ## Response
@@ -91,7 +92,8 @@ Fetch available variant names and values for active experiments (documents with 
 **Request**:
 ```bash
 curl "https://your-server.com/o/sdk?method=ab_fetch_variants" \
-  -d "app_key=YOUR_APP_KEY"
+  -d "app_key=YOUR_APP_KEY" \
+  -d "device_id=DEVICE_ID"
 ```
 
 ### Example 2: Fetch Variants for Specific Parameters
@@ -100,11 +102,13 @@ curl "https://your-server.com/o/sdk?method=ab_fetch_variants" \
 ```bash
 curl "https://your-server.com/o/sdk?method=ab_fetch_variants" \
   -d "app_key=YOUR_APP_KEY" \
+  -d "device_id=DEVICE_ID" \
   -d 'keys=["button_text","header_text"]'
 ```
 
 ## Limitations
 
+- The live handler requires `device_id` even though this endpoint is read-only.
 - `keys` must be a valid JSON array string.
 - This endpoint uses the first parameter in the first variant as the grouping key for each experiment.
 
@@ -130,4 +134,4 @@ This feature is part of **Countly Enterprise**.
 
 ## Last Updated
 
-2026-02-16
+2026-04-08

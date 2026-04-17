@@ -39,6 +39,7 @@ Requires Global Admin access.
 | `method` | String | Yes | Must be `systemlogs_meta`. |
 | `api_key` | String | Yes (or use `auth_token`) | API key for authentication. |
 | `auth_token` | String | No | Auth token as query parameter or `countly-token` header. |
+| `app_id` | String | Yes | App id required by the global-admin read validation path. |
 
 ## Response
 
@@ -144,7 +145,7 @@ Requires Global Admin access.
 ### Read metadata for system logs filters
 
 ```plaintext
-/o?method=systemlogs_meta&api_key=YOUR_API_KEY
+/o?method=systemlogs_meta&api_key=YOUR_API_KEY&app_id=APP_ID
 ```
 
 ## Limitations

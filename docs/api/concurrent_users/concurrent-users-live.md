@@ -2,6 +2,8 @@
 sidebar_label: "Get Live Count"
 ---
 
+# Concurrent Users - Get Live Count
+
 ## Endpoint
 
 `/o?method=live`

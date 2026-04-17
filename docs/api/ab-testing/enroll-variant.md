@@ -1,8 +1,8 @@
 ---
 sidebar_label: "Enroll User in Variant"
 keywords:
-  - "/i/sdk"
-  - "sdk"
+  - "/i"
+  - "ab_enroll_variant"
 ---
 
 # Enroll User in Variant
@@ -10,7 +10,7 @@ keywords:
 ## Endpoint
 
 ```
-/i/sdk?method=ab_enroll_variant
+/i?method=ab_enroll_variant
 ```
 
 > Ⓔ **Enterprise Only**  
@@ -78,7 +78,7 @@ Manually enroll a user into a specific variant for the experiment that contains 
 
 **Request**:
 ```bash
-curl "https://your-server.com/i/sdk?method=ab_enroll_variant" \
+curl "https://your-server.com/i?method=ab_enroll_variant" \
   -d "app_key=YOUR_APP_KEY" \
   -d "device_id=DEVICE_ID" \
   -d "key=button_color" \
@@ -126,4 +126,4 @@ This feature is part of **Countly Enterprise**.
 
 ## Last Updated
 
-2026-02-16
+2026-04-08

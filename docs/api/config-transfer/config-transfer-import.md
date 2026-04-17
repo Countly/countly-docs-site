@@ -18,7 +18,7 @@ keywords:
 
 ## Overview
 
-Imports previously exported configuration data into an application. Reads a JSON file from the export endpoint, validates all items for compatibility, performs ID mapping, and inserts the configuration into the target application with automatic dependency resolution.
+Imports previously exported configuration data into an application. Reads an uploaded JSON export file, validates all items for compatibility, performs ID mapping, and inserts the configuration into the target application with automatic dependency resolution.
 
 ## Authentication
 
@@ -37,7 +37,7 @@ Imports previously exported configuration data into an application. Reads a JSON
 | api_key | String | Yes (or auth_token) | API key for authentication |
 | auth_token | String | Yes (or api_key) | Auth token for authentication |
 | app_id | String | Yes | Target application identifier (where to import configuration) |
-| import_file | File | Yes | JSON file exported from the Config Transfer export endpoint |
+| import_file | File | Yes | Multipart-uploaded JSON file exported from the Config Transfer export endpoint. |
 
 ### import_file Format
 
@@ -47,8 +47,8 @@ JSON file structure exactly as exported from `/o/export`:
 [
   {
     "name": "feature_name",
-    "data": [...],
-    "dependencies": {...}
+    "data": [],
+    "dependencies": {}
   }
 ]
 ```
@@ -82,7 +82,7 @@ JSON file structure exactly as exported from `/o/export`:
 
 1. **Validation Phase**:
    - Validates update permission for `config_transfer` feature
-   - Reads and parses uploaded JSON file from export
+   - Reads and parses uploaded JSON file from `import_file`
    - Validates imported data structure
 
 2. **Feature Validation**:
@@ -132,10 +132,10 @@ JSON file structure exactly as exported from `/o/export`:
 curl -X POST "https://your-server.com/i/import" \
   -F "api_key=YOUR_API_KEY" \
   -F "app_id=TARGET_APP_ID" \
-  -F "import_file=@export_config.json"
+  -F "import_file=@export_config.json;type=application/json"
 ```
 
-Where `export_config.json` is a file previously downloaded from the export endpoint.
+Where `export_config.json` contains the JSON array returned by `/o/export`.
 
 **Response**:
 ```json
@@ -145,11 +145,13 @@ Where `export_config.json` is a file previously downloaded from the export endpo
 ### Example 2: Save export, then import to another app
 
 **Step 1: Export from source app**:
+Save the JSON response from `/o/export` into a file:
+
 ```bash
-curl -X GET "https://your-server.com/o/export" \
-  -d "api_key=YOUR_API_KEY" \
-  -d "app_id=SOURCE_APP_ID" \
-  -d 'exportData=[{"id":"dashboards","name":"Dashboards","children":[{"id":"dash_123"}]}]' \
+curl -G "https://your-server.com/o/export" \
+  --data-urlencode "api_key=YOUR_API_KEY" \
+  --data-urlencode "app_id=SOURCE_APP_ID" \
+  --data-urlencode 'exportData=[{"id":"dashboards","name":"Dashboards","children":[{"id":"DASHBOARD_ID","name":"Dashboard"}]}]' \
   > export_config.json
 ```
 
@@ -158,7 +160,7 @@ curl -X GET "https://your-server.com/o/export" \
 curl -X POST "https://your-server.com/i/import" \
   -F "api_key=YOUR_API_KEY" \
   -F "app_id=TARGET_APP_ID" \
-  -F "import_file=@export_config.json"
+  -F "import_file=@export_config.json;type=application/json"
 ```
 
 **Response**:
@@ -171,6 +173,7 @@ curl -X POST "https://your-server.com/i/import" \
 ## Limitations
 
 - **File size**: Import file size limited by server upload limits (typically 100MB).
+- **File format**: Current implementation reads `import_file` and parses it with `JSON.parse`; archive formats such as `.tar.gz` are not accepted by this endpoint.
 - **Supported features**: Only features that implement `/import` and `/import/validate` dispatches can be imported. Check plugin documentation for import support.
 - **ID replacement mechanism**: IDs are replaced using string replacement of `APP_ID` and `OWNER_ID` placeholders. Custom serialization logic in imported data may break if not handled properly.
 - **Dependency conflicts**: If exported item depends on items not being imported, import may fail with validation error from the feature plugin.

@@ -17,6 +17,8 @@ keywords:
 
 Sends a test email to the authenticated global admin user's email address to verify current mail delivery setup.
 
+This endpoint is configuration-dependent: the Countly instance must have a working mail transport configured. On instances without SMTP/sendmail transport, the request can authenticate successfully but still return `503 Failed`.
+
 ## Authentication
 
 Countly API supports three authentication methods:
@@ -124,6 +126,7 @@ Countly API supports three authentication methods:
 - Uses authenticated member email as recipient.
 - Builds subject/body from localization file when available for the member language.
 - Sends mail through configured server mail transport.
+- Returns `503 Failed` when the mail module cannot deliver through the configured transport.
 
 ## Database Collections
 
@@ -143,6 +146,7 @@ Countly API supports three authentication methods:
 
 - Recipient address is always the authenticated admin user's email.
 - The endpoint validates send attempt, not mailbox delivery/open status.
+- Requires an operational mail transport on the target Countly server.
 
 ## Related Endpoints
 
@@ -150,4 +154,4 @@ Countly API supports three authentication methods:
 
 ## Last Updated
 
-2026-02-17
+2026-04-13

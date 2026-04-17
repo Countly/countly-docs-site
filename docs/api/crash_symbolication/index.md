@@ -26,7 +26,10 @@ Crash Symbolication manages debug symbol files and symbolication workflows so cr
 | [Run Symbolication](crash-symbolicate.md) | Start symbolication for a crash group |
 | [Callback](crash-symbolicate-result.md) | Receive symbolication result from server |
 | [List Jobs](crash-jobs-list.md) | List symbolication jobs/logs |
-| [Test](symbolication-test.md) | Test symbolication server integration |
+| [Test Server Connection](symbolication-test.md) | Test symbolication server reachability |
+| [Test API Key](symbolication-test-key.md) | Test symbolication server API key |
+| [Test Return Connection](symbolication-test-return-connection.md) | Test callback reachability from the symbolication server |
+| [Test Endpoints](symbolication-test-endpoints.md) | Test symbolication server add/check/get/ack endpoints |
 
 ## Database Collections / Storage
 

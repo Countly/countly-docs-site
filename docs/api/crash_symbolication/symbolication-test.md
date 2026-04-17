@@ -12,9 +12,6 @@ keywords:
 
 ```
 /o/symbolication/test_symbolication_connection
-/o/symbolication/test_symbolication_key
-/o/symbolication/test_symbolication_return_connection
-/o/symbolication/test_symbolication_endpoints
 ```
 
 > Ⓔ **Enterprise Only**  
@@ -22,7 +19,7 @@ keywords:
 
 ## Overview
 
-Checks connectivity and integration between Countly and the configured symbolication server.
+Checks whether Countly can reach the configured symbolication server.
 
 ## Authentication
 
@@ -39,8 +36,6 @@ Checks connectivity and integration between Countly and the configured symbolica
 | Parameter | Type | Required | Description |
 |---|---|---|---|
 | `server_url` | String | Yes | Symbolication server base URL |
-| `symb_key` | String | Required for `test_symbolication_key` | Symbolication server API key |
-| `return_url` | String | Required for `test_symbolication_return_connection` | Callback URL to validate reverse reachability |
 | `api_key` | String | Yes (or `auth_token`) | API key authentication |
 | `auth_token` | String | Yes (or `api_key`) | Auth token authentication |
 
@@ -48,35 +43,17 @@ Checks connectivity and integration between Countly and the configured symbolica
 
 ### Success Response
 
-Connection / key / return tests return boolean:
+Connection tests return boolean:
 
 ```json
 true
-```
-
-Endpoint test returns a reflected results array:
-
-```json
-[
-  {
-    "value": "ok"
-  },
-  {
-    "value": "ok"
-  },
-  {
-    "error": "Error 404 from https://symbolication.example.com/symbolication/get_job_result?..."
-  }
-]
 ```
 
 ### Response Fields
 
 | Field | Type | Description |
 |---|---|---|
-| `(root value)` | Boolean | Connection/key/return connection status |
-| `[].value` | String | `ok` for endpoint checks |
-| `[].error` | String | Error description for a failed endpoint check |
+| `(root value)` | Boolean | Connection status. |
 
 ### Error Responses
 
@@ -88,7 +65,7 @@ Endpoint test returns a reflected results array:
 ## Behavior/Processing
 
 - Uses sub-action in URL path (not a query `action` parameter).
-- `test_symbolication_endpoints` verifies add/check/get/ack endpoints on the remote server.
+- Related symbolication test endpoints are documented separately.
 
 ---
 
@@ -106,20 +83,11 @@ This endpoint does not read or write database collections.
 /o/symbolication/test_symbolication_connection?server_url=https://symbolication.example.com&api_key=YOUR_API_KEY
 ```
 
-### Example 2: Test symbolication API key
-
-```text
-/o/symbolication/test_symbolication_key?server_url=https://symbolication.example.com&symb_key=SYMB_KEY_VALUE&api_key=YOUR_API_KEY
-```
-
-### Example 3: Test return connection
-
-```text
-/o/symbolication/test_symbolication_return_connection?server_url=https://symbolication.example.com&return_url=https://your-server.com/i/crash_symbols/symbolicatation_result?symbolication_test=1&api_key=YOUR_API_KEY
-```
-
 ## Related Endpoints
 
+- [Test Symbolication API Key](symbolication-test-key.md)
+- [Test Symbolication Return Connection](symbolication-test-return-connection.md)
+- [Test Symbolication Endpoints](symbolication-test-endpoints.md)
 - [Run Symbolication](crash-symbolicate.md)
 - [Symbolication Result Callback](crash-symbolicate-result.md)
 

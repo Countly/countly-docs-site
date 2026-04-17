@@ -1,7 +1,7 @@
 ---
 sidebar_label: "MIME Type Validation"
 keywords:
-  - "/o/push/message/mime"
+  - "/o/push/mime"
   - "mime"
   - "push"
   - "message"
@@ -12,7 +12,7 @@ keywords:
 ## Endpoint
 
 ```plaintext
-/o/push/message/mime
+/o/push/mime
 ```
 
 ## Overview
@@ -142,7 +142,7 @@ This endpoint does not read or write database collections.
 ### Validate attachment URL
 
 ```plaintext
-/o/push/message/mime?
+/o/push/mime?
   api_key=YOUR_API_KEY&
   app_id=6991c75b024cb89cdc04efd2&
   url=https://cdn.example.com/assets/promo.png
@@ -155,4 +155,4 @@ This endpoint does not read or write database collections.
 
 ## Last Updated
 
-2026-03-07
+2026-04-09
