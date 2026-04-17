@@ -28,10 +28,6 @@ Countly API supports three authentication methods:
 2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
 3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
 
-Validation methods:
--  for single-app mode
--  when `all=true`
-
 ## Permissions
 
 - Single-app cleanup: requires `drill` `Update` permission.
@@ -42,7 +38,7 @@ Validation methods:
 | Parameter | Type | Required | Description |
 |---|---|---|---|
 | `app_id` | String | Conditional | Required for single-app cleanup (`all` not set). |
-| `all` | Boolean String | No | Set to truthy value to run across all apps (global admin only). |
+| `all` | Boolean String | No | Set to any truthy value to run across all apps. Requires global admin permission. |
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
 
@@ -76,6 +72,7 @@ Validation methods:
 
 - Starts asynchronous cleanup, does not wait for completion.
 - For all-app mode, iterates through all apps and runs cleanup per app.
+- In single-app mode, `app_id` is required and cleanup is queued for that app only.
 - Writes completion/failure status to system logs (`meta_cleanup_finished`).
 
 ## Database Collections
@@ -114,4 +111,4 @@ Validation methods:
 
 ## Last Updated
 
-2026-02-16
+2026-04-17

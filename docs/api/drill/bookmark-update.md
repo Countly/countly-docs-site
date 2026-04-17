@@ -18,7 +18,7 @@ keywords:
 
 ## Overview
 
-Updates an existing bookmark created by the current member.
+Updates an existing bookmark created by the current member. The stored query uses the same field names and operator syntax as `/o?method=segmentation` `queryObject`.
 
 ## Authentication
 
@@ -40,10 +40,10 @@ Requires `drill` `Read` permission.
 | `app_id` | String | Yes | Target app ID. |
 | `bookmark_id` | String | Yes | Bookmark ID to edit. |
 | `event_key` | String | Yes | Event key for bookmark scope. |
-| `query_obj` | JSON String (Object) | Yes | Query object as JSON string. |
-| `query_text` | String | Yes | Human-readable query text. |
-| `by_val` | JSON String (Array) | Yes | Segmentation key list as JSON string. |
-| `by_val_text` | String | Yes | Human-readable segmentation text. |
+| `query_obj` | JSON String (Object) | Yes | Drill query object as JSON string. Use the same shape as `/o?method=segmentation` `queryObject`, for example `{"up.cc":"US"}` or `{"sg.plan":{"$in":["pro"]}}`. |
+| `query_text` | String | Yes | Human-readable query label stored with the bookmark. If empty with a normal bookmark, the server stores `{}` as `query_obj`. |
+| `by_val` | JSON String (Array) | Yes | Drill projection key list as JSON string, equivalent to `/o?method=segmentation` `projectionKey`, for example `["up.p"]` or `["sg.plan"]`. |
+| `by_val_text` | String | Yes | Human-readable projection label stored with the bookmark. If `by_val` or `by_val_text` is empty, the server stores `[]` and an empty label. |
 | `name` | String | Yes | Bookmark name. |
 | `desc` | String | Yes | Bookmark description. |
 | `global` | Boolean String | Yes | `true` or `false`. |
@@ -100,8 +100,11 @@ Requires `drill` `Read` permission.
 ## Behavior/Processing
 
 - Validates required update fields.
-- Loads bookmark by ID and ensures ownership.
-- Recomputes signature and event-app hash.
+- Loads bookmark by ID and ensures it is owned by the current member. Unlike delete, global bookmarks are not editable unless the current member is also the creator.
+- Parses `query_obj` to detect internal bookmarks. For normal bookmarks, `query_obj` and `query_text` must both be provided or the stored query is reset to `{}` with an empty label.
+- Stores `by_val` only when both `by_val` and `by_val_text` are provided; otherwise stores `[]` and an empty label.
+- Recomputes signature and event-app hash from the merged bookmark state.
+- Rejects duplicate bookmarks when the recomputed `sign` already exists.
 - Updates bookmark and emits bookmark/systemlog events.
 
 ## Database Collections
@@ -123,9 +126,9 @@ Requires `drill` `Read` permission.
   name=US Sessions Updated&
   desc=Updated bookmark description&
   global=false&
-  query_obj={"cc":"US"}&
-  query_text=country is US&
-  by_val=["sg.p"]&
+  query_obj={"up.cc":"US"}&
+  query_text=Country is US&
+  by_val=["up.p"]&
   by_val_text=Platform
 ```
 
@@ -141,4 +144,4 @@ Requires `drill` `Read` permission.
 
 ## Last Updated
 
-2026-02-16
+2026-04-17

@@ -18,7 +18,7 @@ keywords:
 
 ## Overview
 
-Returns either a paginated users list or a single user profile (when `uid` or `did` is provided).
+Returns either a paginated users list, a single user profile (when `uid` or `did` is provided), or a user-property breakdown when `projectionKey` is provided.
 
 ## Authentication
 
@@ -41,12 +41,27 @@ Returns either a paginated users list or a single user profile (when `uid` or `d
 | `method` | String | Yes | Must be `user_details` |
 | `uid` | String | No | User ID for single-profile response |
 | `did` | String | No | Device ID alternative to `uid` |
-| `query` | String (JSON Object) | No | Filter query for list mode |
+| `query` | String (JSON Object) | No | Drill-style user filter for list mode. The endpoint runs Drill query preprocessing before reading users, so query-builder field names such as `up.cc`, `up.p`, `up.av`, `chr`, and custom user-property filters can be used. |
+| `projectionKey` | String (JSON Array) | No | User breakdown field list. The server parses the first item only and groups users by that field, for example `["cc"]`, `["p"]`, or `["custom.plan"]`. |
+| `filter` | String | No | Built-in profile type filter. `user-known` returns users with profile info, `user-anonymous` returns users without profile info, and `user-all` disables this filter. |
+| `profile_group` | String | No | Cohort/profile group id; adds a `chr.<profile_group>.in=true` filter. |
+| `visibleColumns` | String (JSON Array) | No | Additional fields to include in list rows. `chr-group` is mapped from the stored `chr` field. |
+| `fetchOnlyVisibleColumns` | Boolean String | No | If set, starts from a minimal projection and adds only requested visible columns. |
 | `iSortCol_0` | Number | No | Sort column index |
 | `sSortDir_0` | String | No | Sort direction (`asc`, `desc`) |
 | `iDisplayStart` | Number | No | Pagination offset |
 | `iDisplayLength` | Number | No | Pagination page size |
 | `sSearch` | String | No | Text search in indexed fields |
+| `exportToFile` | Boolean String | No | Streams matching users as an export file instead of returning JSON. |
+| `type` | String | No | Export type used with `exportToFile`; `json` applies JSON line transformation. |
+| `filename` | String | No | Export filename used with `exportToFile`. |
+| `report_name` | String | No | Long-task/report name override for list or breakdown tasks. |
+| `report_desc` | String | No | Long-task/report description. |
+| `period_desc` | String | No | Long-task period label. Defaults to `User Data`. |
+| `autoRefresh` | Boolean String | No | Long-task auto-refresh flag. |
+| `force` | Boolean String | No | Forces long-task execution instead of reusing a matching running task. |
+| `r_hour` | Number | No | Auto-refresh hour for a long task. Defaults to `2`. |
+| `linked_to` | String | No | Optional long-task link target. |
 
 ## Configuration Impact
 
@@ -56,7 +71,7 @@ Returns either a paginated users list or a single user profile (when `uid` or `d
 
 ## Response
 
-### Success Response
+### List Response
 
 ```json
 {
@@ -76,6 +91,57 @@ Returns either a paginated users list or a single user profile (when `uid` or `d
 }
 ```
 
+### Single Profile Response
+
+When `uid` or `did` is provided, the endpoint returns a profile document instead of a DataTables list.
+
+```json
+{
+  "_id": "d8f4d8f91ac1f1f5a8e6f0d9d3f4c0a71b2e3d4f",
+  "uid": "u_102",
+  "did": "device-102",
+  "name": "Jane Doe",
+  "email": "jane@example.com",
+  "cc": "US",
+  "p": "iOS",
+  "sc": 42,
+  "ls": 1739557500,
+  "picture": "https://www.gravatar.com/avatar/..."
+}
+```
+
+### Breakdown Response
+
+When `projectionKey` is provided in list mode, the endpoint groups matching users by the first projection key.
+
+```json
+{
+  "sEcho": "1",
+  "breakDownData": [
+    {
+      "_id": "US",
+      "sum": 120
+    },
+    {
+      "_id": "DE",
+      "sum": 48
+    }
+  ],
+  "projectionKey": "cc",
+  "total": 245
+}
+```
+
+### Long Task Response
+
+For expensive list or breakdown requests, the task manager may return a task id instead of the final result.
+
+```json
+{
+  "task_id": "67bd31c92e7f0b0012ab4567"
+}
+```
+
 ### Response Fields
 
 | Field | Type | Description |
@@ -84,6 +150,19 @@ Returns either a paginated users list or a single user profile (when `uid` or `d
 | `iTotalRecords` | Number | Total users count |
 | `iTotalDisplayRecords` | Number | Filtered users count |
 | `aaData` | Array | User row objects |
+| `aaData[].uid` | String | User ID, when known. |
+| `aaData[].did` | String | Device ID. |
+| `aaData[].name` | String | Display name. Falls back to `did` or an empty string. |
+| `aaData[].cc` | String | Country code. |
+| `aaData[].p` | String | Platform. |
+| `aaData[].sc` | Number | Session count. |
+| `aaData[].ls` | Number | Last seen timestamp. |
+| `breakDownData` | Array | Breakdown rows returned when `projectionKey` is provided. |
+| `breakDownData[]._id` | Any | Group value for the selected projection key. |
+| `breakDownData[].sum` | Number | Number of matching users in this group. |
+| `projectionKey` | String | First item parsed from the `projectionKey` array. |
+| `total` | Number | Estimated total users in the app, used in breakdown mode. |
+| `task_id` | String | Long-task id returned when the request continues asynchronously. |
 
 ### Error Responses
 
@@ -103,9 +182,16 @@ Returns either a paginated users list or a single user profile (when `uid` or `d
 
 ## Behavior/Processing
 
-- Without `uid`/`did`, returns list mode with filtering/sorting/pagination.
+- Without `uid`/`did`, returns list mode with filtering, sorting, and pagination.
 - With `uid`/`did`, returns one user profile object.
-- Supports optional breakdown workflow when `projectionKey` is used (may return task response).
+- Parses `query` as JSON. Invalid JSON is logged and treated as an empty filter.
+- Dispatches Drill query preprocessing for `query`, which lets query-builder user-property filters be translated before reading `app_users{appId}`.
+- Applies `sSearch` as a text search and `filter` as a built-in known/anonymous profile filter.
+- Parses `projectionKey` as a JSON array and uses only the first item for breakdown grouping.
+- For breakdown mode, aggregates matching users by `projectionKey` and returns `breakDownData`, `projectionKey`, and `total`.
+- For normal list mode, default projected fields include identity, location, device/platform, session counters, email, picture, and `events`; `visibleColumns` can add fields.
+- If `users.show_notes_in_list` is enabled, list rows include `note`.
+- Expensive list or breakdown requests can return `{ "task_id": "..." }` while the task manager continues processing.
 
 ## Database Collections
 
@@ -123,6 +209,38 @@ Returns either a paginated users list or a single user profile (when `uid` or `d
 
 ```text
 /o?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&method=user_details&uid=u_102
+```
+
+### Filter users with a Drill-style user query
+
+```text
+/o?api_key=YOUR_API_KEY&
+  app_id=YOUR_APP_ID&
+  method=user_details&
+  query={"up.cc":{"$in":["US","CA"]},"up.p":{"$in":["iOS"]}}&
+  iDisplayStart=0&
+  iDisplayLength=20
+```
+
+### Return a user-property breakdown
+
+```text
+/o?api_key=YOUR_API_KEY&
+  app_id=YOUR_APP_ID&
+  method=user_details&
+  query={"up.cc":{"$in":["US","CA"]}}&
+  projectionKey=["cc"]
+```
+
+### Include extra visible columns
+
+```text
+/o?api_key=YOUR_API_KEY&
+  app_id=YOUR_APP_ID&
+  method=user_details&
+  visibleColumns=["email","custom.plan","chr-group"]&
+  iDisplayStart=0&
+  iDisplayLength=50
 ```
 
 ## Related Endpoints
@@ -146,4 +264,4 @@ This feature is part of **Countly Enterprise**.
 
 ## Last Updated
 
-2026-02-16
+2026-04-17

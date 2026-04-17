@@ -57,7 +57,14 @@ Requires `Read` permission as evaluated by `FEATURE_DEPENDENCIES` (`funnels`, `c
   "_id": "67bd31c92e7f0b0012ab4567",
   "name": "US iOS Sessions",
   "event_key": "[CLY]_session",
-  "global": false
+  "desc": "Sessions for iOS users in US",
+  "global": false,
+  "creator": "64f5bf79f4f7ac0012ab1234",
+  "query_obj": "{\"up.cc\":\"US\",\"up.p\":\"ios\"}",
+  "query_text": "Country is US and platform is iOS",
+  "by_val": "[\"up.p\"]",
+  "by_val_text": "Platform",
+  "event_app_id": "2c2f0f9a..."
 }
 ```
 
@@ -68,6 +75,21 @@ Or `null` when bookmark is not found / not visible.
 | Field | Type | Description |
 |---|---|---|
 | `(root object)` | Object or Null | Bookmark object when found and visible; otherwise `null`. |
+| `_id` | String | Bookmark ID. |
+| `app_id` | String | App ID the bookmark belongs to. |
+| `event_key` | String | Event key the bookmark belongs to. |
+| `name` | String | Bookmark name. |
+| `desc` | String | Bookmark description. |
+| `global` | Boolean | Whether the bookmark is visible beyond its creator. |
+| `creator` | String | Member ID of the bookmark creator. |
+| `query_obj` | String | Saved Drill query object JSON string. Uses the same shape as segmentation `queryObject`. |
+| `query_text` | String | Human-readable query label. |
+| `by_val` | String | Saved projection key array JSON string, equivalent to segmentation `projectionKey`. |
+| `by_val_text` | String | Human-readable projection label. |
+| `namespace` | String | Non-default namespace, when stored. |
+| `visualization` | String | Optional visualization hint. |
+| `sign` | String | Deterministic duplicate-detection signature. |
+| `event_app_id` | String | MD5 hash of `app_id + event_key` used for event-scoped lookup. |
 
 ### Error Responses
 
@@ -76,7 +98,8 @@ This endpoint does not define a dedicated structured error payload; error output
 ## Behavior/Processing
 
 - Reads bookmark by ID from `countly_drill.drill_bookmarks`.
-- Applies visibility filter: global bookmark or creator-owned bookmark.
+- Applies visibility filter: globally visible bookmark or creator-owned bookmark.
+- Does not require `event_key`; lookup is by `_id` plus visibility.
 
 ## Database Collections
 
@@ -105,4 +128,4 @@ This endpoint does not define a dedicated structured error payload; error output
 
 ## Last Updated
 
-2026-02-16
+2026-04-17

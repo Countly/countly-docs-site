@@ -28,6 +28,9 @@ This index keeps a product-oriented view. Endpoint pages include request and res
 
 ### Maintenance
 - [Metadata Cleanup - Update](metadata-cleanup-update.md)
+- [Metadata Lists - Recheck](metadata-list-recheck-update.md)
+- [Metadata Regeneration](metadata-regeneration-update.md)
+- [Data Regeneration](data-regeneration-create.md)
 
 ## Common Workflows
 
@@ -43,7 +46,9 @@ This index keeps a product-oriented view. Endpoint pages include request and res
 
 ### Maintain Metadata
 1. Run [Metadata Cleanup - Update](metadata-cleanup-update.md) for one app or all apps.
-2. Confirm completion from system logs.
+2. Use [Metadata Lists - Recheck](metadata-list-recheck-update.md) when stored metadata value lists need to be re-evaluated.
+3. Use [Metadata Regeneration](metadata-regeneration-update.md) when metadata needs to be rebuilt from recent Drill data.
+4. Confirm completion from system logs.
 
 ## Data Sources
 
@@ -72,4 +77,4 @@ From `plugins.setConfigs("drill", ...)` in `plugins/drill/api/api.js`:
 
 ---
 
-_Last Updated: 2026-02-15_
+_Last Updated: 2026-04-17_

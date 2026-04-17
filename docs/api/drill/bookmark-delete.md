@@ -87,8 +87,9 @@ Requires `drill` `Read` permission.
 ## Behavior/Processing
 
 - Validates bookmark ID.
-- Allows deletion for global bookmarks or user-owned bookmarks.
+- Allows deletion for globally visible bookmarks, legacy bookmarks without `creator`, or user-owned bookmarks.
 - Deletes bookmark and emits cleanup/systemlog events.
+- Dispatches dashboard cleanup so widgets that reference the deleted Drill bookmark can be removed.
 
 ## Database Collections
 
@@ -119,4 +120,4 @@ Requires `drill` `Read` permission.
 
 ## Last Updated
 
-2026-02-16
+2026-04-17

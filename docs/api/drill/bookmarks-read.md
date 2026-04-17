@@ -17,7 +17,7 @@ keywords:
 
 ## Overview
 
-Lists Drill bookmarks visible to the current member.
+Lists Drill bookmarks visible to the current member. Bookmarks store saved Drill query filters (`query_obj`) and projection keys (`by_val`) used by `/o?method=segmentation`.
 
 ## Authentication
 
@@ -38,11 +38,11 @@ Requires `Read` permission as evaluated by `FEATURE_DEPENDENCIES` (`funnels`, `c
 |---|---|---|---|
 | `method` | String | Yes | Must be `drill_bookmarks`. |
 | `app_id` | String | Yes | Target app ID. |
-| `event_key` | String | Conditional | Used for event-level bookmark mode (`app_level` not set to `1`). |
-| `app_level` | String | No | If `1`, returns app-level bookmarks; otherwise uses event hash scope. |
-| `apps` | JSON String (Array) | No | Optional app list when `app_level=1`. |
-| `namespace` | String | No | Non-default namespace filter. |
-| `only_count` | Boolean String | No | If present, returns only count. |
+| `event_key` | String | Conditional | Used for event-level bookmark mode (`app_level` not set to `1`). The server hashes `app_id + event_key` and matches stored `event_app_id`. |
+| `app_level` | String | No | If `1`, returns app-level bookmarks by `app_id`; otherwise returns event-scoped bookmarks by `event_app_id`. |
+| `apps` | JSON String (Array) | No | Optional app ID list when `app_level=1`; returns bookmarks where `app_id` is in this list. |
+| `namespace` | String | No | Non-default namespace filter. If omitted or set to `drill`, only bookmarks without a stored `namespace` are returned. |
+| `only_count` | Boolean String | No | If present, returns only the matching bookmark count instead of bookmark objects. |
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
 
@@ -65,7 +65,14 @@ Bookmark list:
     "app_id": "64f5c0d8f4f7ac0012ab3456",
     "event_key": "[CLY]_session",
     "name": "US iOS Sessions",
-    "global": false
+    "desc": "Sessions for iOS users in US",
+    "global": false,
+    "creator": "64f5bf79f4f7ac0012ab1234",
+    "query_obj": "{\"up.cc\":\"US\",\"up.p\":\"ios\"}",
+    "query_text": "Country is US and platform is iOS",
+    "by_val": "[\"up.p\"]",
+    "by_val_text": "Platform",
+    "event_app_id": "2c2f0f9a..."
   }
 ]
 ```
@@ -81,6 +88,21 @@ Count mode (`only_count`):
 | Field | Type | Description |
 |---|---|---|
 | `(root value)` | Array or Number | Bookmark array or count depending on request mode. |
+| `_id` | String | Bookmark ID. Present in list mode. |
+| `app_id` | String | App ID the bookmark belongs to. |
+| `event_key` | String | Event key the bookmark belongs to. |
+| `name` | String | Bookmark name. |
+| `desc` | String | Bookmark description. |
+| `global` | Boolean | Whether the bookmark is visible beyond its creator. |
+| `creator` | String | Member ID of the bookmark creator. |
+| `query_obj` | String | Saved Drill query object JSON string. Uses the same shape as segmentation `queryObject`. |
+| `query_text` | String | Human-readable query label. |
+| `by_val` | String | Saved projection key array JSON string, equivalent to segmentation `projectionKey`. |
+| `by_val_text` | String | Human-readable projection label. |
+| `namespace` | String | Non-default namespace, when stored. Default Drill bookmarks usually omit this field. |
+| `visualization` | String | Optional visualization hint. |
+| `sign` | String | Deterministic duplicate-detection signature. |
+| `event_app_id` | String | MD5 hash of `app_id + event_key` used for event-scoped lookup. |
 
 ### Error Responses
 
@@ -88,9 +110,10 @@ This endpoint does not define a dedicated structured error payload; error output
 
 ## Behavior/Processing
 
-- Filters bookmarks by user visibility (`global` or creator).
+- Filters bookmarks by user visibility: globally visible bookmarks or bookmarks created by the current member.
 - Applies namespace and app/event scope rules.
-- Uses `event_app_id` hash for event-scoped bookmarks.
+- Uses `event_app_id` hash for event-scoped bookmarks when `app_level` is not `1`.
+- Returns a number instead of an array when `only_count` is provided.
 
 ## Database Collections
 
@@ -119,6 +142,15 @@ This endpoint does not define a dedicated structured error payload; error output
   only_count=true
 ```
 
+### List app-level bookmarks for multiple apps
+
+```text
+/o?method=drill_bookmarks&
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  app_level=1&
+  apps=["64f5c0d8f4f7ac0012ab3456","64f5c0d8f4f7ac0012ab7890"]
+```
+
 ---
 
 ## Related Endpoints
@@ -132,4 +164,4 @@ This endpoint does not define a dedicated structured error payload; error output
 
 ## Last Updated
 
-2026-02-16
+2026-04-17
