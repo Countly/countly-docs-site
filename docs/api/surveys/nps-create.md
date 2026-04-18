@@ -87,9 +87,11 @@ Creates an NPS widget.
 
 ## Behavior/Processing
 
-- Validates NPS payload.
-- Creates `feedback_widgets` record and initializes NPS score fields.
-- Creates/updates cohort linkage when targeting is present.
+- Parses and preprocesses widget properties such as `msg`, `appearance`, and `targeting`.
+- Validates NPS payload with NPS form property rules.
+- Creates a `feedback_widgets` record with `type=nps`, `creator`, `created`, `responded=0`, `shown=0`, `wv=1`, and `scores={total,promoter,detractor,passive}` initialized to zero.
+- Uploads `logo` when provided and records it in `appearance.logo`; if upload fails, the widget can still be created and the response includes the new `widgetId` with an error.
+- Creates a linked cohort when `targeting` is provided, stores its ID as `cohortID`, and emits `surveys_widget_created`.
 
 ## Database Collections
 
@@ -127,4 +129,4 @@ This feature is part of **Countly Enterprise**.
 
 ## Last Updated
 
-2026-02-16
+2026-04-18

@@ -125,8 +125,11 @@ Content-Type: application/json
 
 ## Behavior/Processing
 
-- Validates authentication, permissions, and request payloads before processing.
-- Executes the endpoint-specific operation described in this document and returns the response shape listed above.
+- Parses request body JSON and returns `Invalid request` if it is empty.
+- If `_id` is provided, updates only `blocks` for that existing version and returns the request body.
+- If `_id` is not provided, creates a new version for `journeyDefinitionId`.
+- New version number is computed as the current maximum version number for the definition plus one.
+- New versions are always created with status `draft`.
 
 ## Database Collections
 
@@ -153,4 +156,4 @@ This feature is part of **Countly Enterprise**.
 
 ## Last Updated
 
-2026-02-16
+2026-04-18

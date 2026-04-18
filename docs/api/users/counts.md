@@ -69,8 +69,12 @@ Returns total user count and unidentified user count.
 
 ## Behavior/Processing
 
-- Validates authentication, permissions, and request payloads before processing.
-- Executes the endpoint-specific operation described in this document and returns the response shape listed above.
+- Requires `Read` permission on the User Profiles feature.
+- Reads from `app_users{app_id}`.
+- `total` is returned from MongoDB `estimatedDocumentCount()`, so it is intended as a fast estimate of total user documents.
+- `unidentified` is returned from `count({"hasInfo": {"$ne": true}})`, so it counts users where `hasInfo` is missing or not exactly `true`.
+- The endpoint does not apply query, segment, cohort, or date filters.
+- The handler returns only `{unidentified, total}`.
 
 ## Database Collections
 
@@ -105,4 +109,4 @@ This feature is part of **Countly Enterprise**.
 
 ## Last Updated
 
-2026-02-16
+2026-04-18

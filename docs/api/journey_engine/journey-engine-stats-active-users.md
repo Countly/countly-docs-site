@@ -56,7 +56,10 @@ Return active user counts for journeys with comparison to previous period.
 
 | Field | Type | Description |
 |---|---|---|
-| `(root value)` | Object or Array | Response payload returned by this endpoint. |
+| `activeUsers` | Number | Current period active-user count. The implementation sums `users_completed`. |
+| `previousActiveUsers` | Number | Previous period active-user count. |
+| `change` | Number or String | Percentage change from previous period, or `"-"` when previous count is zero. |
+
 ### Error Responses
 
 - **500**: Query error
@@ -69,8 +72,9 @@ GET /o/journey-engine/stats/active-users?journeyDefinitionId=67164f4a1f1bd90d635
 
 ## Behavior/Processing
 
-- Validates authentication, permissions, and request payloads before processing.
-- Executes the endpoint-specific operation described in this document and returns the response shape listed above.
+- Filters `journey_stats` by `journeyVersionId` and/or `journeyDefinitionId` when provided.
+- Uses Countly period helpers when `period` is provided; otherwise defaults to the helper's hourly/current behavior.
+- Calculates active users by summing `users_completed` for current and previous period arrays.
 
 ## Database Collections
 
@@ -97,4 +101,4 @@ This feature is part of **Countly Enterprise**.
 
 ## Last Updated
 
-2026-02-16
+2026-04-18

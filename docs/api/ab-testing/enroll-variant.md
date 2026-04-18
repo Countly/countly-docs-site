@@ -94,8 +94,12 @@ curl "https://your-server.com/i?method=ab_enroll_variant" \
 
 ## Behavior/Processing
 
-- Validates authentication, permissions, and request payloads before processing.
-- Executes the endpoint-specific operation described in this document and returns the response shape listed above.
+- Dispatches from `/i` to the SDK ingestion handler when `method=ab_enroll_variant`.
+- Requires `key`; the handler converts it to `keys=["<key>"]` and fetches running experiments that contain that parameter.
+- Looks for a variant whose `name` matches `variant` and whose parameters include the requested `key`.
+- If a match is found, removes any existing assignment for that experiment from `app_users{appId}.ab`, then adds `{experiment_id, variant_index}` for the selected variant.
+- If no running experiment is found for the key, returns `No experiments found`. If the experiment exists but no matching variant/key pair exists, returns `Variant not found`.
+- Variant matching is exact after converting the requested `variant` to a string.
 
 ## Database Collections
 
@@ -126,4 +130,4 @@ This feature is part of **Countly Enterprise**.
 
 ## Last Updated
 
-2026-04-08
+2026-04-18

@@ -83,7 +83,23 @@ When `withDeletedJourneys=true`, the response is an object:
 
 | Field | Type | Description |
 |---|---|---|
-| `(root value)` | Object or Array | Response payload returned by this endpoint. |
+| `(root value)` | Array or Object | Array of active journey definitions by default. Object with `active` and `deleted` arrays when `withDeletedJourneys=true`. |
+| `_id` | String | Journey definition ID. |
+| `name` | String | Journey definition name. |
+| `appId` | String | App ID. |
+| `status` | String | Journey definition status. Deleted definitions are excluded from the default response. |
+| `created` | Number | Creation timestamp. |
+| `updated` | Number | Last update timestamp, when stored. |
+| `createdBy` | String or Null | Creator full name resolved from `members`; `null` when not available. |
+| `usersEntered` | Number | Stored number of users that entered the journey. Defaults to `0`. |
+| `flowsCompleted` | Number | Stored number of completed flows. Defaults to `0`. |
+| `versions` | Array | Version summaries for the journey definition. |
+| `versions[].version` | Number | Version number. |
+| `versions[].created` | Number | Version creation timestamp. |
+| `versions[].blocks` | Array | Version block definitions. |
+| `active` | Array | Active/non-deleted journey definitions when `withDeletedJourneys=true`. |
+| `deleted` | Array | Deleted journey definitions with their looked-up versions when `withDeletedJourneys=true`. |
+
 ### Error Responses
 
 - **500**: Query error
@@ -102,7 +118,12 @@ GET /o/journey-engine/list?app_id=64afe321d5f9b2f77cb2c8ed&withDeletedJourneys=t
 
 ## Behavior/Processing
 
-Counts are stored in `journey_definition` documents and not aggregated at query time for performance reasons.
+- Before listing, the handler patches deleted journeys that still have active versions by marking those versions as deleted.
+- Journey definitions are loaded from `journey_definition` where `appId` matches and status is not `deleted`.
+- Version summaries are loaded separately from `journey_versions` using the matching definition IDs.
+- Creator names are resolved from `members.full_name`.
+- Counts are stored in `journey_definition` documents and are not aggregated at query time for performance reasons.
+- Results are sorted by status and then by newest `created` timestamp.
 
 ## Database Collections
 
@@ -131,4 +152,4 @@ This feature is part of **Countly Enterprise**.
 
 ## Last Updated
 
-2026-02-16
+2026-04-18

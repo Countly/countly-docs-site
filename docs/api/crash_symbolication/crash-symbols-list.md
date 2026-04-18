@@ -83,8 +83,12 @@ Returns all uploaded symbol documents for the selected app.
 
 ## Behavior/Processing
 
-- Validates authentication, permissions, and request payloads before processing.
-- Executes the endpoint-specific operation described in this document and returns the response shape listed above.
+- Requires `Read` permission on the `crashes` feature.
+- Reads all documents from `app_crashsymbols{app_id}`.
+- Sorts symbols by `_id` ascending before returning them.
+- Does not apply pagination, search, or platform/build filters in this handler.
+- If the collection read fails or returns no rows, the handler returns an empty array.
+- Returned documents are not projected; any stored metadata fields on the symbol document can be present.
 
 ## Database Collections
 
@@ -125,4 +129,4 @@ This feature is part of **Countly Enterprise**.
 
 ## Last Updated
 
-2026-02-16
+2026-04-18

@@ -94,8 +94,12 @@ Retrieve all online user alerts accessible to your user. Results include alerts 
 
 ## Behavior/Processing
 
-- Validates authentication, permissions, and request payloads before processing.
-- Executes the endpoint-specific operation described in this document and returns the response shape listed above.
+- Requires `Read` permission on `concurrent_users`.
+- Reads alerts from `concurrent_users_alerts` using the same visibility filter as the Online Users feature. Global admins can see all alerts; other users only see alerts for visible apps.
+- Returns only alert configuration fields selected by the handler: `_id`, `name`, `app`, `def`, `users`, `minutes`, `email`, `enabled`, `condition_title`, `type`, `created_by`, `alertBy`, and `allGroups`.
+- Loads `members` and enriches each alert with `createdByUser` by matching `created_by` to the member `_id`.
+- Does not paginate in the handler; the full visible alert list is returned.
+- Database/read errors return `Concurrent users API error.`.
 
 ## Database Collections
 
@@ -145,7 +149,7 @@ This feature is part of **Countly Enterprise**.
 - [Contact Sales](https://count.ly/demo)
 - [Compare Versions](https://countly.com/pricing)
 
-Last Updated: 2026-02-14
+Last Updated: 2026-04-18
 
 ---
 

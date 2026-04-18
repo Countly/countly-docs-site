@@ -113,8 +113,13 @@ Default (`outputFormat=rows`):
 
 ## Behavior/Processing
 
-- Validates authentication, permissions, and request payloads before processing.
-- Executes the endpoint-specific operation described in this document and returns the response shape listed above.
+- Requires `Read` permission on the `crashes` feature.
+- Queries `symbolication_jobs` with an initial match on `app_id`.
+- Adds exact-match filters for `platform` and `status` when those query parameters are provided.
+- Uses the shared DataTable helper with column order `ts`, `platform`, `build`, `status`, and `log`.
+- Search applies to `platform`, `build`, `status`, and `log`; default sorting is by `created_at` descending.
+- The handler excludes `app_id` from returned rows and defaults to `outputFormat=rows` unless a DataTable output format is requested.
+- Aggregation errors return `false`.
 
 ## Database Collections
 
@@ -160,4 +165,4 @@ This feature is part of **Countly Enterprise**.
 
 ## Last Updated
 
-2026-02-16
+2026-04-18

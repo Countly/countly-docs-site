@@ -100,8 +100,12 @@ Content-Type: application/json
 
 ## Behavior/Processing
 
-- Validates authentication, permissions, and request payloads before processing.
-- Executes the endpoint-specific operation described in this document and returns the response shape listed above.
+- Loads the source version by `id`.
+- Returns `Version not found` when the source version does not exist.
+- Creates a new version under the same `journeyDefinitionId`.
+- New version number is computed as the current maximum version number for the definition plus one.
+- New version name is `<source name> copy`.
+- Copies the source `blocks`, uses the same `appId`, and sets status to `draft`.
 
 ## Database Collections
 
@@ -128,4 +132,4 @@ This feature is part of **Countly Enterprise**.
 
 ## Last Updated
 
-2026-02-16
+2026-04-18

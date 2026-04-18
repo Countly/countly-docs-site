@@ -170,8 +170,14 @@ Content-Type: application/json
 
 ## Behavior/Processing
 
-- Validates authentication, permissions, and request payloads before processing.
-- Executes the endpoint-specific operation described in this document and returns the response shape listed above.
+- Requires request body JSON with `name` and `version`.
+- Create flow rejects duplicate non-deleted journey names within the same app.
+- Create flow inserts a `journey_definition` document with `draft` status, then inserts version `1` named `v1` with `draft` status.
+- Update flow requires `_id` and updates only the journey definition name/timestamp plus the selected version blocks.
+- Update flow rejects duplicate non-deleted journey names in the same app, excluding the current journey definition.
+- `skip_threshold` is normalized for version storage: `0`, `null`, or omitted means no threshold; other values are stored as numbers.
+- Emits `journey_created` or `journey_edited` system log actions.
+- Returns the enriched journey definition from the same lookup path used by `GET /o/journey-engine/journey`.
 
 ## Database Collections
 
@@ -196,4 +202,4 @@ This feature is part of **Countly Enterprise**.
 
 ## Last Updated
 
-2026-02-16
+2026-04-18

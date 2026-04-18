@@ -88,8 +88,11 @@ Returns paginated NPS widgets table.
 
 ## Behavior/Processing
 
-- Validates authentication, permissions, and request payloads before processing.
-- Executes the endpoint-specific operation described in this document and returns the response shape listed above.
+- Filters `feedback_widgets` by `type=nps`, `app_id`, and optional `status`.
+- Applies `sSearch` as a case-insensitive regex against `internalName` and `name`.
+- Supports DataTables sorting through `iSortCol_0` / `sSortDir_0`; sortable columns are `status`, `internalName`, `targeting`, `nps`, `responded`, and `rate`.
+- Calculates `rate` as `responded / total` when total is greater than zero.
+- For NPS rows with responses, converts `scores.promoter` and `scores.detractor` from counts to percentages, calculates `nps` as promoter percentage minus detractor percentage, and calculates `scores.passive` as the remaining percentage.
 
 ## Database Collections
 
@@ -126,4 +129,4 @@ This feature is part of **Countly Enterprise**.
 
 ## Last Updated
 
-2026-02-16
+2026-04-18

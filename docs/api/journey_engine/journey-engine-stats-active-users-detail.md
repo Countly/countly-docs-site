@@ -57,7 +57,13 @@ Return active user counts grouped by interval (daily, weekly, monthly).
 
 | Field | Type | Description |
 |---|---|---|
-| `(root value)` | Object or Array | Response payload returned by this endpoint. |
+| `(root value)` | Array | Aggregated active-user buckets. |
+| `_id.year` | Number | Bucket year. |
+| `_id.month` | Number | Bucket month for daily/monthly/weekly intervals. |
+| `_id.week` | Number | Bucket week for daily/weekly intervals. |
+| `_id.day` | Number | Bucket day for daily interval. |
+| `activeUsers` | Number | Sum of `users_completed` for the bucket. |
+
 ### Error Responses
 
 - **500**: Query error
@@ -70,8 +76,10 @@ GET /o/journey-engine/stats/active-users/detail?journeyDefinitionId=67164f4a1f1b
 
 ## Behavior/Processing
 
-- Validates authentication, permissions, and request payloads before processing.
-- Executes the endpoint-specific operation described in this document and returns the response shape listed above.
+- Uses Countly period helpers to build the current period date array.
+- Filters by `journeyVersionId` and/or `journeyDefinitionId` when provided.
+- Groups by `daily`, `weekly`, or `monthly`; any other interval falls back to an empty group key.
+- Sorts by year, month, week, and day.
 
 ## Database Collections
 
@@ -98,4 +106,4 @@ This feature is part of **Countly Enterprise**.
 
 ## Last Updated
 
-2026-02-16
+2026-04-18

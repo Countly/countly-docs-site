@@ -84,8 +84,12 @@ Fetches one crash report record by `report_id`.
 
 ## Behavior/Processing
 
-- Validates authentication, permissions, and request payloads before processing.
-- Executes the endpoint-specific operation described in this document and returns the response shape listed above.
+- Requires `Read` permission on the `crashes` feature.
+- Requires `report_id`; missing values return `Missing parameter "report_id"`.
+- Looks up a single crash report through the crashes data layer with query `{_id: report_id}` and `limit=1`.
+- Returns the report document exactly as returned by the crashes table helper. The available fields depend on the crash backend and stored crash payload.
+- If no report matches the ID, returns `Report <id> not found`.
+- Query failures are logged and returned as `Error fetching crash report <id>`.
 
 ## Database Collections
 
@@ -126,4 +130,4 @@ This feature is part of **Countly Enterprise**.
 
 ## Last Updated
 
-2026-02-16
+2026-04-18

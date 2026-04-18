@@ -96,9 +96,12 @@ Returns NPS response table data and NPS-specific method branches.
 
 ## Behavior/Processing
 
-- `method=graph` returns NPS graph data.
-- `method=meta` returns NPS metadata aggregates.
-- Without `method`, returns NPS response table data.
+- `method=graph` returns NPS graph data from the aggregate collection (`nps{app_id}`) using `widget_id` as the segmentation value.
+- `method=meta` requires `period`, validates Countly period syntax, and returns metadata aggregates from `surveyQueries.fetchNpsMeta`.
+- Without `method`, returns a DataTables response table from Drill event `[CLY]_nps`.
+- Table mode supports filters for `widget_id`, `uid`, `rating`, `platform`, `platform_version`, `version`, `source`, `period`, and `device_id`.
+- `source=default` filters responses without `sg.journeyId`; any other `source` value matches `sg.journeyId`.
+- Table rows project rating, comment, platform, platform version, app version, widget id, timestamp, uid, did, and user name.
 
 ## Database Collections
 
@@ -137,4 +140,4 @@ This feature is part of **Countly Enterprise**.
 
 ## Last Updated
 
-2026-02-16
+2026-04-18

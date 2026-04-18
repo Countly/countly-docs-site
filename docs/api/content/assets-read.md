@@ -87,15 +87,19 @@ Lists uploaded assets and their metadata for the selected app.
 
 ## Behavior/Processing
 
-- Validates authentication, permissions, and request payloads before processing.
-- Executes the endpoint-specific operation described in this document and returns the response shape listed above.
+- Requires `Read` permission on the `content` feature.
+- Dispatches from `/o/content/assets` based on the `assets` path segment.
+- Lists all GridFS files from bucket `content_assets{app_id}`.
+- Adds `app_id` from the request to every returned asset object before responding.
+- Does not apply pagination, search, tag filtering, or sorting in this handler.
+- GridFS list failures return HTTP 500 with `"Error"`.
 
 ## Database Collections
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
-| `countly_fs.content_assets{app_id}.files` | Endpoint data source | ** - GridFS file metadata |
-| `countly_fs.content_assets{app_id}.chunks` | Endpoint data source | ** - GridFS binary chunks |
+| `countly_fs.content_assets{app_id}.files` | GridFS metadata | Stores file metadata returned by this endpoint. |
+| `countly_fs.content_assets{app_id}.chunks` | GridFS chunks | Stores binary asset chunks referenced by the metadata. |
 
 ---
 
@@ -130,4 +134,4 @@ This feature is part of **Countly Enterprise**.
 
 ## Last Updated
 
-2026-02-16
+2026-04-18

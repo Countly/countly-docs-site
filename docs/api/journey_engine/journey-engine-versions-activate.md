@@ -57,7 +57,10 @@ Request body JSON:
 
 | Field | Type | Description |
 |---|---|---|
-| `(root value)` | Object or Array | Response payload returned by this endpoint. |
+| `journeyDefinitionId` | String | Journey definition ID from the request. |
+| `id` | String | Activated version ID from the request. |
+| `status` | String | `active` when activation succeeds. |
+
 ### Error Responses
 
 - **500**: Activation error
@@ -76,8 +79,10 @@ Content-Type: application/json
 
 ## Behavior/Processing
 
-- Validates authentication, permissions, and request payloads before processing.
-- Executes the endpoint-specific operation described in this document and returns the response shape listed above.
+- Marks all versions for the journey definition as `draft`.
+- Clears content queue entries for the journey before activating the selected version.
+- Marks the selected version as `active`.
+- Returns `Failed to activate version` if no document is modified.
 
 ## Database Collections
 
@@ -104,4 +109,4 @@ This feature is part of **Countly Enterprise**.
 
 ## Last Updated
 
-2026-02-16
+2026-04-18

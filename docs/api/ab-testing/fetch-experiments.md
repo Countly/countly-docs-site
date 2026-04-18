@@ -81,15 +81,19 @@ Fetch active experiments (documents with `status` missing or `status="running"`)
 
 ## Behavior/Processing
 
-- Validates authentication, permissions, and request payloads before processing.
-- Executes the endpoint-specific operation described in this document and returns the response shape listed above.
+- Handles `/o/sdk?method=ab_fetch_experiments` and reads experiments from `countly_out.ab_testing_experiments{appId}`.
+- Includes experiments whose `status` is missing or exactly `running`; draft and completed experiments are not returned.
+- Converts each experiment into an SDK-facing object with `id`, `name`, `description`, `currentVariant`, and a `variants` object.
+- `variants` is keyed by variant name. Each variant value is an object mapping every parameter name in that variant to its configured value.
+- If the SDK request resolved an app user and `params.app_user.ab` contains an assignment for the experiment, `currentVariant` is set from that assigned `variant_index`; otherwise it is `null`.
+- On database errors, returns `Error while fetching ab-testing variants.`.
 
 ## Database Collections
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
 | `countly_out.ab_testing_experiments{appId}` | Primary: | Experiment definitions and variants. |
-| `params.app_user.ab` | Related: Current variant is resolved from SDK request context ( | ). |
+| `params.app_user.ab` | Related request context | Current variant is resolved from SDK user assignments when available. |
 
 ## Examples
 
@@ -124,4 +128,4 @@ This feature is part of **Countly Enterprise**.
 
 ## Last Updated
 
-2026-02-16
+2026-04-18

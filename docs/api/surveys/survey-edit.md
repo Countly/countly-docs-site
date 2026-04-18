@@ -80,8 +80,14 @@ Updates an existing Survey widget.
 
 ## Behavior/Processing
 
-- Validates authentication, permissions, and request payloads before processing.
-- Executes the endpoint-specific operation described in this document and returns the response shape listed above.
+- Parses and preprocesses widget properties such as `msg`, `appearance`, `targeting`, and `questions`.
+- Survey edits require `questions`; missing questions return `Missing params: 'questions'`.
+- Validates question definitions before updating; invalid question structure returns `Error in param 'questions'`.
+- Updates `feedback_widgets` by `widget_id`. Appearance fields are stored under `appearance.<field>`.
+- If `delete_logo` is set and no new logo file is uploaded, deletes the stored logo and clears `appearance.logo`.
+- If `targeting` changes, updates, creates, or deletes the linked cohort and recalculates cohort steps when needed.
+- Returns `Success` after widget/cohort updates, or specific cohort/upload error messages when follow-up work fails.
+- Emits `surveys_widget_edited` and, when applicable, `cohort_edited` system log actions.
 
 ## Database Collections
 
@@ -118,4 +124,4 @@ This feature is part of **Countly Enterprise**.
 
 ## Last Updated
 
-2026-02-16
+2026-04-18

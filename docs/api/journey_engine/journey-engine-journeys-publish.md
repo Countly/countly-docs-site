@@ -58,7 +58,10 @@ Request body JSON:
 
 | Field | Type | Description |
 |---|---|---|
-| `(root value)` | Object or Array | Response payload returned by this endpoint. |
+| `journeyDefinitionId` | String | Journey definition ID from the request. |
+| `id` | String | Journey version ID from the request. |
+| `status` | String | `active` when publishing, `draft` when unpublishing. |
+
 ### Error Responses
 
 - **400**: Invalid blocks or request
@@ -93,7 +96,12 @@ Content-Type: application/json
 
 ## Behavior/Processing
 
-Blocks are validated before publishing. Invalid blocks return a 400 with a validation error message.
+- Loads the target version and returns `Version not found` if it does not exist.
+- Validates version blocks before publishing. Invalid blocks return a 400 with the validation error message.
+- Updates the journey definition status to `active` when `status=active` or omitted; otherwise updates it to `draft`.
+- Publishing calls version activation, which sets all versions for the journey definition to `draft`, clears content queue entries for previously active versions, then marks the selected version `active`.
+- Unpublishing marks the selected version `draft` and clears its content queue.
+- Emits `journey_published` or `journey_unpublished` system log actions.
 
 ## Database Collections
 
@@ -121,4 +129,4 @@ This feature is part of **Countly Enterprise**.
 
 ## Last Updated
 
-2026-02-16
+2026-04-18

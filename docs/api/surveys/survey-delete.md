@@ -70,8 +70,12 @@ Deletes a Survey widget. Optionally removes linked response data.
 
 ## Behavior/Processing
 
-- Validates authentication, permissions, and request payloads before processing.
-- Executes the endpoint-specific operation described in this document and returns the response shape listed above.
+- Loads the widget from `feedback_widgets` by `widget_id`; missing widgets return `Widget not found`.
+- Deletes the widget logo file when `appearance.logo` is set.
+- Removes the widget document from `feedback_widgets`.
+- Deletes the linked cohort when `cohortID` exists.
+- If `with_data` is set, also removes related widget response/aggregate data; success emits `surveys_removed_with_data`.
+- Without `with_data`, only the widget record is removed; success emits `surveys_widget_removed`.
 
 ## Database Collections
 
@@ -109,4 +113,4 @@ This feature is part of **Countly Enterprise**.
 
 ## Last Updated
 
-2026-02-16
+2026-04-18

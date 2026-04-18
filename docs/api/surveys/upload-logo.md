@@ -78,8 +78,13 @@ Multipart form-data:
 
 ## Behavior/Processing
 
-- Maximum file size: 1.5 MB.
-- Converts file to base64 data URI and writes to GridFS bucket `feedback`.
+- Requires `global_plugins` update permission.
+- Accepts `feedback_logo` to overwrite the global feedback logo.
+- Alternatively accepts generic `file` plus required `name` to write a named file into the feedback GridFS bucket.
+- Returns `Missing file: feedback_logo or file` when no usable upload field is present.
+- Returns `Missing parameter: name` when `file` is used without `name`.
+- Maximum file size is 1.5 MB.
+- Converts the file to a base64 data URI and writes it to GridFS bucket `feedback` with `writeMode=overwrite`.
 
 ## Database Collections
 
@@ -124,4 +129,4 @@ This feature is part of **Countly Enterprise**.
 
 ## Last Updated
 
-2026-02-16
+2026-04-18

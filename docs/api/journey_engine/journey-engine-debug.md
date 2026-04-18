@@ -65,6 +65,7 @@ Requires **global admin** access.
     ]
   }
 ]
+```
 
 
 ### Response Fields
@@ -74,8 +75,17 @@ Requires **global admin** access.
 | `(root value)` | Array | Journey definitions with debug expansions |
 | `[]._id` | String | Journey definition ID |
 | `[].name` | String | Journey name |
-| `[].journey_versions` | Array | Joined versions for the journey |
-| `[].journey_instances` | Array | Joined instances for the journey |
+| `[].journey_versions` | Array | Joined versions for the journey. Each version contains filtered `journey_instances`. |
+| `[].journey_versions[].name` | String | Version name. |
+| `[].journey_versions[].status` | String | Version status. |
+| `[].journey_versions[].journey_instances` | Array | Journey instances for this version after optional `deviceId`/`appUserId` filtering. |
+| `[].journey_versions[].journey_instances[].deviceId` | String | Device ID. |
+| `[].journey_versions[].journey_instances[].appUserId` | String | App user ID. |
+| `[].journey_versions[].journey_instances[].startTime` | Number | Instance start timestamp. |
+| `[].journey_versions[].journey_instances[].endTime` | Number or Null | Instance end timestamp. |
+| `[].journey_versions[].journey_instances[].data` | Object | Instance data payload. |
+| `[].journey_versions[].journey_instances[].block_log` | Array | Block logs joined by journey instance ID. |
+
 ### Error Responses
 
 - **HTTP 400**
@@ -105,8 +115,12 @@ GET /o/journey-engine/debug?journeyDefinitionId=67164f4a1f1bd90d6354430a&deviceI
 
 ## Behavior/Processing
 
-- Validates authentication, permissions, and request payloads before processing.
-- Executes the endpoint-specific operation described in this document and returns the response shape listed above.
+- Requires the authenticated member to be a global admin.
+- Requires either `journeyDefinitionId` or `name`.
+- Matches `journey_definition` by `_id` or exact `name`.
+- Joins versions, journey instances, and block logs.
+- Filters version instances by `deviceId` and/or `appUserId` when provided.
+- The current handler intends to support `startTime`/`endTime`, but those filters reference the internal `match` object before it is initialized. Until the code is fixed, avoid relying on `startTime` and `endTime` for this endpoint.
 
 ## Database Collections
 
@@ -136,4 +150,4 @@ This feature is part of **Countly Enterprise**.
 
 ## Last Updated
 
-2026-02-16
+2026-04-18

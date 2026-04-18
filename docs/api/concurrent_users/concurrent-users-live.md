@@ -70,8 +70,13 @@ Get the current number of online users and the all-time maximum counts for an ap
 
 ## Behavior/Processing
 
-- Validates authentication, permissions, and request payloads before processing.
-- Executes the endpoint-specific operation described in this document and returns the response shape listed above.
+- Requires `Read` permission on `concurrent_users`.
+- Builds an app list from `app_id`, then applies app visibility filtering before querying repositories.
+- Reads two repositories in parallel: existing/overall online users (`o`) and new online users (`n`).
+- For each repository, reads the current online value with `getOnline` and the all-time maximum with `getOveralls`.
+- Response keys are composed from repository key and metric suffix: `o`, `om`, `n`, and `nm`.
+- Missing repository records are returned as `0`, not as `null` or omitted fields.
+- Database/read errors return `Concurrent users API error.`.
 
 ## Database Collections
 
@@ -110,10 +115,10 @@ This feature is part of **Countly Enterprise**.
 - [Contact Sales](https://count.ly/demo)
 - [Compare Versions](https://countly.com/pricing)
 
-Last Updated: 2026-02-14
+Last Updated: 2026-04-18
 
 ---
 
 ## Last Updated
 
-2026-02-16
+2026-04-18

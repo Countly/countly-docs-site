@@ -63,7 +63,20 @@ Requires **global admin** access.
 
 | Field | Type | Description |
 |---|---|---|
-| `(root value)` | Object or Array | Response payload returned by this endpoint. |
+| `(root value)` | Array | Journey instance documents. |
+| `_id` | String | Journey instance ID. |
+| `journeyId` | String | Journey version ID. |
+| `journeyDefinitionId` | String | Journey definition ID. |
+| `appId` | String | App ID. |
+| `deviceId` | String | Device ID, when stored. |
+| `appUserId` | String | App user ID. |
+| `status` | String | Instance status such as `running`, `completed`, `error`, `stopped`, or `paused`. |
+| `currentBlockIndex` | String | Current block ID/index value. |
+| `startTime` | Number | Instance start timestamp. |
+| `endTime` | Number or Null | Instance end timestamp. |
+| `data` | Object | Journey instance data payload. |
+| `blocks` | Array | Block definitions copied into the instance. |
+
 ### Error Responses
 
 - **401**: Not authorized
@@ -76,8 +89,9 @@ GET /o/journey-engine/journey-instances/list?journeyDefinitionId=67164f4a1f1bd90
 
 ## Behavior/Processing
 
-- Validates authentication, permissions, and request payloads before processing.
-- Executes the endpoint-specific operation described in this document and returns the response shape listed above.
+- Requires the authenticated member to be a global admin.
+- Filters by `journeyVersionId`, `journeyDefinitionId`, `status`, and/or `appUserId` when provided.
+- Sorts results by `startTime` descending.
 
 ## Database Collections
 
@@ -104,4 +118,4 @@ This feature is part of **Countly Enterprise**.
 
 ## Last Updated
 
-2026-02-16
+2026-04-18

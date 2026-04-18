@@ -85,8 +85,11 @@ Returns survey question schema map by widget ID(s).
 
 ## Behavior/Processing
 
-- Accepts optional `widget_ids`; otherwise returns all survey widgets for app.
-- Converts choice arrays into key-value map for easier consumer lookups.
+- Reads Survey widgets (`type=survey`) for the requested `app_id`.
+- If `widget_ids` is provided, parses it as JSON. It can be a widget ID string or an array of widget IDs.
+- Invalid `widget_ids` JSON is logged; the endpoint continues with the base app/type query.
+- Builds a map keyed by widget ID. Each widget entry includes `name` and one entry per question ID.
+- Each question entry includes question text as `name`, question `type`, and optional `choices` converted from an array into a key-value object.
 
 ## Database Collections
 
@@ -125,4 +128,4 @@ This feature is part of **Countly Enterprise**.
 
 ## Last Updated
 
-2026-02-16
+2026-04-18

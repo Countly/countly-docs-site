@@ -84,8 +84,11 @@ Returns summary metrics for one NPS widget (`widget_id`) or aggregated metrics f
 
 ## Behavior/Processing
 
-- Validates authentication, permissions, and request payloads before processing.
-- Executes the endpoint-specific operation described in this document and returns the response shape listed above.
+- With `widget_id`, loads one widget, joins creator details from `members`, and returns the widget document.
+- With `calculate_totals`, additionally calculates period totals for `shown` and `responded` from the NPS aggregate model and stores them in `totals-calculated`.
+- Without `widget_id`, aggregates all matching NPS widgets for the app and optional `status`.
+- For NPS widgets with responses, converts promoter/detractor/passive counts to percentages and calculates `nps` as promoter percentage minus detractor percentage.
+- Aggregated overview returns widget status totals plus summed `responded`, `shown`, and NPS score fields.
 
 ## Database Collections
 
@@ -122,4 +125,4 @@ This feature is part of **Countly Enterprise**.
 
 ## Last Updated
 
-2026-02-16
+2026-04-18

@@ -76,8 +76,11 @@ Bulk-updates NPS widget active status.
 
 ## Behavior/Processing
 
-- Validates authentication, permissions, and request payloads before processing.
-- Executes the endpoint-specific operation described in this document and returns the response shape listed above.
+- Parses `data` as a JSON object mapping widget IDs to desired status values.
+- Values `true` and `"true"` set `status=true`; all other values set `status=false`.
+- Executes updates as an unordered bulk operation against `feedback_widgets`.
+- Returns `Nothing to update` when the parsed object has no keys.
+- Emits `surveys_widget_status` system log action on success.
 
 ## Database Collections
 
@@ -113,4 +116,4 @@ This feature is part of **Countly Enterprise**.
 
 ## Last Updated
 
-2026-02-16
+2026-04-18

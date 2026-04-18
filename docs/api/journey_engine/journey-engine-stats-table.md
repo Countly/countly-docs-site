@@ -86,10 +86,26 @@ Retrieve journey instance table data with pagination. For large datasets, the en
 
 | Field | Type | Description |
 |---|---|---|
-| `(root value)` | Object or Array | Response payload returned by this endpoint. |
+| `sEcho` | String | DataTables echo value. |
+| `iTotalRecords` | Number | Total/estimated records for the query. |
+| `iTotalDisplayRecords` | Number | Filtered/display records. |
+| `aaData` | Array | Journey instance rows. |
+| `aaData[].appUserId` | String | App user ID. |
+| `aaData[].status` | String | Journey instance status. |
+| `aaData[].startTime` | Number | Instance start timestamp. |
+| `aaData[].endTime` | Number or Null | Instance end timestamp. |
+| `aaData[].user_details.did` | String | Device ID from joined app user profile. |
+| `aaData[].user_details.lac` | Number | Last app contact timestamp from app user profile. |
+| `aaData[].user_details.name` | String | App user name. |
+| `aaData[].user_details.email` | String | App user email. |
+| `task_id` | String | Background task id for large result sets or existing running task. |
+| `_dataCollection` | String | Internal task result collection name when task metadata is returned. |
+| `_taskId` | String | Internal task id reference when task metadata is returned. |
+
 ### Error Responses
 
 - **400**: Invalid pagination parameters
+- **404**: Task not found or no data available
 - **408**: Task result timeout
 - **500**: Query error
 
@@ -107,8 +123,12 @@ GET /o/journey-engine/stats/table?taskId=65a7c1e6f1c2a40001abc123&iDisplayStart=
 
 ## Behavior/Processing
 
-- Validates authentication, permissions, and request payloads before processing.
-- Executes the endpoint-specific operation described in this document and returns the response shape listed above.
+- If `taskId` is provided, loads stored task result data and applies `iDisplayStart`/`iDisplayLength` pagination.
+- Without `taskId`, filters `journey_instances` by `journeyVersionId`, `journeyDefinitionId`, `status`, and selected period.
+- Joins `app_users{app_id}` by `appUserId` to expose user details.
+- Uses `common.DataTable` for sorting, search, projection, and paging.
+- Very large estimated result sets are processed through the long-task manager and can return `{ "task_id": "..." }`.
+- Task results may be stored in per-task `journey_task_data_<taskId>` collections for paginated retrieval.
 
 ## Database Collections
 
@@ -135,4 +155,4 @@ This feature is part of **Countly Enterprise**.
 
 ## Last Updated
 
-2026-02-16
+2026-04-18

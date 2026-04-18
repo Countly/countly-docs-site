@@ -97,10 +97,15 @@ Returns Survey response table data and Survey-specific method branches.
 
 ## Behavior/Processing
 
-- `method=meta` returns Survey metadata aggregates.
-- `method=results` returns merged question-level results.
-- `method=question` returns one question answer table.
-- `method=export/exportold` returns export query descriptor payload.
+- Uses Drill data for `[CLY]_survey`; returns `Drill disabled` or `Drill missing` if Drill is unavailable for table-backed modes.
+- Applies common filters from query parameters: `widget_id`, `uid`, `platform`, `platform_version`, `version`, `source`, `period`, and `device_id`.
+- `source=default` filters responses without `sg.journeyId`; any other `source` value matches `sg.journeyId`.
+- `method=meta` returns Survey metadata aggregates from `surveyQueries.fetchSurveyMeta`.
+- `method=results` requires `widget_id`, loads the widget, and returns merged per-question totals and answer buckets.
+- `method=question` requires `widget_id` and `question_id`, validates the question exists on the widget, and returns a DataTables answer table for that question.
+- `method=export` and `method=exportold` return export query descriptor payloads instead of response rows. `export` includes a ClickHouse query descriptor.
+- Without a special `method`, returns DataTables rows from Drill. With `widget_id`, answers are translated using widget question choices; without `widget_id`, it returns all answered survey rows.
+- `filter_questions` can be a JSON object mapping question IDs to exact values or `null`; `null` means answer exists.
 
 ## Database Collections
 
@@ -141,4 +146,4 @@ This feature is part of **Countly Enterprise**.
 
 ## Last Updated
 
-2026-02-16
+2026-04-18

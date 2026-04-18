@@ -60,7 +60,16 @@ List all versions for a journey definition.
 
 | Field | Type | Description |
 |---|---|---|
-| `(root value)` | Object or Array | Response payload returned by this endpoint. |
+| `(root value)` | Array | Journey version documents for the requested journey definition. |
+| `_id` | String | Journey version ID. |
+| `journeyDefinitionId` | String | Parent journey definition ID. |
+| `version` | Number | Version number. |
+| `name` | String | Version name, when stored. |
+| `blocks` | Array | Journey block definitions for this version. |
+| `status` | String | Version status such as `draft`, `active`, `paused`, or `deleted`. |
+| `appId` | String | App ID. |
+| `skip_threshold` | Number or Null | Optional user completion threshold for this version. |
+
 ### Error Responses
 
 - **400**: Invalid request
@@ -74,8 +83,9 @@ GET /o/journey-engine/versions/list?journeyDefinitionId=67164f4a1f1bd90d6354430a
 
 ## Behavior/Processing
 
-- Validates authentication, permissions, and request payloads before processing.
-- Executes the endpoint-specific operation described in this document and returns the response shape listed above.
+- Requires `journeyDefinitionId`; missing value returns `Invalid request`.
+- Reads all matching documents from `journey_versions` with no status filter, so deleted versions can be returned.
+- Does not sort explicitly; MongoDB natural order applies unless the stored collection/index order changes.
 
 ## Database Collections
 
@@ -102,4 +112,4 @@ This feature is part of **Countly Enterprise**.
 
 ## Last Updated
 
-2026-02-16
+2026-04-18

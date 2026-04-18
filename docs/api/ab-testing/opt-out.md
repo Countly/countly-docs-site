@@ -65,8 +65,12 @@ Opt a user out of specific running experiments or all running experiments. When 
 
 ## Behavior/Processing
 
-- Validates authentication, permissions, and request payloads before processing.
-- Executes the endpoint-specific operation described in this document and returns the response shape listed above.
+- Dispatches from `/i` to the SDK ingestion handler when `method=ab_opt_out`.
+- Requires the SDK request context to resolve an app user with `uid`; otherwise returns `No uid`.
+- If `keys` is a valid JSON array, fetches running experiments and finds experiments whose variants contain any parameter name from `keys`.
+- For matched experiments, removes matching `{experiment_id}` entries from `app_users{appId}.ab`. Duplicate experiment IDs are de-duplicated before updates.
+- If `keys` is missing, invalid JSON, or not an array, the endpoint opts the user out of all experiments by unsetting the whole `ab` field.
+- Filtering only considers experiments with `status=running`.
 
 ## Database Collections
 
@@ -119,4 +123,4 @@ This feature is part of **Countly Enterprise**.
 
 ## Last Updated
 
-2026-04-08
+2026-04-18

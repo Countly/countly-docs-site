@@ -59,8 +59,11 @@ Permanently remove an online user alert from your application. This stops all mo
 
 ## Behavior/Processing
 
-- Validates authentication, permissions, and request payloads before processing.
-- Executes the endpoint-specific operation described in this document and returns the response shape listed above.
+- Requires `Delete` permission on the shared `alerts` feature.
+- Converts `alertId` to a MongoDB ObjectID and removes the alert matching both `_id=alertId` and `app=app_id`.
+- On successful remove callback, writes an `online_users_alert_deleted` system log with the deleted `alert_id`.
+- The success response does not include a deleted count; an unmatched but syntactically valid `alertId` can still return `Deleted an alert`.
+- Invalid ObjectID conversion or other synchronous delete failures return `Failed to delete the alert`.
 
 ## Database Collections
 
@@ -102,10 +105,10 @@ This feature is part of **Countly Enterprise**.
 - [Contact Sales](https://count.ly/demo)
 - [Compare Versions](https://countly.com/pricing)
 
-Last Updated: 2026-02-14
+Last Updated: 2026-04-18
 
 ---
 
 ## Last Updated
 
-2026-02-16
+2026-04-18

@@ -62,7 +62,14 @@ Requires **global admin** access.
 
 | Field | Type | Description |
 |---|---|---|
-| `(root value)` | Object or Array | Response payload returned by this endpoint. |
+| `(root value)` | Array | Aggregated block log rows. |
+| `_id` | String | Block ID. |
+| `startTime` | Date or Number | First block log start time in the group. |
+| `endTime` | Date or Number | First block log end time in the group. |
+| `status` | String | First block log status in the group. |
+| `journeyDefinitionId` | String | Journey definition ID. |
+| `appUserIds` | Array | Unique app user IDs from joined journey instances. |
+
 ### Error Responses
 
 - **400**: Missing journeyDefinitionId
@@ -77,8 +84,12 @@ GET /o/journey-engine/journey-block-logs/list?journeyDefinitionId=67164f4a1f1bd9
 
 ## Behavior/Processing
 
-- Validates authentication, permissions, and request payloads before processing.
-- Executes the endpoint-specific operation described in this document and returns the response shape listed above.
+- Requires the authenticated member to be a global admin.
+- Requires `journeyDefinitionId`.
+- Filters block logs by `journeyDefinitionId` and optional `startTime`/`endTime`.
+- Joins `journey_instances` by `journeyInstanceId` and can filter joined instances by `appUserId`.
+- Groups by `blockId`, returns first timing/status fields, and accumulates unique `appUserIds`.
+- Sorts grouped rows by `startTime` ascending.
 
 ## Database Collections
 
@@ -106,4 +117,4 @@ This feature is part of **Countly Enterprise**.
 
 ## Last Updated
 
-2026-02-16
+2026-04-18

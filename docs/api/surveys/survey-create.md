@@ -94,9 +94,12 @@ Creates a Survey widget.
 
 ## Behavior/Processing
 
-- Validates Survey payload and `questions`.
-- Creates `feedback_widgets` record and initializes counters.
-- Creates/updates cohort linkage when targeting is present.
+- Parses and preprocesses widget properties such as `msg`, `appearance`, `targeting`, and `questions`.
+- Validates Survey payload with Survey form property rules.
+- Requires non-empty `questions` and validates each question definition before insert.
+- Creates a `feedback_widgets` record with `type=survey`, `creator`, `created`, `responded=0`, `shown=0`, and `wv=1`.
+- Uploads `logo` when provided and records it in `appearance.logo`; if upload fails, the widget can still be created and the response includes the new `widgetId` with an error.
+- Creates a linked cohort when `targeting` is provided, stores its ID as `cohortID`, and emits `surveys_widget_created`.
 
 ## Database Collections
 
@@ -138,4 +141,4 @@ This feature is part of **Countly Enterprise**.
 
 ## Last Updated
 
-2026-02-16
+2026-04-18

@@ -78,8 +78,11 @@ Returns summary metrics for one Survey widget (`widget_id`) or aggregated metric
 
 ## Behavior/Processing
 
-- Validates authentication, permissions, and request payloads before processing.
-- Executes the endpoint-specific operation described in this document and returns the response shape listed above.
+- With `widget_id`, loads one widget, joins creator details from `members`, and returns the widget document.
+- With `calculate_totals`, additionally calculates period totals for `shown` and `responded` from the Survey aggregate model and stores them in `totals-calculated`.
+- Without `widget_id`, aggregates all matching Survey widgets for the app and optional `status`.
+- Aggregated overview returns total widgets by status plus summed `responded` and `shown` counts.
+- Survey aggregate overview removes NPS-only fields such as `scores`, `nps`, and `valued`.
 
 ## Database Collections
 
@@ -116,4 +119,4 @@ This feature is part of **Countly Enterprise**.
 
 ## Last Updated
 
-2026-02-16
+2026-04-18

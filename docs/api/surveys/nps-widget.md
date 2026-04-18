@@ -91,8 +91,11 @@ Returns one NPS widget (`widget_id`) or multiple NPS widgets (`widget_ids`).
 
 ## Behavior/Processing
 
-- Validates authentication, permissions, and request payloads before processing.
-- Executes the endpoint-specific operation described in this document and returns the response shape listed above.
+- Requires either `widget_id` or comma-separated `widget_ids`.
+- Reads only active widgets (`status=true`) from `feedback_widgets`.
+- For `widget_id`, returns a single object; for `widget_ids`, returns an array.
+- Returned fields are limited to app/type/name/message/score/appearance/link/final text/version/consent fields used by SDK clients.
+- If `shown` is present with a single widget, increments widget `shown`, records a custom metric in the Survey/NPS aggregate collection, and stores metric metadata for the widget/platform/app version/source key.
 
 ## Database Collections
 
@@ -129,4 +132,4 @@ This feature is part of **Countly Enterprise**.
 
 ## Last Updated
 
-2026-02-16
+2026-04-18

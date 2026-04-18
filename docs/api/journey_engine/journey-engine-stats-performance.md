@@ -55,7 +55,12 @@ Return performance metrics over time (users entered, completed, engaged, drop-of
 
 | Field | Type | Description |
 |---|---|---|
-| `(root value)` | Object or Array | Response payload returned by this endpoint. |
+| `(root object)` | Object | Date/year keyed metric map. |
+| `<date>.usersEntered` | Number | Users entered count for this bucket. |
+| `<date>.usersCompleted` | Number | Users completed count for this bucket. |
+| `<date>.usersEngaged` | Number | Users engaged count for this bucket. |
+| `<date>.usersDropOff` | Number | Users drop-off count for this bucket. |
+
 ### Error Responses
 
 - **500**: Query error
@@ -68,8 +73,10 @@ GET /o/journey-engine/stats/performance?journeyDefinitionId=67164f4a1f1bd90d6354
 
 ## Behavior/Processing
 
-- Validates authentication, permissions, and request payloads before processing.
-- Executes the endpoint-specific operation described in this document and returns the response shape listed above.
+- Filters `journey_stats` by `journeyVersionId` and/or `journeyDefinitionId` when provided.
+- With `period=0days`, groups by year and returns year keys.
+- With any other period, uses the current period date array, groups by `YYYY.MM.DD`, and fills missing dates with zero-value metric objects.
+- Sorts buckets chronologically.
 
 ## Database Collections
 
@@ -96,4 +103,4 @@ This feature is part of **Countly Enterprise**.
 
 ## Last Updated
 
-2026-02-16
+2026-04-18

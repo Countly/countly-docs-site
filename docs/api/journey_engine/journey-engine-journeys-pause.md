@@ -57,7 +57,10 @@ Request body JSON:
 
 | Field | Type | Description |
 |---|---|---|
-| `(root value)` | Object or Array | Response payload returned by this endpoint. |
+| `journeyDefinitionId` | String | Journey definition ID from the request. |
+| `id` | String | Journey version ID from the request. |
+| `status` | String | `paused` when the version was paused. |
+
 ### Error Responses
 
 - **400**: Invalid request
@@ -77,8 +80,12 @@ Content-Type: application/json
 
 ## Behavior/Processing
 
-- Validates authentication, permissions, and request payloads before processing.
-- Executes the endpoint-specific operation described in this document and returns the response shape listed above.
+- Requires `journeyId` and `versionId` in the request body; missing values return `Invalid request`.
+- Marks the selected journey version as `paused`.
+- Marks the journey definition as `draft`.
+- Clears content queue entries for the paused journey.
+- Pauses running journey instances and related pending journey events.
+- Emits `journey_paused` system log action.
 
 ## Database Collections
 
@@ -106,4 +113,4 @@ This feature is part of **Countly Enterprise**.
 
 ## Last Updated
 
-2026-02-16
+2026-04-18

@@ -76,8 +76,13 @@ Fetch available variant names and values for active experiments (documents with 
 
 ## Behavior/Processing
 
-- Validates authentication, permissions, and request payloads before processing.
-- Executes the endpoint-specific operation described in this document and returns the response shape listed above.
+- Handles `/o/sdk?method=ab_fetch_variants` and reads experiments from `countly_out.ab_testing_experiments{appId}`.
+- Includes experiments whose `status` is missing or exactly `running`; draft and completed experiments are not returned.
+- Parses `keys` as a JSON array. If omitted, it defaults to an empty array and all eligible experiment parameters are returned.
+- For each experiment, the grouping key is the name of the first parameter in the first variant (`variants[0].parameters[0].name`).
+- If `keys` is non-empty, an experiment is included only when that first parameter name is present in `keys`.
+- For included experiments, the response maps the grouping key to an array of `{name, value}` objects, one per variant. `value` is taken from each variant's first parameter.
+- On database errors, returns `Error while fetching ab-testing variants.`. Invalid `keys` JSON is not caught by this handler and can fail the request before a normal error payload is produced.
 
 ## Database Collections
 
@@ -134,4 +139,4 @@ This feature is part of **Countly Enterprise**.
 
 ## Last Updated
 
-2026-04-08
+2026-04-18

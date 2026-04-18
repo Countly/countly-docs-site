@@ -99,8 +99,12 @@ Returns one Survey widget (`widget_id`) or multiple Survey widgets (`widget_ids`
 
 ## Behavior/Processing
 
-- Validates authentication, permissions, and request payloads before processing.
-- Executes the endpoint-specific operation described in this document and returns the response shape listed above.
+- Requires either `widget_id` or comma-separated `widget_ids`.
+- Reads only active widgets (`status=true`) from `feedback_widgets`.
+- For `widget_id`, returns a single object; for `widget_ids`, returns an array.
+- Returned fields are limited to app/type/name/message/question/appearance/link/final text/version/consent fields used by SDK clients.
+- If a single widget has `appearance=null`, the endpoint applies the default Survey appearance object in the response.
+- If `shown` is present with a single widget, increments widget `shown`, records a custom metric in the Survey/NPS aggregate collection, and stores metric metadata for the widget/platform/app version/source key.
 
 ## Database Collections
 
@@ -137,4 +141,4 @@ This feature is part of **Countly Enterprise**.
 
 ## Last Updated
 
-2026-02-16
+2026-04-18

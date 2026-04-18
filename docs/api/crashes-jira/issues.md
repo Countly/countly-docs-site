@@ -84,8 +84,12 @@ Returns JIRA issue mappings for one or more crash groups and adds a computed JIR
 
 ## Behavior/Processing
 
-- Validates authentication, permissions, and request payloads before processing.
-- Executes the endpoint-specific operation described in this document and returns the response shape listed above.
+- Requires `Read` permission on the `crashes` feature.
+- Reads the plugin configuration and uses `crashes-jira.api_url` to build returned JIRA browse links.
+- Builds the crash group list from `crashgroups` when provided; otherwise uses a single-element list containing `crashgroup_id`.
+- Queries `crashes_jira{app_id}` for documents whose `_id` is in that crash group list.
+- Adds `url` to each returned mapping as `<api_url>/browse/<issue.key>`.
+- The handler does not currently return a custom error body for database read failures in this branch.
 
 ## Database Collections
 
@@ -131,4 +135,4 @@ This feature is part of **Countly Enterprise**.
 
 ## Last Updated
 
-2026-02-16
+2026-04-18

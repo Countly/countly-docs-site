@@ -63,7 +63,11 @@ Retrieve unique user IDs for a given stats metric (entered, engaged, completed, 
 
 | Field | Type | Description |
 |---|---|---|
-| `(root value)` | Object or Array | Response payload returned by this endpoint. |
+| `uids` | Array | Unique user IDs collected from the selected metric UID array. |
+| `uidType` | String | Requested UID metric type. |
+| `total` | Number | Number of returned unique user IDs. |
+| `error` | String | Error message returned for missing/invalid `uidType` or query failure. |
+
 ### Error Responses
 
 - **400**: Missing or invalid uidType
@@ -77,8 +81,10 @@ GET /o/journey-engine/stats/uids?uidType=users_completed&journeyDefinitionId=671
 
 ## Behavior/Processing
 
-- Validates authentication, permissions, and request payloads before processing.
-- Executes the endpoint-specific operation described in this document and returns the response shape listed above.
+- Requires `uidType`.
+- Accepts only `users_entered`, `users_engaged`, `users_completed`, `content_viewed`, `content_interacted`, and `users_drop_off`.
+- Filters `journey_stats` by `journeyVersionId`, `journeyDefinitionId`, and current period array when provided.
+- Reads from the matching `<uidType>_uids` array, unwinds values, groups unique ids, sorts by uid, and returns them as `uids`.
 
 ## Database Collections
 
@@ -105,4 +111,4 @@ This feature is part of **Countly Enterprise**.
 
 ## Last Updated
 
-2026-02-16
+2026-04-18

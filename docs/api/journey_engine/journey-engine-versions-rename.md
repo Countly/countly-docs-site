@@ -56,7 +56,9 @@ Request body JSON:
 
 | Field | Type | Description |
 |---|---|---|
-| `(root value)` | Object or Array | Response payload returned by this endpoint. |
+| `id` | String | Renamed version ID from the request. |
+| `name` | String | New version name from the request. |
+
 ### Error Responses
 
 - **500**: Rename error
@@ -75,8 +77,9 @@ Content-Type: application/json
 
 ## Behavior/Processing
 
-- Validates authentication, permissions, and request payloads before processing.
-- Executes the endpoint-specific operation described in this document and returns the response shape listed above.
+- Parses request body fields `id` and `name`.
+- Updates `journey_versions.name` for the requested version ID.
+- Returns the requested ID/name pair after the update call completes.
 
 ## Database Collections
 
@@ -103,4 +106,4 @@ This feature is part of **Countly Enterprise**.
 
 ## Last Updated
 
-2026-02-16
+2026-04-18
