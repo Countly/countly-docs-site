@@ -5,8 +5,9 @@ sidebar_label: "Overview"
 
 # Okta Authentication
 
-> Ⓔ **Enterprise Only**  
-> This feature is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This feature is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Overview
 
@@ -82,17 +83,6 @@ Create Session → Redirect to Dashboard
 | `groupSync` | `true` | Boolean | Enable automatic group membership synchronization | `COUNTLY_CONFIG_PLUGINOKTA_GROUPSYNC` |
 | `groupSyncInterval` | `3600000` | Number | Group sync interval in milliseconds (default: 1 hour) | `COUNTLY_CONFIG_PLUGINOKTA_GROUPSYNCINTERVAL` |
 | `deactivateOnRemove` | `true` | Boolean | Deactivate Countly user when removed from all Okta application groups | `COUNTLY_CONFIG_PLUGINOKTA_DEACTIVATEONREMOVE` |
-
-## Database Collections
-
-The Okta feature stores user and group information in existing Countly collections:
-
-| Collection | Purpose |
-|------------|---------|
-| `countly.members` | User accounts authenticated via Okta; includes provider field = 'okta' for filtering Okta users |
-| `countly.groups` | User group memberships; Okta group names mapped to Countly groups for permission assignment |
-
-No separate collections created; Okta integration uses core Countly collection infrastructure.
 
 ## Configuration Methods
 
@@ -360,7 +350,7 @@ Automatic user deactivation when removed from Okta application:
 **Solutions**:
 - Verify API token is valid and not expired
 - Confirm API token has appropriate permissions (groups, users read)
-- Check that token hasn't been revoked
+- Check that token has not been revoked
 - Test token manually: `curl -H "Authorization: Bearer {token}" https://{orgUrl}/api/v1/users`
 - Token should be format starting with `00`
 
@@ -480,16 +470,18 @@ Never use login URL (`okta.com` without subdomain).
 - [Okta Groups Management](https://help.okta.com/okta_help.htm?id=ext_Directory_Groups)
 - [Okta System Log](https://help.okta.com/okta_help.htm?id=ext_System_Log)
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Database Collections**
 
-This feature is part of **Countly Enterprise**.
+The Okta feature stores user and group information in existing Countly collections:
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
+| Collection | Purpose |
+|------------|---------|
+| `countly.members` | User accounts authenticated via Okta; includes provider field = 'okta' for filtering Okta users |
+| `countly.groups` | User group memberships; Okta group names mapped to Countly groups for permission assignment |
 
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
+No separate collections created; Okta integration uses core Countly collection infrastructure.
 
+</details>

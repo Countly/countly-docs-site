@@ -4,6 +4,8 @@ keywords:
   - "/o/data-manager/events"
   - "events"
   - "data-manager"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /o/data-manager/events
@@ -20,11 +22,7 @@ Returns app event definitions with segments, event mapping metadata, and latest 
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. **API Key** (parameter): `api_key=YOUR_API_KEY`
-2. **Auth Token** (parameter): `auth_token=YOUR_AUTH_TOKEN`
-3. **Auth Token** (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -37,6 +35,14 @@ Countly API supports three authentication methods:
 | `api_key` | String | Yes (or use `auth_token`) | API key for authentication. |
 | `auth_token` | String | No | Auth token as query parameter or `countly-token` header. |
 | `app_id` | String | Yes | Target app ID. |
+
+## Examples
+
+### Read app events with audit metadata
+
+```plaintext
+/o/data-manager/events?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID
+```
 
 ## Response
 
@@ -101,30 +107,13 @@ Countly API supports three authentication methods:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Validates read access for `data_manager`.
 - Loads app event document and excludes internal events (`[CLY]...`).
 - Builds output rows by combining event list, segment metadata, and event map metadata.
 - Aggregates latest relevant audit logs (`dm-event-edit`, `dm-event-create`, `dm-event-approve`) per event.
 - Resolves audit `user_id` to member full name when possible.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication, permission validation, and audit-user enrichment | Reads member record by auth credentials and resolves `audit.user_id` to `userName`. |
-| `countly.apps` | App context validation | Reads app record for the requested `app_id` during access validation. |
-| `countly.events` | Stores event lists, segments, and event-level map metadata per app | Reads app event document and builds base event payload. |
-| `countly.systemlogs` | Stores audit logs for administrative actions | Reads latest data-manager event audit records for returned events. |
-
-## Examples
-
-### Read app events with audit metadata
-
-```plaintext
-/o/data-manager/events?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID
-```
 
 ## Limitations
 
@@ -136,6 +125,16 @@ Countly API supports three authentication methods:
 - [Data Manager - Categories Read](o-data-manager-category.md)
 - [Data Manager - Event Category Update](i-data-manager-event-change-category.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication, permission validation, and audit-user enrichment | Reads member record by auth credentials and resolves `audit.user_id` to `userName`. |
+| `countly.apps` | App context validation | Reads app record for the requested `app_id` during access validation. |
+| `countly.events` | Stores event lists, segments, and event-level map metadata per app | Reads app event document and builds base event payload. |
+| `countly.systemlogs` | Stores audit logs for administrative actions | Reads latest data-manager event audit records for returned events. |
+
+</details>

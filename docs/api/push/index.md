@@ -1,6 +1,8 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-03-07"
 ---
 
 # Push Notifications API
@@ -26,17 +28,6 @@ Push Notifications supports campaign creation, targeting, scheduling, API-trigge
 - [MIME Info](./mime.md)
 - [Read Dashboard](./dashboard.md)
 
-## Database Collections
-
-| Collection | Purpose |
-|---|---|
-| `countly.messages` | Push message definitions, content, trigger config, and result counters |
-| `countly.message_schedules` | Message schedule state used by scheduling/status workflows |
-| `countly.app_users{appId}` | User token fields and audience base for push delivery |
-| `countly.push_{appId}` | Per-user push delivery history (`msgs`) |
-| `countly.events_data` | Aggregated push sent/action event data for dashboard calculations |
-| `countly.creds` | Push provider credentials and legacy FCM detection |
-
 ## Configuration & Settings
 
 Push runtime settings affect delivery behavior:
@@ -51,6 +42,18 @@ Push runtime settings affect delivery behavior:
 - Cohort/Event (automated)
 - API-triggered
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-03-07
+**Database Collections**
+
+| Collection | Purpose |
+|---|---|
+| `countly.messages` | Push message definitions, content, trigger config, and result counters |
+| `countly.message_schedules` | Message schedule state used by scheduling/status workflows |
+| `countly.app_users{appId}` | User token fields and audience base for push delivery |
+| `countly.push_{appId}` | Per-user push delivery history (`msgs`) |
+| `countly.events_data` | Aggregated push sent/action event data for dashboard calculations |
+| `countly.creds` | Push provider credentials and legacy FCM detection |
+
+</details>

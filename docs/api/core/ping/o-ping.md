@@ -3,6 +3,8 @@ sidebar_label: "Health Check"
 keywords:
   - "/o/ping"
   - "ping"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Ping - Health Check
@@ -28,6 +30,20 @@ This endpoint does not enforce role-based permission checks.
 ## Request Parameters
 
 This endpoint has no required query parameters.
+
+## Examples
+
+### Example 1: Ping API
+
+```plaintext
+/o/ping
+```
+
+```json
+{
+  "result": "Success"
+}
+```
 
 ## Response
 
@@ -55,7 +71,7 @@ This endpoint has no required query parameters.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -64,34 +80,17 @@ This endpoint has no required query parameters.
 | DB reachable | Probe query succeeds | Wrapped `Success` string. |
 | DB probe failure | Probe query errors | Wrapped `DB Error` string with `404`. |
 
-## Database Collections
+## Related Endpoints
+
+- [Version Diagnostics](../countly/o-countly-version.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
 | `countly.plugins` | DB liveness probe source | Reads one document (`_id: "plugins"`). |
 
----
-
-## Examples
-
-### Example 1: Ping API
-
-```plaintext
-/o/ping
-```
-
-```json
-{
-  "result": "Success"
-}
-```
-
----
-
-## Related Endpoints
-
-- [Version Diagnostics](../countly/o-countly-version.md)
-
-## Last Updated
-
-2026-02-17
+</details>

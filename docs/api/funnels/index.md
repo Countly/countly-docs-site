@@ -5,8 +5,9 @@ sidebar_position: 1
 
 # Funnels - API Documentation
 
-> Ⓔ **Enterprise Only**  
-> This feature is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This feature is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Overview
 
@@ -80,7 +81,5 @@ Funnels helps you track user progression through ordered events and measure conv
 - Drill
 - Dashboard
 - Report Manager
-
----
 
 _Last Updated: 2026-02-15_

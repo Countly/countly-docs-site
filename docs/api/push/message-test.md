@@ -5,6 +5,8 @@ keywords:
   - "test"
   - "push"
   - "message"
+last_update:
+  date: "2026-04-09"
 ---
 
 # /i/push/message/test
@@ -18,10 +20,7 @@ Send test push notifications to configured test users or cohorts without creatin
 - [Message Estimate](./message-estimate.md) - Estimate audience reach
 - [MIME Info](./mime.md) - Check media attachment MIME type
 
----
-
 ## Endpoint
-
 
 ```plaintext
 /i/push/message/test
@@ -65,266 +64,6 @@ Send test push notifications to configured test users or cohorts without creatin
 | `contents[].buttons[].url` | String | No | Button URL |
 | `contents[].specific` | Object | No | Platform-specific options (`subtitle` for iOS, `large_icon` for Android) |
 | `userConditions` | Object | No | Additional test user filtering (MongoDB query) |
-
-## Response
-
-#### Success Response - Test Sent
-**Status Code**: `200 OK`
-
-**Body**: Send results for test users/cohorts
-
-### Success Response
-
-```json
-{
-  "sent": 5,
-  "failed": 0,
-  "result": {
-    "uids": ["user1", "user2", "user3"],
-    "cohorts": ["premium_users"],
-    "total": 5,
-    "processed": 5,
-    "sent": 5,
-    "failed": 0,
-    "errors": []
-  }
-}
-```
-
-#### Success Response - No Test Users
-**Status Code**: `400 Bad Request`
-
-**Body**:
-```json
-{
-  "kind": "ValidationError",
-  "errors": [
-    "Test users/cohorts not set for this app"
-  ]
-}
-```
-
-#### Error Response - Validation Error
-**Status Code**: `400 Bad Request`
-
-**Body**:
-```json
-{
-  "kind": "ValidationError",
-  "errors": [
-    "platforms is required",
-    "triggers is required",
-    "contents is required",
-    "test must be true"
-  ]
-}
-```
-
-#### Error Response - No Credentials
-**Status Code**: `400 Bad Request`
-
-**Body**:
-```json
-{
-  "kind": "ValidationError",
-  "errors": [
-    "No push credentials for iOS platform"
-  ]
-}
-```
-
----
-
-
-### Response Fields
-
-| Field | Type | Description |
-|---|---|---|
-| `result` | Object | Test-run aggregate result payload. |
-| `result.total` | Number | Total notifications targeted for test run. |
-| `result.sent` | Number | Number of notifications sent successfully. |
-| `result.errored` | Number | Number of failed notifications. |
-| `result.errors` | Object | Error code/count map from test run. |
-
-
-### Error Responses
-
-```json
-{
-  "result": "Error"
-}
-```
-
-## Permissions
-
-- Required Permission: Create access to push feature (create-permission validation)
-
-## Behavior/Processing
-
-### Operation Flow
-
-1. **Validation**
-   - Verifies `test` parameter is `true`
-   - Validates all required fields (`platforms`, `triggers`, `contents`)
-   - Validates content structure (message, title, etc.)
-
-2. **Test Configuration Loading**
-   - Reads `apps[app_id].features.push.test.uids` (comma-separated user IDs)
-   - Reads `apps[app_id].features.push.test.cohorts` (comma-separated cohort IDs)
-   - If both empty: Returns ValidationError "Test users/cohorts not set"
-
-3. **Credentials Verification**
-   - Checks `apps.features.push.{platform}._id` exists for each platform
-   - Queries `push_{credentials_id}` collection to verify credentials exist
-   - Rejects if credentials missing or set to 'demo'
-
-4. **Test Audience Selection**
-   - **From UIDs**: Queries `app_users{APP_ID}` collection with `uid` in configured UIDs
-   - **From Cohorts**: Queries `app_users{APP_ID}` collection with cohort membership
-   - Applies `userConditions` filter if provided (additional MongoDB query)
-   - Filters users who have push tokens for requested platforms
-
-5. **Personalization Processing**
-   - For each user, processes personalization placeholders
-   - Replaces placeholders with user property values
-   - Applies fallback values if properties missing
-   - Capitalizes if configured
-
-6. **Notification Sending**
-   - Creates in-memory temporary message object (not saved to DB)
-   - Replaces provided audience filter with configured test users or configured test cohorts
-   - Replaces provided triggers with an immediate internal plain trigger
-   - Forces message status to active for the test run
-   - Sends notifications immediately via push queue
-   - Tracks send results (sent, failed, errors)
-
-7. **Response**
-   - Returns send statistics and user/cohort info
-   - Includes any errors encountered during send
-
-### Test User Configuration
-
-Test users/cohorts are configured in the `apps` collection:
-
-```javascript
-// In apps collection document:
-{
-  "_id": "507f1f77bcf86cd799439012",
-  "features": {
-    "push": {
-      "test": {
-        "uids": "user123,user456,user789",  // Comma-separated
-        "cohorts": "cohort1,cohort2"        // Comma-separated
-      }
-    }
-  }
-}
-```
-
-**Setting via App Management API**:
-```bash
-curl -X POST "https://your-server.com/i/apps/update" \
-  -d "api_key=YOUR_API_KEY" \
-  -d "app_id=507f1f77bcf86cd799439012" \
-  -d "features.push.test.uids=user123,user456" \
-  -d "features.push.test.cohorts=premium_users"
-```
-
-### Platform Selection
-
-The test endpoint sends to users who have tokens for the specified platforms:
-- **iOS** (`i`): Users with `tkip` (production) or `tkid` (development) tokens
-- **Android** (`a`): Users with `tkap` (production) or `tkad` (development) tokens
-- **Web** (`w`): Users with `tkwp` tokens
-- **Huawei** (`h`): Users with `tkhp` tokens
-
-If a test user doesn't have a token for the requested platform, they won't receive the notification.
-
-### Content Structure
-
-Content objects follow the same structure as [Message Create](./message-create.md):
-
-1. First content (index 0) has no `p` or `la` - serves as default
-2. Subsequent contents with `p` override default for specific platform
-3. Contents with `la` override for specific language
-4. Contents with both `p` and `la` override for platform+language combo
-
-**Example**:
-```json
-{
-  "contents": [
-    {
-      "message": "Default test message",
-      "title": "Test"
-    },
-    {
-      "p": "i",
-      "message": "iOS-specific test message"
-    },
-    {
-      "la": "tr",
-      "message": "Türkçe test mesajı"
-    }
-  ]
-}
-```
-
-### Personalization
-
-Personalization works identically to [Message Create](./message-create.md):
-
-```json
-{
-  "messagePers": {
-    "0": {
-      "k": "first_name",
-      "t": "c",
-      "c": true,
-      "f": "User"
-    }
-  }
-}
-```
-
-- **Index `"0"`**: Replace from character 0 in message
-- **`k`**: Property key (`first_name`)
-- **`t`**: Type - `"u"` (user prop), `"c"` (custom prop), `"e"` (event data), `"a"` (API variable)
-- **`c`**: Capitalize (true/false)
-- **`f`**: Fallback value if property missing
-
-Message: `" {first_name}, this is a test!"` → `"John, this is a test!"`
-
-### User Conditions Filter
-
-The optional `userConditions` parameter allows additional filtering of test users:
-
-```json
-{
-  "userConditions": {
-    "country": "US",
-    "custom.premium": true
-  }
-}
-```
-
-This MongoDB query is AND-ed with the test user/cohort selection, so only test users matching the conditions will receive the test notification.
-
-### Minimal Trigger Example
-
-Use a simple plain trigger to satisfy request validation:
-
-```json
-[
-  {
-    "kind": "plain",
-    "start": "2026-04-09T10:00:00.000Z"
-  }
-]
-```
-
-The server replaces this trigger internally during test execution.
-
----
 
 ## Examples
 
@@ -605,11 +344,303 @@ curl -X POST "https://your-server.com/i/push/message/test" \
 }
 ```
 
----
+## Response
+
+#### Success Response - Test Sent
+**Status Code**: `200 OK`
+
+**Body**: Send results for test users/cohorts
+
+### Success Response
+
+```json
+{
+  "sent": 5,
+  "failed": 0,
+  "result": {
+    "uids": ["user1", "user2", "user3"],
+    "cohorts": ["premium_users"],
+    "total": 5,
+    "processed": 5,
+    "sent": 5,
+    "failed": 0,
+    "errors": []
+  }
+}
+```
+
+#### Success Response - No Test Users
+**Status Code**: `400 Bad Request`
+
+**Body**:
+```json
+{
+  "kind": "ValidationError",
+  "errors": [
+    "Test users/cohorts not set for this app"
+  ]
+}
+```
+
+#### Error Response - Validation Error
+**Status Code**: `400 Bad Request`
+
+**Body**:
+```json
+{
+  "kind": "ValidationError",
+  "errors": [
+    "platforms is required",
+    "triggers is required",
+    "contents is required",
+    "test must be true"
+  ]
+}
+```
+
+#### Error Response - No Credentials
+**Status Code**: `400 Bad Request`
+
+**Body**:
+```json
+{
+  "kind": "ValidationError",
+  "errors": [
+    "No push credentials for iOS platform"
+  ]
+}
+```
+
+### Response Fields
+
+| Field | Type | Description |
+|---|---|---|
+| `result` | Object | Test-run aggregate result payload. |
+| `result.total` | Number | Total notifications targeted for test run. |
+| `result.sent` | Number | Number of notifications sent successfully. |
+| `result.errored` | Number | Number of failed notifications. |
+| `result.errors` | Object | Error code/count map from test run. |
+
+### Error Responses
+
+```json
+{
+  "result": "Error"
+}
+```
+
+## Permissions
+
+- Required Permission: Create access to push feature (create-permission validation)
+
+## Behavior
+
+### Operation Flow
+
+1. **Validation**
+   - Verifies `test` parameter is `true`
+   - Validates all required fields (`platforms`, `triggers`, `contents`)
+   - Validates content structure (message, title, etc.)
+
+2. **Test Configuration Loading**
+   - Reads `apps[app_id].features.push.test.uids` (comma-separated user IDs)
+   - Reads `apps[app_id].features.push.test.cohorts` (comma-separated cohort IDs)
+   - If both empty: Returns ValidationError "Test users/cohorts not set"
+
+3. **Credentials Verification**
+   - Checks `apps.features.push.{platform}._id` exists for each platform
+   - Queries `push_{credentials_id}` collection to verify credentials exist
+   - Rejects if credentials missing or set to 'demo'
+
+4. **Test Audience Selection**
+   - **From UIDs**: Queries `app_users{APP_ID}` collection with `uid` in configured UIDs
+   - **From Cohorts**: Queries `app_users{APP_ID}` collection with cohort membership
+   - Applies `userConditions` filter if provided (additional MongoDB query)
+   - Filters users who have push tokens for requested platforms
+
+5. **Personalization Processing**
+   - For each user, processes personalization placeholders
+   - Replaces placeholders with user property values
+   - Applies fallback values if properties missing
+   - Capitalizes if configured
+
+6. **Notification Sending**
+   - Creates in-memory temporary message object (not saved to DB)
+   - Replaces provided audience filter with configured test users or configured test cohorts
+   - Replaces provided triggers with an immediate internal plain trigger
+   - Forces message status to active for the test run
+   - Sends notifications immediately via push queue
+   - Tracks send results (sent, failed, errors)
+
+7. **Response**
+   - Returns send statistics and user/cohort info
+   - Includes any errors encountered during send
+
+### Test User Configuration
+
+Test users/cohorts are configured in the `apps` collection:
+
+```javascript
+// In apps collection document:
+{
+  "_id": "507f1f77bcf86cd799439012",
+  "features": {
+    "push": {
+      "test": {
+        "uids": "user123,user456,user789",  // Comma-separated
+        "cohorts": "cohort1,cohort2"        // Comma-separated
+      }
+    }
+  }
+}
+```
+
+**Setting via App Management API**:
+```bash
+curl -X POST "https://your-server.com/i/apps/update" \
+  -d "api_key=YOUR_API_KEY" \
+  -d "app_id=507f1f77bcf86cd799439012" \
+  -d "features.push.test.uids=user123,user456" \
+  -d "features.push.test.cohorts=premium_users"
+```
+
+### Platform Selection
+
+The test endpoint sends to users who have tokens for the specified platforms:
+- **iOS** (`i`): Users with `tkip` (production) or `tkid` (development) tokens
+- **Android** (`a`): Users with `tkap` (production) or `tkad` (development) tokens
+- **Web** (`w`): Users with `tkwp` tokens
+- **Huawei** (`h`): Users with `tkhp` tokens
+
+If a test user does not have a token for the requested platform, they will not receive the notification.
+
+### Content Structure
+
+Content objects follow the same structure as [Message Create](./message-create.md):
+
+1. First content (index 0) has no `p` or `la` - serves as default
+2. Subsequent contents with `p` override default for specific platform
+3. Contents with `la` override for specific language
+4. Contents with both `p` and `la` override for platform+language combo
+
+**Example**:
+```json
+{
+  "contents": [
+    {
+      "message": "Default test message",
+      "title": "Test"
+    },
+    {
+      "p": "i",
+      "message": "iOS-specific test message"
+    },
+    {
+      "la": "tr",
+      "message": "Türkçe test mesajı"
+    }
+  ]
+}
+```
+
+### Personalization
+
+Personalization works identically to [Message Create](./message-create.md):
+
+```json
+{
+  "messagePers": {
+    "0": {
+      "k": "first_name",
+      "t": "c",
+      "c": true,
+      "f": "User"
+    }
+  }
+}
+```
+
+- **Index `"0"`**: Replace from character 0 in message
+- **`k`**: Property key (`first_name`)
+- **`t`**: Type - `"u"` (user prop), `"c"` (custom prop), `"e"` (event data), `"a"` (API variable)
+- **`c`**: Capitalize (true/false)
+- **`f`**: Fallback value if property missing
+
+Message: `" {first_name}, this is a test!"` → `"John, this is a test!"`
+
+### User Conditions Filter
+
+The optional `userConditions` parameter allows additional filtering of test users:
+
+```json
+{
+  "userConditions": {
+    "country": "US",
+    "custom.premium": true
+  }
+}
+```
+
+This MongoDB query is AND-ed with the test user/cohort selection, so only test users matching the conditions will receive the test notification.
+
+### Minimal Trigger Example
+
+Use a simple plain trigger to satisfy request validation:
+
+```json
+[
+  {
+    "kind": "plain",
+    "start": "2026-04-09T10:00:00.000Z"
+  }
+]
+```
+
+The server replaces this trigger internally during test execution.
 
 ## Technical Notes
 
-## Database Collections
+## Related Endpoints
+
+- [Message Create](./message-create.md) - Create campaign after successful test
+- [Message Estimate](./message-estimate.md) - Estimate full campaign audience
+- [MIME Info](./mime.md) - Verify media attachment MIME type
+- [Message Update](./message-update.md) - Update existing campaign
+- [Dashboard](./dashboard.md) - View push statistics
+
+## Error Handling
+
+| Status Code | Condition | Response |
+|-------------|-----------|----------|
+| `200` | Success - test sent | Send results with counts |
+| `400` | Test parameter not true | `{"kind": "ValidationError", "errors": ["test must be true"]}` |
+| `400` | Missing required parameters | `{"kind": "ValidationError", "errors": ["platforms is required", "triggers is required"]}` |
+| `400` | No test users configured | `{"kind": "ValidationError", "errors": ["Test users/cohorts not set for this app"]}` |
+| `400` | No push credentials | `{"kind": "ValidationError", "errors": ["No push credentials for iOS platform"]}` |
+| `400` | Invalid platform | `{"kind": "ValidationError", "errors": ["Invalid platform: x"]}` |
+| `400` | Invalid content structure | `{"kind": "ValidationError", "errors": ["message is required in contents[0]"]}` |
+| `500` | Send error | `{"kind": "PushError", "errors": ["Error sending test: ..."]}` |
+| `500` | Database error | `{"kind": "ServerError", "errors": ["Server error"]}` |
+
+## Implementation Notes
+
+1. **No persistence**: Test endpoint creates temporary message object, never saves to DB
+2. **Immediate send**: Notifications are queued immediately, no scheduling
+3. **Test-only audience**: Only users/cohorts configured in app settings receive notifications
+4. **Token filtering**: Only sends to users with tokens for requested platforms
+5. **Personalization**: Fully processes personalization for each test user
+6. **User conditions**: Optional additional filtering on top of test user/cohort selection
+7. **No approval**: Bypasses Push Approver feature (if enabled)
+8. **No analytics**: Does not create full analytics tracking (only basic sent/failed counts)
+9. **Credentials check**: Still requires valid push credentials for requested platforms
+10. **Response timing**: Returns immediately after queuing, does not wait for actual delivery
+11. **Testing workflow**: Test → Verify → Create campaign with [Message Create](./message-create.md)
+12. **Multi-platform**: Can test multiple platforms simultaneously
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -647,49 +678,4 @@ curl -X POST "https://your-server.com/i/push/message/test" \
 | `Send time` | Endpoint data source | Stores endpoint-related records read or modified by this endpoint. |
 | `Response time` | Endpoint data source | Stores endpoint-related records read or modified by this endpoint. |
 
----
-
-## Related Endpoints
-
-- [Message Create](./message-create.md) - Create campaign after successful test
-- [Message Estimate](./message-estimate.md) - Estimate full campaign audience
-- [MIME Info](./mime.md) - Verify media attachment MIME type
-- [Message Update](./message-update.md) - Update existing campaign
-- [Dashboard](./dashboard.md) - View push statistics
-
----
-
-## Error Handling
-
-| Status Code | Condition | Response |
-|-------------|-----------|----------|
-| `200` | Success - test sent | Send results with counts |
-| `400` | Test parameter not true | `{"kind": "ValidationError", "errors": ["test must be true"]}` |
-| `400` | Missing required parameters | `{"kind": "ValidationError", "errors": ["platforms is required", "triggers is required"]}` |
-| `400` | No test users configured | `{"kind": "ValidationError", "errors": ["Test users/cohorts not set for this app"]}` |
-| `400` | No push credentials | `{"kind": "ValidationError", "errors": ["No push credentials for iOS platform"]}` |
-| `400` | Invalid platform | `{"kind": "ValidationError", "errors": ["Invalid platform: x"]}` |
-| `400` | Invalid content structure | `{"kind": "ValidationError", "errors": ["message is required in contents[0]"]}` |
-| `500` | Send error | `{"kind": "PushError", "errors": ["Error sending test: ..."]}` |
-| `500` | Database error | `{"kind": "ServerError", "errors": ["Server error"]}` |
-
----
-
-## Implementation Notes
-
-1. **No persistence**: Test endpoint creates temporary message object, never saves to DB
-2. **Immediate send**: Notifications are queued immediately, no scheduling
-3. **Test-only audience**: Only users/cohorts configured in app settings receive notifications
-4. **Token filtering**: Only sends to users with tokens for requested platforms
-5. **Personalization**: Fully processes personalization for each test user
-6. **User conditions**: Optional additional filtering on top of test user/cohort selection
-7. **No approval**: Bypasses Push Approver feature (if enabled)
-8. **No analytics**: Does not create full analytics tracking (only basic sent/failed counts)
-9. **Credentials check**: Still requires valid push credentials for requested platforms
-10. **Response timing**: Returns immediately after queuing, doesn't wait for actual delivery
-11. **Testing workflow**: Test → Verify → Create campaign with [Message Create](./message-create.md)
-12. **Multi-platform**: Can test multiple platforms simultaneously
-
-## Last Updated
-
-2026-04-09
+</details>

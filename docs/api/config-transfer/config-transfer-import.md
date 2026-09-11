@@ -3,9 +3,15 @@ sidebar_label: "Import"
 keywords:
   - "/i/import"
   - "import"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Import Configuration
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -13,19 +19,14 @@ keywords:
 /i/import
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Imports previously exported configuration data into an application. Reads an uploaded JSON export file, validates all items for compatibility, performs ID mapping, and inserts the configuration into the target application with automatic dependency resolution.
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required permission**: `Update` on the Config Transfer feature (`config_transfer`)
@@ -52,76 +53,6 @@ JSON file structure exactly as exported from `/o/export`:
   }
 ]
 ```
-
-## Response
-
-### Success Response
-
-```json
-"Success"
-```
-
-### Response Fields
-
-| Field | Type | Description |
-|---|---|---|
-| `(root value)` | String | Status message on successful import |
-
-### Error Responses
-
-| HTTP Status | Error Response | Description |
-|---|---|---|
-| 400 | `{"result": "Missing parameter \"api_key\" or \"auth_token\""}` | Missing authentication parameters |
-| 401 | `{"result": "No app_id provided"}` | Missing target app identifier |
-| 401 | `{"result": "User does not have right"}` | User lacks Update permission on Config Transfer feature |
-| 500 | `{"result": "Error in import"}` | Import validation or data insertion failed |
-
-## Behavior/Processing
-
-### Import Process
-
-1. **Validation Phase**:
-   - Validates update permission for `config_transfer` feature
-   - Reads and parses uploaded JSON file from `import_file`
-   - Validates imported data structure
-
-2. **Feature Validation**:
-   - For each feature in import file:
-     - Dispatches `/import/validate` to the feature plugin
-     - Receives validation result with status and old→new ID mapping
-     - Collects plugin ID maps
-
-3. **Dependency Validation**:
-   - Processes dependency items:
-     - Dispatches `/import/validate` for each dependency
-     - Builds complete ID map (old IDs → newly generated IDs)
-
-4. **ID Reference Updates**:
-   - Replaces all references in imported data:
-     - `APP_ID` placeholder → Target application ID
-     - `OWNER_ID` placeholder → Importing user's member ID
-     - Old object IDs → Newly generated IDs
-   - Ensures all cross-references remain valid
-
-5. **Import Execution**:
-   - Imports dependencies first (in correct order)
-   - Then imports main items
-   - Dashboard widgets imported last due to dependency on dashboards
-   - Dispatches `/import` event to each feature plugin for data insertion
-
-6. **Data Persistence**:
-   - Each feature plugin manages writing to its own collections
-   - Maintains referential integrity across features
-
----
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `/import` | Dispatches | event to feature plugins; Dashboard plugin writes to dashboard collections; Cohorts plugin writes to cohort collections; Segments plugin writes to segment collections; etc. |
-
----
 
 ## Examples
 
@@ -168,7 +99,65 @@ curl -X POST "https://your-server.com/i/import" \
 "Success"
 ```
 
----
+## Response
+
+### Success Response
+
+```json
+"Success"
+```
+
+### Response Fields
+
+| Field | Type | Description |
+|---|---|---|
+| `(root value)` | String | Status message on successful import |
+
+### Error Responses
+
+| HTTP Status | Error Response | Description |
+|---|---|---|
+| 400 | `{"result": "Missing parameter \"api_key\" or \"auth_token\""}` | Missing authentication parameters |
+| 401 | `{"result": "No app_id provided"}` | Missing target app identifier |
+| 401 | `{"result": "User does not have right"}` | User lacks Update permission on Config Transfer feature |
+| 500 | `{"result": "Error in import"}` | Import validation or data insertion failed |
+
+## Behavior
+
+### Import Process
+
+1. **Validation Phase**:
+   - Validates update permission for `config_transfer` feature
+   - Reads and parses uploaded JSON file from `import_file`
+   - Validates imported data structure
+
+2. **Feature Validation**:
+   - For each feature in import file:
+     - Dispatches `/import/validate` to the feature plugin
+     - Receives validation result with status and old→new ID mapping
+     - Collects plugin ID maps
+
+3. **Dependency Validation**:
+   - Processes dependency items:
+     - Dispatches `/import/validate` for each dependency
+     - Builds complete ID map (old IDs → newly generated IDs)
+
+4. **ID Reference Updates**:
+   - Replaces all references in imported data:
+     - `APP_ID` placeholder → Target application ID
+     - `OWNER_ID` placeholder → Importing user's member ID
+     - Old object IDs → Newly generated IDs
+   - Ensures all cross-references remain valid
+
+5. **Import Execution**:
+   - Imports dependencies first (in correct order)
+   - Then imports main items
+   - Dashboard widgets imported last due to dependency on dashboards
+   - Dispatches `/import` event to each feature plugin for data insertion
+
+6. **Data Persistence**:
+   - Each feature plugin manages writing to its own collections
+   - Maintains referential integrity across features
 
 ## Limitations
 
@@ -181,29 +170,19 @@ curl -X POST "https://your-server.com/i/import" \
 - **Ownership**: Imported items are assigned to the importing user. Previous ownership is not preserved.
 - **Duplicate handling**: Importing the same configuration twice creates duplicate items (no upsert/merge logic).
 
----
-
 ## Related Endpoints
 
 - [Config Transfer - Export](config-transfer-export.md)
 - [Dashboards - API Documentation](../dashboards/index.md) - Dashboard creation and management
 - [Cohorts - API Documentation](../cohorts/index.md) - Cohort creation and management
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Database Collections**
 
-This feature is part of **Countly Enterprise**.
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `/import` | Dispatches | event to feature plugins; Dashboard plugin writes to dashboard collections; Cohorts plugin writes to cohort collections; Segments plugin writes to segment collections; etc. |
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

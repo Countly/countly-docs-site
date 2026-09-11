@@ -4,6 +4,8 @@ keywords:
   - "/i/hook/status"
   - "status"
   - "hook"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Hooks - Update Status
@@ -20,11 +22,7 @@ Updates enabled/disabled status for one or more hooks in a single request.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -54,9 +52,25 @@ Decoded payload example:
 }
 ```
 
-## Configuration Impact
+## Examples
 
-`refreshRulesPeriod` controls how quickly the updated enabled state is reflected in runtime rule cache after this endpoint returns.
+### Disable one hook
+
+```text
+/i/hook/status?
+  app_id=6991c75b024cb89cdc04efd2&
+  api_key=YOUR_API_KEY&
+  status={"65f0cbf8bca6b8e8fbf7f901":false}
+```
+
+### Mixed enable/disable batch
+
+```text
+/i/hook/status?
+  app_id=6991c75b024cb89cdc04efd2&
+  api_key=YOUR_API_KEY&
+  status={"65f0cbf8bca6b8e8fbf7f901":true,"65f0cc6ebca6b8e8fbf7f902":false}
+```
 
 ## Response
 
@@ -154,7 +168,7 @@ true
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -168,42 +182,6 @@ true
 - Updates `enabled` values in `countly.hooks`.
 - Writes audit event to system logs on successful batch update.
 
-## Audit & System Logs
-
-Successful updates dispatch `/systemlogs` with action:
-
-- `hook_status_updated`
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication and permission checks | Reads member account and access metadata. |
-| `countly.apps` | App validation for non-global-admin users | Reads app context during permission validation. |
-| `countly.hooks` | Hook status updates | Updates `enabled` field for each hook ID in `status`. |
-
----
-
-## Examples
-
-### Disable one hook
-
-```text
-/i/hook/status?
-  app_id=6991c75b024cb89cdc04efd2&
-  api_key=YOUR_API_KEY&
-  status={"65f0cbf8bca6b8e8fbf7f901":false}
-```
-
-### Mixed enable/disable batch
-
-```text
-/i/hook/status?
-  app_id=6991c75b024cb89cdc04efd2&
-  api_key=YOUR_API_KEY&
-  status={"65f0cbf8bca6b8e8fbf7f901":true,"65f0cc6ebca6b8e8fbf7f902":false}
-```
-
 ## Operational Considerations
 
 - Large `status` payloads create many parallel DB operations in one request.
@@ -214,6 +192,25 @@ Successful updates dispatch `/systemlogs` with action:
 - [Hooks - Save](i-hook-save.md)
 - [Hooks - Read List](o-hook-list.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Configuration Impact**
+
+`refreshRulesPeriod` controls how quickly the updated enabled state is reflected in runtime rule cache after this endpoint returns.
+
+**Audit & System Logs**
+
+Successful updates dispatch `/systemlogs` with action:
+
+- `hook_status_updated`
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication and permission checks | Reads member account and access metadata. |
+| `countly.apps` | App validation for non-global-admin users | Reads app context during permission validation. |
+| `countly.hooks` | Hook status updates | Updates `enabled` field for each hook ID in `status`. |
+
+</details>

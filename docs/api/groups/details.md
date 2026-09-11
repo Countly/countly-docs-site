@@ -4,9 +4,15 @@ keywords:
   - "/o/groups/group-details"
   - "group-details"
   - "groups"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Get Group Details
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -14,19 +20,14 @@ keywords:
 /o/groups/group-details
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Returns one group by ID.
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required access**: global admin
@@ -44,6 +45,24 @@ Returns one group by ID.
 | Field | Type | Required | Description |
 |---|---|---|---|
 | `_id` | String | Yes | Group ID |
+
+## Examples
+
+### Example: Get one group
+
+Endpoint form:
+
+```text
+https://your-server.com/o/groups/group-details?api_key=YOUR_API_KEY&args={"_id":"507f1f77bcf86cd799439011"}
+```
+
+Decoded `args` object:
+
+```json
+{
+  "_id": "507f1f77bcf86cd799439011"
+}
+```
 
 ## Response
 
@@ -84,41 +103,11 @@ Returns one group by ID.
 | 400 | `{ "result": "Missing parameter \"api_key\" or \"auth_token\"" }` |
 | 400 | Error object from details lookup path |
 
-## Behavior/Processing
+## Behavior
 
 1. Parses `args` and validates `_id`.
 2. Reads group from `countly.groups`.
 3. Returns `{ "result": group }`.
-
----
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.groups` | Endpoint data source | ** - Group document source |
-
----
-
-## Examples
-
-### Example: Get one group
-
-Endpoint form:
-
-```text
-https://your-server.com/o/groups/group-details?api_key=YOUR_API_KEY&args={"_id":"507f1f77bcf86cd799439011"}
-```
-
-Decoded `args` object:
-
-```json
-{
-  "_id": "507f1f77bcf86cd799439011"
-}
-```
-
----
 
 ## Related Endpoints
 
@@ -126,21 +115,13 @@ Decoded `args` object:
 - [Groups - Update Group](update.md)
 - [Groups - Delete Group](delete.md)
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Database Collections**
 
-This feature is part of **Countly Enterprise**.
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.groups` | Endpoint data source | ** - Group document source |
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

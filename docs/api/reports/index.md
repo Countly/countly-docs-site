@@ -1,6 +1,8 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-03-05"
 ---
 
 # Reports
@@ -8,12 +10,6 @@ sidebar_label: "Overview"
 ## Overview
 
 Reports feature manages scheduled report definitions and manual report actions (create/update/delete/send/preview/pdf/status).
-
-## Database Collections
-
-| Collection | Purpose |
-|---|---|
-| `countly.reports` | Stores report definitions and schedule settings. |
 
 ## Endpoints
 
@@ -26,6 +22,13 @@ Reports feature manages scheduled report definitions and manual report actions (
 - [Reports - PDF](i-reports-pdf.md) - `/i/reports/pdf`
 - [Reports - Status](i-reports-status.md) - `/i/reports/status`
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-03-05
+**Database Collections**
+
+| Collection | Purpose |
+|---|---|
+| `countly.reports` | Stores report definitions and schedule settings. |
+
+</details>

@@ -1,6 +1,8 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Data Ingestion - API Documentation
@@ -27,7 +29,15 @@ Ingestion endpoints collect SDK traffic for sessions, events, user properties, a
 | `api.trim_trailing_ending_spaces` | `/i` | Trims leading/trailing spaces in request values before processing. |
 | `api.prevent_duplicate_requests` | `/i`, `/i/bulk` | Enables duplicate-request suppression in ingestion handling. |
 
-## Database Collections
+## Limitations
+
+- Bulk requests return one aggregate success response and do not include per-item status payloads.
+- Actual data impact depends on incoming payload content and validation outcomes.
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Purpose |
 |---|---|
@@ -38,11 +48,4 @@ Ingestion endpoints collect SDK traffic for sessions, events, user properties, a
 | `countly.events_data` | Aggregated event counters and segments. |
 | `countly_drill.drill_events` | Drill/raw event records used for detailed analytics. |
 
-## Limitations
-
-- Bulk requests return one aggregate success response and do not include per-item status payloads.
-- Actual data impact depends on incoming payload content and validation outcomes.
-
-## Last Updated
-
-2026-02-17
+</details>

@@ -5,6 +5,8 @@ keywords:
   - "create"
   - "data-manager"
   - "category"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /i/data-manager/category/create
@@ -21,11 +23,7 @@ Creates one or more category documents for the selected app.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. **API Key** (parameter): `api_key=YOUR_API_KEY`
-2. **Auth Token** (parameter): `auth_token=YOUR_AUTH_TOKEN`
-3. **Auth Token** (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -50,6 +48,14 @@ Example:
 
 ```json
 ["Revenue", "Engagement", "System"]
+```
+
+## Examples
+
+### Create multiple categories
+
+```plaintext
+/i/data-manager/category/create?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&categories=["Revenue","Engagement"]
 ```
 
 ## Response
@@ -92,7 +98,7 @@ Example:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Validates create access for `data_manager`.
 - Parses `categories` JSON string.
@@ -102,29 +108,6 @@ Example:
 ### Impact on Other Data
 
 - Inserts new category records in `countly.event_categories`.
-
-## Audit & System Logs
-
-| Action | Trigger | Payload |
-|---|---|---|
-| `dm-category-category` | Categories are accepted for insertion | `{ categories: [ ... ] }` |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication and permission validation | Reads member record by `api_key` or `auth_token` to verify create access. |
-| `countly.apps` | App context validation | Reads app record for the requested `app_id` during access validation. |
-| `countly.event_categories` | Stores per-app event category definitions | Inserts one document per submitted category name. |
-| `countly.systemlogs` | Stores audit trail for management actions | Receives audit entry dispatched for category creation. |
-
-## Examples
-
-### Create multiple categories
-
-```plaintext
-/i/data-manager/category/create?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&categories=["Revenue","Engagement"]
-```
 
 ## Limitations
 
@@ -137,6 +120,22 @@ Example:
 - [Data Manager - Category Edit](i-data-manager-category-edit.md)
 - [Data Manager - Category Delete](i-data-manager-category-delete.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Audit & System Logs**
+
+| Action | Trigger | Payload |
+|---|---|---|
+| `dm-category-category` | Categories are accepted for insertion | `{ categories: [ ... ] }` |
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication and permission validation | Reads member record by `api_key` or `auth_token` to verify create access. |
+| `countly.apps` | App context validation | Reads app record for the requested `app_id` during access validation. |
+| `countly.event_categories` | Stores per-app event category definitions | Inserts one document per submitted category name. |
+| `countly.systemlogs` | Stores audit trail for management actions | Receives audit entry dispatched for category creation. |
+
+</details>

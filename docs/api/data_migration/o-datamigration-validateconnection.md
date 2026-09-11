@@ -4,6 +4,8 @@ keywords:
   - "/o/datamigration/validateconnection"
   - "validateconnection"
   - "datamigration"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Data Migration - Validate Remote Connection
@@ -20,11 +22,7 @@ Validates whether a target Countly server and import token are usable for remote
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -40,11 +38,15 @@ Requires `data_migration` `Read` permission.
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `security.*` (global security config) | Server-defined | Outbound HTTP request behavior | This endpoint uses `countly-request` initialized with `plugins.getConfig("security")`; TLS/proxy/request options can change validation success/failure. |
+### Validate target migration endpoint
+
+```text
+/o/datamigration/validateconnection?
+  server_address=http://target-countly.example.com&
+  server_token=2fc9d68f6f284f9fa95b93b7d598
+```
 
 ## Response
 
@@ -96,7 +98,7 @@ Requires `data_migration` `Read` permission.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -110,27 +112,22 @@ Requires `data_migration` `Read` permission.
 
 - Read-only endpoint.
 
-## Database Collections
-
-This endpoint does not read or write database collections directly.
-
----
-
-## Examples
-
-### Validate target migration endpoint
-
-```text
-/o/datamigration/validateconnection?
-  server_address=http://target-countly.example.com&
-  server_token=2fc9d68f6f284f9fa95b93b7d598
-```
-
 ## Related Endpoints
 
 - [Data Migration - Export](i-datamigration-export.md)
 - [Data Migration - Send Existing Export](i-datamigration-sendexport.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Configuration Impact**
+
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `security.*` (global security config) | Server-defined | Outbound HTTP request behavior | This endpoint uses `countly-request` initialized with `plugins.getConfig("security")`; TLS/proxy/request options can change validation success/failure. |
+
+**Database Collections**
+
+This endpoint does not read or write database collections directly.
+
+</details>

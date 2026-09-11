@@ -4,6 +4,8 @@ keywords:
   - "/i/apps/update"
   - "update"
   - "apps"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /i/apps/update
@@ -20,9 +22,7 @@ Update app metadata fields such as name, type, country, timezone, key, lock stat
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -51,6 +51,20 @@ Update app metadata fields such as name, type, country, timezone, key, lock stat
 | `country` | String | No | New ISO country code. |
 | `salt` | String | No | Checksum salt alias field. |
 | `locked` | Boolean | No | App lock state. |
+
+## Examples
+
+### Example 1: Update timezone and country
+
+```plaintext
+/i/apps/update?api_key=YOUR_API_KEY&app_id=64b0ac10c2c3ce0012dd1001&args={"app_id":"64b0ac10c2c3ce0012dd1001","timezone":"Europe/Berlin","country":"DE"}
+```
+
+### Example 2: Lock app
+
+```plaintext
+/i/apps/update?api_key=YOUR_API_KEY&app_id=64b0ac10c2c3ce0012dd1001&args={"app_id":"64b0ac10c2c3ce0012dd1001","locked":true}
+```
 
 ## Response
 
@@ -133,7 +147,7 @@ No-op update:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -147,7 +161,21 @@ No-op update:
 - Dispatches app-update integration hooks so feature modules can react to app metadata changes.
 - If app image is uploaded in the same request context, updates app image file.
 
-## Database Collections
+## Limitations
+
+- `args.app_id` is mandatory in payload.
+- Invalid `type`, `country`, `timezone`, or `category` values are rejected.
+
+## Related Endpoints
+
+- [Apps - App Create](i-apps-create.md)
+- [Apps - App Delete](i-apps-delete.md)
+- [Apps - App Read Details](o-apps-details.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -155,33 +183,4 @@ No-op update:
 | `countly.apps` | App metadata update target | Reads existing app and updates selected app fields. |
 | `countly_fs` | App image storage | Overwrites app image when an image file is supplied. |
 
----
-## Examples
-
-### Example 1: Update timezone and country
-
-```plaintext
-/i/apps/update?api_key=YOUR_API_KEY&app_id=64b0ac10c2c3ce0012dd1001&args={"app_id":"64b0ac10c2c3ce0012dd1001","timezone":"Europe/Berlin","country":"DE"}
-```
-
-### Example 2: Lock app
-
-```plaintext
-/i/apps/update?api_key=YOUR_API_KEY&app_id=64b0ac10c2c3ce0012dd1001&args={"app_id":"64b0ac10c2c3ce0012dd1001","locked":true}
-```
-
-## Limitations
-
-- `args.app_id` is mandatory in payload.
-- Invalid `type`, `country`, `timezone`, or `category` values are rejected.
-
----
-## Related Endpoints
-
-- [Apps - App Create](i-apps-create.md)
-- [Apps - App Delete](i-apps-delete.md)
-- [Apps - App Read Details](o-apps-details.md)
-
-## Last Updated
-
-2026-02-17
+</details>

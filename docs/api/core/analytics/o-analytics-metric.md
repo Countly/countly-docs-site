@@ -4,6 +4,8 @@ keywords:
   - "/o/analytics/metric"
   - "metric"
   - "analytics"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /o/analytics/metric
@@ -20,9 +22,7 @@ Returns one metric breakdown array for the requested metric key.
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -50,12 +50,27 @@ Returns one metric breakdown array for the requested metric key.
   - `resolutions` -> device details resolutions
   - `carriers` -> carriers aggregate
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `api.total_users` | `true` | Unique-user correction | When disabled, total-user correction path is skipped. |
-| `api.metric_changes` | `true` | Correction history | When disabled, metric-change historical adjustments are not applied. |
+### Example 1: Read countries metric
+
+```plaintext
+/o/analytics/metric?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  metric=countries&
+  period=7days
+```
+
+### Example 2: Read platforms metric
+
+```plaintext
+/o/analytics/metric?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  metric=platforms&
+  period=30days
+```
 
 ## Response
 
@@ -96,7 +111,7 @@ Returns one metric breakdown array for the requested metric key.
 {"result":"User does not have right"}
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -109,11 +124,35 @@ Returns one metric breakdown array for the requested metric key.
 
 - Read-only endpoint.
 
-## Audit & System Logs
+## Operational Considerations
+
+- High-cardinality metrics produce larger result arrays.
+
+## Limitations
+
+- Unsupported metric keys return `[]` instead of a validation error.
+
+## Related Endpoints
+
+- [Analytics - Read Tops](./o-analytics-tops.md)
+- [Analytics - Read Countries](./o-analytics-countries.md)
+- [Analytics - Run Query](./o-query.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Configuration Impact**
+
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `api.total_users` | `true` | Unique-user correction | When disabled, total-user correction path is skipped. |
+| `api.metric_changes` | `true` | Correction history | When disabled, metric-change historical adjustments are not applied. |
+
+**Audit & System Logs**
 
 - No `/systemlogs` action is emitted by this endpoint.
 
-## Database Collections
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -126,46 +165,4 @@ Returns one metric breakdown array for the requested metric key.
 | `countly.app_users{appId}` | Total-user correction baseline | Read during total-user correction flows. |
 | `countly.metric_changes{appId}` | Correction history | Read when metric-change correction is enabled. |
 
----
-
-## Examples
-
-### Example 1: Read countries metric
-
-```plaintext
-/o/analytics/metric?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  metric=countries&
-  period=7days
-```
-
-### Example 2: Read platforms metric
-
-```plaintext
-/o/analytics/metric?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  metric=platforms&
-  period=30days
-```
-
-## Operational Considerations
-
-- High-cardinality metrics produce larger result arrays.
-
-## Limitations
-
-- Unsupported metric keys return `[]` instead of a validation error.
-
----
-
-## Related Endpoints
-
-- [Analytics - Read Tops](./o-analytics-tops.md)
-- [Analytics - Read Countries](./o-analytics-countries.md)
-- [Analytics - Run Query](./o-query.md)
-
-## Last Updated
-
-2026-02-17
+</details>

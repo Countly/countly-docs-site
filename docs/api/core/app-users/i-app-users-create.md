@@ -4,6 +4,8 @@ keywords:
   - "/i/app_users/create"
   - "create"
   - "app_users"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /i/app_users/create
@@ -20,9 +22,7 @@ Create one app user document programmatically (outside SDK ingest flow).
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -45,6 +45,20 @@ Create one app user document programmatically (outside SDK ingest flow).
 | `uid` | String | No | User ID. Auto-generated from app sequence when omitted. |
 | `_id` | String | No | If provided, it must equal SHA-1 of `app.key + did`. |
 | `custom fields` | Any JSON type | No | Additional user properties stored on the profile document. |
+
+## Examples
+
+### Example 1: Create app user
+
+```plaintext
+/i/app_users/create?api_key=YOUR_API_KEY&app_id=64b0ac10c2c3ce0012dd1001&data={"did":"device_1","name":"Alex"}
+```
+
+```json
+{
+  "result": "User Created: {\"did\":\"device_1\",\"name\":\"Alex\",\"_id\":\"2f3e...\",\"uid\":\"1\"}"
+}
+```
 
 ## Response
 
@@ -120,7 +134,7 @@ Create one app user document programmatically (outside SDK ingest flow).
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -134,7 +148,20 @@ Create one app user document programmatically (outside SDK ingest flow).
 - Updates `countly.apps` sequence (`seq`) when `uid` is auto-generated.
 - Triggers plugin listeners for app-user creation, which may write additional plugin data.
 
-## Database Collections
+## Limitations
+
+- `did` is mandatory.
+- `_id` cannot be arbitrary; if provided, it must match the derived hash.
+
+## Related Endpoints
+
+- [App Users - Update](i-app-users-update.md)
+- [App Users - Delete](i-app-users-delete.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -142,32 +169,4 @@ Create one app user document programmatically (outside SDK ingest flow).
 | `countly.apps` | App validation and sequence generation | Reads app key for `_id` derivation and increments `seq` when generating `uid`. |
 | `countly.app_users{appId}` | User profile storage | Inserts the created app-user document (including `did`, `uid`, `_id`, and custom fields). |
 
----
-## Examples
-
-### Example 1: Create app user
-
-```plaintext
-/i/app_users/create?api_key=YOUR_API_KEY&app_id=64b0ac10c2c3ce0012dd1001&data={"did":"device_1","name":"Alex"}
-```
-
-```json
-{
-  "result": "User Created: {\"did\":\"device_1\",\"name\":\"Alex\",\"_id\":\"2f3e...\",\"uid\":\"1\"}"
-}
-```
-
-## Limitations
-
-- `did` is mandatory.
-- `_id` cannot be arbitrary; if provided, it must match the derived hash.
-
----
-## Related Endpoints
-
-- [App Users - Update](i-app-users-update.md)
-- [App Users - Delete](i-app-users-delete.md)
-
-## Last Updated
-
-2026-02-17
+</details>

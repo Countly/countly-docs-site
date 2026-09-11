@@ -1,6 +1,8 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-03-05"
 ---
 
 # System Logs
@@ -16,13 +18,6 @@ System Logs captures administrative and system-level actions for audit and troub
 - Export mode that flattens payload details for reporting.
 - Metadata endpoint for available action filters and user pickers.
 
-## Database Collections
-
-| Collection | Purpose |
-|---|---|
-| `countly.systemlogs` | Stores log entries and one metadata document (`_id: "meta_v2"`) used for filter values. |
-| `countly.members` | Stores member accounts used for user attribution and metadata user list responses. |
-
 ## Configuration & Settings
 
 | Setting | Default | What it affects |
@@ -35,6 +30,14 @@ System Logs captures administrative and system-level actions for audit and troub
 - [System Logs - Metadata](o-systemlogs-meta.md) - `/o?method=systemlogs_meta`
 - [System Logs - Record](i-systemlogs.md) - `/i/systemlogs`
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-03-05
+**Database Collections**
+
+| Collection | Purpose |
+|---|---|
+| `countly.systemlogs` | Stores log entries and one metadata document (`_id: "meta_v2"`) used for filter values. |
+| `countly.members` | Stores member accounts used for user attribution and metadata user list responses. |
+
+</details>

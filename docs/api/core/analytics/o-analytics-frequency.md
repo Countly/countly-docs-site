@@ -4,6 +4,8 @@ keywords:
   - "/o/analytics/frequency"
   - "frequency"
   - "analytics"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /o/analytics/frequency
@@ -20,9 +22,7 @@ Returns session frequency bucket distribution for the selected period.
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -38,6 +38,17 @@ Returns session frequency bucket distribution for the selected period.
 | `period` | String | No | Requested period for bucket extraction. |
 | `timezone` | String | No | Optional timezone override. |
 | `timestamp` | Number | No | Optional reference timestamp. |
+
+## Examples
+
+### Example 1: Read frequency distribution
+
+```plaintext
+/o/analytics/frequency?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  period=30days
+```
 
 ## Response
 
@@ -72,7 +83,7 @@ Returns session frequency bucket distribution for the selected period.
 {"result":"Missing parameter \"app_id\""}
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -83,11 +94,23 @@ Returns session frequency bucket distribution for the selected period.
 
 - Read-only endpoint.
 
-## Audit & System Logs
+## Limitations
+
+- If frequency range metadata is absent, response can be an empty array.
+
+## Related Endpoints
+
+- [Analytics - Read Loyalty](./o-analytics-loyalty.md)
+- [Analytics - Read Durations](./o-analytics-durations.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Audit & System Logs**
 
 - No `/systemlogs` action is emitted by this endpoint.
 
-## Database Collections
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -95,30 +118,4 @@ Returns session frequency bucket distribution for the selected period.
 | `countly.apps` | App context validation | Reads app record (`timezone`, app state) for the requested `app_id`. |
 | `countly.users{appId}` | Frequency range source (`f-ranges`) and counts | Read for frequency distribution output. |
 
----
-
-## Examples
-
-### Example 1: Read frequency distribution
-
-```plaintext
-/o/analytics/frequency?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  period=30days
-```
-
-## Limitations
-
-- If frequency range metadata is absent, response can be an empty array.
-
----
-
-## Related Endpoints
-
-- [Analytics - Read Loyalty](./o-analytics-loyalty.md)
-- [Analytics - Read Durations](./o-analytics-durations.md)
-
-## Last Updated
-
-2026-02-17
+</details>

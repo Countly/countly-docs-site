@@ -1,15 +1,18 @@
 ---
 sidebar_label: "Get Live Count"
+last_update:
+  date: "2026-04-18"
 ---
 
 # Concurrent Users - Get Live Count
 
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
+
 ## Endpoint
 
 `/o?method=live`
-
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
 
 ## Overview
 
@@ -17,10 +20,8 @@ Get the current number of online users and the all-time maximum counts for an ap
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required permission**: `Read` on the Online Users feature (`concurrent_users`)
@@ -33,11 +34,14 @@ Get the current number of online users and the all-time maximum counts for an ap
 | auth_token | String | Yes (or api_key) | Auth token for authentication |
 | app_id | String | Yes | Application identifier |
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `concurrent_users.*` | Online Users feature defaults | Live-count and alert behavior for online-user endpoints. | Changes to Online Users settings can alter alert handling, thresholds, or returned live metrics. |
+### Example: Get live user counts
+
+```bash
+curl "https://your-server.com/o?method=live&app_id=YOUR_APP_ID" \
+  -d "api_key=YOUR_API_KEY"
+```
 
 ## Response
 
@@ -68,7 +72,7 @@ Get the current number of online users and the all-time maximum counts for an ap
 | 400 | `{"result": "Missing required parameters"}` | Missing `app_id` or authentication |
 | 500 | `{"result": "Concurrent users API error."}` | Server error in data retrieval or processing |
 
-## Behavior/Processing
+## Behavior
 
 - Requires `Read` permission on `concurrent_users`.
 - Builds an app list from `app_id`, then applies app visibility filtering before querying repositories.
@@ -78,47 +82,30 @@ Get the current number of online users and the all-time maximum counts for an ap
 - Missing repository records are returned as `0`, not as `null` or omitted fields.
 - Database/read errors return `Concurrent users API error.`.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.concurrent_users` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
-| `countly.app` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
-
 ## Limitations
 
 - Requires `Read` permission on the Online Users feature (`concurrent_users`)
 - `om` and `nm` reset when maximum values are explicitly cleared via `/i/concurrent_users_max/reset`
 - Data updates every `read_interval` seconds (default: 10 seconds); values lag slightly behind real-time
 
-## Examples
-
-### Example: Get live user counts
-
-```bash
-curl "https://your-server.com/o?method=live&app_id=YOUR_APP_ID" \
-  -d "api_key=YOUR_API_KEY"
-```
-
 ## Related Endpoints
 
 - [Get Online User Metrics](concurrent-users-metrics.md) - Retrieve detailed online user metrics by time mode
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Configuration Impact**
 
-This feature is part of **Countly Enterprise**.
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `concurrent_users.*` | Online Users feature defaults | Live-count and alert behavior for online-user endpoints. | Changes to Online Users settings can alter alert handling, thresholds, or returned live metrics. |
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
+**Database Collections**
 
-Last Updated: 2026-04-18
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.concurrent_users` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
+| `countly.app` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 
----
-
-## Last Updated
-
-2026-04-18
+</details>

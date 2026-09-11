@@ -3,6 +3,8 @@ sidebar_label: "Version Diagnostics"
 keywords:
   - "/o/countly_version"
   - "countly_version"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Countly Diagnostics - Version Read
@@ -19,9 +21,7 @@ Returns Countly package version, filesystem migration markers, database migratio
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -33,6 +33,14 @@ Returns Countly package version, filesystem migration markers, database migratio
 |---|---|---|---|
 | `api_key` | String | Yes (or use `auth_token`) | Dashboard API key. |
 | `auth_token` | String | Yes (or use `api_key`) | Dashboard auth token. |
+
+## Examples
+
+### Example 1: Read version diagnostics
+
+```plaintext
+/o/countly_version?api_key=YOUR_API_KEY
+```
 
 ## Response
 
@@ -93,7 +101,7 @@ Returned when both filesystem and database marker reads fail.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -101,25 +109,6 @@ Returned when both filesystem and database marker reads fail.
 |---|---|---|
 | Diagnostics with partial/complete data | At least one marker source (`fs` or `db`) succeeds | Wrapped diagnostics object with status `200`. |
 | Dual marker-source failure | Both `fs` and `db` marker reads fail | Wrapped diagnostics object with status `400`. |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Auth validation | Resolves authenticated user. |
-| `countly.plugins` | DB version marker source | Reads `_id: "version"` marker history. |
-
----
-
-## Examples
-
-### Example 1: Read version diagnostics
-
-```plaintext
-/o/countly_version?api_key=YOUR_API_KEY
-```
-
----
 
 ## Limitations
 
@@ -130,6 +119,14 @@ Returned when both filesystem and database marker reads fail.
 
 - [Health Check](../ping/o-ping.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Auth validation | Resolves authenticated user. |
+| `countly.plugins` | DB version marker source | Reads `_id: "version"` marker history. |
+
+</details>

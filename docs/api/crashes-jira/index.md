@@ -1,12 +1,15 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-15"
 ---
 
 # JIRA for Crashes - API Documentation
 
-> Ⓔ **Enterprise Only**  
-> This feature is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This feature is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Overview
 
@@ -22,15 +25,6 @@ JIRA for Crashes connects Countly crash groups with Atlassian JIRA issues using 
 | [List](issues.md) | List crashgroup-to-JIRA issue mappings |
 | [Create](create.md) | Create JIRA issue for a crash group |
 | [Sync](sync.md) | Synchronize Countly and JIRA issue status |
-
-## Database Collections
-
-| Collection | Purpose |
-|---|---|
-| `countly.crashes_jira` | Global OAuth token metadata (`_id: "meta"`) |
-| `countly.crashes_jira{appId}` | Per-app crashgroup ↔ JIRA issue mappings |
-| `countly.app_crashgroups{appId}` | Crash status fields used in sync flow |
-| `countly.apps` | App-level crashes-jira settings |
 
 ## Configuration & Settings
 
@@ -69,19 +63,16 @@ App settings (under `app.plugins["crashes-jira"]`):
 - Sync logic is also triggered internally when crash resolve/unresolve actions run.
 - App lifecycle hooks clear mappings on app delete/reset/clear-all.
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Database Collections**
 
-This feature is part of **Countly Enterprise**.
+| Collection | Purpose |
+|---|---|
+| `countly.crashes_jira` | Global OAuth token metadata (`_id: "meta"`) |
+| `countly.crashes_jira{appId}` | Per-app crashgroup ↔ JIRA issue mappings |
+| `countly.app_crashgroups{appId}` | Crash status fields used in sync flow |
+| `countly.apps` | App-level crashes-jira settings |
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-**Last Updated**: 2026-02-15
+</details>

@@ -3,6 +3,8 @@ sidebar_label: "User Crashes Read"
 keywords:
   - "/o"
   - "o"
+last_update:
+  date: "2026-03-07"
 ---
 
 # Crashes - User Crash Groups Read
@@ -19,12 +21,7 @@ Returns crash groups associated with one user (`uid`) in DataTables response for
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. `api_key=YOUR_API_KEY`
-2. `auth_token=YOUR_AUTH_TOKEN`
-3. `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -45,6 +42,20 @@ Requires `crashes` `Read` permission.
 | `sSortDir_0` | String | No | DataTables sort direction (`asc` / `desc`). |
 | `sEcho` | String | No | Echo ID returned in response. |
 | `fromExportAPI` | Boolean/String | No | If truthy, resolves crash group names and includes group id field. |
+
+## Examples
+
+### Read crash groups for one user
+
+```plaintext
+/o?
+  method=user_crashes&
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  uid=user_12345&
+  iDisplayStart=0&
+  iDisplayLength=50
+```
 
 ## Response
 
@@ -90,33 +101,20 @@ Requires `crashes` `Read` permission.
 
 Standard auth/permission errors from read validation can also be returned.
 
-## Behavior/Processing
+## Behavior
 
 - Reads `app_crashusers{appId}` by `uid` and keeps rows with non-zero `reports` and `group !== 0`.
 - Returns DataTables envelope with pagination/sorting support.
 - In `fromExportAPI` mode, resolves group names from `app_crashgroups{appId}` and rewrites `group` to name.
 
-## Database Collections
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
 | `countly.app_crashusers{appId}` | User crash linkage | Reads crash groups/reports for requested user. |
 | `countly.app_crashgroups{appId}` | Group name lookup | Read-only lookup in export mode (`fromExportAPI`). |
 
-## Examples
-
-### Read crash groups for one user
-
-```plaintext
-/o?
-  method=user_crashes&
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  uid=user_12345&
-  iDisplayStart=0&
-  iDisplayLength=50
-```
-
-## Last Updated
-
-2026-03-07
+</details>

@@ -1,6 +1,8 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-17"
 ---
 
 # System Utility
@@ -8,8 +10,6 @@ sidebar_label: "Overview"
 ## Overview
 
 The System Utility feature provides server-side diagnostics and performance monitoring endpoints. Administrators can inspect memory usage, CPU performance, disk space, database health, and run profiling/debugging tools. Essential for monitoring production deployments and troubleshooting performance issues.
-
----
 
 ## Key Features
 
@@ -19,17 +19,6 @@ The System Utility feature provides server-side diagnostics and performance moni
 - **Health Monitoring**: Comprehensive health checks and diagnostics
 - **Database Analysis**: Database statistics and connection verification
 - **Global Admin Only**: All endpoints require global admin permissions
-
----
-
-
-## Database Collections
-
-| Collection | Purpose |
-|---|---|
-| `countly.plugins` | Used only by `/o/system/dbcheck` as a lightweight connectivity probe (`{ _id: "plugins" }`). |
-| _No dedicated System Utility feature collections_ | Most endpoints read host/runtime state and do not persist feature-specific data in MongoDB. |
-
 
 ## Configuration & Settings
 
@@ -65,8 +54,6 @@ System utilities use core configuration. See `api/config.js` for settings.
 | [Get Overall Stats](./o-system-overall.md) | GET | Combined system statistics |
 | [Health Check](./o-system-healthcheck.md) | GET | System health status |
 | [Database Check](./o-system-dbcheck.md) | GET | Database connection status |
-
----
 
 ## Data Structures
 
@@ -140,9 +127,8 @@ System utilities use core configuration. See `api/config.js` for settings.
 }
 ```
 
----
-
 ## Authentication
+
 **All endpoints require**:
 - API key with global admin permissions
 - Cannot be executed by regular users or app-level admins
@@ -154,8 +140,6 @@ global-admin validation(params, () => {
   // Execute endpoint logic
 });
 ```
-
----
 
 ## Common Use Cases
 
@@ -197,8 +181,6 @@ Verify database connectivity and system health
 - [Database Check](./o-system-dbcheck.md)
 - [Health Check](./o-system-healthcheck.md)
 
----
-
 ## Technical Specifications
 
 ### Inspector
@@ -229,12 +211,16 @@ Verify database connectivity and system health
 
 **accuracy**: System-dependent
 
----
-
 ## Related Documentation
 
+<details>
+<summary>Implementation details</summary>
 
+**Database Collections**
 
-## Last Updated
+| Collection | Purpose |
+|---|---|
+| `countly.plugins` | Used only by `/o/system/dbcheck` as a lightweight connectivity probe (`{ _id: "plugins" }`). |
+| _No dedicated System Utility feature collections_ | Most endpoints read host/runtime state and do not persist feature-specific data in MongoDB. |
 
-2026-02-17
+</details>

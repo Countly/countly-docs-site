@@ -1,6 +1,8 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-03-05"
 ---
 
 # SDK
@@ -8,16 +10,6 @@ sidebar_label: "Overview"
 ## Overview
 
 SDK feature manages runtime SDK configuration, enforcement overrides, and SDK metrics.
-
-## Database Collections
-
-| Collection | Purpose |
-|---|---|
-| `countly.apps` | Resolves app by `app_key`, app settings, and checksum salt fields. |
-| `countly.app_users{appId}` | Loads app-user context for current `device_id` hash. |
-| `countly_out.sdk_configs` | Stores per-app SDK configuration object. |
-| `countly_out.sdk_enforcement` | Stores per-app enforcement overrides. |
-| `countly.sdks` | Stores SDK analytics metrics. |
 
 ## Endpoints
 
@@ -35,6 +27,17 @@ SDK feature manages runtime SDK configuration, enforcement overrides, and SDK me
 - [SDK - Enforcement Update](i-sdk-config-enforcement.md) - `/i/sdk-config/update-enforcement`
 - [SDK - SDK Metrics Read](o-sdk-metrics.md) - `/o?method=sdks`
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-03-05
+**Database Collections**
+
+| Collection | Purpose |
+|---|---|
+| `countly.apps` | Resolves app by `app_key`, app settings, and checksum salt fields. |
+| `countly.app_users{appId}` | Loads app-user context for current `device_id` hash. |
+| `countly_out.sdk_configs` | Stores per-app SDK configuration object. |
+| `countly_out.sdk_enforcement` | Stores per-app enforcement overrides. |
+| `countly.sdks` | Stores SDK analytics metrics. |
+
+</details>

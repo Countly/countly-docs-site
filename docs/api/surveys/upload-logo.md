@@ -4,9 +4,15 @@ keywords:
   - "/i/feedback/upload"
   - "upload"
   - "feedback"
+last_update:
+  date: "2026-04-18"
 ---
 
 # Surveys - Upload Logo
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -14,19 +20,13 @@ keywords:
 /i/feedback/upload
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Uploads survey branding images and stores them in GridFS.
 
 ## Authentication
 
-**Authentication methods**:
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -43,6 +43,13 @@ Multipart form-data:
 | `feedback_logo` | File | Conditional | Primary feedback logo key |
 | `file` | File | Conditional | Generic upload key when `name` is provided |
 | `name` | String | Conditional | Target file key for generic upload |
+
+## Examples
+
+```bash
+curl -X POST "https://your-server.com/i/feedback/upload?api_key=YOUR_API_KEY" \
+  -F "feedback_logo=@./survey-logo.png"
+```
 
 ## Response
 
@@ -76,7 +83,7 @@ Multipart form-data:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Requires `global_plugins` update permission.
 - Accepts `feedback_logo` to overwrite the global feedback logo.
@@ -85,22 +92,6 @@ Multipart form-data:
 - Returns `Missing parameter: name` when `file` is used without `name`.
 - Maximum file size is 1.5 MB.
 - Converts the file to a base64 data URI and writes it to GridFS bucket `feedback` with `writeMode=overwrite`.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly_fs.feedback.files` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
-| `countly_fs.feedback.chunks` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
-
----
-
-## Examples
-
-```bash
-curl -X POST "https://your-server.com/i/feedback/upload?api_key=YOUR_API_KEY" \
-  -F "feedback_logo=@./survey-logo.png"
-```
 
 ## Limitations
 
@@ -114,19 +105,14 @@ curl -X POST "https://your-server.com/i/feedback/upload?api_key=YOUR_API_KEY" \
 - [Surveys - Create NPS](nps-create.md)
 - [Surveys - Edit NPS](nps-edit.md)
 
-## Ⓔ Enterprise
+<details>
+<summary>Implementation details</summary>
 
-This feature is part of **Countly Enterprise**.
+**Database Collections**
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly_fs.feedback.files` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
+| `countly_fs.feedback.chunks` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions.
-
----
-
-## Last Updated
-
-2026-04-18
+</details>

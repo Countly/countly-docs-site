@@ -4,6 +4,8 @@ keywords:
   - "/o/dashboards/test"
   - "test"
   - "dashboards"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Dashboards - Test Widgets
@@ -50,6 +52,23 @@ Example decoded array:
 ]
 ```
 
+## Examples
+
+### Test one analytics widget payload
+
+```text
+/o/dashboards/test?
+  widgets=[
+    {
+      "widget_type":"analytics",
+      "feature":"core",
+      "apps":["6991c75b024cb89cdc04efd2"],
+      "data_type":"session",
+      "metrics":["t"]
+    }
+  ]
+```
+
 ## Response
 
 ### Success Response
@@ -84,7 +103,7 @@ Example decoded array:
 
 This handler does not define explicit structured error responses in normal flow; invalid `widgets` input typically yields an empty array.
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -97,29 +116,6 @@ This handler does not define explicit structured error responses in normal flow;
 
 - Read-only endpoint.
 
-## Database Collections
-
-This endpoint has no fixed collection list at handler level. Data reads depend on widget types passed in `widgets` and the data processors they trigger.
-
----
-
-## Examples
-
-### Test one analytics widget payload
-
-```text
-/o/dashboards/test?
-  widgets=[
-    {
-      "widget_type":"analytics",
-      "feature":"core",
-      "apps":["6991c75b024cb89cdc04efd2"],
-      "data_type":"session",
-      "metrics":["t"]
-    }
-  ]
-```
-
 ## Limitations
 
 - This endpoint does not enforce dashboard ownership or sharing checks.
@@ -130,6 +126,11 @@ This endpoint has no fixed collection list at handler level. Data reads depend o
 - [Dashboards - Read Widget Data](o-dashboard-data.md)
 - [Dashboards - Read Widget](o-dashboards-widget.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+This endpoint has no fixed collection list at handler level. Data reads depend on widget types passed in `widgets` and the data processors they trigger.
+
+</details>

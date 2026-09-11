@@ -3,6 +3,8 @@ sidebar_label: "Collection Query"
 keywords:
   - "/o/db"
   - "db"
+last_update:
+  date: "2026-03-07"
 ---
 
 # DB Viewer - Collection Query
@@ -19,12 +21,7 @@ Queries documents from a MongoDB collection or ClickHouse table, with filtering,
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. `api_key=YOUR_API_KEY`
-2. `auth_token=YOUR_AUTH_TOKEN`
-3. `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -47,12 +44,19 @@ Requires DB Viewer access (`dbviewer` read right for app-scoped users).
 | `cursor` | String | No | ClickHouse cursor pagination token. |
 | `paginationMode` | String | No | ClickHouse pagination mode. |
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `security.api_additional_headers` | Empty | HTTP response headers | Additional configured headers are appended to streamed MongoDB collection responses. |
-| `drill.clickhouse_use_approximate_uniq` | Plugin config | ClickHouse query behavior | Affects ClickHouse uniqueness calculations used by DB Viewer table query path. |
+### Query collection (MongoDB)
+
+```plaintext
+/o/db?api_key=YOUR_API_KEY&db=countly&collection=members&limit=20&skip=0&sort={"_id":-1}
+```
+
+### Query table (ClickHouse)
+
+```plaintext
+/o/db?api_key=YOUR_API_KEY&db=clickhouse_countly_drill&collection=events_data&limit=50&filter={"a":"6991c75b024cb89cdc04efd2"}
+```
 
 ## Response
 
@@ -133,7 +137,7 @@ Requires DB Viewer access (`dbviewer` read right for app-scoped users).
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - MongoDB path parses `filter/query`, `projection/project`, and `sort` as EJSON.
 - Invalid MongoDB `filter/query` JSON returns `400`; invalid `projection`/`sort` falls back to `{}`.
@@ -142,24 +146,6 @@ Requires DB Viewer access (`dbviewer` read right for app-scoped users).
 - For `auth_tokens` collection, `_id` is redacted to `***redacted***`.
 - ClickHouse path supports plain object filter or `filter.rows` format and returns the same pagination envelope plus cursor fields.
 
-## Database Collections
-
-This endpoint reads from the collection/table specified by `db` and `collection`.
-
-## Examples
-
-### Query collection (MongoDB)
-
-```plaintext
-/o/db?api_key=YOUR_API_KEY&db=countly&collection=members&limit=20&skip=0&sort={"_id":-1}
-```
-
-### Query table (ClickHouse)
-
-```plaintext
-/o/db?api_key=YOUR_API_KEY&db=clickhouse_countly_drill&collection=events_data&limit=50&filter={"a":"6991c75b024cb89cdc04efd2"}
-```
-
 ## Related Endpoints
 
 - [DB Viewer - Databases List](o-db.md)
@@ -167,6 +153,18 @@ This endpoint reads from the collection/table specified by `db` and `collection`
 - [DB Viewer - Indexes Read](o-db-indexes.md)
 - [DB Viewer - Aggregation Query](o-db-aggregation.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-03-07
+**Configuration Impact**
+
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `security.api_additional_headers` | Empty | HTTP response headers | Additional configured headers are appended to streamed MongoDB collection responses. |
+| `drill.clickhouse_use_approximate_uniq` | Plugin config | ClickHouse query behavior | Affects ClickHouse uniqueness calculations used by DB Viewer table query path. |
+
+**Database Collections**
+
+This endpoint reads from the collection/table specified by `db` and `collection`.
+
+</details>

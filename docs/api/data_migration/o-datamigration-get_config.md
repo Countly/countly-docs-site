@@ -4,6 +4,8 @@ keywords:
   - "/o/datamigration/get_config"
   - "get_config"
   - "datamigration"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Data Migration - Get Runtime Config
@@ -20,11 +22,7 @@ Returns data migration runtime defaults, including export folder path and detect
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -38,11 +36,13 @@ Requires `data_migration` `Read` permission.
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| Nginx `client_max_body_size` | Nginx default | Import file-size guidance | Returned `fileSizeLimit` reflects detected max request body size (converted to KB). |
+### Get migration runtime config
+
+```text
+/o/datamigration/get_config
+```
 
 ## Response
 
@@ -68,7 +68,7 @@ Requires `data_migration` `Read` permission.
 
 This handler normally returns `200` with fallback values even when Nginx config discovery fails.
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -81,20 +81,6 @@ This handler normally returns `200` with fallback values even when Nginx config 
 
 - Read-only endpoint.
 
-## Database Collections
-
-This endpoint does not read or write database collections directly.
-
----
-
-## Examples
-
-### Get migration runtime config
-
-```text
-/o/datamigration/get_config
-```
-
 ## Limitations
 
 - If Nginx config parser fails inside callback, handler may not return detailed parse error context.
@@ -103,6 +89,17 @@ This endpoint does not read or write database collections directly.
 
 - [Data Migration - Import](i-datamigration-import.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Configuration Impact**
+
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| Nginx `client_max_body_size` | Nginx default | Import file-size guidance | Returned `fileSizeLimit` reflects detected max request body size (converted to KB). |
+
+**Database Collections**
+
+This endpoint does not read or write database collections directly.
+
+</details>

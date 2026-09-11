@@ -4,6 +4,8 @@ keywords:
   - "/o/export/requestQuery"
   - "requestQuery"
   - "export"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /o/export/requestQuery
@@ -20,9 +22,7 @@ Creates an asynchronous export task from a target API query and returns a task I
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -48,6 +48,33 @@ Creates an asynchronous export task from a target API query and returns a task I
 - `path` is normalized to start with `/`.
 - `data` parse failures fall back to `{}`.
 - Task metadata stores report file name as `filename + "." + type`.
+
+## Examples
+
+### Example 1: Create async CSV export task
+
+```plaintext
+/o/export/requestQuery?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  path=/o/analytics/events&
+  data={"app_id":"6991c75b024cb89cdc04efd2","period":"30days"}&
+  type=csv&
+  filename=events-30days
+```
+
+### Example 2: Create async drill export task
+
+```plaintext
+/o/export/requestQuery?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  db=countly_drill&
+  path=/o/drill/query&
+  data={"query":{"appID":"6991c75b024cb89cdc04efd2"}}&
+  type=json&
+  filename=drill-query
+```
 
 ## Response
 
@@ -77,7 +104,7 @@ Creates an asynchronous export task from a target API query and returns a task I
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -90,47 +117,6 @@ Creates an asynchronous export task from a target API query and returns a task I
 
 - Creates/updates task metadata and export result files.
 
-## Audit & System Logs
-
-- No `/systemlogs` action is emitted by this endpoint itself for normal task creation flow.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication validation | Reads caller identity for management-read access validation. |
-| `countly.long_tasks` | Async export task state | Creates and updates export task records. |
-| `countly_fs.task_results` | Async export output storage | Stores export result file content for later download. |
-
----
-
-## Examples
-
-### Example 1: Create async CSV export task
-
-```plaintext
-/o/export/requestQuery?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  path=/o/analytics/events&
-  data={"app_id":"6991c75b024cb89cdc04efd2","period":"30days"}&
-  type=csv&
-  filename=events-30days
-```
-
-### Example 2: Create async drill export task
-
-```plaintext
-/o/export/requestQuery?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  db=countly_drill&
-  path=/o/drill/query&
-  data={"query":{"appID":"6991c75b024cb89cdc04efd2"}}&
-  type=json&
-  filename=drill-query
-```
-
 ## Operational Considerations
 
 - This endpoint is asynchronous by design.
@@ -141,13 +127,24 @@ Creates an asynchronous export task from a target API query and returns a task I
 - Returns only task creation response, not final export data.
 - Final export availability depends on task completion and output size.
 
----
-
 ## Related Endpoints
 
 - [Data Export - Download Export](./o-export-download.md)
 - [Tasks - Task Status](../tasks/o-tasks-task.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Audit & System Logs**
+
+- No `/systemlogs` action is emitted by this endpoint itself for normal task creation flow.
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication validation | Reads caller identity for management-read access validation. |
+| `countly.long_tasks` | Async export task state | Creates and updates export task records. |
+| `countly_fs.task_results` | Async export output storage | Stores export result file content for later download. |
+
+</details>

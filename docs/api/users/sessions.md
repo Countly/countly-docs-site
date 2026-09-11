@@ -3,9 +3,15 @@ sidebar_label: "Sessions"
 keywords:
   - "/o"
   - "o"
+last_update:
+  date: "2026-02-16"
 ---
 
 # User Profiles - Sessions
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -13,19 +19,13 @@ keywords:
 /o?method=user_details&calculate=sessions
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Returns session table for a single user.
 
 ## Authentication
 
-**Authentication methods**:
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -49,11 +49,11 @@ Returns session table for a single user.
 | `dbOverride` | String | No | Query adapter override |
 | `comparisonMode` | Boolean/String | No | Comparison mode flag |
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `users.*` | User profile feature defaults | User-details retrieval behavior in profile endpoints. | Changes to user feature settings can affect which profile-related fields/aggregations are returned. |
+```text
+/o?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&method=user_details&calculate=sessions&uid=u_102&period=30days
+```
 
 ## Response
 
@@ -92,44 +92,30 @@ Returns session table for a single user.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Resolves `uid` from `did` when required.
 - Returns `{}` when user cannot be resolved.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.app_users{appId}` | Per-app user profiles | Stores user-level properties and profile fields affected by this endpoint. |
-| `countly_drill.drill_events` | Drill event records | Stores granular event rows queried or updated by this endpoint. |
-
----
-
-## Examples
-
-```text
-/o?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&method=user_details&calculate=sessions&uid=u_102&period=30days
-```
 
 ## Related Endpoints
 
 - [User Profiles - Timeline Graph](graph.md)
 - [User Profiles - Events Table](events-table.md)
 
-## Ⓔ Enterprise
+<details>
+<summary>Implementation details</summary>
 
-This feature is part of **Countly Enterprise**.
+**Configuration Impact**
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `users.*` | User profile feature defaults | User-details retrieval behavior in profile endpoints. | Changes to user feature settings can affect which profile-related fields/aggregations are returned. |
 
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions.
+**Database Collections**
 
----
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.app_users{appId}` | Per-app user profiles | Stores user-level properties and profile fields affected by this endpoint. |
+| `countly_drill.drill_events` | Drill event records | Stores granular event rows queried or updated by this endpoint. |
 
-## Last Updated
-
-2026-02-16
+</details>

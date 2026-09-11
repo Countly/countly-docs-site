@@ -4,9 +4,15 @@ keywords:
   - "/o/symbolication/test_symbolication_connection"
   - "test_symbolication_connection"
   - "symbolication"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Test symbolication server
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -14,19 +20,14 @@ keywords:
 /o/symbolication/test_symbolication_connection
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Checks whether Countly can reach the configured symbolication server.
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required permission**: `Read` on the `crashes` feature
@@ -38,6 +39,14 @@ Checks whether Countly can reach the configured symbolication server.
 | `server_url` | String | Yes | Symbolication server base URL |
 | `api_key` | String | Yes (or `auth_token`) | API key authentication |
 | `auth_token` | String | Yes (or `api_key`) | Auth token authentication |
+
+## Examples
+
+### Example 1: Test server ping
+
+```text
+/o/symbolication/test_symbolication_connection?server_url=https://symbolication.example.com&api_key=YOUR_API_KEY
+```
 
 ## Response
 
@@ -62,26 +71,10 @@ true
 | Upstream status | `{ "result": "<body.msg>" }` for return-connection test failures |
 | 401 | `{ "result": "User does not exist" }` or auth validation message |
 
-## Behavior/Processing
+## Behavior
 
 - Uses sub-action in URL path (not a query `action` parameter).
 - Related symbolication test endpoints are documented separately.
-
----
-
-## Database Collections
-
-This endpoint does not read or write database collections.
-
----
-
-## Examples
-
-### Example 1: Test server ping
-
-```text
-/o/symbolication/test_symbolication_connection?server_url=https://symbolication.example.com&api_key=YOUR_API_KEY
-```
 
 ## Related Endpoints
 
@@ -91,21 +84,11 @@ This endpoint does not read or write database collections.
 - [Run Symbolication](crash-symbolicate.md)
 - [Symbolication Result Callback](crash-symbolicate-result.md)
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Database Collections**
 
-This feature is part of **Countly Enterprise**.
+This endpoint does not read or write database collections.
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

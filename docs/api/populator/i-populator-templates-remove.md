@@ -5,6 +5,8 @@ keywords:
   - "remove"
   - "populator"
   - "templates"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Populator - Template Remove
@@ -21,11 +23,7 @@ Deletes a populator template and performs cascade cleanup for environments and g
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -39,6 +37,17 @@ Requires `Delete` permission for the Populator feature.
 | `api_key` | String | Conditional | Required when `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required when `api_key` is not provided. |
 | `template_id` | String | Yes | Template ID to delete. |
+
+## Examples
+
+### Remove a deprecated template and its generated environments
+
+```text
+https://your-server.com/i/populator/templates/remove?
+  app_id=6991c75b024cb89cdc04efd2&
+  api_key=YOUR_API_KEY&
+  template_id=65f0cbf8bca6b8e8fbf7f901
+```
 
 ## Response
 
@@ -90,7 +99,7 @@ Requires `Delete` permission for the Populator feature.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -105,36 +114,6 @@ Requires `Delete` permission for the Populator feature.
 - Deletes matching generated users from `countly.populator_environment_users`.
 - Deletes matching environment metadata from `countly.populator_environments`.
 
-## Audit & System Logs
-
-| Action | Trigger | Payload |
-|---|---|---|
-| `populator_template_removed` | Template delete succeeds | `{ templateId }` |
-| `populator_environment_removed_through_template` | Environment cascade cleanup succeeds | `{ templateId, appId }` |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.populator_templates` | Template storage | Deletes the target template document by `_id`. |
-| `countly.populator_environment_users` | Generated environment users | Deletes records whose `_id` starts with `app_id + '_' + template_id`. |
-| `countly.populator_environments` | Environment metadata | Deletes documents where `templateId` equals removed template ID. |
-| `countly.members` | Authentication and authorization | Reads member context for permission checks. |
-| `countly.apps` | App rights validation | Reads app access context from `app_id`. |
-
----
-
-## Examples
-
-### Remove a deprecated template and its generated environments
-
-```text
-https://your-server.com/i/populator/templates/remove?
-  app_id=6991c75b024cb89cdc04efd2&
-  api_key=YOUR_API_KEY&
-  template_id=65f0cbf8bca6b8e8fbf7f901
-```
-
 ## Operational Considerations
 
 - Cleanup cost increases with the number of generated users tied to the template.
@@ -145,8 +124,6 @@ https://your-server.com/i/populator/templates/remove?
 - Success response does not include counts of deleted users/environments.
 - Cleanup of environment users depends on the `_id` prefix pattern built from `app_id` and `template_id`.
 
----
-
 ## Related Endpoints
 
 - [Populator - Template Create](i-populator-templates-create.md)
@@ -154,6 +131,24 @@ https://your-server.com/i/populator/templates/remove?
 - [Populator - Template Read](o-populator-templates.md)
 - [Populator - Environment Remove](o-populator-environment-remove.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Audit & System Logs**
+
+| Action | Trigger | Payload |
+|---|---|---|
+| `populator_template_removed` | Template delete succeeds | `{ templateId }` |
+| `populator_environment_removed_through_template` | Environment cascade cleanup succeeds | `{ templateId, appId }` |
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.populator_templates` | Template storage | Deletes the target template document by `_id`. |
+| `countly.populator_environment_users` | Generated environment users | Deletes records whose `_id` starts with `app_id + '_' + template_id`. |
+| `countly.populator_environments` | Environment metadata | Deletes documents where `templateId` equals removed template ID. |
+| `countly.members` | Authentication and authorization | Reads member context for permission checks. |
+| `countly.apps` | App rights validation | Reads app access context from `app_id`. |
+
+</details>

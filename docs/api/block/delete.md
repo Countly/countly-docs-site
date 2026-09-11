@@ -4,9 +4,15 @@ keywords:
   - "/i/blocks/delete"
   - "delete"
   - "blocks"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Filtering Rules - Delete
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -14,19 +20,13 @@ keywords:
 /i/blocks/delete
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Deletes a filtering rule by its rule ID.
 
 ## Authentication
 
-**Authentication Methods**:
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -40,6 +40,14 @@ Deletes a filtering rule by its rule ID.
 | `auth_token` | String | Yes (or `api_key`) | Auth token authentication |
 | `app_id` | String | Yes | Application ID |
 | `block_id` | String | Yes | Rule ID to delete |
+
+## Examples
+
+### Example: Delete a rule
+
+```bash
+curl "https://your-server.com/i/blocks/delete?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&block_id=rule1"
+```
 
 ## Response
 
@@ -94,49 +102,24 @@ Deletes a filtering rule by its rule ID.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 1. Validates `app_id` and delete permission.
 2. Resolves rule in app document.
 3. Removes matching rule from app `blocks` array.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.apps` | App configuration and metadata | Stores app-level feature settings and metadata used or modified by this endpoint. |
-
----
-
-## Examples
-
-### Example: Delete a rule
-
-```bash
-curl "https://your-server.com/i/blocks/delete?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&block_id=rule1"
-```
 
 ## Related Endpoints
 
 - [Filtering Rules - List](list.md)
 - [Filtering Rules - Create](create.md)
 
-## Ⓔ Enterprise
+<details>
+<summary>Implementation details</summary>
 
-This feature is part of **Countly Enterprise**.
+**Database Collections**
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.apps` | App configuration and metadata | Stores app-level feature settings and metadata used or modified by this endpoint. |
 
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions.
-
-## Last Updated
-
-2026-02-15
----
-
-## Last Updated
-
-2026-02-16
+</details>

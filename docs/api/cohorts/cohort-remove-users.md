@@ -1,15 +1,18 @@
 ---
 sidebar_label: "Remove Members"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Remove Users from Cohort
 
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
+
 ## Endpoint
 
 `/i/cohorts/remove_users`
-
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
 
 ## Overview
 
@@ -17,10 +20,8 @@ Removes one or more users from a manual cohort (profile group). Supports bulk re
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required permission**: `Update` on the `profile groups` feature
@@ -35,6 +36,19 @@ Removes one or more users from a manual cohort (profile group). Supports bulk re
 | cohort | String | Yes | ID of the target manual cohort |
 | query | Object (JSON) | One of `query` or `uids` | Query object used to match users to remove |
 | uids | Array (JSON) | One of `query` or `uids` | UID array converted to query internally |
+
+## Examples
+
+### Example 1: Remove users using query
+
+**Request**:
+```bash
+curl -X GET "https://your-server.com/i/cohorts/remove_users" \
+  -d "api_key=YOUR_API_KEY" \
+  -d "app_id=YOUR_APP_ID" \
+  -d "cohort=COHORT_ID" \
+  -d 'query={"uid":{"$in":["user_123","user_456"]}}'
+```
 
 ## Response
 
@@ -62,9 +76,7 @@ Removes one or more users from a manual cohort (profile group). Supports bulk re
 | 400 | `{"result": "Failed"}` | Long-task output on failure |
 | 400 | `{"result": "Insufficient permissions"}` | User lacks Update permission |
 
----
-
-## Behavior/Processing
+## Behavior
 
 - Validates update permission for `profile groups` feature.
 - For each user in request:
@@ -89,53 +101,17 @@ Removes one or more users from a manual cohort (profile group). Supports bulk re
   - decreasing cohort totals (`countly.cohorts`)
 - Emits system logs for remove success/failure.
 
----
-
-## Examples
-
-### Example 1: Remove users using query
-
-**Request**:
-```bash
-curl -X GET "https://your-server.com/i/cohorts/remove_users" \
-  -d "api_key=YOUR_API_KEY" \
-  -d "app_id=YOUR_APP_ID" \
-  -d "cohort=COHORT_ID" \
-  -d 'query={"uid":{"$in":["user_123","user_456"]}}'
-```
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.cohorts` | Collection: | Decrements member count |
-| `countly.cohortUsers` | Collection: | Deletes user membership records |
-| `countly.app_users{app_id}` | Collection: | Endpoint-related records used by this endpoint. |
-| `chr.{cohort_id}` | Removes | reference |
-
----
-
 ## Limitations
 
 - Intended for manual cohorts (profile groups) workflows.
 - Removal runs asynchronously through long-task flow.
 - Requests must include either `query` or `uids`.
 
----
-
-## Database Collections
-
-- `countly.cohorts` - Stores cohort definitions for manual cohorts
-- `countly.app_users{app_id}` - Resolves users to remove by uid/did query
-- `countly.cohortUsers` - Stores cohort membership for manual cohorts
-
 ## Related Endpoints
 
 - [Add users to cohort](cohort-add-users.md) - POST /i/cohorts/add_users
 - [Delete cohort](cohort-delete.md) - POST /i/cohorts/delete
 - [Get cohort](cohort-single-read.md) - GET /o?method=get_cohort
-
----
 
 ## Use Cases
 
@@ -145,22 +121,22 @@ curl -X GET "https://your-server.com/i/cohorts/remove_users" \
 4. **Segmentation updates**: Remove users whose characteristics changed
 5. **Data maintenance**: Remove duplicate or erroneous user entries
 
+<details>
+<summary>Implementation details</summary>
 
----
+**Database Collections**
 
-## Ⓔ Enterprise
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.cohorts` | Collection: | Decrements member count |
+| `countly.cohortUsers` | Collection: | Deletes user membership records |
+| `countly.app_users{app_id}` | Collection: | Endpoint-related records used by this endpoint. |
+| `chr.{cohort_id}` | Removes | reference |
 
-This feature is part of **Countly Enterprise**.
+**Database Collections**
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
+- `countly.cohorts` - Stores cohort definitions for manual cohorts
+- `countly.app_users{app_id}` - Resolves users to remove by uid/did query
+- `countly.cohortUsers` - Stores cohort membership for manual cohorts
 
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

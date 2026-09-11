@@ -4,6 +4,8 @@ keywords:
   - "/i/datamigration/delete_all"
   - "delete_all"
   - "datamigration"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Data Migration - Delete All Migration Files
@@ -20,11 +22,7 @@ Deletes all local export and import file directories for the Data Migration feat
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -37,6 +35,14 @@ Requires `data_migration` `Delete` permission.
 | `args` | JSON String (Object) | No | Optional JSON-stringified helper args. |
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
+
+## Examples
+
+### Delete all migration import/export files
+
+```text
+/i/datamigration/delete_all
+```
 
 ## Response
 
@@ -64,7 +70,7 @@ Requires `data_migration` `Delete` permission.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -78,20 +84,6 @@ Requires `data_migration` `Delete` permission.
 - Deletes local migration files/folders in plugin workspace.
 - Does not remove existing migration records from `countly.data_migrations`.
 
-## Database Collections
-
-This endpoint does not read or write database collections directly.
-
----
-
-## Examples
-
-### Delete all migration import/export files
-
-```text
-/i/datamigration/delete_all
-```
-
 ## Limitations
 
 - This endpoint only cleans file system artifacts; database status records remain unless removed by other endpoints.
@@ -101,6 +93,11 @@ This endpoint does not read or write database collections directly.
 - [Data Migration - Delete Export](i-datamigration-delete_export.md)
 - [Data Migration - Delete Import](i-datamigration-delete_import.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+This endpoint does not read or write database collections directly.
+
+</details>

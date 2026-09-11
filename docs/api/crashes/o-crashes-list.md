@@ -3,6 +3,8 @@ sidebar_label: "Crash Groups Read"
 keywords:
   - "/o"
   - "o"
+last_update:
+  date: "2026-03-05"
 ---
 
 # Crashes - Crash Groups Read
@@ -19,12 +21,7 @@ Reads crash data in different modes: crash groups table, single crash group deta
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. `api_key=YOUR_API_KEY`
-2. `auth_token=YOUR_AUTH_TOKEN`
-3. `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -51,11 +48,31 @@ Requires `crashes` `Read` permission.
 | `sSortDir_0` | String | No | Table mode sort direction (`asc`/`desc`). |
 | `sEcho` | String | No | Echo id returned in table mode response. |
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `crashes.report_limit` | Plugin config | Group detail mode | Limits number of latest reports included in `data` for single group response. |
+### Table mode query
+
+```plaintext
+/o?method=crashes&api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&iDisplayStart=0&iDisplayLength=20&sEcho=1
+```
+
+### Group detail query
+
+```plaintext
+/o?method=crashes&api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&group=crash_group_1
+```
+
+### Group users query
+
+```plaintext
+/o?method=crashes&api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&group=crash_group_1&userlist=true
+```
+
+### Graph summary query
+
+```plaintext
+/o?method=crashes&api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&graph=true&period=30days
+```
 
 ## Response
 
@@ -161,14 +178,28 @@ Graph mode (`graph=true`):
 
 Standard authentication/authorization errors from read validation.
 
-## Behavior/Processing
+## Behavior
 
 - Default mode is DataTables-style crash group table.
 - `group` mode loads one crash group plus latest drill reports.
 - `list=true` returns simplified list only when app user count is below `10000`; otherwise returns empty array.
 - Hidden crashes are excluded by default in table mode unless explicitly filtered.
 
-## Database Collections
+## Related Endpoints
+
+- [Crashes - Reports Read](o-reports.md)
+- [Crashes - User Crashes Read](o-user-crashes.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Configuration Impact**
+
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `crashes.report_limit` | Plugin config | Group detail mode | Limits number of latest reports included in `data` for single group response. |
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -177,39 +208,4 @@ Standard authentication/authorization errors from read validation.
 | `countly.app_users{appId}` | Total users source | Reads total user count for several modes. |
 | `countly_drill.drill_events` | Crash report source | Reads latest crash reports for group detail mode. |
 
----
-
-## Examples
-
-### Table mode query
-
-```plaintext
-/o?method=crashes&api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&iDisplayStart=0&iDisplayLength=20&sEcho=1
-```
-
-### Group detail query
-
-```plaintext
-/o?method=crashes&api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&group=crash_group_1
-```
-
-### Group users query
-
-```plaintext
-/o?method=crashes&api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&group=crash_group_1&userlist=true
-```
-
-### Graph summary query
-
-```plaintext
-/o?method=crashes&api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&graph=true&period=30days
-```
-
-## Related Endpoints
-
-- [Crashes - Reports Read](o-reports.md)
-- [Crashes - User Crashes Read](o-user-crashes.md)
-
-## Last Updated
-
-2026-03-05
+</details>

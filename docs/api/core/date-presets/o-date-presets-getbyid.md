@@ -4,6 +4,8 @@ keywords:
   - "/o/date_presets/getById"
   - "getById"
   - "date_presets"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /o/date_presets/getById
@@ -20,9 +22,7 @@ Returns one preset by ID when the caller has access through ownership or sharing
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -37,6 +37,14 @@ Returns one preset by ID when the caller has access through ownership or sharing
 | `auth_token` | String | Yes (or use `api_key`) | Dashboard auth token. |
 | `preset_id` | String | Yes | Preset ID (24-char hex). |
 | `app_id` | String | Yes | Required by argument validation. |
+
+## Examples
+
+### Example 1: Read preset by ID
+
+```plaintext
+/o/date_presets/getById?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&preset_id=6992de8e6fbee4231c404429
+```
 
 ## Response
 
@@ -103,7 +111,7 @@ Returns one preset by ID when the caller has access through ownership or sharing
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -116,34 +124,24 @@ Returns one preset by ID when the caller has access through ownership or sharing
 
 - This endpoint is read-only and does not modify stored data.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.date_presets` | Source of preset details | Reads one preset by `_id` with ownership/share filter and returns caller-adjusted view fields (`fav`, `is_owner`). |
-| `countly.members` | Authentication and caller identity resolution | Resolves caller identity for ownership and sharing checks. |
-
----
-## Examples
-
-### Example 1: Read preset by ID
-
-```plaintext
-/o/date_presets/getById?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&preset_id=6992de8e6fbee4231c404429
-```
-
 ## Limitations
 
 - `app_id` is required by argument validation even though lookup is based on `preset_id` and visibility rules.
 - Additional custom fields can appear if they were stored during preset create/update.
-
----
 
 ## Related Endpoints
 
 - [Date Presets - Preset Read All](o-date-presets-getall.md)
 - [Date Presets - Preset Update](i-date-presets-update.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.date_presets` | Source of preset details | Reads one preset by `_id` with ownership/share filter and returns caller-adjusted view fields (`fav`, `is_owner`). |
+| `countly.members` | Authentication and caller identity resolution | Resolves caller identity for ownership and sharing checks. |
+
+</details>

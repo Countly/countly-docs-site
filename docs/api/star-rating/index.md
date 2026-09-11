@@ -1,6 +1,8 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Star Rating
@@ -8,8 +10,6 @@ sidebar_label: "Overview"
 ## Overview
 
 The Star Rating feature enables in-app feedback collection using customizable star rating widgets. Users can rate your application and provide comments through non-intrusive feedback forms. The feature supports multiple widgets per application with advanced targeting, scheduling, and analytics features.
-
----
 
 ## Key Features
 
@@ -21,8 +21,6 @@ The Star Rating feature enables in-app feedback collection using customizable st
 - **Analytics**: View aggregated feedback metrics and sentiment analysis
 - **Image Support**: Custom logos and widget imagery
 - **Import/Export**: Bulk manage widget configurations
-
----
 
 ## API Endpoints
 
@@ -38,8 +36,6 @@ The Star Rating feature enables in-app feedback collection using customizable st
 | [Get Multiple Widgets](./o-feedback-multiple-widgets-by-id.md) | Fetch multiple widgets by ID |
 | [List All Widgets](./o-feedback-widgets.md) | Get all widgets for application |
 | [Get Widget Details](./o-feedback-widget.md) | Retrieve single widget configuration |
-
----
 
 ## Data Structure
 
@@ -110,17 +106,6 @@ The Star Rating feature enables in-app feedback collection using customizable st
 }
 ```
 
----
-
-## Database Collections
-
-| Collection | Purpose |
-|-----------|---------|
-| `countly.feedback_widgets` | Stores star-rating widget configurations, targeting setup, status, and display counters. |
-| `countly_drill.drill_events` | Stores per-submission star rating events (`[CLY]_star_rating`) with segmentation fields (rating, comment, contact data). |
-
----
-
 ## Rating Scale
 
 Default 5-star rating system:
@@ -132,8 +117,6 @@ Default 5-star rating system:
 | 3 | Neutral |
 | 4 | Somewhat Satisfied |
 | 5 | Very Satisfied |
-
----
 
 ## Widget Targeting
 
@@ -161,8 +144,6 @@ Default 5-star rating system:
 - `star` - Traditional star rating
 - `emoji` - Emoji scale (😠 → 😊)
 - `heart` - Heart rating
-
----
 
 ## Common Use Cases
 
@@ -193,13 +174,18 @@ Monitor app satisfaction metrics over time
 
 **Related Endpoint**: [Get Widget Details](./o-feedback-widget.md)
 
----
-
 ## Related Documentation
 
 - [Cohorts feature](../cohorts/index.md) - User segmentation
 
+<details>
+<summary>Implementation details</summary>
 
-## Last Updated
+**Database Collections**
 
-2026-02-17
+| Collection | Purpose |
+|-----------|---------|
+| `countly.feedback_widgets` | Stores star-rating widget configurations, targeting setup, status, and display counters. |
+| `countly_drill.drill_events` | Stores per-submission star rating events (`[CLY]_star_rating`) with segmentation fields (rating, comment, contact data). |
+
+</details>

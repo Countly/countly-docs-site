@@ -5,6 +5,8 @@ keywords:
   - "remove"
   - "push"
   - "message"
+last_update:
+  date: "2026-03-07"
 ---
 
 # Push - Message Delete
@@ -21,12 +23,7 @@ Soft-deletes a push message by marking it deleted.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. `api_key=YOUR_API_KEY`
-2. `auth_token=YOUR_AUTH_TOKEN`
-3. `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -40,6 +37,17 @@ Requires `push` `Delete` permission.
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
 | `app_id` | String | Yes | App ID used by permission validation. |
 | `_id` | String (ObjectID) | Yes | Message ID to remove. |
+
+## Examples
+
+### Delete one message
+
+```plaintext
+/i/push/message/remove?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  _id=67a3d2f5c1a23b0f4d6c0101
+```
 
 ## Response
 
@@ -90,7 +98,7 @@ Requires `push` `Delete` permission.
 
 Standard authentication/authorization errors from remove validation can also be returned.
 
-## Behavior/Processing
+## Behavior
 
 - Validates `_id` as ObjectID.
 - Loads message that is not already deleted.
@@ -106,30 +114,20 @@ Standard authentication/authorization errors from remove validation can also be 
 - Updates one message document state in `countly.messages`.
 - Adds one audit entry in `countly.systemlogs`.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.messages` | Push message storage | Reads target message and updates deletion state/metadata. |
-| `countly.systemlogs` | Audit trail | Receives `push_message_deleted` action payload. |
-
-## Examples
-
-### Delete one message
-
-```plaintext
-/i/push/message/remove?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  _id=67a3d2f5c1a23b0f4d6c0101
-```
-
 ## Related Endpoints
 
 - [Push - Message Create](message-create.md)
 - [Push - Message Update](message-update.md)
 - [Push - Message Toggle](message-toggle.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-03-07
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.messages` | Push message storage | Reads target message and updates deletion state/metadata. |
+| `countly.systemlogs` | Audit trail | Receives `push_message_deleted` action payload. |
+
+</details>

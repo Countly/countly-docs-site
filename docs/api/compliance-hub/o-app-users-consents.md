@@ -4,6 +4,8 @@ keywords:
   - "/o/app_users/consents"
   - "consents"
   - "app_users"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Compliance Hub - App Users Consents
@@ -20,11 +22,7 @@ Returns app users with consent fields from the app-users collection using search
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -46,6 +44,27 @@ Requires `compliance_hub` `Read` permission.
 | `sEcho` | String or Number | No | Echo value returned in response. |
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
+
+## Examples
+
+### List app users with consent data
+
+```text
+/o/app_users/consents?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  limit=20&
+  skip=0
+```
+
+### Search by device ID
+
+```text
+/o/app_users/consents?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  sSearch=device_123
+```
 
 ## Response
 
@@ -127,7 +146,7 @@ Empty dataset response:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -140,7 +159,15 @@ Empty dataset response:
 
 - Read-only endpoint.
 
-## Database Collections
+## Related Endpoints
+
+- [Compliance Hub - Consent Current](o-consent-current.md)
+- [Compliance Hub - Consent Search](o-consent-search.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -148,34 +175,4 @@ Empty dataset response:
 | `countly.apps` | App validation/context loading | Validates `app_id` and app context for user lookup scope. |
 | `countly.app_users{appId}` | App user consent source | Reads app user documents including `consent` and profile fields. |
 
----
-
-## Examples
-
-### List app users with consent data
-
-```text
-/o/app_users/consents?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  limit=20&
-  skip=0
-```
-
-### Search by device ID
-
-```text
-/o/app_users/consents?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  sSearch=device_123
-```
-
-## Related Endpoints
-
-- [Compliance Hub - Consent Current](o-consent-current.md)
-- [Compliance Hub - Consent Search](o-consent-search.md)
-
-## Last Updated
-
-2026-02-17
+</details>

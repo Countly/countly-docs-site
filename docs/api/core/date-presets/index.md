@@ -1,6 +1,8 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Date Presets
@@ -8,13 +10,6 @@ sidebar_label: "Overview"
 ## Overview
 
 Date Presets endpoints manage reusable date-range definitions with ownership, sharing rules, favorites, and ordering.
-
-## Database Collections
-
-| Collection | Purpose |
-|---|---|
-| `countly.date_presets` | Stores preset definitions, sharing controls, favorites, owner, and sort order metadata. |
-| `countly.members` | Provides owner/member context for access filtering and owner-name enrichment. |
 
 ## Endpoint Index
 
@@ -37,6 +32,14 @@ Date Presets endpoints manage reusable date-range definitions with ownership, sh
 - Preset order is maintained through `sort_order` shifting when presets are created, reordered, or deleted.
 - Create/update handlers copy additional non-control request fields into stored preset documents.
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Purpose |
+|---|---|
+| `countly.date_presets` | Stores preset definitions, sharing controls, favorites, owner, and sort order metadata. |
+| `countly.members` | Provides owner/member context for access filtering and owner-name enrichment. |
+
+</details>

@@ -4,6 +4,8 @@ keywords:
   - "/o/tasks/task"
   - "task"
   - "tasks"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /o/tasks/task
@@ -20,9 +22,7 @@ Returns a single task record (or selected subtask result flow) for the requested
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -38,6 +38,27 @@ Returns a single task record (or selected subtask result flow) for the requested
 | `app_id` | String | Yes (for non-global users) | App context for read permission validation. |
 | `task_id` | String | Yes | Task ID to read. |
 | `subtask_key` | String | No | Optional subtask key used for task-group subtask retrieval flow. |
+
+## Examples
+
+### Example 1: Read task record
+
+```plaintext
+/o/tasks/task?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  task_id=17f0f6c3a2c42cbced96d4a01f88f9a7f45bc7a5
+```
+
+### Example 2: Read subtask flow
+
+```plaintext
+/o/tasks/task?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  task_id=17f0f6c3a2c42cbced96d4a01f88f9a7f45bc7a5&
+  subtask_key=step-2
+```
 
 ## Response
 
@@ -87,7 +108,7 @@ Returns a single task record (or selected subtask result flow) for the requested
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -102,11 +123,25 @@ Returns a single task record (or selected subtask result flow) for the requested
 
 - Read-only endpoint.
 
-## Audit & System Logs
+## Operational Considerations
+
+- Returned payload can be large for heavy export/report tasks.
+- Response structure varies by task type.
+- In taskgroup flows, requesting a missing `subtask_key` can trigger parent rerun side effects.
+
+## Related Endpoints
+
+- [Tasks - Check Task Status](./o-tasks-check.md)
+- [Tasks - List Tasks](./o-tasks-list.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Audit & System Logs**
 
 - No `/systemlogs` action is emitted by this endpoint.
 
-## Database Collections
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -114,42 +149,4 @@ Returns a single task record (or selected subtask result flow) for the requested
 | `countly.long_tasks` | Task metadata/result source | Reads task records and status information. |
 | `countly_fs.task_results` | GridFS-backed result data | Reads task result bytes when task uses GridFS storage. |
 
----
-
-## Examples
-
-### Example 1: Read task record
-
-```plaintext
-/o/tasks/task?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  task_id=17f0f6c3a2c42cbced96d4a01f88f9a7f45bc7a5
-```
-
-### Example 2: Read subtask flow
-
-```plaintext
-/o/tasks/task?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  task_id=17f0f6c3a2c42cbced96d4a01f88f9a7f45bc7a5&
-  subtask_key=step-2
-```
-
-## Operational Considerations
-
-- Returned payload can be large for heavy export/report tasks.
-- Response structure varies by task type.
-- In taskgroup flows, requesting a missing `subtask_key` can trigger parent rerun side effects.
-
----
-
-## Related Endpoints
-
-- [Tasks - Check Task Status](./o-tasks-check.md)
-- [Tasks - List Tasks](./o-tasks-list.md)
-
-## Last Updated
-
-2026-02-17
+</details>

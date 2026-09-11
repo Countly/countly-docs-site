@@ -1,12 +1,15 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-15"
 ---
 
 # Filtering Rules
 
-> Ⓔ **Enterprise Only**  
-> This feature is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This feature is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Feature Metadata
 
@@ -53,13 +56,6 @@ The `list` endpoint returns an array of rule objects. Common fields:
 | `is_arbitrary_input` | Boolean | Whether event key is matched by input string behavior |
 | `_onReq` | Boolean | Rule can be evaluated early at request stage |
 | `last_triggered` | Number | Last trigger Unix timestamp (seconds) |
-
-## Database Collections
-
-| Collection | Purpose |
-|---|---|
-| `countly.apps` | Stores filtering rules in app `blocks` array |
-| `countly.blocked_users{appId}` | Stores temporary blocked-user data used in filtering flows |
 
 ## Configuration & Usage
 
@@ -122,17 +118,14 @@ Disable problematic rules quickly without deleting configuration.
 
 - [Drill - API Documentation](../drill/index.md)
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Database Collections**
 
-This feature is part of **Countly Enterprise**.
+| Collection | Purpose |
+|---|---|
+| `countly.apps` | Stores filtering rules in app `blocks` array |
+| `countly.blocked_users{appId}` | Stores temporary blocked-user data used in filtering flows |
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions.
-
-**Last Updated**: 2026-02-15
+</details>

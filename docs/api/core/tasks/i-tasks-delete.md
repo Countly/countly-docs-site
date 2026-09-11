@@ -4,6 +4,8 @@ keywords:
   - "/i/tasks/delete"
   - "delete"
   - "tasks"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /i/tasks/delete
@@ -20,9 +22,7 @@ Deletes a task record and associated stored results.
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -36,6 +36,17 @@ Deletes a task record and associated stored results.
 | `auth_token` | String | Yes (or use `api_key`) | Dashboard auth token. |
 | `app_id` | String | Yes | App ID used for write-permission validation. |
 | `task_id` | String | Yes | Task ID to delete. |
+
+## Examples
+
+### Example 1: Delete task
+
+```plaintext
+/i/tasks/delete?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  task_id=17f0f6c3a2c42cbced96d4a01f88f9a7f45bc7a5
+```
 
 ## Response
 
@@ -62,7 +73,7 @@ Deletes a task record and associated stored results.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -76,13 +87,26 @@ Deletes a task record and associated stored results.
 - Removes task metadata and may delete GridFS task result file.
 - Removes any additional task-type-specific result artifacts.
 
-## Audit & System Logs
+## Operational Considerations
+
+- Delete is destructive and cannot be undone.
+- If task has subtask links, related subtasks are also removed by task manager logic.
+
+## Related Endpoints
+
+- [Tasks - Read Task](./o-tasks-task.md)
+- [Tasks - Check Task Status](./o-tasks-check.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Audit & System Logs**
 
 | Action | Trigger | Payload |
 |---|---|---|
 | `task_manager_task_deleted` | After delete callback in route handler | Deleted task document when available (`undefined` when task is not found). |
 
-## Database Collections
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -90,31 +114,4 @@ Deletes a task record and associated stored results.
 | `countly.long_tasks` | Task metadata storage | Deletes task document(s). |
 | `countly_fs.task_results` | Stored task output | Deletes GridFS result file when task uses GridFS storage. |
 
----
-
-## Examples
-
-### Example 1: Delete task
-
-```plaintext
-/i/tasks/delete?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  task_id=17f0f6c3a2c42cbced96d4a01f88f9a7f45bc7a5
-```
-
-## Operational Considerations
-
-- Delete is destructive and cannot be undone.
-- If task has subtask links, related subtasks are also removed by task manager logic.
-
----
-
-## Related Endpoints
-
-- [Tasks - Read Task](./o-tasks-task.md)
-- [Tasks - Check Task Status](./o-tasks-check.md)
-
-## Last Updated
-
-2026-02-17
+</details>

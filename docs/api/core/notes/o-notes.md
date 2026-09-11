@@ -3,6 +3,8 @@ sidebar_label: "Notes List"
 keywords:
   - "/o/notes"
   - "notes"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Notes - Notes List
@@ -19,9 +21,7 @@ Returns a permission-filtered, paginated notes list for selected apps and period
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -44,6 +44,34 @@ Returns a permission-filtered, paginated notes list for selected apps and period
 | `iSortCol_0` | String | No | Sort column index (`2` => `ts`, `3` => `noteType`). |
 | `sSortDir_0` | String | No | Sort direction (`asc` or `desc`). |
 | `sEcho` | Number | No | Echo value returned unchanged. |
+
+## Examples
+
+### Example 1: Read notes for selected apps
+
+```plaintext
+/o/notes?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&period=30days&notes_apps=["6991c75b024cb89cdc04efd2"]&iDisplayStart=0&iDisplayLength=50&sEcho=1
+```
+
+```json
+{
+  "aaData": [
+    {
+      "note": "Traffic anomaly reviewed",
+      "owner_name": "Operations Admin"
+    }
+  ],
+  "iTotalDisplayRecords": 1,
+  "iTotalRecords": 1,
+  "sEcho": 1
+}
+```
+
+### Example 2: Read only public notes in category set
+
+```plaintext
+/o/notes?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&period=30days&note_type=public&category=[true]&iDisplayStart=0&iDisplayLength=20&sEcho=2
+```
 
 ## Response
 
@@ -109,7 +137,7 @@ Returns a permission-filtered, paginated notes list for selected apps and period
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -118,45 +146,6 @@ Returns a permission-filtered, paginated notes list for selected apps and period
 | Matching notes found | Query returns records | Table payload with populated `aaData`. |
 | No matching notes | Query count is zero | `aaData: []` with zero totals. |
 | Query failure | Notes/member query fails | Wrapped error message. |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.notes` | Main notes source. | Reads notes by app scope, period, visibility, and filters. |
-| `countly.members` | Owner enrichment source. | Reads member full names for `owner_name` enrichment. |
-
----
-
-## Examples
-
-### Example 1: Read notes for selected apps
-
-```plaintext
-/o/notes?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&period=30days&notes_apps=["6991c75b024cb89cdc04efd2"]&iDisplayStart=0&iDisplayLength=50&sEcho=1
-```
-
-```json
-{
-  "aaData": [
-    {
-      "note": "Traffic anomaly reviewed",
-      "owner_name": "Operations Admin"
-    }
-  ],
-  "iTotalDisplayRecords": 1,
-  "iTotalRecords": 1,
-  "sEcho": 1
-}
-```
-
-### Example 2: Read only public notes in category set
-
-```plaintext
-/o/notes?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&period=30days&note_type=public&category=[true]&iDisplayStart=0&iDisplayLength=20&sEcho=2
-```
-
----
 
 ## Operational Considerations
 
@@ -173,6 +162,14 @@ Returns a permission-filtered, paginated notes list for selected apps and period
 - [Note Save](./i-notes-save.md)
 - [Note Delete](./i-notes-delete.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.notes` | Main notes source. | Reads notes by app scope, period, visibility, and filters. |
+| `countly.members` | Owner enrichment source. | Reads member full names for `owner_name` enrichment. |
+
+</details>

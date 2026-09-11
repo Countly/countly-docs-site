@@ -4,6 +4,8 @@ keywords:
   - "/i/remote-config/remove-parameter"
   - "remove-parameter"
   - "remote-config"
+last_update:
+  date: "2026-03-05"
 ---
 
 # Remote Config - Parameter Delete
@@ -20,12 +22,7 @@ Deletes a parameter by id.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. `api_key=YOUR_API_KEY`
-2. `auth_token=YOUR_AUTH_TOKEN`
-3. `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -39,6 +36,14 @@ Requires `remote_config` `Delete` permission.
 | `auth_token` | String | No | Auth token as query parameter or `countly-token` header. |
 | `app_id` | String | Yes | App id. |
 | `parameter_id` | String | Yes | Parameter document id. |
+
+## Examples
+
+### Delete a parameter
+
+```plaintext
+/i/remote-config/remove-parameter?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&parameter_id=65f1f7b2ad5b9b001f12ab34
+```
 
 ## Response
 
@@ -66,34 +71,25 @@ Requires `remote_config` `Delete` permission.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Reads parameter first for audit payload.
 - Removes parameter by `_id`.
 - Emits system log action: `rc_parameter_removed`.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly_out.remoteconfig_parameters{appId}` | Parameter storage | Reads and deletes parameter document by id. |
-| `countly.systemlogs` | Audit trail | Receives `rc_parameter_removed` action. |
-
----
-
-## Examples
-
-### Delete a parameter
-
-```plaintext
-/i/remote-config/remove-parameter?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&parameter_id=65f1f7b2ad5b9b001f12ab34
-```
 
 ## Related Endpoints
 
 - [Remote Config - Parameter Create](parameter-add.md)
 - [Remote Config - Parameter Update](parameter-update.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-03-05
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly_out.remoteconfig_parameters{appId}` | Parameter storage | Reads and deletes parameter document by id. |
+| `countly.systemlogs` | Audit trail | Receives `rc_parameter_removed` action. |
+
+</details>

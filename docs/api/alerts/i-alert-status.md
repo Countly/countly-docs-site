@@ -4,6 +4,8 @@ keywords:
   - "/i/alert/status"
   - "status"
   - "alert"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Alerts - Update Status
@@ -20,11 +22,7 @@ Bulk updates `enabled` status for one or more alerts.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -48,6 +46,20 @@ Decoded example:
   "65f0cbf8bca6b8e8fbf7f901": true,
   "65f0cbf8bca6b8e8fbf7f902": false
 }
+```
+
+## Examples
+
+### Enable and disable alerts in one request
+
+```text
+/i/alert/status?
+  app_id=6991c75b024cb89cdc04efd2&
+  api_key=YOUR_API_KEY&
+  status={
+    "65f0cbf8bca6b8e8fbf7f901":true,
+    "65f0cbf8bca6b8e8fbf7f902":false
+  }
 ```
 
 ## Response
@@ -106,7 +118,7 @@ true
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -120,30 +132,6 @@ true
 - Invalidates alerts cache so status changes are used by alert processor.
 - For non-global-admin users, updates are scoped to alerts with `createdBy=current_user`.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication and permission checks | Reads member account and access rights for update validation. |
-| `countly.apps` | App validation/context loading | Validates `app_id` for non-global-admin update access. |
-| `countly.alerts` | Alert rule persistence | Updates `enabled` field on matching alerts. |
-
----
-
-## Examples
-
-### Enable and disable alerts in one request
-
-```text
-/i/alert/status?
-  app_id=6991c75b024cb89cdc04efd2&
-  api_key=YOUR_API_KEY&
-  status={
-    "65f0cbf8bca6b8e8fbf7f901":true,
-    "65f0cbf8bca6b8e8fbf7f902":false
-  }
-```
-
 ## Limitations
 
 - Endpoint returns `true` even if some IDs do not match any alert (no per-ID status is returned).
@@ -155,6 +143,15 @@ true
 - [Alerts - Delete](i-alert-delete.md)
 - [Alerts - List](o-alert-list.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication and permission checks | Reads member account and access rights for update validation. |
+| `countly.apps` | App validation/context loading | Validates `app_id` for non-global-admin update access. |
+| `countly.alerts` | Alert rule persistence | Updates `enabled` field on matching alerts. |
+
+</details>

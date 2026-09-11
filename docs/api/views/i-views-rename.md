@@ -3,6 +3,8 @@ sidebar_label: "Rename"
 keywords:
   - "/i/views"
   - "views"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Views - Rename
@@ -19,11 +21,7 @@ Sets or clears custom display names for one or more views by updating view metad
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -59,6 +57,28 @@ Example payload:
     "value": ""
   }
 ]
+```
+
+## Examples
+
+### Rename multiple views
+
+```text
+/i/views?
+  method=rename_views&
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  data=[{"key":"6991c75b024cb89cdc04efd2_home","value":"Home Page"},{"key":"6991c75b024cb89cdc04efd2_checkout","value":"Checkout"}]
+```
+
+### Remove custom display name
+
+```text
+/i/views?
+  method=rename_views&
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  data=[{"key":"6991c75b024cb89cdc04efd2_home","value":""}]
 ```
 
 ## Response
@@ -103,7 +123,7 @@ Example payload:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -116,38 +136,6 @@ Example payload:
 
 - Updates only `display` metadata; view IDs and collected analytics data remain unchanged.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication and permission checks | Reads member account and access rights for update validation. |
-| `countly.apps` | App validation/context loading | Validates `app_id` for update scope. |
-| `countly.app_viewsmeta` | View metadata updates | Sets or unsets `display` on matched view documents. |
-
----
-
-## Examples
-
-### Rename multiple views
-
-```text
-/i/views?
-  method=rename_views&
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  data=[{"key":"6991c75b024cb89cdc04efd2_home","value":"Home Page"},{"key":"6991c75b024cb89cdc04efd2_checkout","value":"Checkout"}]
-```
-
-### Remove custom display name
-
-```text
-/i/views?
-  method=rename_views&
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  data=[{"key":"6991c75b024cb89cdc04efd2_home","value":""}]
-```
-
 ## Operational Considerations
 
 - Endpoint uses unordered bulk updates, so multiple rename operations are applied in one DB execution.
@@ -157,6 +145,15 @@ Example payload:
 - [Views - Omit Segments](i-views-omit-segments.md)
 - [Views - Delete](i-views-delete.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication and permission checks | Reads member account and access rights for update validation. |
+| `countly.apps` | App validation/context loading | Validates `app_id` for update scope. |
+| `countly.app_viewsmeta` | View metadata updates | Sets or unsets `display` on matched view documents. |
+
+</details>

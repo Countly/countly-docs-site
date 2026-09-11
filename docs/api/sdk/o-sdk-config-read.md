@@ -3,6 +3,8 @@ sidebar_label: "Config Read"
 keywords:
   - "/o"
   - "o"
+last_update:
+  date: "2026-03-05"
 ---
 
 # SDK - Config Read
@@ -19,12 +21,7 @@ Returns stored SDK config for dashboard/admin usage.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. `api_key=YOUR_API_KEY`
-2. `auth_token=YOUR_AUTH_TOKEN`
-3. `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -38,6 +35,14 @@ Requires `sdk` `Read` permission.
 | `api_key` | String | Yes (or use `auth_token`) | API key for authentication. |
 | `auth_token` | String | No | Auth token as query parameter or `countly-token` header. |
 | `app_id` | String | Yes | App id. |
+
+## Examples
+
+### Read stored SDK config
+
+```plaintext
+/o?method=sdk-config&api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2
+```
 
 ## Response
 
@@ -70,7 +75,7 @@ Requires `sdk` `Read` permission.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -80,27 +85,18 @@ Requires `sdk` `Read` permission.
 | No config doc | No matching document for app | Returns empty object fallback. | `{}` |
 | Read failure | Read operation rejects/errors | Returns wrapped error response. | Wrapped error in `result`. |
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly_out.sdk_configs` | SDK config source | Reads per-app SDK config document. |
-
----
-
-## Examples
-
-### Read stored SDK config
-
-```plaintext
-/o?method=sdk-config&api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2
-```
-
 ## Related Endpoints
 
 - [SDK - Config Upload](o-config-upload.md)
 - [SDK - SDK Config Read](o-sdk-config.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-03-05
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly_out.sdk_configs` | SDK config source | Reads per-app SDK config document. |
+
+</details>

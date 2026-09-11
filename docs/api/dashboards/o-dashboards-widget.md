@@ -4,6 +4,8 @@ keywords:
   - "/o/dashboards/widget"
   - "widget"
   - "dashboards"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Dashboards - Read Widget
@@ -20,11 +22,7 @@ Returns one widget (as a single-item array) for a specific dashboard/widget pair
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -40,11 +38,16 @@ No separate feature permission flag is checked. Access is controlled by dashboar
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `dashboards.sharing_status` | `true` | Sharing model | Controls whether broad sharing is possible. That affects whether non-owner users can access widget reads for shared dashboards. |
+### Read one widget
+
+```text
+/o/dashboards/widget?
+  dashboard_id=65e1f3d2a4f41a5f6f6d7701&
+  widget_id=65e1f5f8a4f41a5f6f6d7703&
+  period=7days
+```
 
 ## Response
 
@@ -116,7 +119,7 @@ No separate feature permission flag is checked. Access is controlled by dashboar
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -129,7 +132,21 @@ No separate feature permission flag is checked. Access is controlled by dashboar
 
 - Read-only endpoint; no writes.
 
-## Database Collections
+## Related Endpoints
+
+- [Dashboards - Read Widget Data](o-dashboard-data.md)
+- [Dashboards - Read Widget Layout](o-dashboards-widget-layout.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Configuration Impact**
+
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `dashboards.sharing_status` | `true` | Sharing model | Controls whether broad sharing is possible. That affects whether non-owner users can access widget reads for shared dashboards. |
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -138,24 +155,4 @@ No separate feature permission flag is checked. Access is controlled by dashboar
 | `countly.widgets` | Widget metadata and data processing input | Reads widget document by `_id`. |
 | `countly.apps` | App summary enrichment | Reads app documents linked in widget `apps`. |
 
----
-
-## Examples
-
-### Read one widget
-
-```text
-/o/dashboards/widget?
-  dashboard_id=65e1f3d2a4f41a5f6f6d7701&
-  widget_id=65e1f5f8a4f41a5f6f6d7703&
-  period=7days
-```
-
-## Related Endpoints
-
-- [Dashboards - Read Widget Data](o-dashboard-data.md)
-- [Dashboards - Read Widget Layout](o-dashboards-widget-layout.md)
-
-## Last Updated
-
-2026-02-17
+</details>

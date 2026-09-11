@@ -1,6 +1,8 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Notes - API Documentation
@@ -15,13 +17,6 @@ Notes endpoints let dashboard users create, read, and delete app-related notes u
 - [Notes List](./o-notes.md) - `/o/notes`
 - [Note Delete](./i-notes-delete.md) - `/i/notes/delete`
 
-## Database Collections
-
-| Collection | Purpose |
-|---|---|
-| `countly.notes` | Stores note records (content, visibility, owner, timestamps, indicator). |
-| `countly.members` | Used to enrich notes list with note owner display names. |
-
 ## Access & Permissions
 
 - Save endpoint requires `core` create permission for the app (or global admin).
@@ -34,6 +29,14 @@ Notes endpoints let dashboard users create, read, and delete app-related notes u
 - Read results are permission-filtered by owner, public visibility, and explicit email sharing.
 - Public note edit/delete permissions still enforce ownership/admin checks.
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Purpose |
+|---|---|
+| `countly.notes` | Stores note records (content, visibility, owner, timestamps, indicator). |
+| `countly.members` | Used to enrich notes list with note owner display names. |
+
+</details>

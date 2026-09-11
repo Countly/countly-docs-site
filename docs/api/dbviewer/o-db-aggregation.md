@@ -3,6 +3,8 @@ sidebar_label: "Aggregation Query"
 keywords:
   - "/o/db"
   - "db"
+last_update:
+  date: "2026-03-07"
 ---
 
 # DB Viewer - Aggregation Query
@@ -19,12 +21,7 @@ Executes a MongoDB aggregation pipeline for the selected collection.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. `api_key=YOUR_API_KEY`
-2. `auth_token=YOUR_AUTH_TOKEN`
-3. `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -49,11 +46,19 @@ Requires DB Viewer access (`dbviewer` read right for app-scoped users).
 | `autoRefresh` | Boolean/String | No | Auto-refresh flag for task report. |
 | `manually_create` | Boolean/String | No | Marks task as manually created. |
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `api.request_threshold` | Server-defined | Long-task threshold | Heavy aggregation requests switch to task mode and return `task_id` instead of immediate results. |
+### Run aggregation directly
+
+```plaintext
+/o/db?api_key=YOUR_API_KEY&db=countly&collection=members&aggregation=[{"$group":{"_id":"$global_admin","count":{"$sum":1}}}]
+```
+
+### Run and force task/report mode
+
+```plaintext
+/o/db?api_key=YOUR_API_KEY&db=countly&collection=members&aggregation=[{"$group":{"_id":"$role","count":{"$sum":1}}}]&save_report=true&report_name=RoleSummary
+```
 
 ## Response
 
@@ -114,7 +119,7 @@ Requires DB Viewer access (`dbviewer` read right for app-scoped users).
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Parses `aggregation` as EJSON array.
 - For non-admin users, pipeline stages are filtered through an allowlist and removed stages are returned in `removed`.
@@ -123,29 +128,22 @@ Requires DB Viewer access (`dbviewer` read right for app-scoped users).
 - For `auth_tokens`, `_id` is redacted in pipeline path.
 - Execution is managed through task manager; responses can be immediate output or `task_id` based on threshold/running task conditions.
 
-## Database Collections
-
-This endpoint reads from the selected MongoDB collection and may write task artifacts via task manager/GridFS when queued.
-
-## Examples
-
-### Run aggregation directly
-
-```plaintext
-/o/db?api_key=YOUR_API_KEY&db=countly&collection=members&aggregation=[{"$group":{"_id":"$global_admin","count":{"$sum":1}}}]
-```
-
-### Run and force task/report mode
-
-```plaintext
-/o/db?api_key=YOUR_API_KEY&db=countly&collection=members&aggregation=[{"$group":{"_id":"$role","count":{"$sum":1}}}]&save_report=true&report_name=RoleSummary
-```
-
 ## Related Endpoints
 
 - [DB Viewer - Collection Query](o-db-collection.md)
 - [DB Viewer - Databases List](o-db.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-03-07
+**Configuration Impact**
+
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `api.request_threshold` | Server-defined | Long-task threshold | Heavy aggregation requests switch to task mode and return `task_id` instead of immediate results. |
+
+**Database Collections**
+
+This endpoint reads from the selected MongoDB collection and may write task artifacts via task manager/GridFS when queued.
+
+</details>

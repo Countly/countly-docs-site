@@ -4,6 +4,8 @@ keywords:
   - "/i/crashes/resolving"
   - "resolving"
   - "crashes"
+last_update:
+  date: "2026-03-07"
 ---
 
 # Crashes - Mark Resolving
@@ -20,12 +22,7 @@ Marks crash groups as actively being resolved (`is_resolving=true`).
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. `api_key=YOUR_API_KEY`
-2. `auth_token=YOUR_AUTH_TOKEN`
-3. `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -43,6 +40,12 @@ Requires `crashes` `Update` permission.
 | `args.crash_id` | String | No | Single crash group ID. |
 
 Provide `args.crashes` or `args.crash_id`.
+
+## Examples
+
+```plaintext
+/i/crashes/resolving?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&args={"crashes":["crash_group_1","crash_group_2"]}
+```
 
 ## Response
 
@@ -72,30 +75,25 @@ Provide `args.crashes` or `args.crash_id`.
 
 Standard auth/permission errors from update validation can also be returned.
 
-## Behavior/Processing
+## Behavior
 
 - Resolves crash IDs from `args.crashes` or `[args.crash_id]`.
 - Sets `is_resolving=true` for matched groups.
 - Emits `crash_resolving` system log action for each processed crash entry.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.app_crashgroups{appId}` | Crash status | Updates `is_resolving=true`. |
-| `countly.systemlogs` | Audit trail | Receives `crash_resolving` action(s). |
-
-## Examples
-
-```plaintext
-/i/crashes/resolving?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&args={"crashes":["crash_group_1","crash_group_2"]}
-```
 
 ## Related Endpoints
 
 - [Crashes - Resolve Crash Groups](./i-crashes-resolve.md)
 - [Crashes - Unresolve Crash Groups](./i-crashes-unresolve.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-03-07
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.app_crashgroups{appId}` | Crash status | Updates `is_resolving=true`. |
+| `countly.systemlogs` | Audit trail | Receives `crash_resolving` action(s). |
+
+</details>

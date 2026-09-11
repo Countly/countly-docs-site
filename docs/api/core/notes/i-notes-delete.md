@@ -4,6 +4,8 @@ keywords:
   - "/i/notes/delete"
   - "delete"
   - "notes"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Notes - Note Delete
@@ -20,9 +22,7 @@ Deletes a note by `note_id` after permission checks.
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -36,6 +36,20 @@ Deletes a note by `note_id` after permission checks.
 | `auth_token` | String | Yes (or use `api_key`) | Dashboard auth token. |
 | `app_id` | String | Yes for non-global-admin users | Target app ID used for permission validation. |
 | `note_id` | String | Yes | Note id to delete. |
+
+## Examples
+
+### Example 1: Delete note
+
+```plaintext
+/i/notes/delete?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&note_id=67b2fc5a7274b47fce18c301
+```
+
+```json
+{
+  "result": "Success"
+}
+```
 
 ## Response
 
@@ -71,7 +85,7 @@ Deletes a note by `note_id` after permission checks.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -79,30 +93,6 @@ Deletes a note by `note_id` after permission checks.
 |---|---|---|---|
 | Successful delete | User has note-level delete permission | Removes note by `_id`. | Wrapped success message. |
 | Permission denied | User not eligible to delete the note | No delete; returns forbidden message. | Wrapped error message. |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.notes` | Primary notes storage. | Reads note for permission check, removes note by id. |
-
----
-
-## Examples
-
-### Example 1: Delete note
-
-```plaintext
-/i/notes/delete?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&note_id=67b2fc5a7274b47fce18c301
-```
-
-```json
-{
-  "result": "Success"
-}
-```
-
----
 
 ## Limitations
 
@@ -114,6 +104,13 @@ Deletes a note by `note_id` after permission checks.
 - [Note Save](./i-notes-save.md)
 - [Notes List](./o-notes.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.notes` | Primary notes storage. | Reads note for permission check, removes note by id. |
+
+</details>

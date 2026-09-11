@@ -3,6 +3,8 @@ sidebar_label: "SDK Read"
 keywords:
   - "/o/sdk"
   - "sdk"
+last_update:
+  date: "2026-03-05"
 ---
 
 # Remote Config - SDK Read
@@ -47,6 +49,26 @@ No dashboard permission check is applied. Access is determined by SDK app/device
 | `tz` | String/Number | No | Optional timezone context. |
 | `ip_address` | String | No | Optional IP override for geo-derived properties. |
 
+## Examples
+
+### Fetch all active remote config values
+
+```plaintext
+/o/sdk?method=rc&app_key=YOUR_APP_KEY&device_id=device-123
+```
+
+### Fetch only selected keys
+
+```plaintext
+/o/sdk?method=rc&app_key=YOUR_APP_KEY&device_id=device-123&keys=["button_color","max_items"]
+```
+
+### Fetch with targeting metrics
+
+```plaintext
+/o/sdk?method=rc&app_key=YOUR_APP_KEY&device_id=device-123&metrics={"_os":"iOS","_app_version":"24.3.0"}
+```
+
 ## Response
 
 ### Success Response
@@ -77,48 +99,17 @@ No dashboard permission check is applied. Access is determined by SDK app/device
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Active-parameter filter includes only parameters with status `Running` (or missing status) and with future/null expiry.
 - Value resolution priority per parameter: A/B-tested value, then first matching condition value, then default value.
 - `keys`/`omit_keys` are parsed from JSON strings. Parse failures are ignored and request continues without that filter.
 - Condition matching uses processed user metrics and derived `random_percentile` for seeded rollout logic.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly_out.remoteconfig_parameters{appId}` | Parameter definitions and defaults | Reads parameter definitions and associated condition values. |
-| `countly_out.remoteconfig_conditions{appId}` | Condition definitions | Reads condition rules used for per-user matching. |
-
----
-
-## Examples
-
-### Fetch all active remote config values
-
-```plaintext
-/o/sdk?method=rc&app_key=YOUR_APP_KEY&device_id=device-123
-```
-
-### Fetch only selected keys
-
-```plaintext
-/o/sdk?method=rc&app_key=YOUR_APP_KEY&device_id=device-123&keys=["button_color","max_items"]
-```
-
-### Fetch with targeting metrics
-
-```plaintext
-/o/sdk?method=rc&app_key=YOUR_APP_KEY&device_id=device-123&metrics={"_os":"iOS","_app_version":"24.3.0"}
-```
-
 ## Limitations
 
 - If no parameters match, response is `{}`.
 - Response payload includes resolved values only, not parameter metadata.
-
----
 
 ## Related Endpoints
 
@@ -126,6 +117,14 @@ No dashboard permission check is applied. Access is determined by SDK app/device
 - [Remote Config - AB Enrollment](o-sdk-ab.md)
 - [Remote Config - Dashboard Read](o-remote-config.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-03-05
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly_out.remoteconfig_parameters{appId}` | Parameter definitions and defaults | Reads parameter definitions and associated condition values. |
+| `countly_out.remoteconfig_conditions{appId}` | Condition definitions | Reads condition rules used for per-user matching. |
+
+</details>

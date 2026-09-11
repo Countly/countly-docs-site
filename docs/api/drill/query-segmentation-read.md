@@ -3,11 +3,15 @@ sidebar_label: "Query Segmentation - Read"
 keywords:
   - "/o"
   - "o"
+last_update:
+  date: "2026-04-17"
 ---
+
 # Run segmentation query
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -23,12 +27,7 @@ The response is not a single fixed schema. Drill returns different payload shape
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -54,12 +53,92 @@ Requires `drill` `Read` permission.
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `api.*` | Server API defaults | Shared API execution controls (for example processing thresholds/limits). | Changes to API-level controls can affect runtime behavior, limits, or response timing for this endpoint. |
-| `drill.*` | Drill feature defaults | Drill query result shaping and list-size behavior. | Changes to drill settings can affect result size and query output details. |
+### Basic session query
+
+```text
+/o?method=segmentation&
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  event=[CLY]_session&
+  queryObject={}&
+  period=30days&
+  bucket=daily
+```
+
+### Filter by user profile fields
+
+```text
+/o?method=segmentation&
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  event=[CLY]_session&
+  queryObject={"up.cc":{"$in":["US","CA"]},"up.p":{"$in":["iOS"]}}&
+  period=30days&
+  bucket=daily
+```
+
+### Filter by event segmentation
+
+```text
+/o?method=segmentation&
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  event=purchase&
+  queryObject={"sg.plan":{"$in":["pro","enterprise"]},"s":{"$gte":20}}&
+  period=30days&
+  bucket=daily
+```
+
+### Use logical operators in `queryObject`
+
+```text
+/o?method=segmentation&
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  event=purchase&
+  queryObject={"$or":[{"up.cc":{"$in":["US"]}},{"sg.campaign":{"$in":["spring-sale"]}}]}&
+  period=30days&
+  bucket=daily
+```
+
+### Query grouped by platform
+
+```text
+/o?method=segmentation&
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  event=[CLY]_session&
+  queryObject={"up.cc":"US"}&
+  projectionKey=up.p&
+  period=30days&
+  bucket=daily
+```
+
+### Query grouped by multiple fields
+
+```text
+/o?method=segmentation&
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  event=purchase&
+  queryObject={"sg.plan":{"$exists":true}}&
+  projectionKey=["up.p","sg.plan"]&
+  period=30days&
+  bucket=daily&
+  limit=20
+```
+
+### Table/list mode for projected segments
+
+```text
+/o?method=segmentation&
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  event=purchase&
+  queryObject={"sg.plan":{"$exists":true}}&
+  projectionKey=sg.plan&
+  list=true&
+  period=30days&
+  bucket=daily&
+  limit=10&
+  skip=0&
+  sort={"u":-1}
+```
 
 ## Response
 
@@ -296,7 +375,7 @@ When a cached result is reused, the payload has the same result shape as the ori
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Validates required query parameters.
 - Parses and normalizes filter and period parameters.
@@ -329,7 +408,22 @@ Supported operators are Mongo-style operators accepted by the Drill backend, suc
 
 Do not normally include `a`, `e`, `n`, or `ts` in `queryObject`; the endpoint derives those from `app_id`, `event`, and `period`.
 
-## Database Collections
+## Related Endpoints
+
+- [Query Metadata - Read](query-metadata-read.md)
+- [Bookmarks - Read](bookmarks-read.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Configuration Impact**
+
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `api.*` | Server API defaults | Shared API execution controls (for example processing thresholds/limits). | Changes to API-level controls can affect runtime behavior, limits, or response timing for this endpoint. |
+| `drill.*` | Drill feature defaults | Drill query result shaping and list-size behavior. | Changes to drill settings can affect result size and query output details. |
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -338,104 +432,4 @@ Do not normally include `a`, `e`, `n`, or `ts` in `queryObject`; the endpoint de
 | `countly_drill.drill_cache` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 | `countly_drill.drill_snapshots` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 
----
-
-## Examples
-
-### Basic session query
-
-```text
-/o?method=segmentation&
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  event=[CLY]_session&
-  queryObject={}&
-  period=30days&
-  bucket=daily
-```
-
-### Filter by user profile fields
-
-```text
-/o?method=segmentation&
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  event=[CLY]_session&
-  queryObject={"up.cc":{"$in":["US","CA"]},"up.p":{"$in":["iOS"]}}&
-  period=30days&
-  bucket=daily
-```
-
-### Filter by event segmentation
-
-```text
-/o?method=segmentation&
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  event=purchase&
-  queryObject={"sg.plan":{"$in":["pro","enterprise"]},"s":{"$gte":20}}&
-  period=30days&
-  bucket=daily
-```
-
-### Use logical operators in `queryObject`
-
-```text
-/o?method=segmentation&
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  event=purchase&
-  queryObject={"$or":[{"up.cc":{"$in":["US"]}},{"sg.campaign":{"$in":["spring-sale"]}}]}&
-  period=30days&
-  bucket=daily
-```
-
-### Query grouped by platform
-
-```text
-/o?method=segmentation&
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  event=[CLY]_session&
-  queryObject={"up.cc":"US"}&
-  projectionKey=up.p&
-  period=30days&
-  bucket=daily
-```
-
-### Query grouped by multiple fields
-
-```text
-/o?method=segmentation&
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  event=purchase&
-  queryObject={"sg.plan":{"$exists":true}}&
-  projectionKey=["up.p","sg.plan"]&
-  period=30days&
-  bucket=daily&
-  limit=20
-```
-
-### Table/list mode for projected segments
-
-```text
-/o?method=segmentation&
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  event=purchase&
-  queryObject={"sg.plan":{"$exists":true}}&
-  projectionKey=sg.plan&
-  list=true&
-  period=30days&
-  bucket=daily&
-  limit=10&
-  skip=0&
-  sort={"u":-1}
-```
-
----
-
-## Related Endpoints
-
-- [Query Metadata - Read](query-metadata-read.md)
-- [Bookmarks - Read](bookmarks-read.md)
-
----
-
-## Last Updated
-
-2026-04-17
+</details>

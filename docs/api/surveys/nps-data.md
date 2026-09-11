@@ -5,9 +5,15 @@ keywords:
   - "data"
   - "surveys"
   - "nps"
+last_update:
+  date: "2026-04-18"
 ---
 
 # Surveys - NPS Data
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -15,19 +21,13 @@ keywords:
 /o/surveys/nps/data
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Returns NPS response table data and NPS-specific method branches.
 
 ## Authentication
 
-**Authentication methods**:
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -48,6 +48,16 @@ Returns NPS response table data and NPS-specific method branches.
 | `sSearch` | String | No | Search filter |
 | `iDisplayStart` | Number | No | Offset |
 | `iDisplayLength` | Number | No | Page size |
+
+## Examples
+
+```text
+/o/surveys/nps/data?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&widget_id=67b9db56f67aab0012cd8899&method=meta&period=30days
+```
+
+```text
+/o/surveys/nps/data?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&widget_id=67b9db56f67aab0012cd8899&method=graph&period=30days
+```
 
 ## Response
 
@@ -94,7 +104,7 @@ Returns NPS response table data and NPS-specific method branches.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - `method=graph` returns NPS graph data from the aggregate collection (`nps{app_id}`) using `widget_id` as the segmentation value.
 - `method=meta` requires `period`, validates Countly period syntax, and returns metadata aggregates from `surveyQueries.fetchNpsMeta`.
@@ -103,41 +113,17 @@ Returns NPS response table data and NPS-specific method branches.
 - `source=default` filters responses without `sg.journeyId`; any other `source` value matches `sg.journeyId`.
 - Table rows project rating, comment, platform, platform version, app version, widget id, timestamp, uid, did, and user name.
 
-## Database Collections
+## Related Endpoints
+
+- [Surveys - NPS Overview Metrics](nps-overview.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
 | `countly_drill.drill_events` | Drill event records | Stores granular event rows queried or updated by this endpoint. |
 
----
-
-## Examples
-
-```text
-/o/surveys/nps/data?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&widget_id=67b9db56f67aab0012cd8899&method=meta&period=30days
-```
-
-```text
-/o/surveys/nps/data?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&widget_id=67b9db56f67aab0012cd8899&method=graph&period=30days
-```
-
-## Related Endpoints
-
-- [Surveys - NPS Overview Metrics](nps-overview.md)
-
-## Ⓔ Enterprise
-
-This feature is part of **Countly Enterprise**.
-
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions.
-
----
-
-## Last Updated
-
-2026-04-18
+</details>

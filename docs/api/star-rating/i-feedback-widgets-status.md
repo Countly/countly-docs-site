@@ -5,6 +5,8 @@ keywords:
   - "status"
   - "feedback"
   - "widgets"
+last_update:
+  date: "2026-03-07"
 ---
 
 # Star Rating - Toggle Widget Status
@@ -21,12 +23,7 @@ Bulk-updates `status` field for multiple feedback widgets.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. `api_key=YOUR_API_KEY`
-2. `auth_token=YOUR_AUTH_TOKEN`
-3. `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -40,6 +37,16 @@ Requires `star_rating` `Update` permission.
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
 | `data` | String (JSON Object) | Yes | Map of widget IDs to boolean-like status values. |
 | `data.[widgetId]` | Boolean/String | Yes | `true` or `false` status for the widget. |
+
+## Examples
+
+### Disable two widgets in one call
+
+```plaintext
+/i/feedback/widgets/status?
+  api_key=YOUR_API_KEY&
+  data={"67a3d2f5c1a23b0f4d6c0201":false,"67a3d2f5c1a23b0f4d6c0202":false}
+```
 
 ## Response
 
@@ -85,7 +92,7 @@ Requires `star_rating` `Update` permission.
 
 Standard authentication/authorization errors from update validation can also be returned.
 
-## Behavior/Processing
+## Behavior
 
 - Parses `data` JSON object.
 - Converts each value to boolean (`true` or `'true'` => `true`, otherwise `false`).
@@ -96,28 +103,19 @@ Standard authentication/authorization errors from update validation can also be 
 
 - Updates status on multiple widget documents.
 
-## Database Collections
+## Related Endpoints
+
+- [Star Rating - Edit Widget](i-feedback-widgets-edit.md)
+- [Star Rating - List All Widgets](o-feedback-widgets.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
 | `countly.feedback_widgets` | Widget storage | Bulk updates `status` values for provided widget IDs. |
 | `countly.systemlogs` | Audit trail | Receives `surveys_widget_status` action with status payload. |
 
-## Examples
-
-### Disable two widgets in one call
-
-```plaintext
-/i/feedback/widgets/status?
-  api_key=YOUR_API_KEY&
-  data={"67a3d2f5c1a23b0f4d6c0201":false,"67a3d2f5c1a23b0f4d6c0202":false}
-```
-
-## Related Endpoints
-
-- [Star Rating - Edit Widget](i-feedback-widgets-edit.md)
-- [Star Rating - List All Widgets](o-feedback-widgets.md)
-
-## Last Updated
-
-2026-03-07
+</details>

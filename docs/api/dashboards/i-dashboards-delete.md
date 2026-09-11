@@ -4,6 +4,8 @@ keywords:
   - "/i/dashboards/delete"
   - "delete"
   - "dashboards"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Dashboards - Delete
@@ -20,11 +22,7 @@ Deletes a dashboard and all widgets linked from that dashboard. Non-global-admin
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -41,11 +39,14 @@ No separate feature permission flag is checked. Access is enforced by:
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `dashboards.sharing_status` | `true` | Sharing model | Influences whether shared dashboards can exist broadly. This can indirectly affect which users can reach delete checks for a given dashboard. |
+### Delete own dashboard
+
+```text
+/i/dashboards/delete?
+  dashboard_id=65e1f3d2a4f41a5f6f6d7701
+```
 
 ## Response
 
@@ -118,7 +119,7 @@ No separate feature permission flag is checked. Access is enforced by:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -134,32 +135,6 @@ No separate feature permission flag is checked. Access is enforced by:
 - Removes one dashboard document from `countly.dashboards`.
 - Dispatches widget deletion events for each removed widget.
 
-## Audit & System Logs
-
-| Action | Trigger | Payload |
-|---|---|---|
-| `dashboard_deleted` | After successful dashboard deletion | Deleted dashboard document |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication and ownership checks | Reads current member record to enforce owner/global-admin delete constraints. |
-| `countly.dashboards` | Dashboard validation and delete | Reads dashboard for checks; deletes target dashboard. |
-| `countly.widgets` | Cascade cleanup | Deletes widget documents referenced by dashboard. |
-| `countly.systemlogs` | Audit trail | Writes `dashboard_deleted` entry. |
-
----
-
-## Examples
-
-### Delete own dashboard
-
-```text
-/i/dashboards/delete?
-  dashboard_id=65e1f3d2a4f41a5f6f6d7701
-```
-
 ## Operational Considerations
 
 - Delete flow performs per-widget deletion before dashboard removal, so dashboards with many widgets can take longer to complete.
@@ -174,6 +149,28 @@ No separate feature permission flag is checked. Access is enforced by:
 - [Dashboards - Read](o-dashboards.md)
 - [Dashboards - Remove Widget](i-dashboards-remove-widget.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Configuration Impact**
+
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `dashboards.sharing_status` | `true` | Sharing model | Influences whether shared dashboards can exist broadly. This can indirectly affect which users can reach delete checks for a given dashboard. |
+
+**Audit & System Logs**
+
+| Action | Trigger | Payload |
+|---|---|---|
+| `dashboard_deleted` | After successful dashboard deletion | Deleted dashboard document |
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication and ownership checks | Reads current member record to enforce owner/global-admin delete constraints. |
+| `countly.dashboards` | Dashboard validation and delete | Reads dashboard for checks; deletes target dashboard. |
+| `countly.widgets` | Cascade cleanup | Deletes widget documents referenced by dashboard. |
+| `countly.systemlogs` | Audit trail | Writes `dashboard_deleted` entry. |
+
+</details>

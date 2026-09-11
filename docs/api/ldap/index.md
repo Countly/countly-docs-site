@@ -5,8 +5,9 @@ sidebar_label: "Overview"
 
 # LDAP Authentication
 
-> Ⓔ **Enterprise Only**  
-> This feature is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This feature is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Overview
 
@@ -90,16 +91,6 @@ The feature supports multiple authentication modes:
 | `timeout` | `60000` | Number | General LDAP operation timeout (milliseconds) | `COUNTLY_CONFIG_PLUGINLDAP_TIMEOUT` |
 | `connectTimeout` | `10000` | Number | Initial connection establishment timeout (milliseconds) | `COUNTLY_CONFIG_PLUGINLDAP_CONNECTTIMEOUT` |
 | `idleTimeout` | `60000` | Number | Idle connection timeout in pool (milliseconds) | `COUNTLY_CONFIG_PLUGINLDAP_IDLETIMEOUT` |
-
-## Database Collections
-
-The LDAP feature does not create its own database collections. Instead, it integrates with existing Countly collections:
-
-| Collection | Purpose |
-|------------|---------|
-| `countly.members` | User accounts created via LDAP authentication; includes both regular and admin users, with mapped LDAP groups in user roles |
-
-Authentication events are not tracked separately; standard Countly session and authentication logs apply.
 
 ## Configuration Methods
 
@@ -335,16 +326,17 @@ The LDAP feature integrates with Countly's core authentication system and affect
 - [Cognito Integration](../cognito/index.md)
 - [User Management Feature](../users/index.md)
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Database Collections**
 
-This feature is part of **Countly Enterprise**.
+The LDAP feature does not create its own database collections. Instead, it integrates with existing Countly collections:
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
+| Collection | Purpose |
+|------------|---------|
+| `countly.members` | User accounts created via LDAP authentication; includes both regular and admin users, with mapped LDAP groups in user roles |
 
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
+Authentication events are not tracked separately; standard Countly session and authentication logs apply.
 
+</details>

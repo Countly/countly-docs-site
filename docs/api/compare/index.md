@@ -1,6 +1,8 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Compare - API Documentation
@@ -14,13 +16,14 @@ The Compare feature provides side-by-side analytics across events or apps, helpi
 - [Compare - Apps](o-compare-apps.md)
 - [Compare - Events](o-compare-events.md)
 
-## Database Collections
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Purpose |
 |---|---|
 | `countly.apps` | Resolves app metadata for app-comparison responses. |
 | `countly.users` and event metric collections | Source metrics for app and event comparison calculations. |
 
-## Last Updated
-
-2026-02-17
+</details>

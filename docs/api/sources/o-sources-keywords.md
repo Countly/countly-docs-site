@@ -3,6 +3,8 @@ sidebar_label: "Search Keywords Read"
 keywords:
   - "/o/keywords"
   - "keywords"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Sources - Search Keywords Read
@@ -19,12 +21,7 @@ Returns keyword metrics derived from stored source/referrer entries by extractin
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -54,11 +51,16 @@ The endpoint uses Countly's standard period parser. Common values include:
 | `hour` | Hour-level window |
 | `[start,end]` | Custom timestamp range (array form) |
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `sources.sources_length_limit` | `100` | Ingest normalization before this read | Long incoming source/referrer strings are truncated before storage, which can affect what keyword-bearing source entries remain parseable. |
+### Read search keyword metrics for last 30 days
+
+```text
+/o/keywords?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  period=30days
+```
 
 ## Response
 
@@ -157,7 +159,7 @@ The endpoint uses Countly's standard period parser. Common values include:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -182,27 +184,6 @@ Only entries that pass parsing and keyword-rule checks are returned.
 
 - Read-only endpoint. No collections are modified.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication and permission checks | Reads member account, lock state, and feature-level app permissions. |
-| `countly.apps` | App validation/context loading | Validates `app_id` and loads app timezone context for period calculations. |
-| `countly.sources` | Source metric input | Reads source metric entries used for keyword extraction. |
-
----
-
-## Examples
-
-### Read search keyword metrics for last 30 days
-
-```text
-/o/keywords?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  period=30days
-```
-
 ## Limitations
 
 - Only sources that parse as URLs with supported search query parameters are returned.
@@ -213,6 +194,21 @@ Only entries that pass parsing and keyword-rule checks are returned.
 - [Sources - Traffic Sources Read](o-sources-fetch.md)
 - [Sources - Store Mapping Read](o-sources-stores.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Configuration Impact**
+
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `sources.sources_length_limit` | `100` | Ingest normalization before this read | Long incoming source/referrer strings are truncated before storage, which can affect what keyword-bearing source entries remain parseable. |
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication and permission checks | Reads member account, lock state, and feature-level app permissions. |
+| `countly.apps` | App validation/context loading | Validates `app_id` and loads app timezone context for period calculations. |
+| `countly.sources` | Source metric input | Reads source metric entries used for keyword extraction. |
+
+</details>

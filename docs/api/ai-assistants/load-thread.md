@@ -4,9 +4,15 @@ keywords:
   - "/o/ai-assistants/load-thread"
   - "load-thread"
   - "ai-assistants"
+last_update:
+  date: "2026-02-16"
 ---
 
 # AI Assistants - Load Thread
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -14,19 +20,13 @@ keywords:
 /o/ai-assistants/load-thread
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Loads a thread by `threadId` (when provided) or finds/creates a thread for the authenticated member and app.
 
 ## Authentication
 
-**Authentication Methods**:
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -41,6 +41,20 @@ Loads a thread by `threadId` (when provided) or finds/creates a thread for the a
 | `auth_token` | String | Yes (or `api_key`) | Auth token authentication |
 | `app_id` | String | Yes | App ID used for find/create flow |
 | `threadId` | String | No | Existing thread ID to load directly |
+
+## Examples
+
+### Example 1: Find or create thread for app/member
+
+```bash
+curl "https://your-server.com/o/ai-assistants/load-thread?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID"
+```
+
+### Example 2: Load an existing thread
+
+```bash
+curl "https://your-server.com/o/ai-assistants/load-thread?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&threadId=65a7c1e6f1c2a40001abc123"
+```
 
 ## Response
 
@@ -110,7 +124,7 @@ Loads a thread by `threadId` (when provided) or finds/creates a thread for the a
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 1. Validates user authentication.
 2. Validates required parameters (`app_id` required).
@@ -118,49 +132,18 @@ Loads a thread by `threadId` (when provided) or finds/creates a thread for the a
 4. If `threadId` is not provided, finds or creates member/app thread.
 5. Returns thread projection with the last 20 messages.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.ai_assistants_threads` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
-
----
-
-## Examples
-
-### Example 1: Find or create thread for app/member
-
-```bash
-curl "https://your-server.com/o/ai-assistants/load-thread?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID"
-```
-
-### Example 2: Load an existing thread
-
-```bash
-curl "https://your-server.com/o/ai-assistants/load-thread?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&threadId=65a7c1e6f1c2a40001abc123"
-```
-
 ## Related Endpoints
 
 - [AI Assistants - Create Thread](create-thread.md)
 - [AI Assistants - Send Message](send-message.md)
 
-## Ⓔ Enterprise
+<details>
+<summary>Implementation details</summary>
 
-This feature is part of **Countly Enterprise**.
+**Database Collections**
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.ai_assistants_threads` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions.
-
-## Last Updated
-
-2026-02-15
----
-
-## Last Updated
-
-2026-02-16
+</details>

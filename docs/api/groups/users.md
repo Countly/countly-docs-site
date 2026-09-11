@@ -4,9 +4,15 @@ keywords:
   - "/o/groups/group-users"
   - "group-users"
   - "groups"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Get Group Users
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -14,19 +20,14 @@ keywords:
 /o/groups/group-users
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Returns members in a group, or members outside a group when `inverse` is `true`.
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required access**: global admin
@@ -45,6 +46,24 @@ Returns members in a group, or members outside a group when `inverse` is `true`.
 |---|---|---|---|
 | `_id` | String | Yes | Group ID used for filtering |
 | `inverse` | Boolean | No | If `true`, returns users not in the group |
+
+## Examples
+
+### Example 1: Members in a Group
+
+Endpoint form:
+
+```text
+https://your-server.com/o/groups/group-users?api_key=YOUR_API_KEY&args={"_id":"507f1f77bcf86cd799439011"}
+```
+
+### Example 2: Members Not in a Group
+
+Endpoint form:
+
+```text
+https://your-server.com/o/groups/group-users?api_key=YOUR_API_KEY&args={"_id":"507f1f77bcf86cd799439011","inverse":true}
+```
 
 ## Response
 
@@ -80,7 +99,7 @@ Returns members in a group, or members outside a group when `inverse` is `true`.
 | 400 | `{ "result": "Missing parameter \"api_key\" or \"auth_token\"" }` |
 | 400 | Error object from members query path |
 
-## Behavior/Processing
+## Behavior
 
 1. Parses `args` and validates `_id`.
 2. Builds query:
@@ -88,57 +107,19 @@ Returns members in a group, or members outside a group when `inverse` is `true`.
    - `inverse=true`: `{ "group_id": { "$ne": "<group_id>" } }`
 3. Returns members as `{ "result": [...] }`.
 
----
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Endpoint data source | ** - Source of returned member list |
-
----
-
-## Examples
-
-### Example 1: Members in a Group
-
-Endpoint form:
-
-```text
-https://your-server.com/o/groups/group-users?api_key=YOUR_API_KEY&args={"_id":"507f1f77bcf86cd799439011"}
-```
-
-### Example 2: Members Not in a Group
-
-Endpoint form:
-
-```text
-https://your-server.com/o/groups/group-users?api_key=YOUR_API_KEY&args={"_id":"507f1f77bcf86cd799439011","inverse":true}
-```
-
----
-
 ## Related Endpoints
 
 - [Groups - Get Group Details](details.md)
 - [Groups - Assign User to Groups](save-user-groups.md)
 - [Groups - Assign Many Users to a Group](save-many-user-groups.md)
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Database Collections**
 
-This feature is part of **Countly Enterprise**.
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Endpoint data source | ** - Source of returned member list |
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

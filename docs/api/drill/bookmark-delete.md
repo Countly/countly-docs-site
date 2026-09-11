@@ -4,11 +4,15 @@ keywords:
   - "/i/drill/delete_bookmark"
   - "delete_bookmark"
   - "drill"
+last_update:
+  date: "2026-04-17"
 ---
+
 # Delete bookmark
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -22,12 +26,7 @@ Deletes one saved Drill bookmark.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -41,6 +40,14 @@ Requires `drill` `Read` permission.
 | `bookmark_id` | String | Yes | Bookmark ID to delete. |
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
+
+## Examples
+
+```text
+/i/drill/delete_bookmark?
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  bookmark_id=67bd31c92e7f0b0012ab4567
+```
 
 ## Response
 
@@ -84,31 +91,12 @@ Requires `drill` `Read` permission.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Validates bookmark ID.
 - Allows deletion for globally visible bookmarks, legacy bookmarks without `creator`, or user-owned bookmarks.
 - Deletes bookmark and emits cleanup/systemlog events.
 - Dispatches dashboard cleanup so widgets that reference the deleted Drill bookmark can be removed.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly_drill.drill_bookmarks` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
-| `countly.systemlogs` | Audit trail | Contains system action records used by this endpoint for audit output or audit writes. |
-
----
-
-## Examples
-
-```text
-/i/drill/delete_bookmark?
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  bookmark_id=67bd31c92e7f0b0012ab4567
-```
-
----
 
 ## Related Endpoints
 
@@ -116,8 +104,14 @@ Requires `drill` `Read` permission.
 - [Bookmark - Read](bookmark-read.md)
 - [Bookmark - Create](bookmark-create.md)
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Last Updated
+**Database Collections**
 
-2026-04-17
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly_drill.drill_bookmarks` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
+| `countly.systemlogs` | Audit trail | Contains system action records used by this endpoint for audit output or audit writes. |
+
+</details>

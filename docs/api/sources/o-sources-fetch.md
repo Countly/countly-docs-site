@@ -3,6 +3,8 @@ sidebar_label: "Traffic Sources Read"
 keywords:
   - "/o"
   - "o"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Sources - Traffic Sources Read
@@ -19,12 +21,7 @@ Returns source-attribution metrics for the requested app and period, including n
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -62,11 +59,28 @@ The endpoint uses Countly's standard period parser. Common values include:
 - Omit `action` for full period output.
 - Use `action=refresh` for refresh-focused output used by dashboard refresh flows.
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `sources.sources_length_limit` | `100` | Ingest normalization before aggregation | Incoming `_store` values are truncated to this max length, which can change source keys returned by this endpoint. |
+### Read source metrics for last 30 days
+
+```text
+/o?
+  method=sources&
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  period=30days
+```
+
+### Read source metrics in refresh mode
+
+```text
+/o?
+  method=sources&
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  period=today&
+  action=refresh
+```
 
 ## Response
 
@@ -178,7 +192,7 @@ The endpoint uses Countly's standard period parser. Common values include:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -214,39 +228,6 @@ This means response keys are normalized source/referrer identifiers, not always 
 
 - Read-only endpoint. No collections are modified.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication and permission checks | Reads member account, lock state, and feature-level app permissions. |
-| `countly.apps` | App validation/context loading | Validates `app_id` and loads app timezone context for period calculations. |
-| `countly.sources` | Sources analytics data | Reads per-app source metric documents used to build response buckets. |
-
----
-
-## Examples
-
-### Read source metrics for last 30 days
-
-```text
-/o?
-  method=sources&
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  period=30days
-```
-
-### Read source metrics in refresh mode
-
-```text
-/o?
-  method=sources&
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  period=today&
-  action=refresh
-```
-
 ## Operational Considerations
 
 - Large periods return larger merged time objects and may increase payload size.
@@ -257,6 +238,21 @@ This means response keys are normalized source/referrer identifiers, not always 
 - [Sources - Search Keywords Read](o-sources-keywords.md)
 - [Sources - Store Mapping Read](o-sources-stores.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Configuration Impact**
+
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `sources.sources_length_limit` | `100` | Ingest normalization before aggregation | Incoming `_store` values are truncated to this max length, which can change source keys returned by this endpoint. |
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication and permission checks | Reads member account, lock state, and feature-level app permissions. |
+| `countly.apps` | App validation/context loading | Validates `app_id` and loads app timezone context for period calculations. |
+| `countly.sources` | Sources analytics data | Reads per-app source metric documents used to build response buckets. |
+
+</details>

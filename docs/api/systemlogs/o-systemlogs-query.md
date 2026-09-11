@@ -3,6 +3,8 @@ sidebar_label: "System Logs Query"
 keywords:
   - "/o"
   - "o"
+last_update:
+  date: "2026-03-05"
 ---
 
 # System Logs - Query
@@ -21,12 +23,7 @@ Returns system log entries in DataTables-compatible format with support for filt
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. `api_key=YOUR_API_KEY`
-2. `auth_token=YOUR_AUTH_TOKEN`
-3. `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -49,6 +46,26 @@ Requires Global Admin access.
 | `sSortDir_0` | String | No | Sort direction (`asc` or `desc`). |
 | `sEcho` | String | No | Echo identifier returned as-is. |
 | `export` | Boolean/String | No | When truthy, flattens each log entry for export-friendly output. |
+
+## Examples
+
+### Query last 50 system log records
+
+```plaintext
+/o?method=systemlogs&api_key=YOUR_API_KEY&app_id=APP_ID&iDisplayStart=0&iDisplayLength=50&sEcho=1
+```
+
+### Query app-related updates in selected period
+
+```plaintext
+/o?method=systemlogs&api_key=YOUR_API_KEY&app_id=APP_ID&period=30days&query={"a":"app_updated","app_id":"6991c75b024cb89cdc04efd2"}
+```
+
+### Export filtered results
+
+```plaintext
+/o?method=systemlogs&api_key=YOUR_API_KEY&app_id=APP_ID&query={"a":{"$in":["user_created","user_deleted"]}}&export=true
+```
 
 ## Response
 
@@ -182,53 +199,30 @@ Export mode (`export=true`):
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Invalid `query` JSON does not fail the request; filter falls back to `{}`.
 - Invalid regex in `sSearch` is ignored and request continues without search filter.
 - Sorting is applied only when both `iSortCol_0` and `sSortDir_0` are valid and mapped.
 - In export mode, endpoint removes `_id`, `cd`, and nested `i`, then flattens payload into export fields.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.systemlogs` | System log query source | Reads log documents and metadata row used in totals. |
-
----
-
-## Examples
-
-### Query last 50 system log records
-
-```plaintext
-/o?method=systemlogs&api_key=YOUR_API_KEY&app_id=APP_ID&iDisplayStart=0&iDisplayLength=50&sEcho=1
-```
-
-### Query app-related updates in selected period
-
-```plaintext
-/o?method=systemlogs&api_key=YOUR_API_KEY&app_id=APP_ID&period=30days&query={"a":"app_updated","app_id":"6991c75b024cb89cdc04efd2"}
-```
-
-### Export filtered results
-
-```plaintext
-/o?method=systemlogs&api_key=YOUR_API_KEY&app_id=APP_ID&query={"a":{"$in":["user_created","user_deleted"]}}&export=true
-```
-
 ## Limitations
 
 - Uses estimated total count for `iTotalRecords`; value can be approximate on very large datasets.
 - Sorting is limited to the fixed column mapping used by endpoint.
-
----
 
 ## Related Endpoints
 
 - [System Logs - Metadata](o-systemlogs-meta.md)
 - [System Logs - Record](i-systemlogs.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-03-05
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.systemlogs` | System log query source | Reads log documents and metadata row used in totals. |
+
+</details>

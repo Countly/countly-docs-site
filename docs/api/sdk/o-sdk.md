@@ -3,6 +3,8 @@ sidebar_label: "SDK Fetch Read"
 keywords:
   - "/o/sdk"
   - "sdk"
+last_update:
+  date: "2026-02-17"
 ---
 
 # SDK Fetch - Read
@@ -38,6 +40,26 @@ Processes SDK fetch requests for installed feature methods.
 | `checksum256` | String | Conditionally | Required when app checksum salt is configured and SHA-256 checksum mode is used. |
 | `ip_address` | String | No | Optional explicit IP used instead of request IP. |
 | `old_device_id` | String | No | Optional old device id for merge flows in applicable handlers. |
+
+## Examples
+
+### Example 1: SDK fetch request
+
+```plaintext
+/o/sdk?app_key=YOUR_APP_KEY&device_id=DEVICE_ID&method=ab_fetch_experiments
+```
+
+### Example 2: Missing required params
+
+```plaintext
+/o/sdk?method=ab_fetch_experiments
+```
+
+```json
+{
+  "result": "Missing parameter \"app_key\" or \"device_id\""
+}
+```
 
 ## Response
 
@@ -120,7 +142,7 @@ Example wrapped success (method-dependent):
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -130,37 +152,6 @@ Example wrapped success (method-dependent):
 | Unhandled method | No feature handles method | Returns invalid-method error. | Wrapped error string. |
 | Checksum gate fail | App has checksum salt and checksum is missing/invalid | Request cancelled before method handling. | Wrapped informational error string with status `200`. |
 | Ignored device id | `device_id` is zero-IDFA value | Request ignored. | Wrapped informational string with status `200`. |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.apps` | App validation and settings source | Reads app record by `app_key`. |
-| `countly.app_users{appId}` | App-user context source | Reads current app-user document by derived `_id`. |
-
----
-
-## Examples
-
-### Example 1: SDK fetch request
-
-```plaintext
-/o/sdk?app_key=YOUR_APP_KEY&device_id=DEVICE_ID&method=ab_fetch_experiments
-```
-
-### Example 2: Missing required params
-
-```plaintext
-/o/sdk?method=ab_fetch_experiments
-```
-
-```json
-{
-  "result": "Missing parameter \"app_key\" or \"device_id\""
-}
-```
-
----
 
 ## Operational Considerations
 
@@ -175,6 +166,14 @@ Example wrapped success (method-dependent):
 
 - [SDK Ingestion](../core/bulk/ingestion.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.apps` | App validation and settings source | Reads app record by `app_key`. |
+| `countly.app_users{appId}` | App-user context source | Reads current app-user document by derived `_id`. |
+
+</details>

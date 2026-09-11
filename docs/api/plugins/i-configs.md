@@ -3,6 +3,8 @@ sidebar_label: "Global Config Update"
 keywords:
   - "/i/configs"
   - "configs"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /i/configs
@@ -19,11 +21,7 @@ Updates global Countly configuration values stored in the plugins configuration 
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. **API Key** (parameter): `api_key=YOUR_API_KEY`
-2. **Auth Token** (parameter): `auth_token=YOUR_AUTH_TOKEN`
-3. **Auth Token** (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -57,13 +55,19 @@ Example `configs` payload:
 }
 ```
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `frontend.session_timeout` | Server-defined | Auth token lifetime | Updates `ttl` and `ends` for authenticated user's `LoggedInAuth` tokens when no user-level frontend override exists. |
-| `api.country_data` | `true` | Geo data collection behavior | When set to `false`, endpoint also forces `api.city_data=false` in stored config. |
-| `api.city_data` | `true` | Geo data collection behavior | If set to `true` while `api.country_data=false`, endpoint forces `api.country_data=true`. |
+### Update global frontend session timeout
+
+```plaintext
+/i/configs?api_key=YOUR_API_KEY&configs={"frontend":{"session_timeout":30}}
+```
+
+### Disable country-level API geo enrichment (also disables city-level)
+
+```plaintext
+/i/configs?api_key=YOUR_API_KEY&configs={"api":{"country_data":false}}
+```
 
 ## Response
 
@@ -151,7 +155,7 @@ Example `configs` payload:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Parses `configs` as JSON; an empty or invalid payload returns `Error updating configs`.
 - Merges provided changes into existing config state and writes them to `countly.plugins`.
@@ -164,34 +168,6 @@ Example `configs` payload:
 
 - Updates the global plugin/config document in `countly.plugins`.
 - May update active login token TTL fields in `countly.auth_tokens`.
-
-## Audit & System Logs
-
-| Action | Trigger | Payload |
-|---|---|---|
-| `change_configs` | Config payload is valid and update flow starts | `{ before: previous configs, update: submitted configs }` |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Global-admin validation | Reads authenticated user and global-admin status. |
-| `countly.plugins` | Stores global feature/config namespaces | Updates flattened configuration keys under `_id: "plugins"`. |
-| `countly.auth_tokens` | Stores active dashboard auth tokens | Conditionally updates `ttl` and `ends` for `LoggedInAuth` tokens of the authenticated user. |
-
-## Examples
-
-### Update global frontend session timeout
-
-```plaintext
-/i/configs?api_key=YOUR_API_KEY&configs={"frontend":{"session_timeout":30}}
-```
-
-### Disable country-level API geo enrichment (also disables city-level)
-
-```plaintext
-/i/configs?api_key=YOUR_API_KEY&configs={"api":{"country_data":false}}
-```
 
 ## Operational Considerations
 
@@ -209,6 +185,29 @@ Example `configs` payload:
 - [Features - User Config Update](i-userconfigs.md)
 - [Features - Feature State Update](i-plugins.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Configuration Impact**
+
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `frontend.session_timeout` | Server-defined | Auth token lifetime | Updates `ttl` and `ends` for authenticated user's `LoggedInAuth` tokens when no user-level frontend override exists. |
+| `api.country_data` | `true` | Geo data collection behavior | When set to `false`, endpoint also forces `api.city_data=false` in stored config. |
+| `api.city_data` | `true` | Geo data collection behavior | If set to `true` while `api.country_data=false`, endpoint forces `api.country_data=true`. |
+
+**Audit & System Logs**
+
+| Action | Trigger | Payload |
+|---|---|---|
+| `change_configs` | Config payload is valid and update flow starts | `{ before: previous configs, update: submitted configs }` |
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Global-admin validation | Reads authenticated user and global-admin status. |
+| `countly.plugins` | Stores global feature/config namespaces | Updates flattened configuration keys under `_id: "plugins"`. |
+| `countly.auth_tokens` | Stores active dashboard auth tokens | Conditionally updates `ttl` and `ends` for `LoggedInAuth` tokens of the authenticated user. |
+
+</details>

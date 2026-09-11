@@ -4,6 +4,8 @@ keywords:
   - "/o/tasks/check"
   - "check"
   - "tasks"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /o/tasks/check
@@ -20,9 +22,7 @@ Returns current status for one task ID or multiple task IDs.
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -42,6 +42,26 @@ Returns current status for one task ID or multiple task IDs.
 
 - If `task_id` parses as JSON array, endpoint returns multi-task status payload.
 - If parsing fails, endpoint treats `task_id` as a single ID string.
+
+## Examples
+
+### Example 1: Single task status
+
+```plaintext
+/o/tasks/check?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  task_id=17f0f6c3a2c42cbced96d4a01f88f9a7f45bc7a5
+```
+
+### Example 2: Multiple task statuses
+
+```plaintext
+/o/tasks/check?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  task_id=["task_1","task_2","task_3"]
+```
 
 ## Response
 
@@ -95,7 +115,7 @@ Multi-task mode:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -109,50 +129,27 @@ Multi-task mode:
 
 - Read-only endpoint.
 
-## Audit & System Logs
-
-- No `/systemlogs` action is emitted by this endpoint.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication and visibility scoping | Reads caller identity used by read validation and status visibility checks. |
-| `countly.long_tasks` | Task status source | Reads status for one or multiple tasks. |
-
----
-
-## Examples
-
-### Example 1: Single task status
-
-```plaintext
-/o/tasks/check?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  task_id=17f0f6c3a2c42cbced96d4a01f88f9a7f45bc7a5
-```
-
-### Example 2: Multiple task statuses
-
-```plaintext
-/o/tasks/check?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  task_id=["task_1","task_2","task_3"]
-```
-
 ## Operational Considerations
 
 - Suitable for polling status changes while async tasks are running.
-
----
 
 ## Related Endpoints
 
 - [Tasks - Read Task](./o-tasks-task.md)
 - [Tasks - List Tasks](./o-tasks-list.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Audit & System Logs**
+
+- No `/systemlogs` action is emitted by this endpoint.
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication and visibility scoping | Reads caller identity used by read validation and status visibility checks. |
+| `countly.long_tasks` | Task status source | Reads status for one or multiple tasks. |
+
+</details>

@@ -1,6 +1,8 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-17"
 ---
 
 # CMS - API Documentation
@@ -9,13 +11,6 @@ sidebar_label: "Overview"
 
 CMS endpoints manage cached content entries in `countly.cms_cache`.  
 They support saving transformed entries, reading entries by API ID, and clearing cache by prefix or globally.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this feature |
-|---|---|---|
-| `countly.cms_cache` | CMS cache storage | Entry documents and `_meta` marker documents with `lu` / `error`. |
-| `countly.members` | Auth and permission validation | Member identity and access checks for read/write operations. |
 
 ## Quick Links
 
@@ -34,8 +29,14 @@ They support saving transformed entries, reading entries by API ID, and clearing
 - Save endpoint expects `entries` as a JSON string and writes transformed data directly into cache documents.
 - Clear endpoint can remove all cache entries or only entries for an ID prefix (`_id`).
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Last Updated
+**Database Collections**
 
-2026-02-17
+| Collection | Used for | Data touched by this feature |
+|---|---|---|
+| `countly.cms_cache` | CMS cache storage | Entry documents and `_meta` marker documents with `lu` / `error`. |
+| `countly.members` | Auth and permission validation | Member identity and access checks for read/write operations. |
+
+</details>

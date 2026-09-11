@@ -5,8 +5,9 @@ sidebar_label: "Overview"
 
 # AWS Cognito Authentication
 
-> Ⓔ **Enterprise Only**  
-> This feature is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This feature is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Overview
 
@@ -308,16 +309,3 @@ Behavior:
 - [AWS Cognito Documentation](https://docs.aws.amazon.com/cognito/)
 - [Cognito OAuth 2.0 Authorization Code Flow](https://docs.aws.amazon.com/cognito/latest/developerguide/authorization-endpoint.html)
 - [Cognito UserInfo Endpoint](https://docs.aws.amazon.com/cognito/latest/developerguide/userinfo-endpoint.html)
-
----
-
-## Ⓔ Enterprise
-
-This feature is part of **Countly Enterprise**.
-
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions.

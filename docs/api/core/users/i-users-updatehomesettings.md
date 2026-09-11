@@ -4,6 +4,8 @@ keywords:
   - "/i/users/updateHomeSettings"
   - "updateHomeSettings"
   - "users"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Users Management - Home Settings Update
@@ -20,9 +22,7 @@ Updates home dashboard settings for the authenticated user under one app-specifi
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -36,6 +36,14 @@ Updates home dashboard settings for the authenticated user under one app-specifi
 | `auth_token` | String | Yes (or use `api_key`) | Dashboard auth token. |
 | `app_id` | String | Yes | App id used as the dynamic key inside `homeSettings` (for example `homeSettings.6991c75b024cb89cdc04efd2`). |
 | `homeSettings` | JSON String (Object) | Yes | Stringified object of home-page preferences. |
+
+## Examples
+
+### Example 1: Save home settings
+
+```plaintext
+/i/users/updateHomeSettings?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&homeSettings={"widgets":["sessions","users"]}
+```
 
 ## Response
 
@@ -87,7 +95,7 @@ Updates home dashboard settings for the authenticated user under one app-specifi
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -96,24 +104,6 @@ Updates home dashboard settings for the authenticated user under one app-specifi
 | Parsed settings update | `homeSettings` parses as JSON | Stores parsed object under `homeSettings.{app_id}` key. | Wrapped success message. |
 | Parse fallback update | `homeSettings` parse fails | Stores `{}` under `homeSettings.{app_id}` key. | Wrapped success message. |
 | Validation/DB failure | Missing params/member or DB write error | Aborts update. | Wrapped error message. |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | User profile/home settings storage. | Updates `homeSettings.{app_id}` for authenticated member. |
-
----
-
-## Examples
-
-### Example 1: Save home settings
-
-```plaintext
-/i/users/updateHomeSettings?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&homeSettings={"widgets":["sessions","users"]}
-```
-
----
 
 ## Limitations
 
@@ -125,6 +115,13 @@ Updates home dashboard settings for the authenticated user under one app-specifi
 - [Current User Read](o-users-me.md)
 - [User Update](i-users-update.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | User profile/home settings storage. | Updates `homeSettings.{app_id}` for authenticated member. |
+
+</details>

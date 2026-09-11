@@ -4,11 +4,15 @@ keywords:
   - "/i/drill/add_bookmark"
   - "add_bookmark"
   - "drill"
+last_update:
+  date: "2026-04-17"
 ---
+
 # Create bookmark
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -22,12 +26,7 @@ Creates a saved Drill query bookmark. The stored query uses the same field names
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -50,6 +49,36 @@ Requires `drill` `Read` permission.
 | `visualization` | String | No | Optional visualization hint included in duplicate-signature calculation. |
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
+
+## Examples
+
+```text
+/i/drill/add_bookmark?
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  event_key=[CLY]_session&
+  name=US iOS Sessions&
+  desc=Sessions for iOS users in US&
+  global=false&
+  query_obj={"up.cc":"US","up.p":"ios"}&
+  query_text=Country is US and platform is iOS&
+  by_val=["up.p"]&
+  by_val_text=Platform
+```
+
+### Create an event segmentation bookmark
+
+```text
+/i/drill/add_bookmark?
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  event_key=Purchase&
+  name=Purchase Plan Split&
+  desc=Purchases grouped by selected plan&
+  global=false&
+  query_obj={"sg.plan":{"$in":["pro","enterprise"]}}&
+  query_text=Plan is pro or enterprise&
+  by_val=["sg.plan"]&
+  by_val_text=Plan
+```
 
 ## Response
 
@@ -91,7 +120,7 @@ Requires `drill` `Read` permission.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Validates required bookmark fields and types.
 - Parses `query_obj` to detect internal bookmarks. For normal bookmarks, `query_obj` and `query_text` must both be provided or the stored query is reset to `{}` with an empty label.
@@ -101,47 +130,6 @@ Requires `drill` `Read` permission.
 - Stores bookmark with `event_app_id` hash in Drill bookmarks collection.
 - Emits bookmark/systemlog events.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly_drill.drill_bookmarks` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
-| `countly.systemlogs` | Audit trail | Contains system action records used by this endpoint for audit output or audit writes. |
-
----
-
-## Examples
-
-```text
-/i/drill/add_bookmark?
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  event_key=[CLY]_session&
-  name=US iOS Sessions&
-  desc=Sessions for iOS users in US&
-  global=false&
-  query_obj={"up.cc":"US","up.p":"ios"}&
-  query_text=Country is US and platform is iOS&
-  by_val=["up.p"]&
-  by_val_text=Platform
-```
-
-### Create an event segmentation bookmark
-
-```text
-/i/drill/add_bookmark?
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  event_key=Purchase&
-  name=Purchase Plan Split&
-  desc=Purchases grouped by selected plan&
-  global=false&
-  query_obj={"sg.plan":{"$in":["pro","enterprise"]}}&
-  query_text=Plan is pro or enterprise&
-  by_val=["sg.plan"]&
-  by_val_text=Plan
-```
-
----
-
 ## Related Endpoints
 
 - [Bookmarks - Read](bookmarks-read.md)
@@ -149,8 +137,14 @@ Requires `drill` `Read` permission.
 - [Bookmark - Update](bookmark-update.md)
 - [Bookmark - Delete](bookmark-delete.md)
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Last Updated
+**Database Collections**
 
-2026-04-17
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly_drill.drill_bookmarks` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
+| `countly.systemlogs` | Audit trail | Contains system action records used by this endpoint for audit output or audit writes. |
+
+</details>

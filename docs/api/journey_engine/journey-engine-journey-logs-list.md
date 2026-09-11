@@ -5,9 +5,15 @@ keywords:
   - "list"
   - "journey-enginge"
   - "journey-logs"
+last_update:
+  date: "2026-02-16"
 ---
 
 # List Journey Logs
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -15,19 +21,14 @@ keywords:
 /o/journey-enginge/journey-logs/list
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Returns journey execution log entries. Use the endpoint path exactly as shown.
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - `Read` on `journey_engine` feature is required.
@@ -45,6 +46,12 @@ Returns journey execution log entries. Use the endpoint path exactly as shown.
 | `status` | String | No | Filter by status |
 | `startTime` | String | No | Lower bound for log time filter |
 | `endTime` | String | No | Upper bound for log time filter |
+
+## Examples
+
+```text
+https://your-server.com/o/journey-enginge/journey-logs/list?api_key=YOUR_API_KEY&app_id=64afe321d5f9b2f77cb2c8ed&journeyDefinitionId=67164f4a1f1bd90d6354430a&status=completed
+```
 
 ## Response
 
@@ -78,30 +85,12 @@ Returns journey execution log entries. Use the endpoint path exactly as shown.
 |---|---|
 | 401 | `{ "result": "User is not authorized to access this resource" }` |
 
-## Behavior/Processing
+## Behavior
 
 1. Validates read access.
 2. Enforces global admin access.
 3. Builds filters from optional query params.
 4. Returns logs sorted by newest first.
-
----
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.journey_logs` | Endpoint data source | ** - Source of journey log entries |
-
----
-
-## Examples
-
-```text
-https://your-server.com/o/journey-enginge/journey-logs/list?api_key=YOUR_API_KEY&app_id=64afe321d5f9b2f77cb2c8ed&journeyDefinitionId=67164f4a1f1bd90d6354430a&status=completed
-```
-
----
 
 ## Related Endpoints
 
@@ -109,21 +98,13 @@ https://your-server.com/o/journey-enginge/journey-logs/list?api_key=YOUR_API_KEY
 - [Journey Engine - List Journey Block Logs](journey-engine-journey-block-logs-list.md)
 - [Journey Engine - Debug Journey](journey-engine-debug.md)
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Database Collections**
 
-This feature is part of **Countly Enterprise**.
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.journey_logs` | Endpoint data source | ** - Source of journey log entries |
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

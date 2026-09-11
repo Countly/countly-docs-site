@@ -4,6 +4,8 @@ keywords:
   - "/o/compare/apps"
   - "apps"
   - "compare"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Compare - Apps
@@ -20,11 +22,7 @@ Compares core session/user metrics across multiple apps and returns one summary 
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -50,6 +48,17 @@ Example decoded value:
   "6991c75b024cb89cdc04efd2",
   "65dc6a52a2f7156eb2576f10"
 ]
+```
+
+## Examples
+
+### Compare two apps
+
+```text
+/o/compare/apps?
+  api_key=YOUR_API_KEY&
+  period=30days&
+  apps=["6991c75b024cb89cdc04efd2","65dc6a52a2f7156eb2576f10"]
 ```
 
 ## Response
@@ -158,7 +167,7 @@ Example decoded value:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -170,27 +179,6 @@ Example decoded value:
 ### Impact on Other Data
 
 - Read-only endpoint.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication and permission checks | Reads member account, role, lock state, and app access rights. |
-| `countly.apps` | App validation and metadata lookup | Validates app existence and reads app names/timezone for requested app IDs. |
-| `countly.users` | Metric comparison source | Reads per-app user/session time-series and totals used in comparison output. |
-
----
-
-## Examples
-
-### Compare two apps
-
-```text
-/o/compare/apps?
-  api_key=YOUR_API_KEY&
-  period=30days&
-  apps=["6991c75b024cb89cdc04efd2","65dc6a52a2f7156eb2576f10"]
-```
 
 ## Operational Considerations
 
@@ -207,6 +195,15 @@ Example decoded value:
 
 - [Compare - Events](o-compare-events.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication and permission checks | Reads member account, role, lock state, and app access rights. |
+| `countly.apps` | App validation and metadata lookup | Validates app existence and reads app names/timezone for requested app IDs. |
+| `countly.users` | Metric comparison source | Reads per-app user/session time-series and totals used in comparison output. |
+
+</details>

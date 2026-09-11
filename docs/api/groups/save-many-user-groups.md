@@ -4,9 +4,15 @@ keywords:
   - "/i/groups/save-many-user-group"
   - "save-many-user-group"
   - "groups"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Assign Many Users to a Group
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -14,19 +20,14 @@ keywords:
 /i/groups/save-many-user-group
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Bulk-assigns many users (by email list) to one group.
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required access**: global admin
@@ -45,6 +46,29 @@ Bulk-assigns many users (by email list) to one group.
 |---|---|---|---|
 | `emails` | Array | Yes | User email list |
 | `group_id` | String | Yes | Target group ID |
+
+## Examples
+
+### Example: Assign Many Users
+
+Endpoint form:
+
+```text
+https://your-server.com/i/groups/save-many-user-group?api_key=YOUR_API_KEY&args={"emails":["a@example.com","b@example.com","c@example.com"],"group_id":"507f1f77bcf86cd799439011"}
+```
+
+Decoded `args` object:
+
+```json
+{
+  "emails": [
+    "a@example.com",
+    "b@example.com",
+    "c@example.com"
+  ],
+  "group_id": "507f1f77bcf86cd799439011"
+}
+```
 
 ## Response
 
@@ -72,69 +96,26 @@ Bulk-assigns many users (by email list) to one group.
 | 400 | `{ "result": "Group not found" }` |
 | 400 | `{ "result": "Missing parameter \"api_key\" or \"auth_token\"" }` |
 
-## Behavior/Processing
+## Behavior
 
 1. Validates `emails` and `group_id`.
 2. Loads target users and group.
 3. Merges each user permission with group permission.
 4. Updates users in bulk and updates group member list.
 
----
+## Related Endpoints
 
-## Database Collections
+- [Groups - Assign User to Groups](save-user-groups.md)
+- [Groups - Get Group Users](users.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
 | `countly.members` | Endpoint data source | ** - Bulk update target |
 | `countly.groups` | Endpoint data source | ** - Group member list update target |
 
----
-
-## Examples
-
-### Example: Assign Many Users
-
-Endpoint form:
-
-```text
-https://your-server.com/i/groups/save-many-user-group?api_key=YOUR_API_KEY&args={"emails":["a@example.com","b@example.com","c@example.com"],"group_id":"507f1f77bcf86cd799439011"}
-```
-
-Decoded `args` object:
-
-```json
-{
-  "emails": [
-    "a@example.com",
-    "b@example.com",
-    "c@example.com"
-  ],
-  "group_id": "507f1f77bcf86cd799439011"
-}
-```
-
----
-
-## Related Endpoints
-
-- [Groups - Assign User to Groups](save-user-groups.md)
-- [Groups - Get Group Users](users.md)
-
----
-
-## Ⓔ Enterprise
-
-This feature is part of **Countly Enterprise**.
-
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

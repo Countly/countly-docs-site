@@ -4,6 +4,8 @@ keywords:
   - "/o/apps/all"
   - "all"
   - "apps"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /o/apps/all
@@ -20,9 +22,7 @@ Return all apps as packed app maps for admin and user scopes.
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -34,6 +34,14 @@ Return all apps as packed app maps for admin and user scopes.
 |---|---|---|---|
 | `api_key` | String | Yes (or use `auth_token`) | Dashboard API authentication key. |
 | `auth_token` | String | Yes (or use `api_key`) | Dashboard auth token. |
+
+## Examples
+
+### Example 1: Read all apps
+
+```plaintext
+/o/apps/all?api_key=YOUR_API_KEY
+```
 
 ## Response
 
@@ -87,7 +95,7 @@ Database read failure branch (still returns HTTP 200):
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -96,33 +104,24 @@ Database read failure branch (still returns HTTP 200):
 | Standard read | Apps query succeeds | Loads all app documents and packs them into two ID-keyed maps. | Raw object `{ admin_of, user_of }` |
 | Fallback read | Apps query fails or returns no apps | Returns empty maps for both scopes. | Raw object `{ admin_of: {}, user_of: {} }` |
 
-## Database Collections
+## Limitations
+
+- Route is restricted to global admins.
+- On query failure this handler still returns HTTP 200 with empty maps.
+
+## Related Endpoints
+
+- [Apps - App Read Mine](o-apps-mine.md)
+- [Apps - App Read Details](o-apps-details.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
 | `countly.members` | Authentication | Reads caller identity for global-admin validation. |
 | `countly.apps` | App list source | Reads all app documents and packs selected app fields for output. |
 
----
-## Examples
-
-### Example 1: Read all apps
-
-```plaintext
-/o/apps/all?api_key=YOUR_API_KEY
-```
-
-## Limitations
-
-- Route is restricted to global admins.
-- On query failure this handler still returns HTTP 200 with empty maps.
-
----
-## Related Endpoints
-
-- [Apps - App Read Mine](o-apps-mine.md)
-- [Apps - App Read Details](o-apps-details.md)
-
-## Last Updated
-
-2026-02-17
+</details>

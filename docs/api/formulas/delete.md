@@ -4,12 +4,15 @@ keywords:
   - "/i/calculated_metrics/delete"
   - "delete"
   - "calculated_metrics"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Delete formula
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -23,12 +26,7 @@ Deletes a formula by ID.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -42,6 +40,14 @@ Requires `formulas` `Delete` permission.
 | `id` | String | Yes | Formula ID to delete. |
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
+
+## Examples
+
+```text
+/i/calculated_metrics/delete?
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  id=67bd31c92e7f0b0012ab4567
+```
 
 ## Response
 
@@ -77,7 +83,7 @@ Requires `formulas` `Delete` permission.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Applies visibility-based condition (`global`, owner, shared email) together with `_id` and `app`.
 - If a matching formula is found, endpoint removes it and returns `Deleted a formula`.
@@ -85,7 +91,16 @@ Requires `formulas` `Delete` permission.
 - Dispatches deletion events for system logs and formula cleanup hooks.
 - Triggers dashboard cleanup for widgets that reference the deleted formula.
 
-## Database Collections
+## Related Endpoints
+
+- [Formulas - Read](get-single.md)
+- [Formulas - List](list.md)
+- [Formulas - Save](save.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -93,26 +108,4 @@ Requires `formulas` `Delete` permission.
 | `countly.systemlogs` | Audit trail | Contains system action records used by this endpoint for audit output or audit writes. |
 | `countly.widgets` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 
----
-
-## Examples
-
-```text
-/i/calculated_metrics/delete?
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  id=67bd31c92e7f0b0012ab4567
-```
-
----
-
-## Related Endpoints
-
-- [Formulas - Read](get-single.md)
-- [Formulas - List](list.md)
-- [Formulas - Save](save.md)
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

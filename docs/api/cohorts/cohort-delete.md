@@ -4,18 +4,21 @@ keywords:
   - "/i/cohorts/delete"
   - "delete"
   - "cohorts"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Delete Cohort
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
 ```text
 /i/cohorts/delete
 ```
-
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
 
 ## Overview
 
@@ -24,9 +27,8 @@ The endpoint also removes related cohort data and profile hash references.
 
 ## Authentication
 
-- API key parameter: `api_key`
-- Auth token parameter: `auth_token`
-- Auth token header: `countly-token`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - Required permission: `Delete` on `cohorts`
@@ -40,6 +42,36 @@ The endpoint also removes related cohort data and profile hash references.
 | `app_id` | String | Yes | App identifier |
 | `cohort_id` | String | Yes | One ID or comma-separated cohort IDs |
 | `ack` | String | No | Expected acknowledgment count for `/cohort/delete` plugin dispatch |
+
+## Examples
+
+### Example 1: Delete One Cohort
+
+```text
+https://your-server.com/i/cohorts/delete
+?api_key=API_KEY
+&app_id=APP_ID
+&cohort_id=COHORT_ID
+```
+
+### Example 2: Bulk Delete
+
+```text
+https://your-server.com/i/cohorts/delete
+?api_key=API_KEY
+&app_id=APP_ID
+&cohort_id=COHORT_A,COHORT_B,COHORT_C
+```
+
+### Example 3: Delete with Ack Check
+
+```text
+https://your-server.com/i/cohorts/delete
+?api_key=API_KEY
+&app_id=APP_ID
+&cohort_id=COHORT_ID
+&ack=2
+```
 
 ## Response
 
@@ -77,7 +109,7 @@ Notes:
 
 - Auth/permission failures are handled by authentication and permission validation.
 
-## Behavior/Processing
+## Behavior
 
 - Loads target cohorts by app + IDs.
 - For each cohort:
@@ -90,54 +122,11 @@ Notes:
   - writes system log event
 - After loop, runs hash cleanup recheck.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.cohorts` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
-| `countly.cohortdata` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
-| `countly.app_users{app_id}` | Per-app user profiles | Stores user-level properties and profile fields affected by this endpoint. |
-| `countly.systemlogs` | Audit trail | Contains system action records used by this endpoint for audit output or audit writes. |
-
----
-
-## Examples
-
-### Example 1: Delete One Cohort
-
-```text
-https://your-server.com/i/cohorts/delete
-?api_key=API_KEY
-&app_id=APP_ID
-&cohort_id=COHORT_ID
-```
-
-### Example 2: Bulk Delete
-
-```text
-https://your-server.com/i/cohorts/delete
-?api_key=API_KEY
-&app_id=APP_ID
-&cohort_id=COHORT_A,COHORT_B,COHORT_C
-```
-
-### Example 3: Delete with Ack Check
-
-```text
-https://your-server.com/i/cohorts/delete
-?api_key=API_KEY
-&app_id=APP_ID
-&cohort_id=COHORT_ID
-&ack=2
-```
-
 ## Limitations
 
 - Deletion is permanent.
 - `cohort_id` must belong to the provided `app_id`.
 - Bulk operation may end with partial success if some cohorts fail deletion.
-
----
 
 ## Related Endpoints
 
@@ -146,21 +135,16 @@ https://your-server.com/i/cohorts/delete
 - [Cohorts - Update](cohort-edit.md)
 - [Cohorts - Read One](cohort-single-read.md)
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Database Collections**
 
-This feature is part of **Countly Enterprise**.
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.cohorts` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
+| `countly.cohortdata` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
+| `countly.app_users{app_id}` | Per-app user profiles | Stores user-level properties and profile fields affected by this endpoint. |
+| `countly.systemlogs` | Audit trail | Contains system action records used by this endpoint for audit output or audit writes. |
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions.
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

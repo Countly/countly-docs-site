@@ -3,9 +3,15 @@ sidebar_label: "Read"
 keywords:
   - "/o/revenue"
   - "revenue"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Revenue - Analytics
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -13,19 +19,13 @@ keywords:
 /o/revenue
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Returns revenue analytics merged with paying-user timeline data for selected IAP events.
 
 ## Authentication
 
-**Authentication methods**:
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -42,11 +42,15 @@ Returns revenue analytics merged with paying-user timeline data for selected IAP
 | `period` | String | Yes | Period descriptor (for example `30days`) |
 | `no_cache` | Boolean/String | No | Bypass cached query results |
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `apps.plugins.revenue.iap_events` | `[]` | Paying-user calculation (`p` values) | Defines which incoming SDK events count as purchases |
+```text
+/o/revenue?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&events=["Purchase","Buy"]&period=30days
+```
+
+```text
+/o/revenue?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&events=Purchase&period=7days&no_cache=true
+```
 
 ## Response
 
@@ -102,32 +106,12 @@ Returns revenue analytics merged with paying-user timeline data for selected IAP
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Normalizes `events` into an array when needed.
 - Loads session model for the requested period.
 - Calculates paying users from configured IAP events and merges into response model.
 - Returns raw merged object with time buckets and `p` counters.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.apps` | App configuration and metadata | Stores app-level feature settings and metadata used or modified by this endpoint. |
-| `countly.users` | User aggregates | Stores app-level user aggregate counters/metrics read or updated by this endpoint. |
-| `countly_drill.drill_events` | Drill event records | Stores granular event rows queried or updated by this endpoint. |
-
----
-
-## Examples
-
-```text
-/o/revenue?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&events=["Purchase","Buy"]&period=30days
-```
-
-```text
-/o/revenue?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&events=Purchase&period=7days&no_cache=true
-```
 
 ## Limitations
 
@@ -138,19 +122,21 @@ Returns revenue analytics merged with paying-user timeline data for selected IAP
 
 - [Revenue - Configuration](configuration.md)
 
-## Ⓔ Enterprise
+<details>
+<summary>Implementation details</summary>
 
-This feature is part of **Countly Enterprise**.
+**Configuration Impact**
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `apps.plugins.revenue.iap_events` | `[]` | Paying-user calculation (`p` values) | Defines which incoming SDK events count as purchases |
 
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions.
+**Database Collections**
 
----
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.apps` | App configuration and metadata | Stores app-level feature settings and metadata used or modified by this endpoint. |
+| `countly.users` | User aggregates | Stores app-level user aggregate counters/metrics read or updated by this endpoint. |
+| `countly_drill.drill_events` | Drill event records | Stores granular event rows queried or updated by this endpoint. |
 
-## Last Updated
-
-2026-02-16
+</details>

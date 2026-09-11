@@ -4,6 +4,8 @@ keywords:
   - "/i/datamigration/sendexport"
   - "sendexport"
   - "datamigration"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Data Migration - Send Existing Export
@@ -20,11 +22,7 @@ Sends an already-generated export package to a target Countly server.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -41,6 +39,18 @@ Requires `data_migration` `Create` permission.
 | `args` | JSON String (Object) | No | Optional JSON-stringified helper args. |
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
+
+## Examples
+
+### Send existing export package
+
+```text
+/i/datamigration/sendexport?
+  exportid=f9b35d90be5f2240eafced7c6bfdf130856cd0a7&
+  server_address=http://target-countly.example.com&
+  server_token=2fc9d68f6f284f9fa95b93b7d598&
+  redirect_traffic=1
+```
 
 ## Response
 
@@ -84,7 +94,7 @@ Requires `data_migration` `Create` permission.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -98,33 +108,6 @@ Requires `data_migration` `Create` permission.
 - Updates export progress/state metadata in `countly.data_migrations`.
 - Asynchronous send flow can transition export to finished/failed states.
 
-## Audit & System Logs
-
-| Action | Trigger | Payload |
-|---|---|---|
-| `export_finished` / `export_failed` | Send/import lifecycle reaches terminal status | `{ app_ids, status, message }` |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.data_migrations` | Send lifecycle state | Updates send target details and progress before async dispatch. |
-| `countly.systemlogs` | Audit trail | Writes terminal export state actions via progress updater. |
-
----
-
-## Examples
-
-### Send existing export package
-
-```text
-/i/datamigration/sendexport?
-  exportid=f9b35d90be5f2240eafced7c6bfdf130856cd0a7&
-  server_address=http://target-countly.example.com&
-  server_token=2fc9d68f6f284f9fa95b93b7d598&
-  redirect_traffic=1
-```
-
 ## Operational Considerations
 
 - This endpoint returns immediately after scheduling send work; use status endpoint to track completion.
@@ -134,6 +117,20 @@ Requires `data_migration` `Create` permission.
 - [Data Migration - Export](i-datamigration-export.md)
 - [Data Migration - Get Status](o-datamigration-getstatus.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Audit & System Logs**
+
+| Action | Trigger | Payload |
+|---|---|---|
+| `export_finished` / `export_failed` | Send/import lifecycle reaches terminal status | `{ app_ids, status, message }` |
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.data_migrations` | Send lifecycle state | Updates send target details and progress before async dispatch. |
+| `countly.systemlogs` | Audit trail | Writes terminal export state actions via progress updater. |
+
+</details>

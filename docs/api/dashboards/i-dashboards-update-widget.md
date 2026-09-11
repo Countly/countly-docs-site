@@ -4,6 +4,8 @@ keywords:
   - "/i/dashboards/update-widget"
   - "update-widget"
   - "dashboards"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Dashboards - Update Widget
@@ -20,11 +22,7 @@ Updates an existing widget in a dashboard. The endpoint validates access, saniti
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -67,6 +65,40 @@ Decoded example:
   "position": [0, 0],
   "size": [4, 3]
 }
+```
+
+## Examples
+
+### Update analytics widget
+
+```text
+/i/dashboards/update-widget?
+  dashboard_id=65e1f3d2a4f41a5f6f6d7701&
+  widget_id=65e1f5f8a4f41a5f6f6d7703&
+  widget={
+    "widget_type":"analytics",
+    "feature":"core",
+    "apps":["6991c75b024cb89cdc04efd2"],
+    "title":"Sessions by Day",
+    "metrics":["t"],
+    "position":[0,0],
+    "size":[6,3]
+  }
+```
+
+### Update note widget
+
+```text
+/i/dashboards/update-widget?
+  dashboard_id=65e1f3d2a4f41a5f6f6d7701&
+  widget_id=65e1f5f8a4f41a5f6f6d7703&
+  widget={
+    "widget_type":"note",
+    "feature":"core",
+    "apps":["6991c75b024cb89cdc04efd2"],
+    "title":"Team Note",
+    "contenthtml":"<p>Review this week's funnel drop-off</p>"
+  }
 ```
 
 ## Response
@@ -140,7 +172,7 @@ Decoded example:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -155,57 +187,6 @@ Decoded example:
 - Updates widget document in `countly.widgets`.
 - Emits dashboard widget updated event for dependent processors.
 
-## Audit & System Logs
-
-| Action | Trigger | Payload |
-|---|---|---|
-| `widget_edited` | After successful widget update | `{ before, update }` object |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication and dashboard-share access checks | Reads current member record and group/share context for edit/view validation. |
-| `countly.dashboards` | Dashboard-widget relationship validation | Confirms widget belongs to dashboard before update. |
-| `countly.widgets` | Widget persistence | Updates widget document via `findAndModify`. |
-| `countly.systemlogs` | Audit trail | Writes `widget_edited` entry. |
-
----
-
-## Examples
-
-### Update analytics widget
-
-```text
-/i/dashboards/update-widget?
-  dashboard_id=65e1f3d2a4f41a5f6f6d7701&
-  widget_id=65e1f5f8a4f41a5f6f6d7703&
-  widget={
-    "widget_type":"analytics",
-    "feature":"core",
-    "apps":["6991c75b024cb89cdc04efd2"],
-    "title":"Sessions by Day",
-    "metrics":["t"],
-    "position":[0,0],
-    "size":[6,3]
-  }
-```
-
-### Update note widget
-
-```text
-/i/dashboards/update-widget?
-  dashboard_id=65e1f3d2a4f41a5f6f6d7701&
-  widget_id=65e1f5f8a4f41a5f6f6d7703&
-  widget={
-    "widget_type":"note",
-    "feature":"core",
-    "apps":["6991c75b024cb89cdc04efd2"],
-    "title":"Team Note",
-    "contenthtml":"<p>Review this week's funnel drop-off</p>"
-  }
-```
-
 ## Limitations
 
 - Invalid JSON in `widget` is logged and then handled through later validation/update branches; it does not return a dedicated parse-error response.
@@ -216,6 +197,22 @@ Decoded example:
 - [Dashboards - Add Widget](i-dashboards-add-widget.md)
 - [Dashboards - Remove Widget](i-dashboards-remove-widget.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Audit & System Logs**
+
+| Action | Trigger | Payload |
+|---|---|---|
+| `widget_edited` | After successful widget update | `{ before, update }` object |
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication and dashboard-share access checks | Reads current member record and group/share context for edit/view validation. |
+| `countly.dashboards` | Dashboard-widget relationship validation | Confirms widget belongs to dashboard before update. |
+| `countly.widgets` | Widget persistence | Updates widget document via `findAndModify`. |
+| `countly.systemlogs` | Audit trail | Writes `widget_edited` entry. |
+
+</details>

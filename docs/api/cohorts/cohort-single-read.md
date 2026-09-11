@@ -1,15 +1,18 @@
 ---
 sidebar_label: "Cohort Read"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Get Cohort Details
 
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
+
 ## Endpoint
 
 `/o?method=get_cohort`
-
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
 
 ## Overview
 
@@ -17,10 +20,8 @@ Retrieves detailed information about a single cohort, including configuration, m
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required permission**: `Read` on the `cohorts` feature
@@ -34,11 +35,17 @@ Retrieves detailed information about a single cohort, including configuration, m
 | app_id | String | Yes | Application identifier |
 | cohort | String | Yes | ID of the cohort to retrieve |
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `api.*` | Server API defaults | Shared API execution controls (for example processing thresholds/limits). | Changes to API-level controls can affect runtime behavior, limits, or response timing for this endpoint. |
+### Example 1: Fetch cohort details
+
+**Request**:
+```bash
+curl -X GET "https://your-server.com/o?method=get_cohort" \
+  -d "api_key=YOUR_API_KEY" \
+  -d "app_id=YOUR_APP_ID" \
+  -d "cohort=COHORT_ID"
+```
 
 ## Response
 
@@ -76,9 +83,7 @@ false
 
 No explicit `returnMessage(...)` path in this branch; not-found and unauthorized visibility paths return `false`.
 
----
-
-## Behavior/Processing
+## Behavior
 
 - Validates read permission for `cohorts` feature.
 - Validates app_id and cohort_id parameters.
@@ -99,49 +104,17 @@ No explicit `returnMessage(...)` path in this branch; not-found and unauthorized
 - **State**: `state`, `member_count`, `last_calculated`
 - **Metrics**: If calculated, includes member trends and engagement stats
 
----
-
-## Examples
-
-### Example 1: Fetch cohort details
-
-**Request**:
-```bash
-curl -X GET "https://your-server.com/o?method=get_cohort" \
-  -d "api_key=YOUR_API_KEY" \
-  -d "app_id=YOUR_APP_ID" \
-  -d "cohort=COHORT_ID"
-```
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.cohorts` | Collection: | Source of cohort definition and metadata |
-| `countly.cohortdata` | Optional Collection: | Source of aggregated metrics if requested |
-
----
-
 ## Limitations
 
 - Does not return individual member list (use separate endpoint)
 - Metrics only included if previously calculated
 - Historical data only available if retention enabled
 
----
-
-## Database Collections
-
-- `countly.cohorts` - Stores cohort definitions and configuration
-- `countly.members` - Resolves creator metadata for cohort details
-
 ## Related Endpoints
 
 - [Get list of cohorts](read.md) - GET /o?method=get_cohorts
 - [Get cohort metrics](cohort-metrics-read.md) - GET /o?method=get_cohort_metrics
 - [Get cohort state](cohort-state-read.md) - GET /o?method=cohortstate
-
----
 
 ## Use Cases
 
@@ -151,22 +124,25 @@ curl -X GET "https://your-server.com/o?method=get_cohort" \
 4. **Audit**: Review cohort definition and ownership
 5. **Analytics**: Check cohort metrics and member count
 
+<details>
+<summary>Implementation details</summary>
 
----
+**Configuration Impact**
 
-## Ⓔ Enterprise
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `api.*` | Server API defaults | Shared API execution controls (for example processing thresholds/limits). | Changes to API-level controls can affect runtime behavior, limits, or response timing for this endpoint. |
 
-This feature is part of **Countly Enterprise**.
+**Database Collections**
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.cohorts` | Collection: | Source of cohort definition and metadata |
+| `countly.cohortdata` | Optional Collection: | Source of aggregated metrics if requested |
 
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
+**Database Collections**
 
----
+- `countly.cohorts` - Stores cohort definitions and configuration
+- `countly.members` - Resolves creator metadata for cohort details
 
-## Last Updated
-
-2026-02-16
+</details>

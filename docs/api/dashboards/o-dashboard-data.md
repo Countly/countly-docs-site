@@ -4,6 +4,8 @@ keywords:
   - "/o/dashboard/data"
   - "data"
   - "dashboard"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Dashboards - Read Widget Data
@@ -20,11 +22,7 @@ Returns one dashboard widget object populated with widget data (`dashData`). Unl
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -40,11 +38,16 @@ No separate feature permission flag is checked. Access is controlled by dashboar
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `dashboards.sharing_status` | `true` | Sharing model | Controls whether broad sharing is possible. That affects whether non-owner users can access dashboard data reads. |
+### Read data for one widget
+
+```text
+/o/dashboard/data?
+  dashboard_id=65e1f3d2a4f41a5f6f6d7701&
+  widget_id=65e1f5f8a4f41a5f6f6d7703&
+  period=30days
+```
 
 ## Response
 
@@ -115,7 +118,7 @@ No separate feature permission flag is checked. Access is controlled by dashboar
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -129,28 +132,6 @@ No separate feature permission flag is checked. Access is controlled by dashboar
 - Read-only endpoint; no writes.
 - Data processors may read multiple feature collections depending on widget type.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication and dashboard-share access checks | Reads current member record and group/share context for view validation. |
-| `countly.dashboards` | Dashboard-widget relation validation | Reads dashboard containing target widget. |
-| `countly.widgets` | Widget metadata | Reads selected widget document. |
-| `countly.apps` | App metadata for widget processing | Reads full app documents for widget data dispatch context. |
-
----
-
-## Examples
-
-### Read data for one widget
-
-```text
-/o/dashboard/data?
-  dashboard_id=65e1f3d2a4f41a5f6f6d7701&
-  widget_id=65e1f5f8a4f41a5f6f6d7703&
-  period=30days
-```
-
 ## Operational Considerations
 
 - Widget data computation can trigger heavy reads depending on widget type and configured apps.
@@ -161,6 +142,22 @@ No separate feature permission flag is checked. Access is controlled by dashboar
 - [Dashboards - Read Widget](o-dashboards-widget.md)
 - [Dashboards - Read](o-dashboards.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Configuration Impact**
+
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `dashboards.sharing_status` | `true` | Sharing model | Controls whether broad sharing is possible. That affects whether non-owner users can access dashboard data reads. |
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication and dashboard-share access checks | Reads current member record and group/share context for view validation. |
+| `countly.dashboards` | Dashboard-widget relation validation | Reads dashboard containing target widget. |
+| `countly.widgets` | Widget metadata | Reads selected widget document. |
+| `countly.apps` | App metadata for widget processing | Reads full app documents for widget data dispatch context. |
+
+</details>

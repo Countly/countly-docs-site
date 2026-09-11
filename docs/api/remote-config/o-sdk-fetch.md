@@ -3,6 +3,8 @@ sidebar_label: "SDK Fetch (Legacy)"
 keywords:
   - "/o/sdk"
   - "sdk"
+last_update:
+  date: "2026-03-05"
 ---
 
 # Remote Config - SDK Fetch (Legacy Alias)
@@ -47,6 +49,26 @@ No dashboard permission check is applied. Access is determined by SDK app/device
 | `tz` | String | No | Optional timezone context. |
 | `ip_address` | String | No | Optional IP override for geo-derived properties. |
 
+## Examples
+
+### Fetch all available parameters
+
+```plaintext
+/o/sdk?method=fetch_remote_config&app_key=YOUR_APP_KEY&device_id=device-123
+```
+
+### Fetch selected keys only
+
+```plaintext
+/o/sdk?method=fetch_remote_config&app_key=YOUR_APP_KEY&device_id=device-123&keys=["button_color","max_items"]
+```
+
+### Fetch while excluding keys
+
+```plaintext
+/o/sdk?method=fetch_remote_config&app_key=YOUR_APP_KEY&device_id=device-123&omit_keys=["debug_flag"]
+```
+
 ## Response
 
 ### Success Response
@@ -76,53 +98,30 @@ No dashboard permission check is applied. Access is determined by SDK app/device
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Alias behavior: `fetch_remote_config` is routed through the same remote config resolver as `method=rc`.
 - Value priority for each parameter: A/B-tested value first, then first matching condition value, then default value.
 - `keys`/`omit_keys` are parsed from JSON strings. Parse failures are ignored and request continues without that filter.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly_out.remoteconfig_parameters{appId}` | Parameter definitions and defaults | Reads parameter definitions and associated condition values. |
-| `countly_out.remoteconfig_conditions{appId}` | Condition definitions | Reads condition rules used for per-user matching. |
-
----
-
-## Examples
-
-### Fetch all available parameters
-
-```plaintext
-/o/sdk?method=fetch_remote_config&app_key=YOUR_APP_KEY&device_id=device-123
-```
-
-### Fetch selected keys only
-
-```plaintext
-/o/sdk?method=fetch_remote_config&app_key=YOUR_APP_KEY&device_id=device-123&keys=["button_color","max_items"]
-```
-
-### Fetch while excluding keys
-
-```plaintext
-/o/sdk?method=fetch_remote_config&app_key=YOUR_APP_KEY&device_id=device-123&omit_keys=["debug_flag"]
-```
 
 ## Limitations
 
 - Legacy alias kept for compatibility; use `method=rc` for new integrations.
 - If there are no matching parameters, response is an empty object.
 
----
-
 ## Related Endpoints
 
 - [Remote Config - SDK Read](o-sdk-rc.md)
 - [Remote Config - AB Enrollment](o-sdk-ab.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-03-05
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly_out.remoteconfig_parameters{appId}` | Parameter definitions and defaults | Reads parameter definitions and associated condition values. |
+| `countly_out.remoteconfig_conditions{appId}` | Condition definitions | Reads condition rules used for per-user matching. |
+
+</details>

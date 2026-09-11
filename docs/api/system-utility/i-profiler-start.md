@@ -4,6 +4,8 @@ keywords:
   - "/i/profiler/start"
   - "start"
   - "profiler"
+last_update:
+  date: "2026-03-07"
 ---
 
 # System Utility - Start Profiler
@@ -20,12 +22,7 @@ Starts profiler mode (CPU, heap sampling, precise coverage) with auto-stop timeo
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. `api_key=YOUR_API_KEY`
-2. `auth_token=YOUR_AUTH_TOKEN`
-3. `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -37,6 +34,12 @@ Requires Global Admin access.
 |---|---|---|---|
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
+
+## Examples
+
+```plaintext
+/i/profiler/start?api_key=YOUR_API_KEY
+```
 
 ## Response
 
@@ -62,21 +65,16 @@ Requires Global Admin access.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Starts profiler and sets a 2-hour auto-stop timer.
 - If profiler is already running, returns `500`.
 
-## Database Collections
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 This endpoint does not read or write database collections.
 
-## Examples
-
-```plaintext
-/i/profiler/start?api_key=YOUR_API_KEY
-```
-
-## Last Updated
-
-2026-03-07
+</details>

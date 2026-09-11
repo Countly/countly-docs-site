@@ -5,6 +5,8 @@ keywords:
   - "mime"
   - "push"
   - "message"
+last_update:
+  date: "2026-04-09"
 ---
 
 # Push - MIME Type Validation
@@ -21,12 +23,7 @@ Validates a media URL for push attachments and returns resolved URL, MIME type, 
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. `api_key=YOUR_API_KEY`
-2. `auth_token=YOUR_AUTH_TOKEN`
-3. `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -40,6 +37,17 @@ Requires `push` `Read` permission.
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
 | `app_id` | String | Yes | App ID used by permission validation. |
 | `url` | String | Yes | HTTP/HTTPS media URL to validate. |
+
+## Examples
+
+### Validate attachment URL
+
+```plaintext
+/o/push/mime?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  url=https://cdn.example.com/assets/promo.png
+```
 
 ## Response
 
@@ -123,7 +131,7 @@ Requires `push` `Read` permission.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Sends HEAD request first.
 - Follows single redirect hop explicitly when status is `301` or `302` and `location` exists.
@@ -133,26 +141,16 @@ Requires `push` `Read` permission.
 - Validates MIME type against allowed push media MIME list.
 - Validates size against push media max size limit (`DEFAULTS.max_media_size`).
 
-## Database Collections
-
-This endpoint does not read or write database collections.
-
-## Examples
-
-### Validate attachment URL
-
-```plaintext
-/o/push/mime?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  url=https://cdn.example.com/assets/promo.png
-```
-
 ## Related Endpoints
 
 - [Push - Message Create](message-create.md)
 - [Push - Message Update](message-update.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-04-09
+**Database Collections**
+
+This endpoint does not read or write database collections.
+
+</details>

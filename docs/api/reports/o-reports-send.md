@@ -12,10 +12,7 @@ keywords:
 
 Triggers immediate sending of a scheduled report via email. Bypasses the normal schedule and sends the report now, regardless of time-of-day settings. Useful for urgent distribution or testing report content before scheduling.
 
----
-
 ## Endpoint
-
 
 ```plaintext
 /o/reports/send
@@ -42,63 +39,6 @@ Triggers immediate sending of a scheduled report via email. Bypasses the normal 
   "_id": "6262742dbf7392a8bfd8c1f6"
 }
 ```
-
-## Response
-
-#### Success Response - Report Sent
-**Status Code**: `200 OK`
-
-**Body**:
-### Success Response
-
-```json
-{"result": "Success"}
-```
-
-#### Report Not Found
-**Status Code**: `200 OK`
-
-**Body**:
-```json
-{"result": "Report not found"}
-```
-
-#### No Data to Report
-**Status Code**: `200 OK`
-
-**Body**:
-```json
-{"result": "No data to report"}
-```
-
----
-
-
-### Response Fields
-
-| Field | Type | Description |
-|---|---|---|
-| `*` | Varies | Fields returned by this endpoint. See Success Response example. |
-
-
-### Error Responses
-
-```json
-{
-  "result": "Error"
-}
-```
-
-## Permissions
-
-- Required: API key with read permission
-
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.reports` | Reports storage | Stores report definitions, snapshots, or generated artifacts handled by this endpoint. |
 
 ## Examples
 
@@ -149,9 +89,53 @@ curl "https://your-server.com/o/reports/send?api_key=YOUR_API_KEY&app_id=507f1f7
 {"result": "Report not found"}
 ```
 
----
+## Response
 
-## Behavior/Processing
+#### Success Response - Report Sent
+**Status Code**: `200 OK`
+
+**Body**:
+### Success Response
+
+```json
+{"result": "Success"}
+```
+
+#### Report Not Found
+**Status Code**: `200 OK`
+
+**Body**:
+```json
+{"result": "Report not found"}
+```
+
+#### No Data to Report
+**Status Code**: `200 OK`
+
+**Body**:
+```json
+{"result": "No data to report"}
+```
+
+### Response Fields
+
+| Field | Type | Description |
+|---|---|---|
+| `*` | Varies | Fields returned by this endpoint. See Success Response example. |
+
+### Error Responses
+
+```json
+{
+  "result": "Error"
+}
+```
+
+## Permissions
+
+- Required: API key with read permission
+
+## Behavior
 
 ### Send Process
 
@@ -205,8 +189,6 @@ Report sends data for:
 - **Dashboards**: Dashboard data if configured
 - **Date**: Last 30 days (default) or custom `date_range`
 
----
-
 ## Technical Notes
 
 ### Database Operations
@@ -241,16 +223,12 @@ Report sends data for:
 - **Missing data**: Still sends without metrics (informational)
 - **User errors**: Treated as "not found" for security
 
----
-
 ## Related Endpoints
 
 - [Get All Reports](./o-reports-all.md) - List all reports
 - [Create Report](./i-reports-create.md) - Create scheduled report
 - [Report Preview](./i-reports-preview.md) - HTML preview
 - [Report PDF](./i-reports-pdf.md) - PDF download
-
----
 
 ## Error Handling
 
@@ -261,8 +239,6 @@ Report sends data for:
 | `200` | No data available for report | `{"result": "No data to report"}` |
 | `400` | Invalid JSON in args | `{"result": 400, "message": "Invalid JSON in args"}` |
 | `401` | Invalid API key | Authentication error |
-
----
 
 ## Implementation Notes
 
@@ -279,6 +255,13 @@ Report sends data for:
 11. **CC/BCC**: Not supported, direct recipient list only
 12. **Template rendering**: EJS templates rendered on send, not cached
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-February 2026
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.reports` | Reports storage | Stores report definitions, snapshots, or generated artifacts handled by this endpoint. |
+
+</details>

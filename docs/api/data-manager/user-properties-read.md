@@ -4,11 +4,15 @@ keywords:
   - "/o/data-manager/user-properties"
   - "user-properties"
   - "data-manager"
+last_update:
+  date: "2026-02-16"
 ---
+
 # Read user property definitions
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -22,12 +26,7 @@ Returns user-property metadata groups (`custom`, `up`) with optional masking and
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -40,6 +39,13 @@ Requires `data_manager` `Read` permission.
 | `app_id` | String | Yes | Target app ID. |
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
+
+## Examples
+
+```text
+/o/data-manager/user-properties?
+  app_id=64f5c0d8f4f7ac0012ab3456
+```
 
 ## Response
 
@@ -78,18 +84,26 @@ Requires `data_manager` `Read` permission.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Loads `_meta_up` from `countly_drill.drill_meta` and ensures `custom`/`up` objects exist.
 - Loads relevant system logs and member names for latest audit info.
 - Injects system user properties (for example `did`) with `preventTypeChange: true`.
 - Adds masking info from `countly.apps.masking.prop` when present.
 
-## Audit & System Logs
+## Related Endpoints
+
+- [User Properties - Delete](user-properties-delete.md)
+- [Property Expiration - Update](property-expiration-update.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Audit & System Logs**
 
 - This endpoint does not emit `/systemlogs` actions.
 
-## Database Collections
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -98,24 +112,4 @@ Requires `data_manager` `Read` permission.
 | `countly.systemlogs` | Audit enrichment source | Reads latest property-related log records for audit metadata. |
 | `countly.members` | User-name enrichment source | Resolves log `user_id` values to member names. |
 
----
-
-## Examples
-
-```text
-/o/data-manager/user-properties?
-  app_id=64f5c0d8f4f7ac0012ab3456
-```
-
----
-
-## Related Endpoints
-
-- [User Properties - Delete](user-properties-delete.md)
-- [Property Expiration - Update](property-expiration-update.md)
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

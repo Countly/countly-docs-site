@@ -4,6 +4,8 @@ keywords:
   - "/o/crashes/download_stacktrace"
   - "download_stacktrace"
   - "crashes"
+last_update:
+  date: "2026-03-07"
 ---
 
 # Crashes - Download Stacktrace
@@ -20,12 +22,7 @@ Downloads plain-text stacktrace for one crash report.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. `api_key=YOUR_API_KEY`
-2. `auth_token=YOUR_AUTH_TOKEN`
-3. `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -39,6 +36,17 @@ Requires `crashes` `Read` permission.
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
 | `app_id` | String | Yes | Target app ID for validation context. |
 | `crash_id` | String | Yes | Crash report `_id` in `drill_events`. |
+
+## Examples
+
+### Download stacktrace for a crash event
+
+```plaintext
+/o/crashes/download_stacktrace?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  crash_id=67a3d2f5c1a23b0f4d6c0001
+```
 
 ## Response
 
@@ -87,28 +95,18 @@ Body contains raw `error` (stacktrace text) from crash report.
 
 Standard auth/permission errors from read validation can also be returned.
 
-## Behavior/Processing
+## Behavior
 
 - Reads crash report from `countly_drill.drill_events` by `_id`.
 - Validates `error` field exists before streaming response.
 
-## Database Collections
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
 | `countly_drill.drill_events` | Crash report source | Reads crash record by `_id` and streams `error` field. |
 
-## Examples
-
-### Download stacktrace for a crash event
-
-```plaintext
-/o/crashes/download_stacktrace?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  crash_id=67a3d2f5c1a23b0f4d6c0001
-```
-
-## Last Updated
-
-2026-03-07
+</details>

@@ -1,12 +1,15 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-15"
 ---
 
 # Groups - API Documentation
 
-> Ⓔ **Enterprise Only**  
-> This feature is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This feature is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Overview
 
@@ -197,13 +200,6 @@ Example:
 - User `john@example.com` is assigned to `sales_team` (`admin_of: ["app_123"]`) and `report_viewers` (`user_of: ["app_456"]`).
 - Effective result: admin access on `app_123`, read access on `app_456`.
 
-## Database Collections
-
-| Collection | Purpose |
-|---|---|
-| `countly.groups` | Stores group definitions, permissions, and member references |
-| `countly.members` | Stores effective user permissions and group memberships (`group_id`) |
-
 ## Performance Considerations
 
 - `save-many-user-group` is preferred for onboarding many users to one group.
@@ -226,19 +222,14 @@ Example:
 - Some validation failures intentionally return HTTP `200` with `{ "result": "..." }` messages (for example `Not enough args`).
 - Group assignment endpoints use live permission merging, so resulting user permission is based on all assigned groups.
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Database Collections**
 
-This feature is part of **Countly Enterprise**.
+| Collection | Purpose |
+|---|---|
+| `countly.groups` | Stores group definitions, permissions, and member references |
+| `countly.members` | Stores effective user permissions and group memberships (`group_id`) |
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-_Last Updated: 2026-02-15_
+</details>

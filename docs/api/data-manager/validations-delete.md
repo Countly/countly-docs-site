@@ -5,11 +5,15 @@ keywords:
   - "delete"
   - "data-manager"
   - "validations"
+last_update:
+  date: "2026-02-16"
 ---
+
 # Data Manager Validations - Resolve by Deletion
 
-> Ⓔ **Enterprise Only**
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -23,12 +27,7 @@ Applies deletion/cleanup behavior for selected validation records and marks them
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -61,6 +60,24 @@ Decoded example:
 | Validation `type` | `GLOBAL_REGEX`, `unexpected`, `unplanned`, `missing_segmentation`, `data_type_mismatch` | Each type triggers different cleanup logic in drill collections / events hooks. |
 | Validation `target` | `event` / `segment` | Affects selected systemlog action and cleanup strategy. |
 
+## Examples
+
+### Resolve one validation by deletion
+
+```text
+/o/data-manager/validations/delete?
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  validationIds=["67b85e7a9f2d3e0012ab9c10"]
+```
+
+### Resolve multiple validations by deletion
+
+```text
+/o/data-manager/validations/delete?
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  validationIds=["67b85e7a9f2d3e0012ab9c10","67b85e7a9f2d3e0012ab9c11"]
+```
+
 ## Response
 
 ### Success Response
@@ -85,7 +102,7 @@ Decoded example:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -100,7 +117,24 @@ Decoded example:
 - For `unexpected/unplanned` event target, dispatches `/i/events/delete_events` hook.
 - Invalidates Data Manager cache for app.
 
-## Audit & System Logs
+## Operational Considerations
+
+- Processing is sequential and can be expensive for large validation batches, especially when cleanup touches drill-level data.
+
+## Limitations
+
+- Malformed `validationIds` JSON returns generic `500 Error`.
+- This endpoint currently requires `Read` permission even though it mutates data.
+
+## Related Endpoints
+
+- [Data Manager Validations - Read Unresolved](validations-read.md)
+- [Data Manager Validations - Approve](validation-approvals-update.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Audit & System Logs**
 
 Emits one systemlog record per processed validation using action chosen by branch:
 
@@ -112,7 +146,7 @@ Payload includes:
 - `ev` (event key)
 - optional `segment` for segment-target branches
 
-## Database Collections
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -122,44 +156,4 @@ Payload includes:
 | `countly.events_data` | Aggregated data cleanup (indirect branch) | Can be updated/deleted through delegated segment cleanup flows for selected validation types. |
 | `countly.systemlogs` | Audit trail | Writes one cleanup action per processed validation (`dm-event-approve`/`dm-segment-delete` branch-dependent). |
 
----
-
-## Examples
-
-### Resolve one validation by deletion
-
-```text
-/o/data-manager/validations/delete?
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  validationIds=["67b85e7a9f2d3e0012ab9c10"]
-```
-
-### Resolve multiple validations by deletion
-
-```text
-/o/data-manager/validations/delete?
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  validationIds=["67b85e7a9f2d3e0012ab9c10","67b85e7a9f2d3e0012ab9c11"]
-```
-
-## Operational Considerations
-
-- Processing is sequential and can be expensive for large validation batches, especially when cleanup touches drill-level data.
-
-## Limitations
-
-- Malformed `validationIds` JSON returns generic `500 Error`.
-- This endpoint currently requires `Read` permission even though it mutates data.
-
----
-
-## Related Endpoints
-
-- [Data Manager Validations - Read Unresolved](validations-read.md)
-- [Data Manager Validations - Approve](validation-approvals-update.md)
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

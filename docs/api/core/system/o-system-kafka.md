@@ -4,6 +4,8 @@ keywords:
   - "/o/system/kafka"
   - "kafka"
   - "system"
+last_update:
+  date: "2026-02-17"
 ---
 
 # System - Kafka Status Read
@@ -20,9 +22,7 @@ Returns Kafka processing status summary, partition/consumer metrics, lag history
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -35,12 +35,26 @@ Returns Kafka processing status summary, partition/consumer metrics, lag history
 | `api_key` | String | Yes (or use `auth_token`) | Dashboard API key. |
 | `auth_token` | String | Yes (or use `api_key`) | Dashboard auth token. |
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `kafka.connectApiUrl` | Not set | `connectStatus.enabled` | When configured, Kafka Connect section is marked enabled. |
-| `kafka.connectConsumerGroupId` | Not set | `connectStatus.sinkLag`, `connectStatus.sinkLagUpdatedAt` | Selects which consumer group contributes sink lag metrics. |
+### Example 1: Read Kafka status overview
+
+```plaintext
+/o/system/kafka?api_key=YOUR_API_KEY
+```
+
+```json
+{
+  "summary": {
+    "totalLag": 45,
+    "consumerGroupCount": 2
+  },
+  "connectStatus": {
+    "enabled": true,
+    "sinkLag": 9
+  }
+}
+```
 
 ## Response
 
@@ -140,7 +154,7 @@ Returns Kafka processing status summary, partition/consumer metrics, lag history
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -148,40 +162,6 @@ Returns Kafka processing status summary, partition/consumer metrics, lag history
 |---|---|---|
 | Full Kafka status | Query succeeds | Object with `summary`, `partitions`, `consumers`, `lagHistory`, `connectStatus`. |
 | Query failure | Any source query/aggregation throws | Wrapped error message. |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.kafka_consumer_state` | Source for partition-level processing metrics. | Reads rows and summary aggregation input. |
-| `countly.kafka_consumer_health` | Source for consumer-group health and lag metrics. | Reads rows and summary aggregation input. |
-| `countly.kafka_lag_history` | Source for lag history chart data. | Reads recent history records. |
-| `countly.kafka_connect_status` | Source for connector state snapshots. | Reads connector status rows. |
-
----
-
-## Examples
-
-### Example 1: Read Kafka status overview
-
-```plaintext
-/o/system/kafka?api_key=YOUR_API_KEY
-```
-
-```json
-{
-  "summary": {
-    "totalLag": 45,
-    "consumerGroupCount": 2
-  },
-  "connectStatus": {
-    "enabled": true,
-    "sinkLag": 9
-  }
-}
-```
-
----
 
 ## Operational Considerations
 
@@ -199,6 +179,23 @@ Returns Kafka processing status summary, partition/consumer metrics, lag history
 - [Kafka Events Meta Read](./o-system-kafka-events-meta.md)
 - [Aggregator Status Read](./o-system-aggregator.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Configuration Impact**
+
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `kafka.connectApiUrl` | Not set | `connectStatus.enabled` | When configured, Kafka Connect section is marked enabled. |
+| `kafka.connectConsumerGroupId` | Not set | `connectStatus.sinkLag`, `connectStatus.sinkLagUpdatedAt` | Selects which consumer group contributes sink lag metrics. |
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.kafka_consumer_state` | Source for partition-level processing metrics. | Reads rows and summary aggregation input. |
+| `countly.kafka_consumer_health` | Source for consumer-group health and lag metrics. | Reads rows and summary aggregation input. |
+| `countly.kafka_lag_history` | Source for lag history chart data. | Reads recent history records. |
+| `countly.kafka_connect_status` | Source for connector state snapshots. | Reads connector status rows. |
+
+</details>

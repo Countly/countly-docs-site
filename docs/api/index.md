@@ -6,8 +6,6 @@ sidebar_label: "Overview"
 
 Welcome to the Countly Server API reference. This documentation covers all read (`GET /o/...`) and write (`POST /i/...`) endpoints across the core platform and enterprise plugins.
 
----
-
 ## Authentication
 
 All API calls require authentication. There are multiple ways to authenticate depending on the type of endpoint.
@@ -54,8 +52,6 @@ This is the recommended approach for server-to-server integrations as it keeps t
 | Managing apps / users | `api_key` or `auth_token` | `countly-token: TOKEN` |
 | Scoped, time-limited access | `auth_token` | `auth_token=TOKEN` |
 
----
-
 ## Core API
 
 The core platform ships with every Countly installation.
@@ -74,8 +70,6 @@ The core platform ships with every Countly installation.
 | [SDK](./sdk/index.md) | SDK configuration endpoints |
 | [System](./core/system/index.md) | Server health, jobs, and configuration |
 | [Plugins](./plugins/index.md) | Plugin state and management |
-
----
 
 ## Enterprise Plugins
 
@@ -149,16 +143,12 @@ Features marked with **Ⓔ** require an Enterprise license.
 | [Alerts](./alerts/index.md) | Metric-based alert rules |
 | [Reports](./reports/index.md) | Scheduled email reports |
 
----
-
 ## Conventions
 
 - **Read endpoints** — `GET /o/...` — retrieve data; require `api_key` + `app_id`.
 - **Write endpoints** — `POST /i/...` — create or modify data; may require `app_key` or `api_key`.
 - **Responses** — JSON. Successful calls return the result directly; errors return `{"result": "Error message"}`.
 - **Pagination** — List endpoints accept `iDisplayStart` and `iDisplayLength` parameters.
-
----
 
 ## Quick Links
 

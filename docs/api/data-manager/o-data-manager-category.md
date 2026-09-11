@@ -4,6 +4,8 @@ keywords:
   - "/o/data-manager/category"
   - "category"
   - "data-manager"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /o/data-manager/category
@@ -20,11 +22,7 @@ Returns all event categories configured for the selected app.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. **API Key** (parameter): `api_key=YOUR_API_KEY`
-2. **Auth Token** (parameter): `auth_token=YOUR_AUTH_TOKEN`
-3. **Auth Token** (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -37,6 +35,14 @@ Countly API supports three authentication methods:
 | `api_key` | String | Yes (or use `auth_token`) | API key for authentication. |
 | `auth_token` | String | No | Auth token as query parameter or `countly-token` header. |
 | `app_id` | String | Yes | Target app ID. |
+
+## Examples
+
+### Read app categories
+
+```plaintext
+/o/data-manager/category?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID
+```
 
 ## Response
 
@@ -92,27 +98,11 @@ Countly API supports three authentication methods:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Validates read access for `data_manager`.
 - Fetches all category documents where `app` matches `app_id`.
 - Returns raw category array.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication and permission validation | Reads member record by `api_key` or `auth_token` to verify read access. |
-| `countly.apps` | App context validation | Reads app record for the requested `app_id` during access validation. |
-| `countly.event_categories` | Stores per-app event category definitions | Reads category documents by app. |
-
-## Examples
-
-### Read app categories
-
-```plaintext
-/o/data-manager/category?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID
-```
 
 ## Related Endpoints
 
@@ -120,6 +110,15 @@ Countly API supports three authentication methods:
 - [Data Manager - Category Edit](i-data-manager-category-edit.md)
 - [Data Manager - Category Delete](i-data-manager-category-delete.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication and permission validation | Reads member record by `api_key` or `auth_token` to verify read access. |
+| `countly.apps` | App context validation | Reads app record for the requested `app_id` during access validation. |
+| `countly.event_categories` | Stores per-app event category definitions | Reads category documents by app. |
+
+</details>

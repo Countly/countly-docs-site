@@ -3,6 +3,8 @@ sidebar_label: "Collection Info Read"
 keywords:
   - "/o"
   - "o"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Logger - Collection Info Read
@@ -19,12 +21,7 @@ Returns storage info for the app-specific logger collection: configured cap, cur
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -38,6 +35,17 @@ Requires `logger` `Read` permission.
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
 | `app_id` | String | Conditional | Required for non-global-admin users during read validation. |
+
+## Examples
+
+### Read logger collection usage
+
+```text
+/o?
+  method=collection_info&
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2
+```
 
 ## Response
 
@@ -139,7 +147,7 @@ Fallback path (when count query fails):
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -151,27 +159,6 @@ Fallback path (when count query fails):
 ### Impact on Other Data
 
 - Read-only endpoint. It does not modify any collections.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication and permission checks | Reads member account, lock state, and feature-level app permissions. |
-| `countly.apps` | App validation/context loading | Validates `app_id` and loads app context for access checks. |
-| `countly.logs{appId}` | Collection usage metrics | Counts documents in the app-specific request-log collection. |
-
----
-
-## Examples
-
-### Read logger collection usage
-
-```text
-/o?
-  method=collection_info&
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2
-```
 
 ## Operational Considerations
 
@@ -187,6 +174,15 @@ Fallback path (when count query fails):
 
 - [Logger - Logs Read](o-logs.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication and permission checks | Reads member account, lock state, and feature-level app permissions. |
+| `countly.apps` | App validation/context loading | Validates `app_id` and loads app context for access checks. |
+| `countly.logs{appId}` | Collection usage metrics | Counts documents in the app-specific request-log collection. |
+
+</details>

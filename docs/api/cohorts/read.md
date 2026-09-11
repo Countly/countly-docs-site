@@ -1,15 +1,18 @@
 ---
 sidebar_label: "Cohorts Read"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Get List of Cohorts
 
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
+
 ## Endpoint
 
 `/o?method=get_cohorts`
-
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
 
 ## Overview
 
@@ -17,10 +20,8 @@ Retrieves a paginated, filterable list of all cohorts and profile groups for an 
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required permission**: `Read` on the `cohorts` feature
@@ -39,74 +40,6 @@ Retrieves a paginated, filterable list of all cohorts and profile groups for an 
 | type | String | No | Cohort type filter (for example `manual`) |
 | group | String | No | Group filter (`fav`, `my`, or custom group key) |
 | projection | JSON Array String | No | Optional projection field list |
-
-## Configuration Impact
-
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `api.*` | Server API defaults | Shared API execution controls (for example processing thresholds/limits). | Changes to API-level controls can affect runtime behavior, limits, or response timing for this endpoint. |
-
-## Response
-
-### Success Response
-
-Default (`outputFormat=rows`) response:
-
-```json
-[]
-```
-
-`outputFormat=full` response:
-
-```json
-{
-  "sEcho": "0",
-  "iTotalRecords": 0,
-  "iTotalDisplayRecords": 0,
-  "aaData": [],
-  "favTotal": []
-}
-```
-
-### Response Fields
-
-| Field | Type | Description |
-|---|---|---|
-| `[]` | Array | Default rows output (when `outputFormat` is not `full`). |
-| `sEcho` | String | DataTable echo value (`outputFormat=full`). |
-| `iTotalRecords` | Number | Total rows before filtering (`outputFormat=full`). |
-| `iTotalDisplayRecords` | Number | Total rows after filtering (`outputFormat=full`). |
-| `aaData` | Array | Paged cohort rows (`outputFormat=full`). |
-| `favTotal` | Array | Favorite facet output (`outputFormat=full`). |
-
-### Error Responses
-
-| HTTP Status | Error Response | Description |
-|---|---|---|
-| 200 | `false` | Returned on aggregation error branch (`err || !res`) |
-| 400 | `{"result": "Insufficient permissions"}` | User lacks Read permission |
-
----
-
-## Behavior/Processing
-
-- Validates read permission for `cohorts` feature.
-- Filters cohorts by app_id and excludes system cohorts (names starting with `[CLY]`).
-- Applies visibility filters based on user permissions.
-- Supports filtering by cohort type (`auto` vs `manual`).
-- Supports grouping filters (`fav`, `my`, or custom groups).
-- Uses MongoDB aggregation pipeline for efficient querying.
-- Returns paginated results with total counts.
-- Includes favorite count in separate `favTotal` field.
-- Hides internal group values from response.
-
-### Visibility Rules
-
-- **Global cohorts**: Visible to all users with read permission
-- **Private cohorts**: Only visible to creator and users with edit access
-- **Shared cohorts**: Visible to creator and specified email list
-
----
 
 ## Examples
 
@@ -246,7 +179,63 @@ curl -X GET "https://your-server.com/o?method=get_cohorts" \
 }
 ```
 
----
+## Response
+
+### Success Response
+
+Default (`outputFormat=rows`) response:
+
+```json
+[]
+```
+
+`outputFormat=full` response:
+
+```json
+{
+  "sEcho": "0",
+  "iTotalRecords": 0,
+  "iTotalDisplayRecords": 0,
+  "aaData": [],
+  "favTotal": []
+}
+```
+
+### Response Fields
+
+| Field | Type | Description |
+|---|---|---|
+| `[]` | Array | Default rows output (when `outputFormat` is not `full`). |
+| `sEcho` | String | DataTable echo value (`outputFormat=full`). |
+| `iTotalRecords` | Number | Total rows before filtering (`outputFormat=full`). |
+| `iTotalDisplayRecords` | Number | Total rows after filtering (`outputFormat=full`). |
+| `aaData` | Array | Paged cohort rows (`outputFormat=full`). |
+| `favTotal` | Array | Favorite facet output (`outputFormat=full`). |
+
+### Error Responses
+
+| HTTP Status | Error Response | Description |
+|---|---|---|
+| 200 | `false` | Returned on aggregation error branch (`err || !res`) |
+| 400 | `{"result": "Insufficient permissions"}` | User lacks Read permission |
+
+## Behavior
+
+- Validates read permission for `cohorts` feature.
+- Filters cohorts by app_id and excludes system cohorts (names starting with `[CLY]`).
+- Applies visibility filters based on user permissions.
+- Supports filtering by cohort type (`auto` vs `manual`).
+- Supports grouping filters (`fav`, `my`, or custom groups).
+- Uses MongoDB aggregation pipeline for efficient querying.
+- Returns paginated results with total counts.
+- Includes favorite count in separate `favTotal` field.
+- Hides internal group values from response.
+
+### Visibility Rules
+
+- **Global cohorts**: Visible to all users with read permission
+- **Private cohorts**: Only visible to creator and users with edit access
+- **Shared cohorts**: Visible to creator and specified email list
 
 ## Technical Notes
 
@@ -261,20 +250,12 @@ curl -X GET "https://your-server.com/o?method=get_cohorts" \
 | `[CLY]` | System cohorts (names starting with | ) are excluded from results ### Performance Considerations |
 | `app_id` | Uses indexed queries on | and `creator` |
 
----
-
-## Database Collections
-
-- `countly.cohorts` - Stores cohort definitions, visibility, and metadata
-
 ## Related Endpoints
 
 - [Cohort - Read](cohort-single-read.md)
 - [Cohort - Create](cohort-create.md)
 - [Cohort - Update](cohort-edit.md)
 - [Cohort - Delete](cohort-delete.md)
-
----
 
 ## Best Practices
 
@@ -286,8 +267,6 @@ curl -X GET "https://your-server.com/o?method=get_cohorts" \
 - Filter by `group=fav` to show user's favorite cohorts
 - Regular cleanup of unused cohorts improves query performance
 
----
-
 ## Errors & Troubleshooting
 
 - `403` - Missing read permission for `cohorts` feature
@@ -296,21 +275,17 @@ curl -X GET "https://your-server.com/o?method=get_cohorts" \
 - Empty `aaData` - No cohorts match filters or user has no visibility
 - Slow queries - Consider adding indexes or reducing result set size
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Configuration Impact**
 
-This feature is part of **Countly Enterprise**.
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `api.*` | Server API defaults | Shared API execution controls (for example processing thresholds/limits). | Changes to API-level controls can affect runtime behavior, limits, or response timing for this endpoint. |
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
+**Database Collections**
 
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
+- `countly.cohorts` - Stores cohort definitions, visibility, and metadata
 
----
-
-## Last Updated
-
-2026-02-16
+</details>

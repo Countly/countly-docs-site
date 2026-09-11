@@ -1,6 +1,8 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Users Management - API Documentation
@@ -22,18 +24,6 @@ These endpoints manage dashboard user accounts (`members`) and related account o
 - [Permissions Metadata Read](o-users-permissions.md) - `/o/users/permissions`
 - [Time Ban Reset](o-users-reset-timeban.md) - `/o/users/reset_timeban`
 
-## Database Collections
-
-| Collection | Purpose |
-|---|---|
-| `countly.members` | Primary dashboard user account records. |
-| `countly.failed_logins` | Failed login counters used for lock/ban behavior. |
-| `countly.auth_tokens` | Dashboard auth tokens and session-like token entries. |
-| `countly.password_reset` | Invite/reset records created and invalidated in user lifecycle operations. |
-| `countly.sessions_` | Session records removed when credentials change or users are deleted. |
-| `countly.date_presets` | User-owned date presets removed on user deletion. |
-| `countly.notes` | User-owned notes removed during administrative user deletion flow. |
-
 ## Configuration & Settings
 
 - Password validation in create/update endpoints is controlled by:
@@ -50,6 +40,19 @@ These endpoints manage dashboard user accounts (`members`) and related account o
 - Create/update/delete/write endpoints in this group are currently global-admin-only routes.
 - Deletion flows can be affected by installed modules that process user-delete hooks.
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Purpose |
+|---|---|
+| `countly.members` | Primary dashboard user account records. |
+| `countly.failed_logins` | Failed login counters used for lock/ban behavior. |
+| `countly.auth_tokens` | Dashboard auth tokens and session-like token entries. |
+| `countly.password_reset` | Invite/reset records created and invalidated in user lifecycle operations. |
+| `countly.sessions_` | Session records removed when credentials change or users are deleted. |
+| `countly.date_presets` | User-owned date presets removed on user deletion. |
+| `countly.notes` | User-owned notes removed during administrative user deletion flow. |
+
+</details>

@@ -4,6 +4,8 @@ keywords:
   - "/i/cms/save_entries"
   - "save_entries"
   - "cms"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /i/cms/save_entries
@@ -20,9 +22,7 @@ Save transformed CMS entries into `countly.cms_cache`.
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -44,6 +44,20 @@ Save transformed CMS entries into `countly.cms_cache`.
 |---|---|---|---|
 | `[] ._id` | String | Yes | Cache document ID (for example `server-guides_123`). |
 | `[] .*` | Any JSON type | No | Entry payload fields to store. |
+
+## Examples
+
+### Example 1: Save guides cache entries
+
+```plaintext
+/i/cms/save_entries?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&_id=server-guides&entries=[{"_id":"server-guides_1","title":"Guide 1","body":"Welcome"},{"_id":"server-guides_2","title":"Guide 2","body":"Advanced setup"}]
+```
+
+### Example 2: Save consent cache entries
+
+```plaintext
+/i/cms/save_entries?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&_id=server-consents&entries=[{"_id":"server-consents_10","title":"Consent v2","required":true}]
+```
 
 ## Response
 
@@ -91,7 +105,7 @@ Save transformed CMS entries into `countly.cms_cache`.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -105,39 +119,24 @@ Save transformed CMS entries into `countly.cms_cache`.
 - Replaces meta marker document `${_id}_meta` with latest `lu` timestamp.
 - Deletes older cache entries under the same `_id` prefix.
 
-## Database Collections
+## Limitations
+
+- `entries` must be valid JSON array data.
+- Save flow assumes transformed entries already contain stable `_id` values.
+
+## Related Endpoints
+
+- [CMS - Entries Read](o-cms-entries.md)
+- [CMS - Cache Clear](i-cms-clear.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
 | `countly.members` | Authentication and permission validation | Reads member identity and app write permissions. |
 | `countly.cms_cache` | CMS cache persistence | Upserts provided entries, updates meta marker, and deletes old prefixed cache docs. |
 
----
-## Examples
-
-### Example 1: Save guides cache entries
-
-```plaintext
-/i/cms/save_entries?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&_id=server-guides&entries=[{"_id":"server-guides_1","title":"Guide 1","body":"Welcome"},{"_id":"server-guides_2","title":"Guide 2","body":"Advanced setup"}]
-```
-
-### Example 2: Save consent cache entries
-
-```plaintext
-/i/cms/save_entries?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&_id=server-consents&entries=[{"_id":"server-consents_10","title":"Consent v2","required":true}]
-```
-
-## Limitations
-
-- `entries` must be valid JSON array data.
-- Save flow assumes transformed entries already contain stable `_id` values.
-
----
-## Related Endpoints
-
-- [CMS - Entries Read](o-cms-entries.md)
-- [CMS - Cache Clear](i-cms-clear.md)
-
-## Last Updated
-
-2026-02-17
+</details>

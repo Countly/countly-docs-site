@@ -4,6 +4,8 @@ keywords:
   - "/o/system/aggregator"
   - "aggregator"
   - "system"
+last_update:
+  date: "2026-02-17"
 ---
 
 # System - Aggregator Status Read
@@ -20,9 +22,7 @@ Returns per-aggregator lag status by comparing aggregator checkpoints with curre
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -34,6 +34,24 @@ Returns per-aggregator lag status by comparing aggregator checkpoints with curre
 |---|---|---|---|
 | `api_key` | String | Yes (or use `auth_token`) | Dashboard API key. |
 | `auth_token` | String | Yes (or use `api_key`) | Dashboard auth token. |
+
+## Examples
+
+### Example 1: Read aggregator lag status
+
+```plaintext
+/o/system/aggregator?api_key=YOUR_API_KEY
+```
+
+```json
+[
+  {
+    "name": "events",
+    "diff": 6,
+    "diffDrill": 3
+  }
+]
+```
 
 ## Response
 
@@ -74,7 +92,7 @@ Returns per-aggregator lag status by comparing aggregator checkpoints with curre
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -83,35 +101,6 @@ Returns per-aggregator lag status by comparing aggregator checkpoints with curre
 | Aggregator rows available | `_changeStreams` document has stream keys | Array with lag objects. |
 | No stream rows | `_changeStreams` missing or only `_id` | Empty array. |
 | Query failure | Mongo/drill query throws | Wrapped error message. |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.plugins` | Source of `_changeStreams` checkpoint document. | Reads checkpoint rows for each stream key. |
-| `countly_drill.drill_events` | Source of latest drill `cd` timestamp. | Reads most recent drill change date (`cd`). |
-
----
-
-## Examples
-
-### Example 1: Read aggregator lag status
-
-```plaintext
-/o/system/aggregator?api_key=YOUR_API_KEY
-```
-
-```json
-[
-  {
-    "name": "events",
-    "diff": 6,
-    "diffDrill": 3
-  }
-]
-```
-
----
 
 ## Operational Considerations
 
@@ -123,6 +112,14 @@ Returns per-aggregator lag status by comparing aggregator checkpoints with curre
 - [Kafka Status Read](./o-system-kafka.md)
 - [Observability Read](./o-system-observability.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.plugins` | Source of `_changeStreams` checkpoint document. | Reads checkpoint rows for each stream key. |
+| `countly_drill.drill_events` | Source of latest drill `cd` timestamp. | Reads most recent drill change date (`cd`). |
+
+</details>

@@ -3,6 +3,8 @@ sidebar_label: "Screenshot Create"
 keywords:
   - "/o/render"
   - "render"
+last_update:
+  date: "2026-04-13"
 ---
 
 # Render - Screenshot Create
@@ -19,9 +21,7 @@ Renders a dashboard view and returns the saved screenshot path.
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -38,6 +38,20 @@ Renders a dashboard view and returns the saved screenshot path.
 | `view` | String | No | View route prefix used to build render target (`view#route`). For dashboard screenshots, use `/dashboard?ssr=true` so the server-side rendering path is enabled. |
 | `route` | String | No | Route fragment appended after `#`. Dashboard routes should use the same hash path as the UI, for example `/analytics/sessions/overview`. |
 | `id` | String | No | Element ID to capture. When provided, target selector becomes `#id`. |
+
+## Examples
+
+### Example 1: Capture full view
+
+```plaintext
+/o/render?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&view=%2Fdashboard%3Fssr%3Dtrue&route=%2Fanalytics%2Fsessions%2Foverview
+```
+
+### Example 2: Capture specific element
+
+```plaintext
+/o/render?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&view=%2Fdashboard%3Fssr%3Dtrue&route=%2Fanalytics%2Fsessions%2Foverview&id=d-chart-time
+```
 
 ## Response
 
@@ -97,7 +111,7 @@ Renders a dashboard view and returns the saved screenshot path.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -119,32 +133,6 @@ This produces a target equivalent to `/dashboard?ssr=true#/analytics/sessions/ov
 
 - Creates short-lived login token for render flow.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication source | Resolves requesting member. |
-| `countly.apps` | Read-access validation source | Validates app access where required. |
-| `countly.auth_tokens` | Temporary render token storage | Inserts `LoginAuthToken` used for headless view rendering. |
-
----
-
-## Examples
-
-### Example 1: Capture full view
-
-```plaintext
-/o/render?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&view=%2Fdashboard%3Fssr%3Dtrue&route=%2Fanalytics%2Fsessions%2Foverview
-```
-
-### Example 2: Capture specific element
-
-```plaintext
-/o/render?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&view=%2Fdashboard%3Fssr%3Dtrue&route=%2Fanalytics%2Fsessions%2Foverview&id=d-chart-time
-```
-
----
-
 ## Operational Considerations
 
 - Requires working server-side headless browser runtime.
@@ -161,6 +149,15 @@ This produces a target equivalent to `/dashboard?ssr=true#/analytics/sessions/ov
 
 - [Token Create](../token/i-token-create.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-04-13
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication source | Resolves requesting member. |
+| `countly.apps` | Read-access validation source | Validates app access where required. |
+| `countly.auth_tokens` | Temporary render token storage | Inserts `LoginAuthToken` used for headless view rendering. |
+
+</details>

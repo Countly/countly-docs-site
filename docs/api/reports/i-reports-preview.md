@@ -4,6 +4,8 @@ keywords:
   - "/i/reports/preview"
   - "preview"
   - "reports"
+last_update:
+  date: "2026-03-07"
 ---
 
 # Reports - Preview HTML
@@ -20,12 +22,7 @@ Generates report output and returns preview as raw HTML.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. `api_key=YOUR_API_KEY`
-2. `auth_token=YOUR_AUTH_TOKEN`
-3. `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -41,11 +38,16 @@ Requires `reports` `Read` permission.
 | `args` | String (JSON Object) | Yes | Must include report `_id`. |
 | `args._id` | String | Yes | Target report ID. |
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `api.offline_mode` | `false` | Report enrichment during report generation | When enabled, external news/universe enrichment is skipped, so preview content can differ from online mode. |
+### Preview one report as HTML
+
+```plaintext
+/i/reports/preview?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  args={"_id":"6262742dbf7392a8bfd8c1f6"}
+```
 
 ## Response
 
@@ -105,32 +107,13 @@ Access-Control-Allow-Origin: *
 
 Standard authentication/authorization errors from read validation can also be returned.
 
-## Behavior/Processing
+## Behavior
 
 - Parses `args` JSON before route execution.
 - Uses owner-scoped lookup for non-global-admin users.
 - Loads the target report and builds report HTML preview data.
 - For non-core report types, renders HTML from `res.message.template` and `res.message.data` via EJS.
 - Returns raw HTML response body (not wrapped JSON on success).
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.reports` | Report source | Reads target report definition. |
-| `countly.members` | Report generation context | Read indirectly by report generation flow. |
-| `countly.event_groups` | Report enrichment | Read indirectly for event-group metadata in generated report content. |
-
-## Examples
-
-### Preview one report as HTML
-
-```plaintext
-/i/reports/preview?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  args={"_id":"6262742dbf7392a8bfd8c1f6"}
-```
 
 ## Limitations
 
@@ -142,6 +125,21 @@ Standard authentication/authorization errors from read validation can also be re
 - [Reports - Report Send](i-reports-send.md)
 - [Reports - Generate PDF](i-reports-pdf.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-03-07
+**Configuration Impact**
+
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `api.offline_mode` | `false` | Report enrichment during report generation | When enabled, external news/universe enrichment is skipped, so preview content can differ from online mode. |
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.reports` | Report source | Reads target report definition. |
+| `countly.members` | Report generation context | Read indirectly by report generation flow. |
+| `countly.event_groups` | Report enrichment | Read indirectly for event-group metadata in generated report content. |
+
+</details>

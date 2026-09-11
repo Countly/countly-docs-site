@@ -5,6 +5,8 @@ keywords:
   - "events"
   - "system"
   - "kafka"
+last_update:
+  date: "2026-02-17"
 ---
 
 # System - Kafka Events List
@@ -21,9 +23,7 @@ Returns paginated Kafka consumer event log rows with optional filtering and sort
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -44,6 +44,35 @@ Returns paginated Kafka consumer event log rows with optional filtering and sort
 | `iDisplayStart` | Number | No | Pagination offset, defaults to `0` when invalid. |
 | `iDisplayLength` | Number | No | Page size. Allowed range: `1..1000`. Invalid values default to `50`. |
 | `sEcho` | String | No | Echo token returned unchanged in response. |
+
+## Examples
+
+### Example 1: First page, default sort
+
+```plaintext
+/o/system/kafka/events?api_key=YOUR_API_KEY&iDisplayStart=0&iDisplayLength=50&sEcho=1
+```
+
+### Example 2: Filter by group and topic
+
+```plaintext
+/o/system/kafka/events?api_key=YOUR_API_KEY&groupId=countly-events&topic=events&iDisplayStart=0&iDisplayLength=25&sEcho=2
+```
+
+```json
+{
+  "sEcho": "2",
+  "iTotalRecords": 502,
+  "iTotalDisplayRecords": 12,
+  "aaData": [
+    {
+      "type": "consume",
+      "groupId": "countly-events",
+      "topic": "events"
+    }
+  ]
+}
+```
 
 ## Response
 
@@ -92,7 +121,7 @@ Returns paginated Kafka consumer event log rows with optional filtering and sort
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -101,45 +130,6 @@ Returns paginated Kafka consumer event log rows with optional filtering and sort
 | Filtered page | Any filter params provided (`eventType`, `groupId`, `topic`, `clusterId`) | Paginated table response with filtered totals. |
 | Unfiltered page | No filters or filters set to `all` | Paginated table response with global totals. |
 | Query failure | Mongo query fails | Wrapped error message. |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.kafka_consumer_events` | Source for event log rows and counts. | Reads counts and paginated records. |
-
----
-
-## Examples
-
-### Example 1: First page, default sort
-
-```plaintext
-/o/system/kafka/events?api_key=YOUR_API_KEY&iDisplayStart=0&iDisplayLength=50&sEcho=1
-```
-
-### Example 2: Filter by group and topic
-
-```plaintext
-/o/system/kafka/events?api_key=YOUR_API_KEY&groupId=countly-events&topic=events&iDisplayStart=0&iDisplayLength=25&sEcho=2
-```
-
-```json
-{
-  "sEcho": "2",
-  "iTotalRecords": 502,
-  "iTotalDisplayRecords": 12,
-  "aaData": [
-    {
-      "type": "consume",
-      "groupId": "countly-events",
-      "topic": "events"
-    }
-  ]
-}
-```
-
----
 
 ## Operational Considerations
 
@@ -151,6 +141,13 @@ Returns paginated Kafka consumer event log rows with optional filtering and sort
 - [Kafka Events Meta Read](./o-system-kafka-events-meta.md)
 - [Kafka Status Read](./o-system-kafka.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.kafka_consumer_events` | Source for event log rows and counts. | Reads counts and paginated records. |
+
+</details>

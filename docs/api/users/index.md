@@ -9,8 +9,9 @@ keywords:
 
 # User Profiles - API Documentation
 
-> Ⓔ **Enterprise Only**  
-> This feature is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This feature is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Overview
 
@@ -71,33 +72,6 @@ These endpoints are internal lifecycle events dispatched by core and should not 
 - `POST /i/apps/create`
 - `POST /i/apps/reset`
 - `POST /i/apps/clear_all`
-
-## Database Collections
-
-The User Profiles feature stores and queries data from these MongoDB collections:
-
-| Collection | Purpose | Fields |
-|------------|---------|--------|
-| `countly.app_users{appid}` | User profiles with engagement metrics and custom properties | `_id`, `uid`, `name`, `email`, `custom`, `engagement_score`, `sc` (session count), `ls` (last session), `tsd` (total session duration) |
-| `countly_drill.drill_events` | Event records for all users including custom properties | `ts`, `e` (event name), `u` (user ID), `c` (custom properties), `cc` (country), `cty` (city), `did` (device ID), `p` (platform) |
-| `countly_drill.drill_meta` | Event and property metadata including custom property definitions | `_id`, `e` (event names), `s` (segment names), `custom` (custom property definitions) |
-| `countly.apps` | Application configurations including user custom property settings | `_id` (app_id), `ovveridden_types` (custom property type overrides) |
-
-### Collection Indexes
-
-The User feature automatically creates the following indexes on `countly.app_users{appid}`:
-
-- `uid`: User ID lookup
-- `name`: User name search
-- `{hasInfo: 1, name: 1}`: Efficient filtration by profile completion
-- `sc`: Session count aggregations
-- `{hasInfo: 1, sc: 1}`: Combined profile and session filtering
-- `{hasInfo: 1, lac: -1}`: Last activity tracking
-- `tsd`: Total session duration sorting
-- `{hasInfo: 1, tsd: 1}`: Duration-based queries
-- `{name: "text", email: "text", username: "text", did: "text", uid: "text"}`: Full-text search index
-- `{"chr.$**": 1}`: Custom property wildcard index for flexible custom property queries
-- `{hasInfo: 1, ls: -1}`: Last session recency sorting
 
 ## User Profile Fields
 
@@ -181,7 +155,7 @@ GET /o?api_key={API_KEY}&app_id={APP_ID}&method=user_details
      &calculate=sessions
 ```
 
-**Purpose**: Find previously active users who haven't returned in 30 days; retrieve their last sessions.
+**Purpose**: Find previously active users who have not returned in 30 days; retrieve their last sessions.
 
 ### Use Case 3: Feature Adoption Tracking
 
@@ -315,7 +289,7 @@ Common field names for sorting user lists:
 
 ### Custom Properties Not Appearing
 
-**Problem**: Custom properties aren't showing in `custom` field
+**Problem**: Custom properties are not showing in `custom` field
 
 **Solutions**:
 - Verify custom properties were sent by SDK with `user_details` parameter
@@ -348,7 +322,7 @@ Common field names for sorting user lists:
 
 ### Search Not Working
 
-**Problem**: `sSearch` parameter doesn't return expected users
+**Problem**: `sSearch` parameter does not return expected users
 
 **Solutions**:
 - Verify full-text search index was created on app_users collection
@@ -387,16 +361,34 @@ The User Profiles feature integrates with:
 - [Full-Text Search in MongoDB](https://docs.mongodb.com/manual/text-search/)
 - [Countly SDK User Properties](https://resources.count.ly/docs)
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Database Collections**
 
-This feature is part of **Countly Enterprise**.
+The User Profiles feature stores and queries data from these MongoDB collections:
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
+| Collection | Purpose | Fields |
+|------------|---------|--------|
+| `countly.app_users{appid}` | User profiles with engagement metrics and custom properties | `_id`, `uid`, `name`, `email`, `custom`, `engagement_score`, `sc` (session count), `ls` (last session), `tsd` (total session duration) |
+| `countly_drill.drill_events` | Event records for all users including custom properties | `ts`, `e` (event name), `u` (user ID), `c` (custom properties), `cc` (country), `cty` (city), `did` (device ID), `p` (platform) |
+| `countly_drill.drill_meta` | Event and property metadata including custom property definitions | `_id`, `e` (event names), `s` (segment names), `custom` (custom property definitions) |
+| `countly.apps` | Application configurations including user custom property settings | `_id` (app_id), `ovveridden_types` (custom property type overrides) |
 
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
+**Collection Indexes**
 
+The User feature automatically creates the following indexes on `countly.app_users{appid}`:
+
+- `uid`: User ID lookup
+- `name`: User name search
+- `{hasInfo: 1, name: 1}`: Efficient filtration by profile completion
+- `sc`: Session count aggregations
+- `{hasInfo: 1, sc: 1}`: Combined profile and session filtering
+- `{hasInfo: 1, lac: -1}`: Last activity tracking
+- `tsd`: Total session duration sorting
+- `{hasInfo: 1, tsd: 1}`: Duration-based queries
+- `{name: "text", email: "text", username: "text", did: "text", uid: "text"}`: Full-text search index
+- `{"chr.$**": 1}`: Custom property wildcard index for flexible custom property queries
+- `{hasInfo: 1, ls: -1}`: Last session recency sorting
+
+</details>

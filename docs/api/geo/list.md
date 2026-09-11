@@ -3,12 +3,15 @@ sidebar_label: "List"
 keywords:
   - "/o"
   - "o"
+last_update:
+  date: "2026-02-16"
 ---
 
 # List Geo Locations
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -22,10 +25,8 @@ Returns geo locations for an app, ordered by title, followed by global locations
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required permission**: `Read` on the `geo` feature
@@ -37,6 +38,14 @@ Returns geo locations for an app, ordered by title, followed by global locations
 | `api_key` | String | Yes (or `auth_token`) | API key authentication |
 | `auth_token` | String | Yes (or `api_key`) | Auth token authentication |
 | `app_id` | String | Yes | Application ID used for scope and ordering |
+
+## Examples
+
+### Example: List Locations for an App
+
+```text
+https://your-server.com/o?method=get_locations&api_key=YOUR_API_KEY&app_id=609bd78d90d7a416d4dfb984
+```
 
 ## Response
 
@@ -79,30 +88,12 @@ Returns geo locations for an app, ordered by title, followed by global locations
 | 400 | Generic read error returned by validation/database path |
 | 200 | `{"result":"No location found"}` (fallback path when no locations object is available) |
 
-## Behavior/Processing
+## Behavior
 
 1. Loads non-deleted locations for the requested app and global scope.
 2. Adds app-specific locations first and sorts them by `title`.
 3. Appends global locations afterward.
 4. Returns a root JSON array of location objects.
-
----
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.geos` | Endpoint data source | ** - Source of app-specific and global geolocations |
-
----
-
-## Examples
-
-### Example: List Locations for an App
-
-```text
-https://your-server.com/o?method=get_locations&api_key=YOUR_API_KEY&app_id=609bd78d90d7a416d4dfb984
-```
 
 ## Related Endpoints
 
@@ -110,19 +101,13 @@ https://your-server.com/o?method=get_locations&api_key=YOUR_API_KEY&app_id=609bd
 - [Geo - Delete Geo Location](delete.md)
 - [Geo - Lookup IP Address](lookup.md)
 
-## Ⓔ Enterprise
+<details>
+<summary>Implementation details</summary>
 
-This feature is part of **Countly Enterprise**.
+**Database Collections**
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.geos` | Endpoint data source | ** - Source of app-specific and global geolocations |
 
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

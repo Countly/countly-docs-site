@@ -4,11 +4,15 @@ keywords:
   - "/i/drill/recheck_lists"
   - "recheck_lists"
   - "drill"
+last_update:
+  date: "2026-04-17"
 ---
+
 # Recheck metadata lists
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -22,11 +26,7 @@ Starts a Drill metadata list recheck for one app or all apps.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -41,6 +41,22 @@ Countly API supports three authentication methods:
 | `all_apps` | Boolean String | No | Set to any truthy value to recheck metadata lists for all apps. Requires global admin permission. |
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
+
+## Examples
+
+### Single app recheck
+
+```text
+/i/drill/recheck_lists?
+  app_id=64f5c0d8f4f7ac0012ab3456
+```
+
+### All apps recheck
+
+```text
+/i/drill/recheck_lists?
+  all_apps=true
+```
 
 ## Response
 
@@ -62,40 +78,12 @@ Countly API supports three authentication methods:
 
 This endpoint does not define a dedicated structured error payload beyond authentication/authorization errors. Recheck failures are logged and written to system logs.
 
-## Behavior/Processing
+## Behavior
 
 - Starts asynchronous metadata list recheck work and returns immediately.
 - In all-app mode, iterates through all apps and rechecks lists for each app.
 - In single-app mode, rechecks lists for the provided `app_id`.
 - Writes completion/failure status to system logs with action `lists_rechecked`.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.apps` | App iteration for all-app mode | Reads app IDs when `all_apps` is set. |
-| `countly_drill.drill_meta` | Drill metadata model | Rechecks and updates metadata list structures. |
-| `countly.systemlogs` | Audit trail | Stores `lists_rechecked` completion status. |
-
----
-
-## Examples
-
-### Single app recheck
-
-```text
-/i/drill/recheck_lists?
-  app_id=64f5c0d8f4f7ac0012ab3456
-```
-
-### All apps recheck
-
-```text
-/i/drill/recheck_lists?
-  all_apps=true
-```
-
----
 
 ## Related Endpoints
 
@@ -103,8 +91,15 @@ This endpoint does not define a dedicated structured error payload beyond authen
 - [Metadata Cleanup - Update](metadata-cleanup-update.md)
 - [Metadata Regeneration - Update](metadata-regeneration-update.md)
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Last Updated
+**Database Collections**
 
-2026-04-17
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.apps` | App iteration for all-app mode | Reads app IDs when `all_apps` is set. |
+| `countly_drill.drill_meta` | Drill metadata model | Rechecks and updates metadata list structures. |
+| `countly.systemlogs` | Audit trail | Stores `lists_rechecked` completion status. |
+
+</details>

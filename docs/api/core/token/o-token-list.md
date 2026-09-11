@@ -4,6 +4,8 @@ keywords:
   - "/o/token/list"
   - "list"
   - "token"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Token - Token List
@@ -20,9 +22,7 @@ Returns all tokens owned by the authenticated user.
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -34,6 +34,14 @@ Returns all tokens owned by the authenticated user.
 |---|---|---|---|
 | `api_key` | String | Yes (or use `auth_token`) | Dashboard API key. |
 | `auth_token` | String | Yes (or use `api_key`) | Dashboard auth token. |
+
+## Examples
+
+### Example 1: List my tokens
+
+```plaintext
+/o/token/list?api_key=YOUR_API_KEY
+```
 
 ## Response
 
@@ -90,7 +98,7 @@ Returns all tokens owned by the authenticated user.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -98,31 +106,20 @@ Returns all tokens owned by the authenticated user.
 |---|---|---|---|
 | Token list mode | Authenticated request | Reads all `auth_tokens` documents where `owner` matches caller ID. | Wrapped token array in `result`. |
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Auth validation | Resolves authenticated member. |
-| `countly.auth_tokens` | Token list source | Reads tokens where `owner` equals caller id. |
-
----
-
-## Examples
-
-### Example 1: List my tokens
-
-```plaintext
-/o/token/list?api_key=YOUR_API_KEY
-```
-
----
-
 ## Related Endpoints
 
 - [Token Create](i-token-create.md)
 - [Token Delete](i-token-delete.md)
 - [Token Check](o-token-check.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Auth validation | Resolves authenticated member. |
+| `countly.auth_tokens` | Token list source | Reads tokens where `owner` equals caller id. |
+
+</details>

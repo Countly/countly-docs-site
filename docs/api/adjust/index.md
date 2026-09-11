@@ -1,12 +1,15 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-15"
 ---
 
 # Adjust
 
-> Ⓔ **Enterprise Only**  
-> This feature is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This feature is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Feature Metadata
 
@@ -64,14 +67,6 @@ The `/i/adjust` response can return different success shapes depending on attrib
 | `document` | Object | Stored callback payload (deferred path) |
 | `user` | Object or null | Matched user object when available |
 
-## Database Collections
-
-| Collection | Purpose |
-|---|---|
-| `countly.apps` | Resolves app by `app_key` and checks app state (exists/paused/locked) |
-| `countly.adjust` | Stores unmatched callback payloads for deferred attribution |
-| `countly.app_users{appId}` | User matching and custom property updates via `custom.adjust_id` |
-
 ## Configuration & Usage Notes
 
 - The ingest endpoint uses `app_key` (not `app_id`) in request parameters.
@@ -112,17 +107,15 @@ Attach campaign, tracker, network, and adgroup fields to user context and attrib
 
 - [Adjust - Receive](receive.md)
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Database Collections**
 
-This feature is part of **Countly Enterprise**.
+| Collection | Purpose |
+|---|---|
+| `countly.apps` | Resolves app by `app_key` and checks app state (exists/paused/locked) |
+| `countly.adjust` | Stores unmatched callback payloads for deferred attribution |
+| `countly.app_users{appId}` | User matching and custom property updates via `custom.adjust_id` |
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions.
-
-**Last Updated**: 2026-02-15
+</details>

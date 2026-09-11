@@ -1,24 +1,21 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-15"
 ---
 
 # AB Testing - API Documentation
 
-> Ⓔ **Enterprise Only**  
-> This feature is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This feature is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
+
+_Feature ID: ab-testing_
 
 ## Overview
 
 The AB Testing feature enables statistical experimentation and variant testing within Countly applications. It allows administrators to create controlled experiments with multiple variants, track user participation, measure performance metrics, and determine statistical winners based on Bayesian statistical analysis. Experiments target specific user segments, track conversion goals across variants, and provide real-time performance monitoring with completion indicators.
-
-## Database Collections
-
-| Collection | Purpose |
-|---|---|
-| `countly_out.ab_testing_experiments{appId}` | Stores experiment definitions, variants, goals, status, and results data for statistical analysis |
-| `countly.app_users{appId}` | User profiles with `ab` field containing array of `{experiment_id, variant_index}` assignments |
-| `countly.cohorts` | Auto-created cohorts for tracking conversion goals per variant (created at experiment start) |
 
 ## Configuration & Settings
 
@@ -283,21 +280,15 @@ Admin API endpoints require standard Countly authentication through `api_key` or
 
 Read-level access is limited to viewing experiments and fetching parameters.
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Database Collections**
 
-This feature is part of **Countly Enterprise**.
+| Collection | Purpose |
+|---|---|
+| `countly_out.ab_testing_experiments{appId}` | Stores experiment definitions, variants, goals, status, and results data for statistical analysis |
+| `countly.app_users{appId}` | User profiles with `ab` field containing array of `{experiment_id, variant_index}` assignments |
+| `countly.cohorts` | Auto-created cohorts for tracking conversion goals per variant (created at experiment start) |
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-_Last Updated: 2026-02-15_  
-_Feature ID: ab-testing_  
-_Enterprise_
+</details>

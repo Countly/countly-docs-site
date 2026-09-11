@@ -4,12 +4,15 @@ keywords:
   - "/i/calculated_metrics/save"
   - "save"
   - "calculated_metrics"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Save formula
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -23,12 +26,7 @@ Creates a new formula or updates an existing one.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -57,6 +55,38 @@ Requires `formulas` `Create` permission.
 | `description` | String | No | Optional description (trimmed). |
 | `unit` | String | No | Optional unit label. |
 | `shared_email_edit` | Array | No | Shared editor emails for private formulas. |
+
+## Examples
+
+```text
+/i/calculated_metrics/save?
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  metric={
+    "title":"Revenue per Session",
+    "key":"revenue_per_session",
+    "description":"Revenue divided by sessions",
+    "formula":"[...]",
+    "format":"float",
+    "dplaces":2,
+    "unit":"USD",
+    "visibility":"global",
+    "shared_email_edit":[]
+  }
+```
+
+```text
+/i/calculated_metrics/save?
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  metric={
+    "_id":"67bd31c92e7f0b0012ab4567",
+    "title":"Revenue per Session (Updated)",
+    "key":"revenue_per_session",
+    "format":"float",
+    "dplaces":2,
+    "visibility":"private",
+    "shared_email_edit":["analyst@example.com"]
+  }
+```
 
 ## Response
 
@@ -162,7 +192,7 @@ Requires `formulas` `Create` permission.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Parses `metric` JSON and forces `metric.app = app_id`.
 - For create: `metric.formula` is required and parsed; endpoint sets `owner_id` from current member.
@@ -171,49 +201,6 @@ Requires `formulas` `Create` permission.
 - Update uses visibility-filtered condition (`global`, owner, shared email) plus `_id` and `app`.
 - Dispatches `formula_created` / `formula_edited` to system logs and formula update hooks.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.calculated_metrics` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
-| `countly.systemlogs` | Audit trail | Contains system action records used by this endpoint for audit output or audit writes. |
-
----
-
-## Examples
-
-```text
-/i/calculated_metrics/save?
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  metric={
-    "title":"Revenue per Session",
-    "key":"revenue_per_session",
-    "description":"Revenue divided by sessions",
-    "formula":"[...]",
-    "format":"float",
-    "dplaces":2,
-    "unit":"USD",
-    "visibility":"global",
-    "shared_email_edit":[]
-  }
-```
-
-```text
-/i/calculated_metrics/save?
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  metric={
-    "_id":"67bd31c92e7f0b0012ab4567",
-    "title":"Revenue per Session (Updated)",
-    "key":"revenue_per_session",
-    "format":"float",
-    "dplaces":2,
-    "visibility":"private",
-    "shared_email_edit":["analyst@example.com"]
-  }
-```
-
----
-
 ## Related Endpoints
 
 - [Formulas - Execute](execute.md)
@@ -221,8 +208,14 @@ Requires `formulas` `Create` permission.
 - [Formulas - List](list.md)
 - [Formulas - Delete](delete.md)
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Last Updated
+**Database Collections**
 
-2026-02-16
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.calculated_metrics` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
+| `countly.systemlogs` | Audit trail | Contains system action records used by this endpoint for audit output or audit writes. |
+
+</details>

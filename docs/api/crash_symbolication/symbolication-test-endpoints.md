@@ -4,9 +4,15 @@ keywords:
   - "/o/symbolication/test_symbolication_endpoints"
   - "test_symbolication_endpoints"
   - "symbolication"
+last_update:
+  date: "2026-04-13"
 ---
 
 # Test symbolication endpoints
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -14,19 +20,13 @@ keywords:
 /o/symbolication/test_symbolication_endpoints
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Checks the symbolication server's add, check, get, and ack endpoints from Countly.
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -39,6 +39,14 @@ Checks the symbolication server's add, check, get, and ack endpoints from Countl
 | `server_url` | String | Yes | Symbolication server base URL. |
 | `api_key` | String | Yes (or `auth_token`) | API key authentication. |
 | `auth_token` | String | Yes (or `api_key`) | Auth token authentication. |
+
+## Examples
+
+### Test symbolication server endpoints
+
+```text
+/o/symbolication/test_symbolication_endpoints?server_url=https://symbolication.example.com&api_key=YOUR_API_KEY
+```
 
 ## Response
 
@@ -68,25 +76,13 @@ Checks the symbolication server's add, check, get, and ack endpoints from Countl
 |---|---|
 | 401 | `{ "result": "User does not exist" }` or auth validation message |
 
-## Behavior/Processing
+## Behavior
 
 - Verifies remote add/check/get/ack endpoints on the remote symbolication server.
 - Uses sub-action in URL path (not a query `action` parameter).
-
-## Examples
-
-### Test symbolication server endpoints
-
-```text
-/o/symbolication/test_symbolication_endpoints?server_url=https://symbolication.example.com&api_key=YOUR_API_KEY
-```
 
 ## Related Endpoints
 
 - [Test Symbolication Server](symbolication-test.md)
 - [Test Symbolication API Key](symbolication-test-key.md)
 - [Test Symbolication Return Connection](symbolication-test-return-connection.md)
-
-## Last Updated
-
-2026-04-13

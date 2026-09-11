@@ -5,11 +5,15 @@ keywords:
   - "delete"
   - "data-manager"
   - "user-properties"
+last_update:
+  date: "2026-02-16"
 ---
+
 # Delete user properties
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -23,12 +27,7 @@ Deletes a user-property definition and unsets its values from all user profiles 
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -42,6 +41,24 @@ Requires `data_manager` `Delete` permission.
 | `id` | String | Yes | Property identifier in `group|property` format. Supported groups: `custom`, `up`. |
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
+
+## Examples
+
+### Delete a custom user property
+
+```text
+/i/data-manager/user-properties/delete?
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  id=custom|subscription_tier
+```
+
+### Delete an `up` property
+
+```text
+/i/data-manager/user-properties/delete?
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  id=up|company
+```
 
 ## Response
 
@@ -67,7 +84,7 @@ Requires `data_manager` `Delete` permission.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Splits `id` into group and property.
 - For `custom`, unsets `custom.{property}` from `countly.app_users{appId}`.
@@ -75,14 +92,21 @@ Requires `data_manager` `Delete` permission.
 - Removes matching property metadata from `countly_drill.drill_meta`.
 - Writes system logs with `dm-dt-custom-delete` or `dm-dt-up-delete`.
 
-## Audit & System Logs
+## Related Endpoints
+
+- [User Properties - Read](user-properties-read.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Audit & System Logs**
 
 | Action | Trigger | Payload |
 |---|---|---|
 | `dm-dt-custom-delete` | `id` for custom user property delete | `{ setQuery, id }` |
 | `dm-dt-up-delete` | `id` for built-in user property delete | `{ setQuery, id }` |
 
-## Database Collections
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -90,34 +114,4 @@ Requires `data_manager` `Delete` permission.
 | `countly_drill.drill_meta` | User-property metadata cleanup | Removes per-property metadata documents and unsets property definition under `_meta_up`. |
 | `countly.systemlogs` | Audit trail | Writes `dm-dt-custom-delete` or `dm-dt-up-delete` with deleted property context. |
 
----
-
-## Examples
-
-### Delete a custom user property
-
-```text
-/i/data-manager/user-properties/delete?
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  id=custom|subscription_tier
-```
-
-### Delete an `up` property
-
-```text
-/i/data-manager/user-properties/delete?
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  id=up|company
-```
-
----
-
-## Related Endpoints
-
-- [User Properties - Read](user-properties-read.md)
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

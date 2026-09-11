@@ -4,6 +4,8 @@ keywords:
   - "/o/datamigration/createimporttoken"
   - "createimporttoken"
   - "datamigration"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Data Migration - Create Import Token
@@ -20,11 +22,7 @@ Creates a scoped auth token that can call `/i/datamigration/import`.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -39,6 +37,15 @@ Requires `data_migration` `Create` permission.
 | `args` | JSON String (Object) | No | Optional JSON-stringified helper args. |
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
+
+## Examples
+
+### Create one-day import token
+
+```text
+/o/datamigration/createimporttoken?
+  ttl=1440
+```
 
 ## Response
 
@@ -66,7 +73,7 @@ Requires `data_migration` `Create` permission.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -79,23 +86,6 @@ Requires `data_migration` `Create` permission.
 
 - Creates/updates scoped auth token record for import endpoint access.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.auth_tokens` | Scoped token storage | Inserts token record with owner, TTL, endpoint restrictions, and usage policy. |
-
----
-
-## Examples
-
-### Create one-day import token
-
-```text
-/o/datamigration/createimporttoken?
-  ttl=1440
-```
-
 ## Limitations
 
 - `multi` is only interpreted as `false` when passed as a real boolean false value; string values like `"false"` are treated as multi-use.
@@ -104,6 +94,13 @@ Requires `data_migration` `Create` permission.
 
 - [Data Migration - Import](i-datamigration-import.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.auth_tokens` | Scoped token storage | Inserts token record with owner, TTL, endpoint restrictions, and usage policy. |
+
+</details>

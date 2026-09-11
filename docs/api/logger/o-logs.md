@@ -3,6 +3,8 @@ sidebar_label: "Logs Read"
 keywords:
   - "/o"
   - "o"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Logger - Logs Read
@@ -19,12 +21,7 @@ Returns request-log entries for one app from the logger capped collection, plus 
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -46,11 +43,26 @@ Requires `logger` `Read` permission.
 |---|---|---|
 | `filter` | JSON object encoded as string | Parsed with `JSON.parse`. If parsing fails, endpoint silently falls back to `{}` and returns unfiltered logs. |
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `logger.state` | `automatic` | Response fields | Returned as `state` in successful responses (`on`, `off`, `automatic`). |
+### Read latest logs (unfiltered)
+
+```text
+/o?
+  method=logs&
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2
+```
+
+### Read only bulk POST requests
+
+```text
+/o?
+  method=logs&
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  filter={"m":"POST","b":true}
+```
 
 ## Response
 
@@ -187,7 +199,7 @@ Requires `logger` `Read` permission.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -199,37 +211,6 @@ Requires `logger` `Read` permission.
 ### Impact on Other Data
 
 - Read-only endpoint. It does not create, update, or delete documents.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication and permission checks | Reads member account, lock state, and feature-level app permissions. |
-| `countly.apps` | App validation/context loading | Validates `app_id` and loads app context for access checks. |
-| `countly.logs{appId}` | Request log retrieval | Reads request-log documents (`ts`, `q`, `h`, `res`, `p`, etc.). |
-
----
-
-## Examples
-
-### Read latest logs (unfiltered)
-
-```text
-/o?
-  method=logs&
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2
-```
-
-### Read only bulk POST requests
-
-```text
-/o?
-  method=logs&
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  filter={"m":"POST","b":true}
-```
 
 ## Operational Considerations
 
@@ -245,6 +226,21 @@ Requires `logger` `Read` permission.
 
 - [Logger - Collection Info Read](o-collection-info.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Configuration Impact**
+
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `logger.state` | `automatic` | Response fields | Returned as `state` in successful responses (`on`, `off`, `automatic`). |
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication and permission checks | Reads member account, lock state, and feature-level app permissions. |
+| `countly.apps` | App validation/context loading | Validates `app_id` and loads app context for access checks. |
+| `countly.logs{appId}` | Request log retrieval | Reads request-log documents (`ts`, `q`, `h`, `res`, `p`, etc.). |
+
+</details>

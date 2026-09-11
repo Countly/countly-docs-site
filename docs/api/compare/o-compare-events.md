@@ -4,6 +4,8 @@ keywords:
   - "/o/compare/events"
   - "events"
   - "compare"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Compare - Events
@@ -20,11 +22,7 @@ Compares multiple events within one app and returns event time-series payloads k
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -50,6 +48,28 @@ Example decoded value:
   "Purchase",
   "[CLY]_group_Checkout"
 ]
+```
+
+## Examples
+
+### Compare two standard events
+
+```text
+/o/compare/events?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  period=7days&
+  events=["Login","Purchase"]
+```
+
+### Compare grouped event and standard event
+
+```text
+/o/compare/events?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  period=30days&
+  events=["[CLY]_group_Checkout","Purchase"]
 ```
 
 ## Response
@@ -139,7 +159,7 @@ Example decoded value:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -157,39 +177,6 @@ Example decoded value:
 - The endpoint performs one fetch path per requested event key, then combines results into a single object.
 - Grouped events (`[CLY]_group_...`) add merge work on top of event reads and can increase response time for large groups.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication and permission checks | Reads member account, role, lock state, and feature access rights. |
-| `countly.apps` | App validation | Validates `app_id` and loads app context (for timezone/period handling). |
-| `countly.events_data` | Event series data source | Reads time-series event documents using app-and-event-hash `_id` prefixes. |
-| `countly.event_groups` | Grouped-event mapping | Reads event group definitions and source-event membership for `[CLY]_group_...` keys. |
-
----
-
-## Examples
-
-### Compare two standard events
-
-```text
-/o/compare/events?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  period=7days&
-  events=["Login","Purchase"]
-```
-
-### Compare grouped event and standard event
-
-```text
-/o/compare/events?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  period=30days&
-  events=["[CLY]_group_Checkout","Purchase"]
-```
-
 ## Limitations
 
 - Maximum of 20 events per request.
@@ -199,6 +186,16 @@ Example decoded value:
 
 - [Compare - Apps](o-compare-apps.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication and permission checks | Reads member account, role, lock state, and feature access rights. |
+| `countly.apps` | App validation | Validates `app_id` and loads app context (for timezone/period handling). |
+| `countly.events_data` | Event series data source | Reads time-series event documents using app-and-event-hash `_id` prefixes. |
+| `countly.event_groups` | Grouped-event mapping | Reads event group definitions and source-event membership for `[CLY]_group_...` keys. |
+
+</details>

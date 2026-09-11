@@ -4,9 +4,15 @@ keywords:
   - "/i/blocks/update"
   - "update"
   - "blocks"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Filtering Rules - Update
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -14,19 +20,13 @@ keywords:
 /i/blocks/update
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Updates an existing filtering rule.
 
 ## Authentication
 
-**Authentication Methods**:
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -40,6 +40,14 @@ Updates an existing filtering rule.
 | `auth_token` | String | Yes (or `api_key`) | Auth token authentication |
 | `app_id` | String | Yes | Application ID |
 | `blocks` | String | Yes | Stringified JSON rule object including `_id` |
+
+## Examples
+
+### Example: Update a rule
+
+```bash
+curl "https://your-server.com/i/blocks/update?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&blocks=%7B%22_id%22%3A%22rule1%22%2C%22type%22%3A%22session%22%2C%22key%22%3A%22*%22%2C%22name%22%3A%22Block%20sessions%20from%20CA%22%2C%22rule%22%3A%7B%22up.cc%22%3A%7B%22%24in%22%3A%5B%22CA%22%5D%7D%7D%2C%22status%22%3Atrue%7D"
+```
 
 ## Block Object Structure
 
@@ -148,7 +156,7 @@ Decoded object example (before stringifying into `blocks`):
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 1. Validates `app_id` and update permission.
 2. Parses `blocks` JSON payload.
@@ -156,43 +164,18 @@ Decoded object example (before stringifying into `blocks`):
 4. Replaces matching block by `_id`.
 5. Sets `_onReq` for eligible request-level rules.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.apps` | App configuration and metadata | Stores app-level feature settings and metadata used or modified by this endpoint. |
-
----
-
-## Examples
-
-### Example: Update a rule
-
-```bash
-curl "https://your-server.com/i/blocks/update?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&blocks=%7B%22_id%22%3A%22rule1%22%2C%22type%22%3A%22session%22%2C%22key%22%3A%22*%22%2C%22name%22%3A%22Block%20sessions%20from%20CA%22%2C%22rule%22%3A%7B%22up.cc%22%3A%7B%22%24in%22%3A%5B%22CA%22%5D%7D%7D%2C%22status%22%3Atrue%7D"
-```
-
 ## Related Endpoints
 
 - [Filtering Rules - List](list.md)
 - [Filtering Rules - Create](create.md)
 
-## Ⓔ Enterprise
+<details>
+<summary>Implementation details</summary>
 
-This feature is part of **Countly Enterprise**.
+**Database Collections**
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.apps` | App configuration and metadata | Stores app-level feature settings and metadata used or modified by this endpoint. |
 
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions.
-
-## Last Updated
-
-2026-02-15
----
-
-## Last Updated
-
-2026-02-16
+</details>

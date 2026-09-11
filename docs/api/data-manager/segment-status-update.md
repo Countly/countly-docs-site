@@ -5,11 +5,15 @@ keywords:
   - "toggle-status"
   - "data-manager"
   - "segment"
+last_update:
+  date: "2026-02-16"
 ---
+
 # Update segment status
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -23,12 +27,7 @@ Sets status for one or more event segments.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -62,60 +61,6 @@ Decoded example:
 ]
 ```
 
-## Configuration Impact
-
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `data-manager.allowUnplannedEvents` | `ALLOW` | Parent event visibility assignment when `status=unplanned` | If set to `ALLOW`, parent events can remain visible for unplanned segment status; if set to `DISALLOW`, parent visibility is forced hidden. |
-
-## Response
-
-### Success Response
-
-```json
-"Success"
-```
-
-### Response Fields
-
-| Field | Type | Description |
-|---|---|---|
-| `(root value)` | String | `Success` when status updates are applied. |
-
-### Error Responses
-
-- `500`
-
-```json
-{
-  "result": "Error"
-}
-```
-
-## Behavior/Processing
-
-- Updates segment status in `countly_drill.drill_meta` for each event+segment pair.
-- Updates parent event `is_visible` in `countly.events` using status visibility rules.
-- Writes `dm-segment-edit` system log entries.
-- Invalidates cache.
-
-## Audit & System Logs
-
-| Action | Trigger | Payload |
-|---|---|---|
-| `dm-segment-edit` | Per-segment status update | `{ segment, ev, status }` |
-| `dm-segment-edit` | Summary log after all selected segments are processed | `{ ev: [eventKeys] }` |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly_drill.drill_meta` | Segment status storage | Updates `sg.{segment}.status` for each requested event/segment pair. |
-| `countly.events` | Parent event visibility map | Updates `map.{event}.is_visible` based on the requested status and unplanned-event config. |
-| `countly.systemlogs` | Audit trail | Writes per-segment and summary `dm-segment-edit` log entries. |
-
----
-
 ## Examples
 
 ### Set segments to `live`
@@ -141,19 +86,68 @@ Decoded example:
   ]
 ```
 
+## Response
+
+### Success Response
+
+```json
+"Success"
+```
+
+### Response Fields
+
+| Field | Type | Description |
+|---|---|---|
+| `(root value)` | String | `Success` when status updates are applied. |
+
+### Error Responses
+
+- `500`
+
+```json
+{
+  "result": "Error"
+}
+```
+
+## Behavior
+
+- Updates segment status in `countly_drill.drill_meta` for each event+segment pair.
+- Updates parent event `is_visible` in `countly.events` using status visibility rules.
+- Writes `dm-segment-edit` system log entries.
+- Invalidates cache.
+
 ## Operational Considerations
 
 - Each segment update can also change parent event visibility, so one call may affect multiple event-map entries.
-
----
 
 ## Related Endpoints
 
 - [Segment Properties - Update](segment-properties-update.md)
 - [Event Status - Update](event-status-update.md)
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Last Updated
+**Configuration Impact**
 
-2026-02-16
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `data-manager.allowUnplannedEvents` | `ALLOW` | Parent event visibility assignment when `status=unplanned` | If set to `ALLOW`, parent events can remain visible for unplanned segment status; if set to `DISALLOW`, parent visibility is forced hidden. |
+
+**Audit & System Logs**
+
+| Action | Trigger | Payload |
+|---|---|---|
+| `dm-segment-edit` | Per-segment status update | `{ segment, ev, status }` |
+| `dm-segment-edit` | Summary log after all selected segments are processed | `{ ev: [eventKeys] }` |
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly_drill.drill_meta` | Segment status storage | Updates `sg.{segment}.status` for each requested event/segment pair. |
+| `countly.events` | Parent event visibility map | Updates `map.{event}.is_visible` based on the requested status and unplanned-event config. |
+| `countly.systemlogs` | Audit trail | Writes per-segment and summary `dm-segment-edit` log entries. |
+
+</details>

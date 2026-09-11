@@ -4,6 +4,8 @@ keywords:
   - "/o/token/check"
   - "check"
   - "token"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Token - Token Check
@@ -20,9 +22,7 @@ Checks whether a token exists and is currently valid.
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -35,6 +35,14 @@ Checks whether a token exists and is currently valid.
 | `api_key` | String | Yes (or use `auth_token`) | Dashboard API key. |
 | `auth_token` | String | Yes (or use `api_key`) | Dashboard auth token. |
 | `token` | String | Yes | Token value to validate. |
+
+## Examples
+
+### Example 1: Check token validity
+
+```plaintext
+/o/token/check?api_key=YOUR_API_KEY&token=0e1c012f855e7065e779b57a616792fb5bd03834
+```
 
 ## Response
 
@@ -95,7 +103,7 @@ Invalid or expired token:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -104,31 +112,20 @@ Invalid or expired token:
 | Valid token | Token exists and is not expired | Reads token metadata, computes remaining lifetime in seconds (`-1` for non-expiring). | Wrapped `{ "result": { "valid": true, "time": ... } }` |
 | Invalid token | Token missing or expired | Returns invalid status with zero remaining lifetime. | Wrapped `{ "result": { "valid": false, "time": 0 } }` |
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Auth validation | Resolves authenticated member. |
-| `countly.auth_tokens` | Token check source | Reads token state and expiry fields. |
-
----
-
-## Examples
-
-### Example 1: Check token validity
-
-```plaintext
-/o/token/check?api_key=YOUR_API_KEY&token=0e1c012f855e7065e779b57a616792fb5bd03834
-```
-
----
-
 ## Related Endpoints
 
 - [Token Create](i-token-create.md)
 - [Token Delete](i-token-delete.md)
 - [Token List](o-token-list.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Auth validation | Resolves authenticated member. |
+| `countly.auth_tokens` | Token check source | Reads token state and expiry fields. |
+
+</details>

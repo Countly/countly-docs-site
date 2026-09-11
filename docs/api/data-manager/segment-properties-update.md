@@ -5,11 +5,15 @@ keywords:
   - "edit"
   - "data-manager"
   - "segment"
+last_update:
+  date: "2026-02-16"
 ---
+
 # Update segment metadata
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -23,12 +27,7 @@ Updates metadata for one segment under a specific event.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -66,6 +65,21 @@ Decoded example:
 }
 ```
 
+## Examples
+
+```text
+/i/data-manager/segment/edit?
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  eventKey=purchase&
+  segment={
+    "name":"country",
+    "type":"s",
+    "status":"approved",
+    "description":"ISO country",
+    "required":false
+  }
+```
+
 ## Response
 
 ### Success Response
@@ -90,20 +104,28 @@ Decoded example:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Loads current event metadata and detects segment type changes.
 - Runs `migrateDataType(...)` for changed type transitions.
 - Updates only provided segment fields (`status`, `description`, `required`) in drill meta.
 - Writes `dm-segment-edit` system log and invalidates cache.
 
-## Audit & System Logs
+## Related Endpoints
+
+- [Event Segments - Read](event-segments-read.md)
+- [Segment Status - Update](segment-status-update.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Audit & System Logs**
 
 | Action | Trigger | Payload |
 |---|---|---|
 | `dm-segment-edit` | After segment metadata update | `{ sg: JSON.stringify(segment), ev: eventKey, segment: segment.name }` |
 
-## Database Collections
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -111,32 +133,4 @@ Decoded example:
 | `countly.apps` | App-level type override cache (indirect via type migration helper) | Updates override entries when segment type changes require migration bookkeeping. |
 | `countly.systemlogs` | Audit trail | Writes `dm-segment-edit` and type-migration actions for changed segment types. |
 
----
-
-## Examples
-
-```text
-/i/data-manager/segment/edit?
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  eventKey=purchase&
-  segment={
-    "name":"country",
-    "type":"s",
-    "status":"approved",
-    "description":"ISO country",
-    "required":false
-  }
-```
-
----
-
-## Related Endpoints
-
-- [Event Segments - Read](event-segments-read.md)
-- [Segment Status - Update](segment-status-update.md)
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

@@ -4,6 +4,8 @@ keywords:
   - "/i/remote-config/remove-condition"
   - "remove-condition"
   - "remote-config"
+last_update:
+  date: "2026-03-05"
 ---
 
 # Remote Config - Condition Delete
@@ -20,12 +22,7 @@ Deletes a condition and removes its references from all parameters.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. `api_key=YOUR_API_KEY`
-2. `auth_token=YOUR_AUTH_TOKEN`
-3. `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -39,6 +36,14 @@ Requires `remote_config` `Delete` permission.
 | `auth_token` | String | No | Auth token as query parameter or `countly-token` header. |
 | `app_id` | String | Yes | App id. |
 | `condition_id` | String | Yes | Condition document id. |
+
+## Examples
+
+### Delete condition
+
+```plaintext
+/i/remote-config/remove-condition?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&condition_id=65f1f7b2ad5b9b001f12ab34
+```
 
 ## Response
 
@@ -66,13 +71,21 @@ Requires `remote_config` `Delete` permission.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Deletes condition record.
 - Removes matching `condition_id` entries from `conditions` arrays in all parameters.
 - Emits system log action: `rc_condition_removed`.
 
-## Database Collections
+## Related Endpoints
+
+- [Remote Config - Condition Create](condition-add.md)
+- [Remote Config - Condition Update](condition-update.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -80,21 +93,4 @@ Requires `remote_config` `Delete` permission.
 | `countly_out.remoteconfig_parameters{appId}` | Parameter references | Pulls deleted condition id from parameter `conditions` arrays. |
 | `countly.systemlogs` | Audit trail | Receives `rc_condition_removed` action. |
 
----
-
-## Examples
-
-### Delete condition
-
-```plaintext
-/i/remote-config/remove-condition?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&condition_id=65f1f7b2ad5b9b001f12ab34
-```
-
-## Related Endpoints
-
-- [Remote Config - Condition Create](condition-add.md)
-- [Remote Config - Condition Update](condition-update.md)
-
-## Last Updated
-
-2026-03-05
+</details>

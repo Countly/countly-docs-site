@@ -4,6 +4,8 @@ keywords:
   - "/i/dashboards/update"
   - "update"
   - "dashboards"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Dashboards - Update
@@ -20,11 +22,7 @@ Updates dashboard metadata such as name, theme, sharing configuration, and refre
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -59,11 +57,40 @@ Examples of decoded JSON arrays:
 - `shared_email_view`: `["viewer@company.com"]`
 - `shared_user_groups_edit`: `["65dc6a52a2f7156eb2576f00"]`
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `dashboards.sharing_status` | `true` | Processing flow | If disabled, sharing fields may not be updated for non-eligible users even when other dashboard fields are updated. |
+### Update dashboard name and theme
+
+```text
+/i/dashboards/update?
+  dashboard_id=65e1f3d2a4f41a5f6f6d7701&
+  name=Executive Dashboard - Q2&
+  share_with=none&
+  theme=2
+```
+
+### Update sharing lists
+
+```text
+/i/dashboards/update?
+  dashboard_id=65e1f3d2a4f41a5f6f6d7701&
+  name=Regional Dashboard&
+  share_with=selected-users&
+  shared_email_view=["viewer@company.com"]&
+  shared_email_edit=["editor@company.com"]&
+  shared_user_groups_view=["65dc6a52a2f7156eb2576f00"]
+```
+
+### Enable refresh rate
+
+```text
+/i/dashboards/update?
+  dashboard_id=65e1f3d2a4f41a5f6f6d7701&
+  name=Operational Monitor&
+  share_with=none&
+  use_refresh_rate=true&
+  refreshRate=10
+```
 
 ## Response
 
@@ -146,7 +173,7 @@ Examples of decoded JSON arrays:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -161,57 +188,6 @@ Examples of decoded JSON arrays:
 - Updates dashboard document fields in `countly.dashboards`.
 - Optional invitation flow reads `countly.members` to compute delta recipients.
 
-## Audit & System Logs
-
-| Action | Trigger | Payload |
-|---|---|---|
-| `dashboard_edited` | After successful dashboard update | `{ before, update }` object |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.dashboards` | Dashboard lookup and update | Reads existing dashboard and updates metadata/sharing/refresh fields. |
-| `countly.members` | Authentication and optional invitation recipient expansion | Reads current member context; optionally reads recipient emails by group/all-user rules for invitation deltas. |
-| `countly.systemlogs` | Audit trail | Writes `dashboard_edited` entry. |
-
----
-
-## Examples
-
-### Update dashboard name and theme
-
-```text
-/i/dashboards/update?
-  dashboard_id=65e1f3d2a4f41a5f6f6d7701&
-  name=Executive Dashboard - Q2&
-  share_with=none&
-  theme=2
-```
-
-### Update sharing lists
-
-```text
-/i/dashboards/update?
-  dashboard_id=65e1f3d2a4f41a5f6f6d7701&
-  name=Regional Dashboard&
-  share_with=selected-users&
-  shared_email_view=["viewer@company.com"]&
-  shared_email_edit=["editor@company.com"]&
-  shared_user_groups_view=["65dc6a52a2f7156eb2576f00"]
-```
-
-### Enable refresh rate
-
-```text
-/i/dashboards/update?
-  dashboard_id=65e1f3d2a4f41a5f6f6d7701&
-  name=Operational Monitor&
-  share_with=none&
-  use_refresh_rate=true&
-  refreshRate=10
-```
-
 ## Limitations
 
 - For non-global-admin users, update uses owner filter; users with shared edit access but not ownership cannot update dashboard metadata.
@@ -222,6 +198,27 @@ Examples of decoded JSON arrays:
 - [Dashboards - Create](i-dashboards-create.md)
 - [Dashboards - Read](o-dashboards.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Configuration Impact**
+
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `dashboards.sharing_status` | `true` | Processing flow | If disabled, sharing fields may not be updated for non-eligible users even when other dashboard fields are updated. |
+
+**Audit & System Logs**
+
+| Action | Trigger | Payload |
+|---|---|---|
+| `dashboard_edited` | After successful dashboard update | `{ before, update }` object |
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.dashboards` | Dashboard lookup and update | Reads existing dashboard and updates metadata/sharing/refresh fields. |
+| `countly.members` | Authentication and optional invitation recipient expansion | Reads current member context; optionally reads recipient emails by group/all-user rules for invitation deltas. |
+| `countly.systemlogs` | Audit trail | Writes `dashboard_edited` entry. |
+
+</details>

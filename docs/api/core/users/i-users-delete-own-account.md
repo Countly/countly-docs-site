@@ -4,6 +4,8 @@ keywords:
   - "/i/users/deleteOwnAccount"
   - "deleteOwnAccount"
   - "users"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Users Management - Own Account Delete
@@ -20,9 +22,7 @@ Deletes the authenticated dashboard account after password verification.
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -35,6 +35,14 @@ Deletes the authenticated dashboard account after password verification.
 | `api_key` | String | Yes (or use `auth_token`) | Dashboard API key. |
 | `auth_token` | String | Yes (or use `api_key`) | Dashboard auth token. |
 | `password` | String | Yes | Current account password confirmation. |
+
+## Examples
+
+### Example 1: Delete current account
+
+```plaintext
+/i/users/deleteOwnAccount?api_key=YOUR_API_KEY&password=CurrentPassword123!
+```
 
 ## Response
 
@@ -88,7 +96,7 @@ Deletes the authenticated dashboard account after password verification.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -103,33 +111,6 @@ Deletes the authenticated dashboard account after password verification.
 - Deletes account record, active sessions, auth tokens, and user-owned date presets.
 - Installed modules can add extra deletion checks/cleanup through delete hooks.
 
-## Audit & System Logs
-
-| Action | Trigger |
-|---|---|
-| `user_deleted` | Successful own-account deletion flow (when System Logs module is enabled). |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Primary user storage. | Reads user for password verification and removes account. |
-| `countly.sessions_` | Session lifecycle. | Removes sessions matching deleted user id. |
-| `countly.auth_tokens` | Token lifecycle. | Removes logged-in and owned tokens for deleted user. |
-| `countly.date_presets` | User-linked presets cleanup. | Removes presets owned by deleted user. |
-
----
-
-## Examples
-
-### Example 1: Delete current account
-
-```plaintext
-/i/users/deleteOwnAccount?api_key=YOUR_API_KEY&password=CurrentPassword123!
-```
-
----
-
 ## Limitations
 
 - Current route requires global-admin-level validation.
@@ -139,6 +120,22 @@ Deletes the authenticated dashboard account after password verification.
 
 - [User Delete](i-users-delete.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Audit & System Logs**
+
+| Action | Trigger |
+|---|---|
+| `user_deleted` | Successful own-account deletion flow (when System Logs module is enabled). |
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Primary user storage. | Reads user for password verification and removes account. |
+| `countly.sessions_` | Session lifecycle. | Removes sessions matching deleted user id. |
+| `countly.auth_tokens` | Token lifecycle. | Removes logged-in and owned tokens for deleted user. |
+| `countly.date_presets` | User-linked presets cleanup. | Removes presets owned by deleted user. |
+
+</details>

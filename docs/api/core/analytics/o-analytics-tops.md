@@ -4,6 +4,8 @@ keywords:
   - "/o/analytics/tops"
   - "tops"
   - "analytics"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /o/analytics/tops
@@ -20,9 +22,7 @@ Returns top lists for built-in categories or requested metric keys.
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -48,12 +48,36 @@ Returns top lists for built-in categories or requested metric keys.
 - If `metrics` parsing fails, endpoint returns `{}`.
 - If neither `metric` nor `metrics` is set, endpoint returns built-in top lists.
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `api.total_users` | `true` | Metric/metrics mode unique-user correction | When disabled, total-user correction is skipped in metric-based branches. |
-| `api.metric_changes` | `true` | Metric/metrics correction history | When disabled, metric-change correction is not applied. |
+### Example 1: Built-in top lists
+
+```plaintext
+/o/analytics/tops?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  period=30days
+```
+
+### Example 2: One metric
+
+```plaintext
+/o/analytics/tops?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  metric=countries&
+  period=30days
+```
+
+### Example 3: Multiple metrics
+
+```plaintext
+/o/analytics/tops?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  metrics=["countries","platforms"]&
+  period=30days
+```
 
 ## Response
 
@@ -118,7 +142,7 @@ Multi-metric mode (`metrics=["countries","platforms"]`):
 {"result":"User does not have right"}
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -132,11 +156,37 @@ Multi-metric mode (`metrics=["countries","platforms"]`):
 
 - Read-only endpoint.
 
-## Audit & System Logs
+## Operational Considerations
+
+- Metric branches may query additional collections and correction sources.
+- High-cardinality metrics can increase response size.
+
+## Limitations
+
+- Invalid `metrics` JSON returns `{}`.
+- Unsupported metric keys return empty arrays in metric-mode results.
+
+## Related Endpoints
+
+- [Analytics - Read Metric](./o-analytics-metric.md)
+- [Analytics - Read Dashboard](./o-analytics-dashboard.md)
+- [Analytics - Run Query](./o-query.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Configuration Impact**
+
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `api.total_users` | `true` | Metric/metrics mode unique-user correction | When disabled, total-user correction is skipped in metric-based branches. |
+| `api.metric_changes` | `true` | Metric/metrics correction history | When disabled, metric-change correction is not applied. |
+
+**Audit & System Logs**
 
 - No `/systemlogs` action is emitted by this endpoint.
 
-## Database Collections
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -148,57 +198,4 @@ Multi-metric mode (`metrics=["countries","platforms"]`):
 | `countly.app_users{appId}` | Total-user correction baseline | Read in metric/metrics branches when correction is enabled. |
 | `countly.metric_changes{appId}` | Correction history | Read in metric/metrics branches when correction history is enabled. |
 
----
-
-## Examples
-
-### Example 1: Built-in top lists
-
-```plaintext
-/o/analytics/tops?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  period=30days
-```
-
-### Example 2: One metric
-
-```plaintext
-/o/analytics/tops?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  metric=countries&
-  period=30days
-```
-
-### Example 3: Multiple metrics
-
-```plaintext
-/o/analytics/tops?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  metrics=["countries","platforms"]&
-  period=30days
-```
-
-## Operational Considerations
-
-- Metric branches may query additional collections and correction sources.
-- High-cardinality metrics can increase response size.
-
-## Limitations
-
-- Invalid `metrics` JSON returns `{}`.
-- Unsupported metric keys return empty arrays in metric-mode results.
-
----
-
-## Related Endpoints
-
-- [Analytics - Read Metric](./o-analytics-metric.md)
-- [Analytics - Read Dashboard](./o-analytics-dashboard.md)
-- [Analytics - Run Query](./o-query.md)
-
-## Last Updated
-
-2026-02-17
+</details>

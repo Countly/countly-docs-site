@@ -4,6 +4,8 @@ keywords:
   - "/i/remote-config/add-complete-config"
   - "add-complete-config"
   - "remote-config"
+last_update:
+  date: "2026-03-05"
 ---
 
 # Remote Config - Config Rollout
@@ -20,12 +22,7 @@ Applies experiment rollout config by creating/updating parameters and optionally
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. `api_key=YOUR_API_KEY`
-2. `auth_token=YOUR_AUTH_TOKEN`
-3. `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -63,12 +60,19 @@ Requires `remote_config` `Create` permission.
 | `condition_name` | String | Yes | Must match `^[a-zA-Z0-9 ]+$`. |
 | `condition` | Object | Yes | Condition query object (stored as JSON string). |
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `remote-config.maximum_allowed_parameters` | `2000` | Validation limit | Rollout fails when app is at parameter capacity. |
-| `remote-config.conditions_per_paramaeters` | `20` | Validation limit | Rollout fails when existing parameter would exceed condition limit. |
+### Roll out values with a new condition
+
+```plaintext
+/i/remote-config/add-complete-config?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&config={"parameters":[{"parameter_key":"checkout_flow","exp_value":"variant_b","default_value":"variant_a","description":"Checkout rollout"}],"condition":{"condition_name":"New Users","condition":{"up.nc":{"$eq":1}}}}
+```
+
+### Roll out values without creating a condition
+
+```plaintext
+/i/remote-config/add-complete-config?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&config={"parameters":[{"parameter_key":"checkout_flow","exp_value":"variant_b"}]}
+```
 
 ## Response
 
@@ -132,14 +136,34 @@ No fields are returned on success for this endpoint.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Existing parameters are updated by `parameter_key`.
 - New parameters are inserted when key does not exist.
 - If `condition` is provided, it is created once and linked to affected parameters as a top-priority condition value.
 - Emits system log action: `rc_rollout`.
 
-## Database Collections
+## Limitations
+
+- Supports at most one condition object per call.
+- Requires at least one parameter in `config.parameters`.
+
+## Related Endpoints
+
+- [Remote Config - Parameter Create](parameter-add.md)
+- [Remote Config - Dashboard Read](o-remote-config.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Configuration Impact**
+
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `remote-config.maximum_allowed_parameters` | `2000` | Validation limit | Rollout fails when app is at parameter capacity. |
+| `remote-config.conditions_per_paramaeters` | `20` | Validation limit | Rollout fails when existing parameter would exceed condition limit. |
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -147,34 +171,4 @@ No fields are returned on success for this endpoint.
 | `countly_out.remoteconfig_conditions{appId}` | Condition storage | Optionally inserts one rollout condition. |
 | `countly.systemlogs` | Audit trail | Receives `rc_rollout` action. |
 
----
-
-## Examples
-
-### Roll out values with a new condition
-
-```plaintext
-/i/remote-config/add-complete-config?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&config={"parameters":[{"parameter_key":"checkout_flow","exp_value":"variant_b","default_value":"variant_a","description":"Checkout rollout"}],"condition":{"condition_name":"New Users","condition":{"up.nc":{"$eq":1}}}}
-```
-
-### Roll out values without creating a condition
-
-```plaintext
-/i/remote-config/add-complete-config?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&config={"parameters":[{"parameter_key":"checkout_flow","exp_value":"variant_b"}]}
-```
-
-## Limitations
-
-- Supports at most one condition object per call.
-- Requires at least one parameter in `config.parameters`.
-
----
-
-## Related Endpoints
-
-- [Remote Config - Parameter Create](parameter-add.md)
-- [Remote Config - Dashboard Read](o-remote-config.md)
-
-## Last Updated
-
-2026-03-05
+</details>

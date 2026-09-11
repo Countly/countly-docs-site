@@ -4,6 +4,8 @@ keywords:
   - "/i/event_groups/delete"
   - "delete"
   - "event_groups"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /i/event_groups/delete
@@ -20,9 +22,7 @@ Deletes one or more event groups and removes their keys from `events.overview`.
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -36,6 +36,20 @@ Deletes one or more event groups and removes their keys from `events.overview`.
 | `auth_token` | String | Yes (or use `api_key`) | Dashboard auth token. |
 | `app_id` | String | Yes | Target app ID for delete permission check and filtering. |
 | `args` | JSON String (Array) | Yes | Array of event-group IDs to delete. |
+
+## Examples
+
+### Example 1: Delete one group
+
+```plaintext
+/i/event_groups/delete?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&args=["[CLY]_group_dfc09a75fff37cd46fa09d7c88ab77bb"]
+```
+
+### Example 2: Delete multiple groups
+
+```plaintext
+/i/event_groups/delete?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&args=["[CLY]_group_id_1","[CLY]_group_id_2"]
+```
 
 ## Response
 
@@ -90,7 +104,7 @@ Deletes one or more event groups and removes their keys from `events.overview`.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -103,7 +117,20 @@ Deletes one or more event groups and removes their keys from `events.overview`.
 
 - After deleting groups, the endpoint also mutates `countly.events.overview` to remove deleted group keys.
 
-## Database Collections
+## Limitations
+
+- `args` must be valid JSON array data.
+- JSON parse failures in delete logic are not handled with a dedicated parse-error response branch.
+
+## Related Endpoints
+
+- [Event Groups - Group Create](i-event-groups-create.md)
+- [Event Groups - Group Update](i-event-groups-update.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -111,32 +138,4 @@ Deletes one or more event groups and removes their keys from `events.overview`.
 | `countly.event_groups` | Group definition deletion | Removes event-group documents matching provided IDs. |
 | `countly.events` | Event overview cleanup | Reads and updates `overview` after group deletion. |
 
-## Examples
-
-### Example 1: Delete one group
-
-```plaintext
-/i/event_groups/delete?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&args=["[CLY]_group_dfc09a75fff37cd46fa09d7c88ab77bb"]
-```
-
-### Example 2: Delete multiple groups
-
-```plaintext
-/i/event_groups/delete?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&args=["[CLY]_group_id_1","[CLY]_group_id_2"]
-```
-
-## Limitations
-
-- `args` must be valid JSON array data.
-- JSON parse failures in delete logic are not handled with a dedicated parse-error response branch.
-
----
-
-## Related Endpoints
-
-- [Event Groups - Group Create](i-event-groups-create.md)
-- [Event Groups - Group Update](i-event-groups-update.md)
-
-## Last Updated
-
-2026-02-17
+</details>

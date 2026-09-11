@@ -4,9 +4,15 @@ keywords:
   - "/i/ab-testing/add-experiment"
   - "add-experiment"
   - "ab-testing"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Create Experiment
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -14,19 +20,14 @@ keywords:
 /i/ab-testing/add-experiment
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Create a new AB testing experiment in `drafts` status. Drafts can be updated until the experiment is started.
 
 ## Authentication
 
-**Authentication Methods**:
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - Create (ab_testing feature)
@@ -58,6 +59,38 @@ Create a new AB testing experiment in `drafts` status. Drafts can be updated unt
 - `improvement` (Boolean, optional): Enable improvement tracking.
 - `improvementRate` (Number, optional): 0-100 baseline improvement percentage.
 - `days` (Number, optional): 1-3650 duration in days.
+
+## Examples
+
+### Example 1: Create Button Color Test Experiment
+
+**Request**:
+```bash
+curl "https://your-server.com/i/ab-testing/add-experiment" \
+  -d "api_key=YOUR_API_KEY" \
+  -d "app_id=YOUR_APP_ID" \
+  -d 'experiment={"name":"Button Color Test","description":"Testing CTA button colors for conversion optimization","variants":[{"name":"Control","parameters":[{"name":"button_color","value":"blue","description":"Original blue button"}]},{"name":"Red Button","parameters":[{"name":"button_color","value":"red","description":"Test red button variant"}]}],"target_users":{"percentage":"50","condition":"{}"},"goals":[{"steps":[{"type":"did","event":"click_button"}],"user_segmentation":"{}"}],"improvement":true,"improvementRate":10,"days":30}'
+```
+
+**Response**:
+```json
+"5f9c8a3b4d1e2a001f3b4567"
+```
+
+### Example 2: Create Pricing Page Test with Segmentation
+
+**Request**:
+```bash
+curl "https://your-server.com/i/ab-testing/add-experiment" \
+  -d "api_key=YOUR_API_KEY" \
+  -d "app_id=YOUR_APP_ID" \
+  -d 'experiment={"name":"Pricing Page Layout","description":"Testing different pricing page layouts","variants":[{"name":"Current Layout","parameters":[{"name":"layout_type","value":"standard","description":""}]},{"name":"Simplified Layout","parameters":[{"name":"layout_type","value":"minimal","description":""}]}],"target_users":{"percentage":"100","condition":"{\"query\":{\"up.country\":{\"$in\":[\"US\",\"CA\"]}}}"},"goals":[{"steps":[{"type":"did","event":"purchase"}],"user_segmentation":"{}"}],"days":60}'
+```
+
+**Response**:
+```json
+"5f9c8a3b4d1e2a001f3b4568"
+```
 
 ## Response
 
@@ -130,48 +163,10 @@ Create a new AB testing experiment in `drafts` status. Drafts can be updated unt
 }
 ```
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly_out.ab_testing_experiments{appId}` | Primary: | Stores experiment configurations, variants, targets, goals, and status. |
-
-## Behavior/Processing
+## Behavior
 
 - Validates experiment payload (limits, goals, variant schema, and parameter existence).
 - Inserts experiment as `drafts` and returns created experiment ID.
-
-## Examples
-
-### Example 1: Create Button Color Test Experiment
-
-**Request**:
-```bash
-curl "https://your-server.com/i/ab-testing/add-experiment" \
-  -d "api_key=YOUR_API_KEY" \
-  -d "app_id=YOUR_APP_ID" \
-  -d 'experiment={"name":"Button Color Test","description":"Testing CTA button colors for conversion optimization","variants":[{"name":"Control","parameters":[{"name":"button_color","value":"blue","description":"Original blue button"}]},{"name":"Red Button","parameters":[{"name":"button_color","value":"red","description":"Test red button variant"}]}],"target_users":{"percentage":"50","condition":"{}"},"goals":[{"steps":[{"type":"did","event":"click_button"}],"user_segmentation":"{}"}],"improvement":true,"improvementRate":10,"days":30}'
-```
-
-**Response**:
-```json
-"5f9c8a3b4d1e2a001f3b4567"
-```
-
-### Example 2: Create Pricing Page Test with Segmentation
-
-**Request**:
-```bash
-curl "https://your-server.com/i/ab-testing/add-experiment" \
-  -d "api_key=YOUR_API_KEY" \
-  -d "app_id=YOUR_APP_ID" \
-  -d 'experiment={"name":"Pricing Page Layout","description":"Testing different pricing page layouts","variants":[{"name":"Current Layout","parameters":[{"name":"layout_type","value":"standard","description":""}]},{"name":"Simplified Layout","parameters":[{"name":"layout_type","value":"minimal","description":""}]}],"target_users":{"percentage":"100","condition":"{\"query\":{\"up.country\":{\"$in\":[\"US\",\"CA\"]}}}"},"goals":[{"steps":[{"type":"did","event":"purchase"}],"user_segmentation":"{}"}],"days":60}'
-```
-
-**Response**:
-```json
-"5f9c8a3b4d1e2a001f3b4568"
-```
 
 ## Limitations
 
@@ -187,21 +182,13 @@ curl "https://your-server.com/i/ab-testing/add-experiment" \
 - [Remove Experiment](remove.md)
 - [List All Experiments](read.md)
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Database Collections**
 
-This feature is part of **Countly Enterprise**.
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly_out.ab_testing_experiments{appId}` | Primary: | Stores experiment configurations, variants, targets, goals, and status. |
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

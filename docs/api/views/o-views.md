@@ -3,6 +3,8 @@ sidebar_label: "Views Query"
 keywords:
   - "/o"
   - "o"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Views - Query
@@ -19,11 +21,7 @@ Queries view analytics data in multiple modes, including table output, totals, e
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -58,11 +56,42 @@ Requires `views` `Read` permission.
 | `selectedViews` | JSON array of objects containing `view` IDs | Used only by default graph mode. If missing/empty, graph mode returns empty `data`. |
 | `periodOffset` | Integer minutes | Adjusts effective period window used by some aggregations. |
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `api.request_threshold` | Server configuration | Processing flow | `getTotals` and default graph mode use long-task thresholding; response may include `running: true` while unique-count enrichment is still processing. |
+### Table mode
+
+```text
+/o?
+  method=views&
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  action=getTable&
+  period=30days&
+  iDisplayStart=0&
+  iDisplayLength=10
+```
+
+### Totals mode
+
+```text
+/o?
+  method=views&
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  action=getTotals&
+  period=7days
+```
+
+### Graph mode for selected views
+
+```text
+/o?
+  method=views&
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  period=30days&
+  selectedViews=[{"view":"6991c75b024cb89cdc04efd2_home","name":"/home"}]
+```
 
 ## Response
 
@@ -219,7 +248,7 @@ Default graph mode (`action` empty):
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -236,55 +265,6 @@ Default graph mode (`action` empty):
 ### Impact on Other Data
 
 - Read-only endpoint. It does not create, update, or delete records.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication and permission checks | Reads member account, lock state, and feature access. |
-| `countly.apps` | App validation/context loading | Validates app context for read access and period handling. |
-| `countly.app_viewdata` and `countly.app_viewdata{sha1(segment+appId)}` | View metric source data | Reads segmented and non-segmented view metric documents. |
-| `countly.app_viewsmeta` | View metadata lookup | Reads view names, URLs, and custom display names. |
-| `countly_drill.drill_events` | Unique-count/graph enrichment input | Reads `[CLY]_view` drill events for totals/graph unique calculations. |
-
----
-
-## Examples
-
-### Table mode
-
-```text
-/o?
-  method=views&
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  action=getTable&
-  period=30days&
-  iDisplayStart=0&
-  iDisplayLength=10
-```
-
-### Totals mode
-
-```text
-/o?
-  method=views&
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  action=getTotals&
-  period=7days
-```
-
-### Graph mode for selected views
-
-```text
-/o?
-  method=views&
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  period=30days&
-  selectedViews=[{"view":"6991c75b024cb89cdc04efd2_home","name":"/home"}]
-```
 
 ## Operational Considerations
 
@@ -303,6 +283,23 @@ Default graph mode (`action` empty):
 - [Views - Omit Segments](i-views-omit-segments.md)
 - [Views - Delete](i-views-delete.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Configuration Impact**
+
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `api.request_threshold` | Server configuration | Processing flow | `getTotals` and default graph mode use long-task thresholding; response may include `running: true` while unique-count enrichment is still processing. |
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication and permission checks | Reads member account, lock state, and feature access. |
+| `countly.apps` | App validation/context loading | Validates app context for read access and period handling. |
+| `countly.app_viewdata` and `countly.app_viewdata{sha1(segment+appId)}` | View metric source data | Reads segmented and non-segmented view metric documents. |
+| `countly.app_viewsmeta` | View metadata lookup | Reads view names, URLs, and custom display names. |
+| `countly_drill.drill_events` | Unique-count/graph enrichment input | Reads `[CLY]_view` drill events for totals/graph unique calculations. |
+
+</details>

@@ -4,12 +4,15 @@ keywords:
   - "/i/geolocations/delete"
   - "delete"
   - "geolocations"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Delete Geo Location
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -23,10 +26,8 @@ Soft-deletes a geolocation by setting its `deleted` flag.
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required permission**: `Delete` on the `geo` feature
@@ -42,6 +43,14 @@ Soft-deletes a geolocation by setting its `deleted` flag.
 | `auth_token` | String | Yes (or `api_key`) | Auth token authentication |
 | `app_id` | String | Yes | Application context for permission checks |
 | `gid` | String | Yes | Geolocation ID (24-char ObjectID) |
+
+## Examples
+
+### Example: Delete a Geolocation
+
+```text
+https://your-server.com/i/geolocations/delete?api_key=YOUR_API_KEY&app_id=609bd78d90d7a416d4dfb984&gid=62616692a9ddc55457bad406
+```
 
 ## Response
 
@@ -85,51 +94,25 @@ Soft-deletes a geolocation by setting its `deleted` flag.
 | 403 | `{"result":"Only global admin can delete non-app-specific geolocations"}` |
 | 403 | `{"result":"Only admin of app can can delete geolocations"}` |
 
----
-
-## Behavior/Processing
+## Behavior
 
 1. Validates `gid` format and permissions.
 2. Loads the geolocation scoped to the request app.
 3. Marks the record as deleted (`deleted: true`).
 4. Returns the updated location object.
 
----
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.geos` | Endpoint data source | ** - Finds and soft-deletes geolocation records |
-
----
-
-## Examples
-
-### Example: Delete a Geolocation
-
-```text
-https://your-server.com/i/geolocations/delete?api_key=YOUR_API_KEY&app_id=609bd78d90d7a416d4dfb984&gid=62616692a9ddc55457bad406
-```
-
 ## Related Endpoints
 
 - [Geo - Create Geo Location](create.md)
 - [Geo - List Geo Locations](list.md)
 
-## Ⓔ Enterprise
+<details>
+<summary>Implementation details</summary>
 
-This feature is part of **Countly Enterprise**.
+**Database Collections**
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.geos` | Endpoint data source | ** - Finds and soft-deletes geolocation records |
 
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

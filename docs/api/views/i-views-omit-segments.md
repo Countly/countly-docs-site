@@ -3,6 +3,8 @@ sidebar_label: "Omit Segments"
 keywords:
   - "/i/views"
   - "views"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Views - Omit Segments
@@ -19,11 +21,7 @@ Stores a list of view segments to omit and removes related segmented view data f
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -44,6 +42,28 @@ Requires `views` `Delete` permission.
 | Element type | Required | Description |
 |---|---|---|
 | String | Yes | Segment key to omit (for example `platform`, `device`, `app_version`). |
+
+## Examples
+
+### Omit platform and device segments
+
+```text
+/i/views?
+  method=omit_segments&
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  omit_list=["platform","device"]
+```
+
+### Omit app version segment
+
+```text
+/i/views?
+  method=omit_segments&
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  omit_list=["app_version"]
+```
 
 ## Response
 
@@ -103,7 +123,7 @@ Requires `views` `Delete` permission.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -117,46 +137,6 @@ Requires `views` `Delete` permission.
 - Updates `countly.views` root document (`omit` and `segments.*` cleanup).
 - Deletes matching segmented entries from `countly.app_viewdata`.
 
-## Audit & System Logs
-
-| Action | Trigger | Payload |
-|---|---|---|
-| `view_segments_ommit` | Omit operation starts after root update | `{ update: [omit_list] }` |
-| `view_segments_ommit_complete` | Omit processing finishes | `{ app_id, update, error? }` |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication and permission checks | Reads member account and access rights for delete validation. |
-| `countly.apps` | App validation/context loading | Validates `app_id` for operation scope. |
-| `countly.views` | Omit configuration storage | Writes `omit` list and unsets omitted segment maps. |
-| `countly.app_viewdata` | Segmented metric cleanup | Deletes segment-scoped viewdata documents for omitted segment keys. |
-
----
-
-## Examples
-
-### Omit platform and device segments
-
-```text
-/i/views?
-  method=omit_segments&
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  omit_list=["platform","device"]
-```
-
-### Omit app version segment
-
-```text
-/i/views?
-  method=omit_segments&
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  omit_list=["app_version"]
-```
-
 ## Operational Considerations
 
 - Omit changes affect future segmented processing and also clean existing segmented docs for omitted keys.
@@ -168,6 +148,23 @@ Requires `views` `Delete` permission.
 - [Views - Rename](i-views-rename.md)
 - [Views - Delete](i-views-delete.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Audit & System Logs**
+
+| Action | Trigger | Payload |
+|---|---|---|
+| `view_segments_ommit` | Omit operation starts after root update | `{ update: [omit_list] }` |
+| `view_segments_ommit_complete` | Omit processing finishes | `{ app_id, update, error? }` |
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication and permission checks | Reads member account and access rights for delete validation. |
+| `countly.apps` | App validation/context loading | Validates `app_id` for operation scope. |
+| `countly.views` | Omit configuration storage | Writes `omit` list and unsets omitted segment maps. |
+| `countly.app_viewdata` | Segmented metric cleanup | Deletes segment-scoped viewdata documents for omitted segment keys. |
+
+</details>

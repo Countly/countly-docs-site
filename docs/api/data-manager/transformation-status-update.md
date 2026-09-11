@@ -5,11 +5,15 @@ keywords:
   - "toggle-status"
   - "data-manager"
   - "transformation"
+last_update:
+  date: "2026-02-16"
 ---
+
 # Data Transformations - Toggle Status
 
-> Ⓔ **Enterprise Only**
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -23,12 +27,7 @@ Toggles a transformation status between `ENABLED` and `DISABLED`.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -49,6 +48,15 @@ Requires `data_manager_transformations` `Update` permission.
 | Field | Expected values | Behavior |
 |---|---|---|
 | `status` | Any string | Only used as toggle hint. If current is `ENABLED`, next is `DISABLED`; otherwise next is `ENABLED`. |
+
+## Examples
+
+```text
+/i/data-manager/transformation/toggle-status?
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  id=67b860e39f2d3e0012ab9c44&
+  status=ENABLED
+```
 
 ## Response
 
@@ -76,7 +84,7 @@ Requires `data_manager_transformations` `Update` permission.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -89,30 +97,6 @@ Requires `data_manager_transformations` `Update` permission.
 - Updates only `status` field in `countly.datamanager_transforms`.
 - Invalidates transformation cache for app.
 
-## Audit & System Logs
-
-| Action | Trigger | Payload |
-|---|---|---|
-| `dm-toggle-status` | After successful toggle update | `{ status: "new_status", id: "rule_id" }` |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.datamanager_transforms` | Transformation rule storage | Updates only the `status` field for the specified rule ID and app. |
-| `countly.systemlogs` | Audit trail | Writes `dm-toggle-status` with new status and rule ID. |
-
----
-
-## Examples
-
-```text
-/i/data-manager/transformation/toggle-status?
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  id=67b860e39f2d3e0012ab9c44&
-  status=ENABLED
-```
-
 ## Operational Considerations
 
 - This endpoint always toggles state; it does not support idempotent “set exact status” semantics.
@@ -121,15 +105,25 @@ Requires `data_manager_transformations` `Update` permission.
 
 - Invalid IDs or DB failures are returned as generic `500 Error`.
 
----
-
 ## Related Endpoints
 
 - [Data Transformations - Read Rules](transformations-read.md)
 - [Data Transformations - Update Rule](transformation-rules-update.md)
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Last Updated
+**Audit & System Logs**
 
-2026-02-16
+| Action | Trigger | Payload |
+|---|---|---|
+| `dm-toggle-status` | After successful toggle update | `{ status: "new_status", id: "rule_id" }` |
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.datamanager_transforms` | Transformation rule storage | Updates only the `status` field for the specified rule ID and app. |
+| `countly.systemlogs` | Audit trail | Writes `dm-toggle-status` with new status and rule ID. |
+
+</details>

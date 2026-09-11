@@ -4,6 +4,8 @@ keywords:
   - "/i/hook/save"
   - "save"
   - "hook"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Hooks - Save
@@ -20,11 +22,7 @@ Creates a new hook or updates an existing hook using a single endpoint.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -91,13 +89,36 @@ Decoded update payload example:
 }
 ```
 
-## Configuration Impact
+## Examples
 
-These hooks settings affect runtime behavior after saving, but do not change the immediate save response shape:
+### Create hook
 
-- `refreshRulesPeriod`: controls how quickly saved rule changes are loaded into runtime cache.
-- `pipelineInterval` and `batchActionSize`: affect execution throughput and latency when rules trigger.
-- `requestLimit` and `timeWindowForRequestLimit`: can throttle effect execution per rule at runtime.
+```text
+/i/hook/save?
+  app_id=6991c75b024cb89cdc04efd2&
+  api_key=YOUR_API_KEY&
+  hook_config={
+    "name":"Notify Premium Cohort",
+    "description":"Send email when users enter premium cohort",
+    "apps":["6991c75b024cb89cdc04efd2"],
+    "trigger":{"type":"InternalEventTrigger","configuration":{"eventType":"/cohort/enter"}},
+    "effects":[{"type":"EmailEffect","configuration":{"address":["ops@example.com"],"emailTemplate":"User {{uid}} entered premium cohort"}}],
+    "enabled":true
+  }
+```
+
+### Update hook
+
+```text
+/i/hook/save?
+  app_id=6991c75b024cb89cdc04efd2&
+  api_key=YOUR_API_KEY&
+  hook_config={
+    "_id":"65f0cbf8bca6b8e8fbf7f901",
+    "enabled":false,
+    "description":"Temporarily disabled"
+  }
+```
 
 ## Response
 
@@ -263,7 +284,7 @@ Update flow (`hook_config._id` provided):
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -276,54 +297,6 @@ Update flow (`hook_config._id` provided):
 
 - Writes hook data to `countly.hooks`.
 - Dispatches system log entries for create or update actions.
-
-## Audit & System Logs
-
-Successful writes dispatch `/systemlogs` with these actions:
-
-- `hook_created`
-- `hook_updated`
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication and permission checks | Reads member account and access metadata. |
-| `countly.apps` | App validation for non-global-admin users | Reads app context during permission validation. |
-| `countly.hooks` | Hook storage | Inserts new hook documents or updates existing hook documents. |
-
----
-
-## Examples
-
-### Create hook
-
-```text
-/i/hook/save?
-  app_id=6991c75b024cb89cdc04efd2&
-  api_key=YOUR_API_KEY&
-  hook_config={
-    "name":"Notify Premium Cohort",
-    "description":"Send email when users enter premium cohort",
-    "apps":["6991c75b024cb89cdc04efd2"],
-    "trigger":{"type":"InternalEventTrigger","configuration":{"eventType":"/cohort/enter"}},
-    "effects":[{"type":"EmailEffect","configuration":{"address":["ops@example.com"],"emailTemplate":"User {{uid}} entered premium cohort"}}],
-    "enabled":true
-  }
-```
-
-### Update hook
-
-```text
-/i/hook/save?
-  app_id=6991c75b024cb89cdc04efd2&
-  api_key=YOUR_API_KEY&
-  hook_config={
-    "_id":"65f0cbf8bca6b8e8fbf7f901",
-    "enabled":false,
-    "description":"Temporarily disabled"
-  }
-```
 
 ## Operational Considerations
 
@@ -342,6 +315,30 @@ Successful writes dispatch `/systemlogs` with these actions:
 - [Hooks - Delete](i-hook-delete.md)
 - [Hooks - Test](i-hook-test.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Configuration Impact**
+
+These hooks settings affect runtime behavior after saving, but do not change the immediate save response shape:
+
+- `refreshRulesPeriod`: controls how quickly saved rule changes are loaded into runtime cache.
+- `pipelineInterval` and `batchActionSize`: affect execution throughput and latency when rules trigger.
+- `requestLimit` and `timeWindowForRequestLimit`: can throttle effect execution per rule at runtime.
+
+**Audit & System Logs**
+
+Successful writes dispatch `/systemlogs` with these actions:
+
+- `hook_created`
+- `hook_updated`
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication and permission checks | Reads member account and access metadata. |
+| `countly.apps` | App validation for non-global-admin users | Reads app context during permission validation. |
+| `countly.hooks` | Hook storage | Inserts new hook documents or updates existing hook documents. |
+
+</details>

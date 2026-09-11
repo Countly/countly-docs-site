@@ -4,6 +4,8 @@ keywords:
   - "/o/date_presets/getAll"
   - "getAll"
   - "date_presets"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /o/date_presets/getAll
@@ -20,9 +22,7 @@ Returns all presets visible to the current user, including ownership and sharing
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -35,6 +35,14 @@ Returns all presets visible to the current user, including ownership and sharing
 |---|---|---|---|
 | `api_key` | String | Yes (or use `auth_token`) | Dashboard API authentication key. |
 | `auth_token` | String | Yes (or use `api_key`) | Dashboard auth token. |
+
+## Examples
+
+### Example 1: Read all visible presets
+
+```plaintext
+/o/date_presets/getAll?api_key=YOUR_API_KEY
+```
 
 ## Response
 
@@ -101,7 +109,7 @@ Returns all presets visible to the current user, including ownership and sharing
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -115,33 +123,23 @@ Returns all presets visible to the current user, including ownership and sharing
 
 - This endpoint is read-only and does not modify stored data.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.date_presets` | Source of stored date presets | Reads preset metadata and sharing fields, sorted by `sort_order`. |
-| `countly.members` | Owner name enrichment | Looks up preset owner profile to return `owner_name`. |
-
----
-## Examples
-
-### Example 1: Read all visible presets
-
-```plaintext
-/o/date_presets/getAll?api_key=YOUR_API_KEY
-```
-
 ## Limitations
 
 - Current implementation returns `500` with `Error getting presets` when no presets are visible, instead of returning an empty `[]`.
-
----
 
 ## Related Endpoints
 
 - [Date Presets - Preset Read by ID](o-date-presets-getbyid.md)
 - [Date Presets - Preset Create](i-date-presets-create.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.date_presets` | Source of stored date presets | Reads preset metadata and sharing fields, sorted by `sort_order`. |
+| `countly.members` | Owner name enrichment | Looks up preset owner profile to return `owner_name`. |
+
+</details>

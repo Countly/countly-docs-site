@@ -4,6 +4,8 @@ keywords:
   - "/o/apps/mine"
   - "mine"
   - "apps"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /o/apps/mine
@@ -20,9 +22,7 @@ Return apps accessible to the authenticated user, split by admin scope and user 
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -34,6 +34,14 @@ Return apps accessible to the authenticated user, split by admin scope and user 
 |---|---|---|---|
 | `api_key` | String | Yes (or use `auth_token`) | Dashboard API authentication key. |
 | `auth_token` | String | Yes (or use `api_key`) | Dashboard auth token. |
+
+## Examples
+
+### Example 1: Read current user app scopes
+
+```plaintext
+/o/apps/mine?api_key=YOUR_API_KEY
+```
 
 ## Response
 
@@ -69,7 +77,7 @@ Return apps accessible to the authenticated user, split by admin scope and user 
 
 This endpoint does not define custom non-auth business errors. Authentication/authorization layer errors apply.
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -78,32 +86,23 @@ This endpoint does not define custom non-auth business errors. Authentication/au
 | Global admin mode | Caller is global admin | Delegates to full app list behavior. | Raw object `{ admin_of, user_of }` |
 | Scoped member mode | Caller is not global admin | Loads apps from member `admin_of` and `user_of` scopes and packs results. | Raw object `{ admin_of, user_of }` |
 
-## Database Collections
+## Limitations
+
+- Response is map-based, not paginated arrays.
+
+## Related Endpoints
+
+- [Apps - App Read All](o-apps-all.md)
+- [Apps - App Read Details](o-apps-details.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
 | `countly.members` | Authentication and app scope resolution | Reads caller member permissions and app scope lists. |
 | `countly.apps` | App metadata source | Reads app documents for IDs allowed to the caller. |
 
----
-## Examples
-
-### Example 1: Read current user app scopes
-
-```plaintext
-/o/apps/mine?api_key=YOUR_API_KEY
-```
-
-## Limitations
-
-- Response is map-based, not paginated arrays.
-
----
-## Related Endpoints
-
-- [Apps - App Read All](o-apps-all.md)
-- [Apps - App Read Details](o-apps-details.md)
-
-## Last Updated
-
-2026-02-17
+</details>

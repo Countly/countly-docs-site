@@ -1,6 +1,8 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Background Tasks - API Documentation
@@ -39,7 +41,3 @@ Tasks endpoints manage asynchronous jobs stored in the task manager (create/reru
 
 - [Data Export - Export Request Query](../export/o-export-requestquery.md)
 - [Data Export - Download Export](../export/o-export-download.md)
-
-## Last Updated
-
-2026-02-17

@@ -3,6 +3,8 @@ sidebar_label: "Languages Read"
 keywords:
   - "/o"
   - "o"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Locale - Languages Read
@@ -19,12 +21,7 @@ Returns language usage metrics for an app and selected period. Data is aggregate
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. **API Key** (parameter): `api_key=YOUR_API_KEY`
-2. **Auth Token** (parameter): `auth_token=YOUR_AUTH_TOKEN`
-3. **Auth Token** (header): `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -41,6 +38,20 @@ Requires `locale` `Read` permission.
 | `period` | String | No | Time range accepted by Countly period parser (default behavior follows shared fetch logic). |
 | `timezone` | String | No | Timezone used for period calculations. |
 | `action` | String | No | Optional mode switch. Use `refresh` to return only the latest refresh-focused slice instead of a full-period merge. |
+
+## Examples
+
+### Read language metrics for current month
+
+```plaintext
+/o?method=langs&api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&period=month
+```
+
+### Read language metrics for last 7 days
+
+```plaintext
+/o?method=langs&api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&period=7days
+```
 
 ## Response
 
@@ -154,7 +165,7 @@ Requires `locale` `Read` permission.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -162,30 +173,6 @@ Requires `locale` `Read` permission.
 |---|---|---|---|
 | Standard read | `action` is not `refresh` | Validates access and returns merged locale time-object data for the requested period. | Raw root object keyed by time buckets plus `meta`. |
 | Refresh read | `action=refresh` | Validates access and returns refresh-focused fields (latest daily/weekly/monthly slices and metadata). | Raw root object with a reduced metric slice for fast refresh use. |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication and permission checks | Reads member account, role, lock state, and feature access rights. |
-| `countly.apps` | App validation and context loading | Validates `app_id` and loads app timezone/country context for period handling. |
-| `countly.langs` | Stores aggregated locale/language metrics | Reads language metric documents for the requested app and period. |
-
----
-
-## Examples
-
-### Read language metrics for current month
-
-```plaintext
-/o?method=langs&api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&period=month
-```
-
-### Read language metrics for last 7 days
-
-```plaintext
-/o?method=langs&api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&period=7days
-```
 
 ## Limitations
 
@@ -196,6 +183,15 @@ Requires `locale` `Read` permission.
 
 - [Locale - Language Map Read](o-langmap.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication and permission checks | Reads member account, role, lock state, and feature access rights. |
+| `countly.apps` | App validation and context loading | Validates `app_id` and loads app timezone/country context for period handling. |
+| `countly.langs` | Stores aggregated locale/language metrics | Reads language metric documents for the requested app and period. |
+
+</details>

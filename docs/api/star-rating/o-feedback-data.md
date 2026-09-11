@@ -4,6 +4,8 @@ keywords:
   - "/o/feedback/data"
   - "data"
   - "feedback"
+last_update:
+  date: "2026-03-07"
 ---
 
 # Star Rating - Get Feedback Data
@@ -20,12 +22,7 @@ Returns tabular star-rating submissions from drill events with filtering, sortin
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. `api_key=YOUR_API_KEY`
-2. `auth_token=YOUR_AUTH_TOKEN`
-3. `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -51,6 +48,19 @@ Requires `star_rating` `Read` permission.
 | `iSortCol_0` | Number | No | Sort column index (`0..3`). |
 | `sSortDir_0` | String | No | Sort direction (`asc`/`desc`). |
 | `sEcho` | String | No | Echo value returned in response. |
+
+## Examples
+
+### Read feedback submissions for last 30 days
+
+```plaintext
+/o/feedback/data?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  period=30days&
+  iDisplayStart=0&
+  iDisplayLength=50
+```
 
 ## Response
 
@@ -112,35 +122,23 @@ Requires `star_rating` `Read` permission.
 
 Standard authentication/authorization errors from read validation can also be returned.
 
-## Behavior/Processing
+## Behavior
 
 - Reads from `drill_events` collection in drill database with fixed event key `[CLY]_star_rating`.
 - Applies filter fields on `sg.*`, `uid`, `did`, and period timestamp range.
 - Supports DataTables-style sort/pagination parameters.
 
-## Database Collections
+## Related Endpoints
+
+- [Star Rating - Record Feedback](i-feedback-input.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
 | `countly_drill.drill_events` | Feedback event source | Reads star-rating events (`e="[CLY]_star_rating"`). |
 
-## Examples
-
-### Read feedback submissions for last 30 days
-
-```plaintext
-/o/feedback/data?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  period=30days&
-  iDisplayStart=0&
-  iDisplayLength=50
-```
-
-## Related Endpoints
-
-- [Star Rating - Record Feedback](i-feedback-input.md)
-
-## Last Updated
-
-2026-03-07
+</details>

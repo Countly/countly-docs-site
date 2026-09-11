@@ -1,6 +1,8 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Locale - API Documentation
@@ -14,16 +16,17 @@ The Locale feature provides app-level language usage analytics and a language me
 - [Locale - Languages Read](o-langs.md)
 - [Locale - Language Map Read](o-langmap.md)
 
-## Database Collections
+## Configuration & Settings
+
+Locale uses core analytics storage and permissions. No dedicated Locale-specific runtime settings are applied to these endpoints.
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Purpose |
 |---|---|
 | `countly.langs` | Stores aggregated language metrics by app and time period for locale analytics responses. |
 
-## Configuration & Settings
-
-Locale uses core analytics storage and permissions. No dedicated Locale-specific runtime settings are applied to these endpoints.
-
-## Last Updated
-
-2026-02-17
+</details>

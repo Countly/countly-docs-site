@@ -3,18 +3,21 @@ sidebar_label: "Receive"
 keywords:
   - "/i/adjust"
   - "adjust"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Adjust - Receive Callback
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
 ```text
 /i/adjust
 ```
-
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
 
 ## Overview
 
@@ -52,6 +55,20 @@ If no matching user exists, payload is stored for deferred attribution.
 | `installed_at` | String | No | Install timestamp from callback |
 | `click_time` | String | No | Click timestamp from callback |
 | Other callback fields | String | No | Additional Adjust fields are accepted and stored/attributed |
+
+## Examples
+
+### Example 1: Install callback with attribution ID
+
+```bash
+curl "https://your-server.com/i/adjust?app_key=YOUR_APP_KEY&adjust_id=abc123&event=install&campaign_name=Spring_Campaign"
+```
+
+### Example 2: Callback with tracker fields
+
+```bash
+curl "https://your-server.com/i/adjust?app_key=YOUR_APP_KEY&adjust_id=abc123&event=click&tracker_name=paid_social&network_name=Meta"
+```
 
 ## Response
 
@@ -140,7 +157,7 @@ Deferred attribution storage example:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 1. Validates `app_key` and resolves app.
 2. Rejects paused apps.
@@ -148,30 +165,6 @@ Deferred attribution storage example:
 4. Tries to find user by `custom.adjust_id`.
 5. If matched, attributes immediately and returns `status: attributed`.
 6. If unmatched, stores payload in `countly.adjust` and returns insert details.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.apps` | App configuration and metadata | Stores app-level feature settings and metadata used or modified by this endpoint. |
-| `countly.app_users{appId}` | Per-app user profiles | Stores user-level properties and profile fields affected by this endpoint. |
-| `countly.adjust` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
-
----
-
-## Examples
-
-### Example 1: Install callback with attribution ID
-
-```bash
-curl "https://your-server.com/i/adjust?app_key=YOUR_APP_KEY&adjust_id=abc123&event=install&campaign_name=Spring_Campaign"
-```
-
-### Example 2: Callback with tracker fields
-
-```bash
-curl "https://your-server.com/i/adjust?app_key=YOUR_APP_KEY&adjust_id=abc123&event=click&tracker_name=paid_social&network_name=Meta"
-```
 
 ## Limitations
 
@@ -184,24 +177,15 @@ curl "https://your-server.com/i/adjust?app_key=YOUR_APP_KEY&adjust_id=abc123&eve
 
 - [Adjust - Overview](index.md)
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Database Collections**
 
-This feature is part of **Countly Enterprise**.
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.apps` | App configuration and metadata | Stores app-level feature settings and metadata used or modified by this endpoint. |
+| `countly.app_users{appId}` | Per-app user profiles | Stores user-level properties and profile fields affected by this endpoint. |
+| `countly.adjust` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions.
-
-## Last Updated
-
-2026-02-15
----
-
-## Last Updated
-
-2026-02-16
+</details>

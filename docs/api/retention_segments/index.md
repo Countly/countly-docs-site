@@ -1,16 +1,18 @@
 ---
 sidebar_position: 5
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-11"
 ---
 
 # Retention Segments API Documentation
 
+:::note Enterprise
+This feature is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
+
 **Feature**: retention_segments  
 **Version**: Enterprise  
-**Last Updated**: 2026-02-11
-
-> Ⓔ **Enterprise Only**  
-> This feature is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
 
 ## Overview
 
@@ -66,12 +68,6 @@ All endpoints require:
 - App ID parameter
 - Read access for `retention_segments` feature
 
-## Database Collections
-
-- **`countly.drill_events{app_id}`**: Underlying drill event data used for retention calculations
-- **`countly.retention_cache`**: Cached retention calculation results (TTL: 10 minutes)
-- **`countly.app_users{app_id}`**: User profiles with retention-related fields
-
 ## Best Practices
 
 1. **Use Caching**: Allow retention calculations to cache for performance
@@ -95,22 +91,17 @@ All endpoints require:
 - **Funnels**: Compare funnel conversion with retention patterns
 - **Formulas**: Create custom retention metrics
 
----
-
 _Last Updated: 2026-02-11_  
 _Feature: retention_segments_  
 _Configuration: `span: 10`_
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Database Collections**
 
-This feature is part of **Countly Enterprise**.
+- **`countly.drill_events{app_id}`**: Underlying drill event data used for retention calculations
+- **`countly.retention_cache`**: Cached retention calculation results (TTL: 10 minutes)
+- **`countly.app_users{app_id}`**: User profiles with retention-related fields
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
+</details>

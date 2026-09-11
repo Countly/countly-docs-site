@@ -4,11 +4,15 @@ keywords:
   - "/i/data-manager/export-schema"
   - "export-schema"
   - "data-manager"
+last_update:
+  date: "2026-02-16"
 ---
+
 # Export event schema as CSV
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -22,12 +26,7 @@ Exports app event and segment schema as a CSV document.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -40,6 +39,13 @@ Requires `data_manager` `Read` permission.
 | `app_id` | String | Yes | Target app ID. |
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
+
+## Examples
+
+```text
+/i/data-manager/export-schema?
+  app_id=64f5c0d8f4f7ac0012ab3456
+```
 
 ## Response
 
@@ -69,18 +75,30 @@ Note: the endpoint returns raw CSV body (`text/csv`) via `common.returnRaw(...)`
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Builds event map from `countly.events` and `countly_drill.drill_meta`.
 - Joins category names from `countly.event_categories`.
 - Expands segment rows (including list options when available).
 - Returns CSV with `Content-Type: text/csv`.
 
-## Audit & System Logs
+## Operational Considerations
+
+- Export performs metadata joins across events, drill meta, and categories, then renders CSV in-memory.
+- Large event catalogs with many segments can produce large response bodies.
+
+## Related Endpoints
+
+- [Schema Import - Update](schema-import-update.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Audit & System Logs**
 
 - This endpoint does not emit `/systemlogs` actions.
 
-## Database Collections
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -88,28 +106,4 @@ Note: the endpoint returns raw CSV body (`text/csv`) via `common.returnRaw(...)`
 | `countly_drill.drill_meta` | Extended event/segment metadata source | Reads status/type/regex/list-value metadata merged into CSV rows. |
 | `countly.event_categories` | Category-name lookup | Resolves event category IDs to display names in export output. |
 
----
-
-## Examples
-
-```text
-/i/data-manager/export-schema?
-  app_id=64f5c0d8f4f7ac0012ab3456
-```
-
-## Operational Considerations
-
-- Export performs metadata joins across events, drill meta, and categories, then renders CSV in-memory.
-- Large event catalogs with many segments can produce large response bodies.
-
----
-
-## Related Endpoints
-
-- [Schema Import - Update](schema-import-update.md)
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

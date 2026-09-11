@@ -1,15 +1,18 @@
 ---
 sidebar_label: "Read State"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Get Cohort Processing State
 
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
+
 ## Endpoint
 
 `/o?method=cohortstate`
-
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
 
 ## Overview
 
@@ -17,10 +20,8 @@ Retrieves the current processing state and status of a cohort. Shows whether coh
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required permission**: `Read` on the `cohorts` feature
@@ -34,12 +35,16 @@ Retrieves the current processing state and status of a cohort. Shows whether coh
 | app_id | String | Yes | Application identifier |
 | cohort | String | No | Optional; not used by current handler branch |
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `cohorts.*` | Cohort feature defaults | Cohort query/evaluation behavior used by this endpoint. | Changes to cohort settings can affect result scope, calculation behavior, or filtering outcomes. |
-| `api.*` | Server API defaults | Shared API execution controls (for example processing thresholds/limits). | Changes to API-level controls can affect runtime behavior, limits, or response timing for this endpoint. |
+### Example 1: Check cohort calculation state
+
+**Request**:
+```bash
+curl -X GET "https://your-server.com/o?method=cohortstate" \
+  -d "api_key=YOUR_API_KEY" \
+  -d "app_id=YOUR_APP_ID"
+```
 
 ## Response
 
@@ -75,9 +80,7 @@ Retrieves the current processing state and status of a cohort. Shows whether coh
 
 No explicit `returnMessage(...)` path in this branch.
 
----
-
-## Behavior/Processing
+## Behavior
 
 - Validates read permission for `cohorts` feature.
 - Returns the current cached cohort configuration from `cohorts.getCurrentCohortConfig(...)`.
@@ -87,44 +90,15 @@ No explicit `returnMessage(...)` path in this branch.
 
 - This endpoint returns configuration/cache state, not a single cohort progress percentage.
 
----
-
-## Examples
-
-### Example 1: Check cohort calculation state
-
-**Request**:
-```bash
-curl -X GET "https://your-server.com/o?method=cohortstate" \
-  -d "api_key=YOUR_API_KEY" \
-  -d "app_id=YOUR_APP_ID"
-```
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.cohorts` | Collection: | Source of state information |
-
----
-
 ## Limitations
 
 - Does not show per-cohort progress percentage.
 - Returns snapshot-style config/cache state.
 
----
-
-## Database Collections
-
-- `countly.cohorts` - Stores cohort processing state and status
-
 ## Related Endpoints
 
 - [Get single cohort](cohort-single-read.md) - GET /o?method=get_cohort
 - [Recalculate cohort](cohort-recalculate.md) - POST /i/cohorts/recalculate
-
----
 
 ## Use Cases
 
@@ -134,22 +108,24 @@ curl -X GET "https://your-server.com/o?method=cohortstate" \
 4. **UI status**: Show cohort state (loading/ready) in interface
 5. **Health check**: Verify cohort is in healthy state
 
+<details>
+<summary>Implementation details</summary>
 
----
+**Configuration Impact**
 
-## Ⓔ Enterprise
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `cohorts.*` | Cohort feature defaults | Cohort query/evaluation behavior used by this endpoint. | Changes to cohort settings can affect result scope, calculation behavior, or filtering outcomes. |
+| `api.*` | Server API defaults | Shared API execution controls (for example processing thresholds/limits). | Changes to API-level controls can affect runtime behavior, limits, or response timing for this endpoint. |
 
-This feature is part of **Countly Enterprise**.
+**Database Collections**
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.cohorts` | Collection: | Source of state information |
 
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
+**Database Collections**
 
----
+- `countly.cohorts` - Stores cohort processing state and status
 
-## Last Updated
-
-2026-02-16
+</details>

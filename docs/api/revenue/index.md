@@ -5,14 +5,13 @@ sidebar_position: 1
 
 # Revenue
 
-> Ⓔ **Enterprise Only**  
-> This feature is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This feature is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Overview
 
 The Revenue feature tracks and analyzes in-app purchase and monetization metrics. Monitor paying users, revenue trends, and purchase patterns across time periods. Segment revenue data by in-app events and calculate paying user metrics automatically.
-
----
 
 ## Key Features
 
@@ -25,8 +24,6 @@ The Revenue feature tracks and analyzes in-app purchase and monetization metrics
 - **Period Analysis**: Compare revenue across custom date ranges
 - **Purchase Frequency**: Track repeat purchase behavior
 
----
-
 ## Configuration
 
 Revenue feature configuration includes:
@@ -36,8 +33,6 @@ Revenue feature configuration includes:
 | `iap_events` | Array | List of event names representing in-app purchases |
 
 The `iap_events` configuration specifies which events should be counted as purchases. These events typically have `sum` values representing purchase amounts.
-
----
 
 ## Revenue Tracking
 
@@ -54,21 +49,6 @@ Revenue is tracked through:
    - `d.p` or `d.{period}.p`: Count of paying users in period
    - Tracked at day, week, month, and year granularities
 
----
-
-## Database Collections
-
-- **Collection**: `countly.app_users{app_id}`
-  - Stores user purchase data (tp, tpc, lp, lpa, purchased)
-- **Collection**: `countly.users`
-  - Aggregated paying user counts by time period
-- **Collection**: `countly_drill.drill_events`
-  - Source for revenue event data
-- **Collection**: `countly.apps`
-  - Stores IAP event configuration
-
----
-
 ## API Endpoints
 
 ### Read Endpoints
@@ -77,8 +57,6 @@ Revenue is tracked through:
 ### Dashboard Integration
 - Revenue widgets automatically calculate and display metrics
 
----
-
 ## Export Data
 
 Revenue data can be exported for external analysis through:
@@ -86,16 +64,12 @@ Revenue data can be exported for external analysis through:
 - Custom event filtering
 - Period-based analysis
 
----
-
 ## Authentication Requirements
 
 All revenue endpoints require:
 - **Feature Permission**: `revenue` feature enabled for user
 - **App Access**: User must have read access to the specific app
 - **Method**: GET or POST (both accepted)
-
----
 
 ## Common Use Cases
 
@@ -106,15 +80,11 @@ All revenue endpoints require:
 5. **Revenue Forecasting**: Predict future revenue based on trends
 6. **Custom Reports**: Export revenue data for business intelligence
 
----
-
 ## Related Features
 
 - **[Events](../flows/index.md)** - Define purchase events
 - **[Drill](../drill/index.md)** - Analyze event data in detail
 - **[Data Manager](../data-manager/index.md)** - Configure event properties
-
----
 
 ## Best Practices
 
@@ -125,8 +95,6 @@ All revenue endpoints require:
 - **Segmentation**: Analyze revenue by user properties for better targeting
 - **Data Validation**: Verify IAP events are being tracked correctly
 
----
-
 ## Performance Considerations
 
 - Revenue calculations performed asynchronously
@@ -134,16 +102,18 @@ All revenue endpoints require:
 - Paying user aggregation cached for dashboard efficiency
 - Custom queries filtered through drill database
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Database Collections**
 
-This feature is part of **Countly Enterprise**.
+- **Collection**: `countly.app_users{app_id}`
+  - Stores user purchase data (tp, tpc, lp, lpa, purchased)
+- **Collection**: `countly.users`
+  - Aggregated paying user counts by time period
+- **Collection**: `countly_drill.drill_events`
+  - Source for revenue event data
+- **Collection**: `countly.apps`
+  - Stores IAP event configuration
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
+</details>

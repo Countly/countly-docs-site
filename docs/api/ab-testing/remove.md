@@ -4,9 +4,15 @@ keywords:
   - "/i/ab-testing/remove-experiment"
   - "remove-experiment"
   - "ab-testing"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Remove Experiment
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -14,19 +20,14 @@ keywords:
 /i/ab-testing/remove-experiment
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Delete an experiment and its associated data, including variant cohorts.
 
 ## Authentication
 
-**Authentication Methods**:
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - Delete (ab_testing feature)
@@ -39,6 +40,18 @@ Delete an experiment and its associated data, including variant cohorts.
 | `auth_token` | String | Yes (or use `api_key`) | Auth token for authentication |
 | `app_id` | String | Yes | Application identifier |
 | `experiment_id` | String | Yes | Experiment ObjectId to remove |
+
+## Examples
+
+### Example 1: Remove an Experiment
+
+**Request**:
+```bash
+curl "https://your-server.com/i/ab-testing/remove-experiment" \
+  -d "api_key=YOUR_API_KEY" \
+  -d "app_id=YOUR_APP_ID" \
+  -d "experiment_id=5f9c8a3b4d1e2a001f3b4567"
+```
 
 ## Response
 
@@ -70,7 +83,7 @@ Delete an experiment and its associated data, including variant cohorts.
   "result": "Missing experiment_id"
 }
 ```
-- **HTTP 500** - Experiment doesn't exist:
+- **HTTP 500** - Experiment does not exist:
 ```json
 {
   "result": "The experiment does not exist."
@@ -83,13 +96,22 @@ Delete an experiment and its associated data, including variant cohorts.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Deletes the experiment document from `countly_out.ab_testing_experiments{appId}`.
 - Deletes cohorts created for variants and removes cohort data.
 - Attempts to remove experiment assignments from `countly.app_users{appId}`.
 
-## Database Collections
+## Related Endpoints
+
+- [Start Experiment](start.md)
+- [Stop Experiment](stop.md)
+- [Reset Experiment](reset.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -98,39 +120,4 @@ Delete an experiment and its associated data, including variant cohorts.
 | `countly.cohortdata` | Related: | Removes cohort membership data. |
 | `countly.app_users{appId}` | Related: | Removes experiment assignments from user documents. |
 
-## Examples
-
-### Example 1: Remove an Experiment
-
-**Request**:
-```bash
-curl "https://your-server.com/i/ab-testing/remove-experiment" \
-  -d "api_key=YOUR_API_KEY" \
-  -d "app_id=YOUR_APP_ID" \
-  -d "experiment_id=5f9c8a3b4d1e2a001f3b4567"
-```
-
-## Related Endpoints
-
-- [Start Experiment](start.md)
-- [Stop Experiment](stop.md)
-- [Reset Experiment](reset.md)
-
----
-
-## Ⓔ Enterprise
-
-This feature is part of **Countly Enterprise**.
-
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

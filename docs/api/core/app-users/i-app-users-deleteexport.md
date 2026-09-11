@@ -5,6 +5,8 @@ keywords:
   - "deleteExport"
   - "app_users"
   - "{id}"
+last_update:
+  date: "2026-02-17"
 ---
 
 # `/i/app_users/deleteExport/\{id\}`
@@ -21,9 +23,7 @@ Delete an existing app-user export artifact.
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -37,6 +37,20 @@ Delete an existing app-user export artifact.
 | `auth_token` | String | Yes (or use `api_key`) | Dashboard auth token. |
 | `app_id` | String | Yes | Target app ID for permission validation. |
 | `id` | String | Yes | Export file identifier from path segment. |
+
+## Examples
+
+### Example 1: Delete export
+
+```plaintext
+/i/app_users/deleteExport/appUser_64b0ac10c2c3ce0012dd1001_1?api_key=YOUR_API_KEY&app_id=64b0ac10c2c3ce0012dd1001
+```
+
+```json
+{
+  "result": "Export deleted"
+}
+```
 
 ## Response
 
@@ -91,7 +105,7 @@ Delete an existing app-user export artifact.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -106,13 +120,25 @@ Delete an existing app-user export artifact.
 - Removes export payload records from `countly.exports`.
 - For single-user exports, updates `countly.app_users\{appId\}` to remove stored `appUserExport` path.
 
-## Audit & System Logs
+## Limitations
+
+- `id` must follow expected export naming format.
+
+## Related Endpoints
+
+- [App Users - Export](i-app-users-export.md)
+- [App Users - Download Export](o-app-users-download.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Audit & System Logs**
 
 | Action | Trigger | Payload |
 |---|---|---|
 | `export_app_user_deleted` | Successful export deletion | `{ result, id, app_id, info }` (plus `uids` for single-user export IDs) |
 
-## Database Collections
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -121,31 +147,4 @@ Delete an existing app-user export artifact.
 | `countly.app_users\{appId\}` | Single-user export metadata cleanup | Unsets `appUserExport` when the deleted export belongs to one user. |
 | `countly_fs` | Export archive cleanup | Deletes archive objects from GridFS `appUsers` bucket when present. |
 
----
-## Examples
-
-### Example 1: Delete export
-
-```plaintext
-/i/app_users/deleteExport/appUser_64b0ac10c2c3ce0012dd1001_1?api_key=YOUR_API_KEY&app_id=64b0ac10c2c3ce0012dd1001
-```
-
-```json
-{
-  "result": "Export deleted"
-}
-```
-
-## Limitations
-
-- `id` must follow expected export naming format.
-
----
-## Related Endpoints
-
-- [App Users - Export](i-app-users-export.md)
-- [App Users - Download Export](o-app-users-download.md)
-
-## Last Updated
-
-2026-02-17
+</details>

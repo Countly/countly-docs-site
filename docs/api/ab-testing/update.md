@@ -4,9 +4,15 @@ keywords:
   - "/i/ab-testing/update-experiment"
   - "update-experiment"
   - "ab-testing"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Update Experiment
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -14,19 +20,14 @@ keywords:
 /i/ab-testing/update-experiment
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Update experiment configuration while in draft status. Running or completed experiments cannot be updated.
 
 ## Authentication
 
-**Authentication Methods**:
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - Update (ab_testing feature)
@@ -40,6 +41,24 @@ Update experiment configuration while in draft status. Running or completed expe
 | `app_id` | String | Yes | Application identifier |
 | `experiment_id` | String | Yes | Experiment ObjectId to update |
 | `experiment` | String (JSON) | Yes | Updated experiment configuration (same structure as add-experiment) |
+
+## Examples
+
+### Example 1: Update Experiment Name and Description
+
+**Request**:
+```bash
+curl "https://your-server.com/i/ab-testing/update-experiment" \
+  -d "api_key=YOUR_API_KEY" \
+  -d "app_id=YOUR_APP_ID" \
+  -d "experiment_id=5f9c8a3b4d1e2a001f3b4567" \
+  -d 'experiment={"name":"Updated Button Test","description":"Updated description","variants":[{"name":"Control","parameters":[{"name":"button_color","value":"blue"}]},{"name":"Variant","parameters":[{"name":"button_color","value":"red"}]}],"target_users":{"percentage":"50","condition":"{}"},"goals":[{"steps":[{"type":"did","event":"click_button"}],"user_segmentation":"{}"}]}'
+```
+
+**Response**:
+```json
+{}
+```
 
 ## Response
 
@@ -90,55 +109,23 @@ This endpoint returns an empty JSON object on success.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Validates experiment structure, variants, and goals.
 - Updates experiment document only when status is `drafts`.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly_out.ab_testing_experiments{appId}` | Primary: | Updates experiment configuration for draft experiments. |
-
-## Examples
-
-### Example 1: Update Experiment Name and Description
-
-**Request**:
-```bash
-curl "https://your-server.com/i/ab-testing/update-experiment" \
-  -d "api_key=YOUR_API_KEY" \
-  -d "app_id=YOUR_APP_ID" \
-  -d "experiment_id=5f9c8a3b4d1e2a001f3b4567" \
-  -d 'experiment={"name":"Updated Button Test","description":"Updated description","variants":[{"name":"Control","parameters":[{"name":"button_color","value":"blue"}]},{"name":"Variant","parameters":[{"name":"button_color","value":"red"}]}],"target_users":{"percentage":"50","condition":"{}"},"goals":[{"steps":[{"type":"did","event":"click_button"}],"user_segmentation":"{}"}]}'
-```
-
-**Response**:
-```json
-{}
-```
 
 ## Related Endpoints
 
 - [Start Experiment](start.md)
 - [Remove Experiment](remove.md)
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Database Collections**
 
-This feature is part of **Countly Enterprise**.
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly_out.ab_testing_experiments{appId}` | Primary: | Updates experiment configuration for draft experiments. |
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

@@ -6,9 +6,15 @@ keywords:
   - "save"
   - "journey-engine"
   - "journeys"
+last_update:
+  date: "2026-04-18"
 ---
 
 # Journey Engine - Journeys Save
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -16,19 +22,14 @@ keywords:
 /i/journey-engine/journeys/save
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Create a new journey definition and its first version, or update an existing journey and version blocks.
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required permission**: `Create` on the `journey_engine` feature
@@ -44,76 +45,6 @@ Request body is JSON:
   - `_id` (optional): Version ID for update case
 - `_id` (optional): Journey definition ID for update case
 - `skip_threshold` (optional): Maximum instances per user for the version (0 or null disables)
-
-## Response
-
-### Success Response
-
-```json
-{
-  "_id": "67164f4a1f1bd90d6354430a",
-  "name": "Onboarding Journey",
-  "appId": "64afe321d5f9b2f77cb2c8ed",
-  "status": "draft",
-  "created": 1727101524294,
-  "updated": 1727101525000,
-  "createdBy": "John Admin",
-  "versions": [
-    {
-      "_id": "67164f4a1f1bd90d6354430b",
-      "version": 1,
-      "status": "draft",
-      "blocks": [
-        {
-          "id": "block_1",
-          "subType": "incoming-data"
-        }
-      ]
-    }
-  ]
-}
-```
-
-
-### Response Fields
-
-| Field | Type | Description |
-|---|---|---|
-| `_id` | String | Journey definition ID |
-| `name` | String | Journey definition name |
-| `appId` | String | Application ID |
-| `status` | String | Journey definition status |
-| `versions` | Array | Journey versions linked to the definition |
-| `versions[]._id` | String | Journey version ID |
-| `versions[].version` | Number | Version number |
-| `versions[].status` | String | Version status |
-| `versions[].blocks` | Array | Version block graph |
-### Error Responses
-
-- **HTTP 400**
-```json
-{
-  "result": "Invalid request"
-}
-```
-- **HTTP 400**
-```json
-{
-  "result": "Journey definition with the same name already exists"
-}
-```
-- **HTTP 500**
-```json
-{
-  "result": "Failed to create journey definition or version"
-}
-```
-- **HTTP 500**
-```json
-{
-  "result": "Failed to update journey definition or version"
-}
-```
 
 ## Examples
 
@@ -166,9 +97,76 @@ Content-Type: application/json
 }
 ```
 
----
+## Response
 
-## Behavior/Processing
+### Success Response
+
+```json
+{
+  "_id": "67164f4a1f1bd90d6354430a",
+  "name": "Onboarding Journey",
+  "appId": "64afe321d5f9b2f77cb2c8ed",
+  "status": "draft",
+  "created": 1727101524294,
+  "updated": 1727101525000,
+  "createdBy": "John Admin",
+  "versions": [
+    {
+      "_id": "67164f4a1f1bd90d6354430b",
+      "version": 1,
+      "status": "draft",
+      "blocks": [
+        {
+          "id": "block_1",
+          "subType": "incoming-data"
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Response Fields
+
+| Field | Type | Description |
+|---|---|---|
+| `_id` | String | Journey definition ID |
+| `name` | String | Journey definition name |
+| `appId` | String | Application ID |
+| `status` | String | Journey definition status |
+| `versions` | Array | Journey versions linked to the definition |
+| `versions[]._id` | String | Journey version ID |
+| `versions[].version` | Number | Version number |
+| `versions[].status` | String | Version status |
+| `versions[].blocks` | Array | Version block graph |
+### Error Responses
+
+- **HTTP 400**
+```json
+{
+  "result": "Invalid request"
+}
+```
+- **HTTP 400**
+```json
+{
+  "result": "Journey definition with the same name already exists"
+}
+```
+- **HTTP 500**
+```json
+{
+  "result": "Failed to create journey definition or version"
+}
+```
+- **HTTP 500**
+```json
+{
+  "result": "Failed to update journey definition or version"
+}
+```
+
+## Behavior
 
 - Requires request body JSON with `name` and `version`.
 - Create flow rejects duplicate non-deleted journey names within the same app.
@@ -179,7 +177,10 @@ Content-Type: application/json
 - Emits `journey_created` or `journey_edited` system log actions.
 - Returns the enriched journey definition from the same lookup path used by `GET /o/journey-engine/journey`.
 
-## Database Collections
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -187,19 +188,4 @@ Content-Type: application/json
 | `countly.journey_versions` | Journey version graph storage | Creates or updates version documents containing block graph, version metadata, and version status. |
 | `countly.members` | Actor attribution | Resolves/records member identity information used in created/updated journey metadata. |
 
-## Ⓔ Enterprise
-
-This feature is part of **Countly Enterprise**.
-
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-04-18
+</details>

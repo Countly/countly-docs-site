@@ -4,6 +4,8 @@ keywords:
   - "/i/remote-config/add-parameter"
   - "add-parameter"
   - "remote-config"
+last_update:
+  date: "2026-03-05"
 ---
 
 # Remote Config - Parameter Create
@@ -20,12 +22,7 @@ Creates a remote config parameter document for the app.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. `api_key=YOUR_API_KEY`
-2. `auth_token=YOUR_AUTH_TOKEN`
-3. `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -50,12 +47,13 @@ Requires `remote_config` `Create` permission.
 | `conditions` | Array | No | Condition-value list for this parameter. |
 | `_id` | String/ObjectId | No | Optional id for internal insertion paths. |
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `remote-config.maximum_allowed_parameters` | `2000` | Validation limit | Create fails once app reaches parameter limit. |
-| `remote-config.conditions_per_paramaeters` | `20` | Validation limit | Create fails when parameter has too many conditions. |
+### Create a parameter
+
+```plaintext
+/i/remote-config/add-parameter?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&parameter={"parameter_key":"button_color","default_value":"#FF5722","description":"Checkout button color"}
+```
 
 ## Response
 
@@ -111,7 +109,7 @@ No fields are returned on success for this endpoint.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Parses `parameter` JSON string.
 - Sets `status` to `Running` when missing.
@@ -119,35 +117,31 @@ No fields are returned on success for this endpoint.
 - Stores `ts` timestamp on parameter record.
 - Emits system log action: `rc_parameter_created`.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly_out.remoteconfig_parameters{appId}` | Parameter storage | Validates duplicates/limits and inserts parameter document. |
-| `countly.systemlogs` | Audit trail | Receives `rc_parameter_created` action. |
-
----
-
-## Examples
-
-### Create a parameter
-
-```plaintext
-/i/remote-config/add-parameter?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&parameter={"parameter_key":"button_color","default_value":"#FF5722","description":"Checkout button color"}
-```
-
 ## Limitations
 
 - `parameter` must be valid JSON string.
 - Parameter key must be unique per app.
-
----
 
 ## Related Endpoints
 
 - [Remote Config - Parameter Update](parameter-update.md)
 - [Remote Config - Parameter Delete](parameter-remove.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-03-05
+**Configuration Impact**
+
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `remote-config.maximum_allowed_parameters` | `2000` | Validation limit | Create fails once app reaches parameter limit. |
+| `remote-config.conditions_per_paramaeters` | `20` | Validation limit | Create fails when parameter has too many conditions. |
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly_out.remoteconfig_parameters{appId}` | Parameter storage | Validates duplicates/limits and inserts parameter document. |
+| `countly.systemlogs` | Audit trail | Receives `rc_parameter_created` action. |
+
+</details>

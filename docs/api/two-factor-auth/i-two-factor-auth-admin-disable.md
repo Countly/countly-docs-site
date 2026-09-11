@@ -3,6 +3,8 @@ sidebar_label: "Admin Disable"
 keywords:
   - "/i/two-factor-auth"
   - "two-factor-auth"
+last_update:
+  date: "2026-03-05"
 ---
 
 # Two Factor Auth - Admin Disable
@@ -19,12 +21,7 @@ Disables 2FA for a target user (admin operation).
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. `api_key=YOUR_API_KEY`
-2. `auth_token=YOUR_AUTH_TOKEN`
-3. `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -38,6 +35,14 @@ Requires Global Admin.
 | `api_key` | String | Yes (or use `auth_token`) | API key for authentication. |
 | `auth_token` | String | No | Auth token as query parameter or `countly-token` header. |
 | `uid` | String | Yes | Target user id. |
+
+## Examples
+
+### Admin disable target user 2FA
+
+```plaintext
+/i/two-factor-auth?api_key=YOUR_API_KEY&method=admin_disable&uid=65f1f7b2ad5b9b001f12ab34
+```
 
 ## Response
 
@@ -81,32 +86,23 @@ Requires Global Admin.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Sets `two_factor_auth.enabled=false` and removes `two_factor_auth.secret_token` for target user.
 - Emits system log action: `two_factor_auth_disabled` with `user_id` payload.
 
-## Database Collections
+## Related Endpoints
+
+- [Two Factor Auth - Admin Check](i-two-factor-auth-admin-check.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
 | `countly.members` | User account settings | Disables target user 2FA and removes secret. |
 | `countly.systemlogs` | Audit trail | Receives `two_factor_auth_disabled` action. |
 
----
-
-## Examples
-
-### Admin disable target user 2FA
-
-```plaintext
-/i/two-factor-auth?api_key=YOUR_API_KEY&method=admin_disable&uid=65f1f7b2ad5b9b001f12ab34
-```
-
-## Related Endpoints
-
-- [Two Factor Auth - Admin Check](i-two-factor-auth-admin-check.md)
-
-## Last Updated
-
-2026-03-05
+</details>

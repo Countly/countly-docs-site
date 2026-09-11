@@ -3,9 +3,15 @@ sidebar_label: "Sync"
 keywords:
   - "/i/crashes-jira"
   - "crashes-jira"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Sync crash and JIRA status
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -13,19 +19,14 @@ keywords:
 /i/crashes-jira?method=sync
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Synchronizes status between Countly crash groups and mapped JIRA issues.
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required permission**: `Update` on the `crashes` feature
@@ -40,11 +41,19 @@ Synchronizes status between Countly crash groups and mapped JIRA issues.
 | `api_key` | String | Yes (or `auth_token`) | API key authentication |
 | `auth_token` | String | Yes (or `api_key`) | Auth token authentication |
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `crashes-jira.*` | Crashes Jira integration defaults | Jira integration logic and synchronization behavior. | Changes to Jira integration settings can alter authentication, sync behavior, and returned integration state. |
+### Example 1: Sync one crash group
+
+```text
+/i/crashes-jira?method=sync&app_id=5f9c8a3b4d1e2a001f3b4567&crashgroup_id=65c5f2782c5f5300121a00c1&api_key=YOUR_API_KEY
+```
+
+### Example 2: Trigger sync for all mapped crash groups
+
+```text
+/i/crashes-jira?method=sync&app_id=5f9c8a3b4d1e2a001f3b4567&api_key=YOUR_API_KEY
+```
 
 ## Response
 
@@ -92,39 +101,12 @@ Possible success responses for single-crash sync:
 | 500 | `{ "result": "Failed to transition JIRA issue" }` |
 | 500 | `{ "result": "Could not find transition" }` |
 
-## Behavior/Processing
+## Behavior
 
 - Compares Countly crash states (`is_resolved`, `is_resolving`) with JIRA issue status.
 - If JIRA status is newer, Countly crash group is updated.
 - If Countly status is newer, endpoint tries to transition JIRA issue.
 - Updates `lastChecked` timestamp in mapping document.
-
----
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.apps` | App configuration and metadata | Stores app-level feature settings and metadata used or modified by this endpoint. |
-| `countly.app_crashgroups{app_id}` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
-| `countly.crashes_jira` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
-| `countly.crashes_jira{app_id}` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
-
----
-
-## Examples
-
-### Example 1: Sync one crash group
-
-```text
-/i/crashes-jira?method=sync&app_id=5f9c8a3b4d1e2a001f3b4567&crashgroup_id=65c5f2782c5f5300121a00c1&api_key=YOUR_API_KEY
-```
-
-### Example 2: Trigger sync for all mapped crash groups
-
-```text
-/i/crashes-jira?method=sync&app_id=5f9c8a3b4d1e2a001f3b4567&api_key=YOUR_API_KEY
-```
 
 ## Limitations
 
@@ -136,21 +118,22 @@ Possible success responses for single-crash sync:
 - [JIRA for Crashes - Create](create.md)
 - [JIRA for Crashes - List](issues.md)
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Configuration Impact**
 
-This feature is part of **Countly Enterprise**.
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `crashes-jira.*` | Crashes Jira integration defaults | Jira integration logic and synchronization behavior. | Changes to Jira integration settings can alter authentication, sync behavior, and returned integration state. |
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
+**Database Collections**
 
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.apps` | App configuration and metadata | Stores app-level feature settings and metadata used or modified by this endpoint. |
+| `countly.app_crashgroups{app_id}` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
+| `countly.crashes_jira` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
+| `countly.crashes_jira{app_id}` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 
----
-
-## Last Updated
-
-2026-02-16
+</details>

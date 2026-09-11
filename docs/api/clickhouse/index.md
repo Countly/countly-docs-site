@@ -1,6 +1,8 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-17"
 ---
 
 # ClickHouse - API Documentation
@@ -36,7 +38,3 @@ Primary runtime settings are read from `clickhouse` config namespace (for exampl
 - In cloud/external-schema mode, startup validates required schema objects and fails fast if missing.
 - In non-cloud mode, startup can bootstrap required SQL schema objects automatically.
 - Internal app lifecycle hooks clean ClickHouse records on app delete/reset/clear operations.
-
-## Last Updated
-
-2026-02-17

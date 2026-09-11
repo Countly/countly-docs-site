@@ -4,6 +4,8 @@ keywords:
   - "/i/users/create"
   - "create"
   - "users"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Users Management - User Create
@@ -20,9 +22,7 @@ Creates a new dashboard user account.
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -62,14 +62,13 @@ Example `args` value:
 }
 ```
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `security.password_min` | Server config | Password validation | Enforces minimum password length. |
-| `security.password_number` | Server config | Password validation | Requires number characters when enabled. |
-| `security.password_char` | Server config | Password validation | Requires uppercase characters when enabled. |
-| `security.password_symbol` | Server config | Password validation | Requires symbol characters when enabled. |
+### Example 1: Create dashboard user
+
+```plaintext
+/i/users/create?api_key=YOUR_API_KEY&args={"full_name":"Jane Manager","username":"jane","password":"StrongPass123!","email":"jane@example.com"}
+```
 
 ## Response
 
@@ -146,7 +145,7 @@ Example `args` value:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -159,31 +158,6 @@ Example `args` value:
 
 - Creates an invite/reset record for the new user in `countly.password_reset`.
 
-## Audit & System Logs
-
-| Action | Trigger |
-|---|---|
-| `user_created` | Successful user creation (when System Logs module is enabled). |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Primary user storage. | Checks duplicate email/username, inserts new user. |
-| `countly.password_reset` | Invite/reset lifecycle. | Inserts initial invite/reset record for new user. |
-
----
-
-## Examples
-
-### Example 1: Create dashboard user
-
-```plaintext
-/i/users/create?api_key=YOUR_API_KEY&args={"full_name":"Jane Manager","username":"jane","password":"StrongPass123!","email":"jane@example.com"}
-```
-
----
-
 ## Limitations
 
 - Global-admin-only endpoint.
@@ -194,6 +168,29 @@ Example `args` value:
 - [User Update](i-users-update.md)
 - [User Delete](i-users-delete.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Configuration Impact**
+
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `security.password_min` | Server config | Password validation | Enforces minimum password length. |
+| `security.password_number` | Server config | Password validation | Requires number characters when enabled. |
+| `security.password_char` | Server config | Password validation | Requires uppercase characters when enabled. |
+| `security.password_symbol` | Server config | Password validation | Requires symbol characters when enabled. |
+
+**Audit & System Logs**
+
+| Action | Trigger |
+|---|---|
+| `user_created` | Successful user creation (when System Logs module is enabled). |
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Primary user storage. | Checks duplicate email/username, inserts new user. |
+| `countly.password_reset` | Invite/reset lifecycle. | Inserts initial invite/reset record for new user. |
+
+</details>

@@ -1,11 +1,14 @@
 ---
 sidebar_label: "Configuration"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Revenue - Configuration Reference
 
-> Ⓔ **Enterprise Only**  
-> This feature is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Overview
 
@@ -27,14 +30,6 @@ When an incoming SDK event matches configured `iap_events` and has `sum`:
 - Aggregated paying-user counters are updated in time buckets.
 - Revenue analytics endpoint (`/o/revenue`) can report `p` values and purchase totals.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.apps` | App configuration and metadata | Stores app-level feature settings and metadata used or modified by this endpoint. |
-| `countly.app_users{appId}` | Per-app user profiles | Stores user-level properties and profile fields affected by this endpoint. |
-| `countly.users` | User aggregates | Stores app-level user aggregate counters/metrics read or updated by this endpoint. |
-
 ## Best Practices
 
 - Keep event names stable and consistent.
@@ -45,19 +40,15 @@ When an incoming SDK event matches configured `iap_events` and has `sum`:
 
 - [Revenue - Analytics](analytics.md)
 
-## Ⓔ Enterprise
+<details>
+<summary>Implementation details</summary>
 
-This feature is part of **Countly Enterprise**.
+**Database Collections**
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.apps` | App configuration and metadata | Stores app-level feature settings and metadata used or modified by this endpoint. |
+| `countly.app_users{appId}` | Per-app user profiles | Stores user-level properties and profile fields affected by this endpoint. |
+| `countly.users` | User aggregates | Stores app-level user aggregate counters/metrics read or updated by this endpoint. |
 
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions.
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

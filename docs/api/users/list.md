@@ -3,9 +3,15 @@ sidebar_label: "List/Profile"
 keywords:
   - "/o"
   - "o"
+last_update:
+  date: "2026-04-17"
 ---
 
 # User Profiles - List or Profile
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -13,19 +19,13 @@ keywords:
 /o?method=user_details
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Returns either a paginated users list, a single user profile (when `uid` or `did` is provided), or a user-property breakdown when `projectionKey` is provided.
 
 ## Authentication
 
-**Authentication methods**:
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -63,11 +63,47 @@ Returns either a paginated users list, a single user profile (when `uid` or `did
 | `r_hour` | Number | No | Auto-refresh hour for a long task. Defaults to `2`. |
 | `linked_to` | String | No | Optional long-task link target. |
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `users.show_notes_in_list` | `true` | List projection fields | Adds/removes `note` field in `aaData` list rows |
+```text
+/o?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&method=user_details&iDisplayStart=0&iDisplayLength=20
+```
+
+```text
+/o?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&method=user_details&uid=u_102
+```
+
+### Filter users with a Drill-style user query
+
+```text
+/o?api_key=YOUR_API_KEY&
+  app_id=YOUR_APP_ID&
+  method=user_details&
+  query={"up.cc":{"$in":["US","CA"]},"up.p":{"$in":["iOS"]}}&
+  iDisplayStart=0&
+  iDisplayLength=20
+```
+
+### Return a user-property breakdown
+
+```text
+/o?api_key=YOUR_API_KEY&
+  app_id=YOUR_APP_ID&
+  method=user_details&
+  query={"up.cc":{"$in":["US","CA"]}}&
+  projectionKey=["cc"]
+```
+
+### Include extra visible columns
+
+```text
+/o?api_key=YOUR_API_KEY&
+  app_id=YOUR_APP_ID&
+  method=user_details&
+  visibleColumns=["email","custom.plan","chr-group"]&
+  iDisplayStart=0&
+  iDisplayLength=50
+```
 
 ## Response
 
@@ -180,7 +216,7 @@ For expensive list or breakdown requests, the task manager may return a task id 
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Without `uid`/`did`, returns list mode with filtering, sorting, and pagination.
 - With `uid`/`did`, returns one user profile object.
@@ -193,75 +229,25 @@ For expensive list or breakdown requests, the task manager may return a task id 
 - If `users.show_notes_in_list` is enabled, list rows include `note`.
 - Expensive list or breakdown requests can return `{ "task_id": "..." }` while the task manager continues processing.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.app_users{appId}` | Per-app user profiles | Stores user-level properties and profile fields affected by this endpoint. |
-
----
-
-## Examples
-
-```text
-/o?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&method=user_details&iDisplayStart=0&iDisplayLength=20
-```
-
-```text
-/o?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&method=user_details&uid=u_102
-```
-
-### Filter users with a Drill-style user query
-
-```text
-/o?api_key=YOUR_API_KEY&
-  app_id=YOUR_APP_ID&
-  method=user_details&
-  query={"up.cc":{"$in":["US","CA"]},"up.p":{"$in":["iOS"]}}&
-  iDisplayStart=0&
-  iDisplayLength=20
-```
-
-### Return a user-property breakdown
-
-```text
-/o?api_key=YOUR_API_KEY&
-  app_id=YOUR_APP_ID&
-  method=user_details&
-  query={"up.cc":{"$in":["US","CA"]}}&
-  projectionKey=["cc"]
-```
-
-### Include extra visible columns
-
-```text
-/o?api_key=YOUR_API_KEY&
-  app_id=YOUR_APP_ID&
-  method=user_details&
-  visibleColumns=["email","custom.plan","chr-group"]&
-  iDisplayStart=0&
-  iDisplayLength=50
-```
-
 ## Related Endpoints
 
 - [User Profiles - Timeline Graph](graph.md)
 - [User Profiles - Sessions](sessions.md)
 - [User Profiles - Events Table](events-table.md)
 
-## Ⓔ Enterprise
+<details>
+<summary>Implementation details</summary>
 
-This feature is part of **Countly Enterprise**.
+**Configuration Impact**
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `users.show_notes_in_list` | `true` | List projection fields | Adds/removes `note` field in `aaData` list rows |
 
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions.
+**Database Collections**
 
----
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.app_users{appId}` | Per-app user profiles | Stores user-level properties and profile fields affected by this endpoint. |
 
-## Last Updated
-
-2026-04-17
+</details>

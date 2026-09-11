@@ -4,12 +4,15 @@ keywords:
   - "/o/calculated_metrics/metrics"
   - "metrics"
   - "calculated_metrics"
+last_update:
+  date: "2026-02-16"
 ---
 
 # List formulas
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -23,12 +26,7 @@ Returns formulas available to the current user in the app.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -42,6 +40,19 @@ Requires `formulas` `Read` permission.
 | `for_widgets` | Boolean/String | No | If provided, returns only `_id` and `title`. |
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
+
+## Examples
+
+```text
+/o/calculated_metrics/metrics?
+  app_id=64f5c0d8f4f7ac0012ab3456
+```
+
+```text
+/o/calculated_metrics/metrics?
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  for_widgets=true
+```
 
 ## Response
 
@@ -87,34 +98,11 @@ No explicit error response is returned by this handler; on DB failure, an empty 
 - Formulas owned by current user.
 - Private formulas shared with current user's email.
 
-## Behavior/Processing
+## Behavior
 
 - Uses visibility filter for non-global admins.
 - Excludes `expression` field from response.
 - When `for_widgets` is provided, response contains only `_id` and `title`.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.calculated_metrics` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
-
----
-
-## Examples
-
-```text
-/o/calculated_metrics/metrics?
-  app_id=64f5c0d8f4f7ac0012ab3456
-```
-
-```text
-/o/calculated_metrics/metrics?
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  for_widgets=true
-```
-
----
 
 ## Related Endpoints
 
@@ -122,8 +110,13 @@ No explicit error response is returned by this handler; on DB failure, an empty 
 - [Formulas - Read](get-single.md)
 - [Formulas - Save](save.md)
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Last Updated
+**Database Collections**
 
-2026-02-16
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.calculated_metrics` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
+
+</details>

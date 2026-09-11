@@ -1,15 +1,18 @@
 ---
 sidebar_label: "Cleanup"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Clean Up Unused Cohort Data
 
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
+
 ## Endpoint
 
 `/i/cohorts/cleanup`
-
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
 
 ## Overview
 
@@ -17,10 +20,8 @@ Removes orphaned or unreferenced cohort data from the system. Performs maintenan
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required permission**: `Update` on the `cohorts` feature
@@ -32,6 +33,17 @@ Removes orphaned or unreferenced cohort data from the system. Performs maintenan
 | api_key | String | Yes (or auth_token) | API key for authentication |
 | auth_token | String | Yes (or api_key) | Auth token for authentication |
 | app_id | String | Yes | Application identifier |
+
+## Examples
+
+### Example 1: Clean up orphaned cohort data
+
+**Request**:
+```bash
+curl -X POST "https://your-server.com/i/cohorts/cleanup" \
+  -d "api_key=YOUR_API_KEY" \
+  -d "app_id=YOUR_APP_ID"
+```
 
 ## Response
 
@@ -53,9 +65,7 @@ Removes orphaned or unreferenced cohort data from the system. Performs maintenan
 |---|---|---|
 | 400 | `{"result": "Insufficient permissions"}` | User lacks Delete permission |
 
----
-
-## Behavior/Processing
+## Behavior
 
 - Validates admin or manager authorization.
 - Starts asynchronous cleanup per matched app:
@@ -69,46 +79,14 @@ Operates only on specified `app_id`:
 - Does not affect other applications
 - Can be run multiple times safely
 
----
-
-## Examples
-
-### Example 1: Clean up orphaned cohort data
-
-**Request**:
-```bash
-curl -X POST "https://your-server.com/i/cohorts/cleanup" \
-  -d "api_key=YOUR_API_KEY" \
-  -d "app_id=YOUR_APP_ID"
-```
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.cohortUsers` | Collection: | Removes orphaned membership records |
-| `countly.cohortdata` | Collection: | Removes data for non-existent cohorts |
-| `countly.cohort_groups` | Collection: | Removes empty group definitions |
-
----
-
 ## Limitations
 
 - Cleanup runs asynchronously in background after initial response.
 - Scope is app-specific when `app_id` is provided.
 
----
-
-## Database Collections
-
-- `countly.cohorts` - Loads cohort definitions for cleanup logic
-- `countly.cohortUsers` - Cleans up cohort membership records
-
 ## Related Endpoints
 
 - [Reset real-time data](cohort-reset-realtime.md) - POST /i/cohorts/resetRealTimeData
-
----
 
 ## Use Cases
 
@@ -118,22 +96,20 @@ curl -X POST "https://your-server.com/i/cohorts/cleanup" \
 4. **Data integrity**: Fix inconsistencies in cohort-user relationships
 5. **Storage management**: Reduce database size by removing unused data
 
+<details>
+<summary>Implementation details</summary>
 
----
+**Database Collections**
 
-## Ⓔ Enterprise
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.cohortUsers` | Collection: | Removes orphaned membership records |
+| `countly.cohortdata` | Collection: | Removes data for non-existent cohorts |
+| `countly.cohort_groups` | Collection: | Removes empty group definitions |
 
-This feature is part of **Countly Enterprise**.
+**Database Collections**
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
+- `countly.cohorts` - Loads cohort definitions for cleanup logic
+- `countly.cohortUsers` - Cleans up cohort membership records
 
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

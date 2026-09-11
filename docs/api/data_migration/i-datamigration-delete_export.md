@@ -4,6 +4,8 @@ keywords:
   - "/i/datamigration/delete_export"
   - "delete_export"
   - "datamigration"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Data Migration - Delete Export
@@ -20,11 +22,7 @@ Deletes one export package and its migration record.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -38,6 +36,15 @@ Requires `data_migration` `Delete` permission.
 | `args` | JSON String (Object) | No | Optional JSON-stringified helper args. |
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
+
+## Examples
+
+### Delete one export package
+
+```text
+/i/datamigration/delete_export?
+  exportid=f9b35d90be5f2240eafced7c6bfdf130856cd0a7
+```
 
 ## Response
 
@@ -81,7 +88,7 @@ Requires `data_migration` `Delete` permission.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -95,23 +102,6 @@ Requires `data_migration` `Delete` permission.
 - Deletes export files under plugin export workspace.
 - Deletes export record from `countly.data_migrations`.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.data_migrations` | Export metadata lookup and delete | Reads export by `_id`; removes matching migration document. |
-
----
-
-## Examples
-
-### Delete one export package
-
-```text
-/i/datamigration/delete_export?
-  exportid=f9b35d90be5f2240eafced7c6bfdf130856cd0a7
-```
-
 ## Limitations
 
 - If log-file deletion fails, endpoint returns error and export DB cleanup may not complete.
@@ -121,6 +111,13 @@ Requires `data_migration` `Delete` permission.
 - [Data Migration - Get My Exports](o-datamigration-getmyexports.md)
 - [Data Migration - Delete All Migration Files](i-datamigration-delete_all.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.data_migrations` | Export metadata lookup and delete | Reads export by `_id`; removes matching migration document. |
+
+</details>

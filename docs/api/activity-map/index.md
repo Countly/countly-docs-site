@@ -1,12 +1,15 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-15"
 ---
 
 # Activity Map
 
-> Ⓔ **Enterprise Only**  
-> This feature is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This feature is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Overview
 
@@ -25,16 +28,6 @@ The feature is UI-driven and does not expose a dedicated Activity Map endpoint.
 |---|---|
 | [Overview](index.md) | Feature behavior, workflows, and data shape |
 | Public Endpoints | None (uses shared data query flow) |
-
-## Database Collections
-
-Activity Map is read-only and relies on Drill data in ClickHouse.
-
-| Collection | Purpose | Key fields |
-|---|---|---|
-| `countly_drill.drill_events` (default) | Source data for geographic aggregation | `a`, `e`, `up.cc`, `up.rgn`, `up.cty`, `ts` |
-
-If `clickhouse.database` is customized, the source path becomes `<clickhouse.database>.drill_events`.
 
 ## UI Overview
 
@@ -176,17 +169,17 @@ A: Yes. Use date range and filter conditions.
 **Q: Why do I sometimes get `task_id` instead of immediate full results?**  
 A: The request is being processed in background due to query load/size.
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Database Collections**
 
-This feature is part of **Countly Enterprise**.
+Activity Map is read-only and relies on Drill data in ClickHouse.
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
+| Collection | Purpose | Key fields |
+|---|---|---|
+| `countly_drill.drill_events` (default) | Source data for geographic aggregation | `a`, `e`, `up.cc`, `up.rgn`, `up.cty`, `ts` |
 
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions.
+If `clickhouse.database` is customized, the source path becomes `<clickhouse.database>.drill_events`.
 
-**Last Updated**: 2026-02-15
+</details>

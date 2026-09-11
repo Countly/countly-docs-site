@@ -3,6 +3,8 @@ sidebar_label: "SDK Config Read"
 keywords:
   - "/o/sdk"
   - "sdk"
+last_update:
+  date: "2026-03-05"
 ---
 
 # SDK - SDK Config Read
@@ -36,6 +38,14 @@ No dashboard permission check is applied. Access is validated through app/device
 | `method` | String | Yes | Must be `sc`. |
 | `app_key` | String | Yes | App key used by SDK endpoints. |
 | `device_id` | String | Yes | Device/user identifier. |
+
+## Examples
+
+### Read SDK config
+
+```plaintext
+/o/sdk?method=sc&app_key=YOUR_APP_KEY&device_id=device-123
+```
 
 ## Response
 
@@ -83,34 +93,25 @@ No dashboard permission check is applied. Access is validated through app/device
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Loads app config from `sdk_configs` and enforcement from `sdk_enforcement`.
 - If enforcement has a key set to `false`, that key is removed from response `c`.
 - Sets `v=2`, `t=Date.now()` on every response.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly_out.sdk_configs` | SDK config source | Reads per-app SDK config (`config`). |
-| `countly_out.sdk_enforcement` | Enforcement source | Reads per-app enforcement filter (`enforcement`). |
-
----
-
-## Examples
-
-### Read SDK config
-
-```plaintext
-/o/sdk?method=sc&app_key=YOUR_APP_KEY&device_id=device-123
-```
 
 ## Related Endpoints
 
 - [SDK - Config Upload](o-config-upload.md)
 - [SDK - Enforcement Read](o-sdk-enforcement.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-03-05
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly_out.sdk_configs` | SDK config source | Reads per-app SDK config (`config`). |
+| `countly_out.sdk_enforcement` | Enforcement source | Reads per-app enforcement filter (`enforcement`). |
+
+</details>

@@ -6,9 +6,15 @@ keywords:
   - "table"
   - "journey-engine"
   - "stats"
+last_update:
+  date: "2026-04-18"
 ---
 
 # Journey Engine - Stats Table
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -16,19 +22,14 @@ keywords:
 /o/journey-engine/stats/table
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Retrieve journey instance table data with pagination. For large datasets, the endpoint may create a background task and return a `task_id` for polling.
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required permission**: `Read` on the `journey_engine` feature
@@ -46,11 +47,17 @@ Retrieve journey instance table data with pagination. For large datasets, the en
 - `report_name`, `report_desc` (optional): Report metadata when creating task
 - `autoRefresh`, `force`, `r_hour`, `linked_to` (optional): Task options
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `api.*` | Server API defaults | Shared API execution controls (for example processing thresholds/limits). | Changes to API-level controls can affect runtime behavior, limits, or response timing for this endpoint. |
+### Query table data
+```
+GET /o/journey-engine/stats/table?app_id=64afe321d5f9b2f77cb2c8ed&journeyDefinitionId=67164f4a1f1bd90d6354430a&period=30days&iDisplayStart=0&iDisplayLength=25
+```
+
+### Retrieve data for a task
+```
+GET /o/journey-engine/stats/table?taskId=65a7c1e6f1c2a40001abc123&iDisplayStart=0&iDisplayLength=25
+```
 
 ## Response
 
@@ -81,7 +88,6 @@ Retrieve journey instance table data with pagination. For large datasets, the en
 }
 ```
 
-
 ### Response Fields
 
 | Field | Type | Description |
@@ -109,19 +115,7 @@ Retrieve journey instance table data with pagination. For large datasets, the en
 - **408**: Task result timeout
 - **500**: Query error
 
-## Examples
-
-### Query table data
-```
-GET /o/journey-engine/stats/table?app_id=64afe321d5f9b2f77cb2c8ed&journeyDefinitionId=67164f4a1f1bd90d6354430a&period=30days&iDisplayStart=0&iDisplayLength=25
-```
-
-### Retrieve data for a task
-```
-GET /o/journey-engine/stats/table?taskId=65a7c1e6f1c2a40001abc123&iDisplayStart=0&iDisplayLength=25
-```
-
-## Behavior/Processing
+## Behavior
 
 - If `taskId` is provided, loads stored task result data and applies `iDisplayStart`/`iDisplayLength` pagination.
 - Without `taskId`, filters `journey_instances` by `journeyVersionId`, `journeyDefinitionId`, `status`, and selected period.
@@ -130,29 +124,23 @@ GET /o/journey-engine/stats/table?taskId=65a7c1e6f1c2a40001abc123&iDisplayStart=
 - Very large estimated result sets are processed through the long-task manager and can return `{ "task_id": "..." }`.
 - Task results may be stored in per-task `journey_task_data_<taskId>` collections for paginated retrieval.
 
-## Database Collections
+## Related Endpoints
+
+- No related endpoints
+
+<details>
+<summary>Implementation details</summary>
+
+**Configuration Impact**
+
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `api.*` | Server API defaults | Shared API execution controls (for example processing thresholds/limits). | Changes to API-level controls can affect runtime behavior, limits, or response timing for this endpoint. |
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
 | `countly.journey_instances` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 
-## Related Endpoints
-
-- No related endpoints
-
-## Ⓔ Enterprise
-
-This feature is part of **Countly Enterprise**.
-
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-04-18
+</details>

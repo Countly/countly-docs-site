@@ -4,6 +4,8 @@ keywords:
   - "/i/apps/reset"
   - "reset"
   - "apps"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /i/apps/reset
@@ -20,9 +22,7 @@ Reset app data either fully or for a bounded historical period while keeping the
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -42,6 +42,20 @@ Reset app data either fully or for a bounded historical period while keeping the
 |---|---|---|---|
 | `app_id` | String | Yes | App ID to reset. |
 | `period` | String | Yes | Data reset scope: `all`, `reset`, `1month`, `3month`, `6month`, `1year`, or `2year`. |
+
+## Examples
+
+### Example 1: Full reset keeping app definition
+
+```plaintext
+/i/apps/reset?api_key=YOUR_API_KEY&args={"app_id":"64b0ac10c2c3ce0012dd1001","period":"all"}
+```
+
+### Example 2: Keep last 6 months only
+
+```plaintext
+/i/apps/reset?api_key=YOUR_API_KEY&args={"app_id":"64b0ac10c2c3ce0012dd1001","period":"6month"}
+```
 
 ## Response
 
@@ -82,7 +96,7 @@ Reset app data either fully or for a bounded historical period while keeping the
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -97,7 +111,26 @@ Reset app data either fully or for a bounded historical period while keeping the
 - Triggers app clear/reset integration hooks so feature modules can clean app-scoped data.
 - Cleans granular drill data with app/time scoped filters.
 
-## Database Collections
+## Operational Considerations
+
+- Reset operations are destructive for selected historical scope.
+- Large apps can take significant cleanup time across aggregate and granular datasets.
+- Success response indicates reset flow started and completed core trigger path; background cleanup may continue.
+
+## Limitations
+
+- Locked apps cannot be reset.
+- Route-level validation requires global admin access.
+
+## Related Endpoints
+
+- [Apps - App Delete](i-apps-delete.md)
+- [Apps - App Read Details](o-apps-details.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -111,38 +144,4 @@ Reset app data either fully or for a bounded historical period while keeping the
 | `countly_drill.drill_events` | Granular event cleanup | Removes granular events outside retained period or for full reset. |
 | `countly_drill.drill_meta` | Drill metadata cleanup | Removes or prunes app drill metadata. |
 
----
-## Examples
-
-### Example 1: Full reset keeping app definition
-
-```plaintext
-/i/apps/reset?api_key=YOUR_API_KEY&args={"app_id":"64b0ac10c2c3ce0012dd1001","period":"all"}
-```
-
-### Example 2: Keep last 6 months only
-
-```plaintext
-/i/apps/reset?api_key=YOUR_API_KEY&args={"app_id":"64b0ac10c2c3ce0012dd1001","period":"6month"}
-```
-
-## Operational Considerations
-
-- Reset operations are destructive for selected historical scope.
-- Large apps can take significant cleanup time across aggregate and granular datasets.
-- Success response indicates reset flow started and completed core trigger path; background cleanup may continue.
-
-## Limitations
-
-- Locked apps cannot be reset.
-- Route-level validation requires global admin access.
-
----
-## Related Endpoints
-
-- [Apps - App Delete](i-apps-delete.md)
-- [Apps - App Read Details](o-apps-details.md)
-
-## Last Updated
-
-2026-02-17
+</details>

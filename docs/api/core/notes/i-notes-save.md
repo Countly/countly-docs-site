@@ -4,6 +4,8 @@ keywords:
   - "/i/notes/save"
   - "save"
   - "notes"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Notes - Note Save
@@ -20,9 +22,7 @@ Creates a new note or updates an existing note.
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -60,6 +60,32 @@ Example `args` value:
   "noteType": "public",
   "color": "#F59E0B",
   "emails": ["ops@example.com"]
+}
+```
+
+## Examples
+
+### Example 1: Create note
+
+```plaintext
+/i/notes/save?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&args={"app_id":"6991c75b024cb89cdc04efd2","note":"Traffic anomaly reviewed","ts":1739788800000,"noteType":"public","color":"#F59E0B"}
+```
+
+```json
+{
+  "result": "Success"
+}
+```
+
+### Example 2: Update note
+
+```plaintext
+/i/notes/save?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&args={"_id":"67b2fc5a7274b47fce18c301","app_id":"6991c75b024cb89cdc04efd2","note":"Updated note text","ts":1739788800000,"noteType":"public","color":"#22C55E"}
+```
+
+```json
+{
+  "result": "Success"
 }
 ```
 
@@ -105,7 +131,7 @@ Example `args` value:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -118,42 +144,6 @@ Example `args` value:
 
 - New-note mode reads existing note indicators for the same app to assign the next indicator value.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.notes` | Primary notes storage. | Reads latest indicator, inserts new notes, or updates existing notes. |
-
----
-
-## Examples
-
-### Example 1: Create note
-
-```plaintext
-/i/notes/save?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&args={"app_id":"6991c75b024cb89cdc04efd2","note":"Traffic anomaly reviewed","ts":1739788800000,"noteType":"public","color":"#F59E0B"}
-```
-
-```json
-{
-  "result": "Success"
-}
-```
-
-### Example 2: Update note
-
-```plaintext
-/i/notes/save?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&args={"_id":"67b2fc5a7274b47fce18c301","app_id":"6991c75b024cb89cdc04efd2","note":"Updated note text","ts":1739788800000,"noteType":"public","color":"#22C55E"}
-```
-
-```json
-{
-  "result": "Success"
-}
-```
-
----
-
 ## Limitations
 
 - Edit permission depends on note ownership and visibility (public/private).
@@ -164,6 +154,13 @@ Example `args` value:
 - [Notes List](./o-notes.md)
 - [Note Delete](./i-notes-delete.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.notes` | Primary notes storage. | Reads latest indicator, inserts new notes, or updates existing notes. |
+
+</details>

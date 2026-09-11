@@ -1,12 +1,15 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-15"
 ---
 
 # Active Directory Authentication
 
-> Ⓔ **Enterprise Only**  
-> This feature is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This feature is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Overview
 
@@ -104,18 +107,6 @@ When an application is created with AD group settings, the feature stores three 
 | `ad_group_admin` | String | AD group for app administrators; app create hook appends `-{app_name}-admin` when suffix is not already detected |
 | `ad_group_user` | String | AD group for app users; app create hook appends `-{app_name}-user` when suffix is not already detected |
 | `ad_group_marketing` | String | AD group for app marketing users; app create hook appends `-{app_name}-marketing` when suffix is not already detected |
-
-## Database Collections
-
-The Active Directory feature stores group mappings in existing Countly collections:
-
-| Collection | Purpose |
-|------------|---------|
-| `countly.members` | User accounts created via AD authentication; includes mapped AD groups in user roles |
-| `countly.apps` | Application records; extended with `ad_group_admin`, `ad_group_user`, `ad_group_marketing` fields for per-app group settings |
-| `countly.groups` | Countly permission groups used during AD/Azure group-to-role mapping |
-
-No separate collections are created; AD configuration integrates directly with core Countly collections.
 
 ## Configuration Methods
 
@@ -456,17 +447,19 @@ To migrate from LDAP to Azure AD:
 - [Cognito Integration](../cognito/index.md)
 - [User Management Feature](../users/index.md)
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Database Collections**
 
-This feature is part of **Countly Enterprise**.
+The Active Directory feature stores group mappings in existing Countly collections:
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
+| Collection | Purpose |
+|------------|---------|
+| `countly.members` | User accounts created via AD authentication; includes mapped AD groups in user roles |
+| `countly.apps` | Application records; extended with `ad_group_admin`, `ad_group_user`, `ad_group_marketing` fields for per-app group settings |
+| `countly.groups` | Countly permission groups used during AD/Azure group-to-role mapping |
 
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
+No separate collections are created; AD configuration integrates directly with core Countly collections.
 
-**Last Updated**: 2026-02-15
+</details>

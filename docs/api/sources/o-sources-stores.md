@@ -3,6 +3,8 @@ sidebar_label: "Store Mapping Read"
 keywords:
   - "/o/sources"
   - "sources"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Sources - Store Mapping Read
@@ -28,6 +30,14 @@ This endpoint does not require role-based permission checks.
 ## Request Parameters
 
 This endpoint does not require request parameters.
+
+## Examples
+
+### Read source/store mapping
+
+```text
+/o/sources
+```
 
 ## Response
 
@@ -59,7 +69,7 @@ Mapping keys typically include:
 
 No custom error responses are defined for this endpoint.
 
-## Behavior/Processing
+## Behavior
 
 - Loads store mappings from plugin JSON at startup.
 - Returns in-memory mapping as raw root object.
@@ -68,20 +78,6 @@ No custom error responses are defined for this endpoint.
 ### Mapping Usage Context
 
 This endpoint provides the label dictionary used to present readable source names in analytics views and related APIs.
-
-## Database Collections
-
-This endpoint does not read or write database collections.
-
----
-
-## Examples
-
-### Read source/store mapping
-
-```text
-/o/sources
-```
 
 ## Limitations
 
@@ -94,6 +90,11 @@ This endpoint does not read or write database collections.
 - [Sources - Traffic Sources Read](o-sources-fetch.md)
 - [Sources - Search Keywords Read](o-sources-keywords.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+This endpoint does not read or write database collections.
+
+</details>

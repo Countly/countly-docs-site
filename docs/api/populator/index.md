@@ -1,6 +1,8 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Populator - API Documentation
@@ -37,7 +39,14 @@ The Populator feature manages reusable data-generation templates and app environ
 3. List and read environment users with pagination/search.
 4. Remove environment and related generated user records when finished.
 
-## Database Collections
+## Configuration & Settings
+
+No Populator-specific runtime setting is consumed by the documented endpoints.
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Purpose |
 |---|---|
@@ -47,10 +56,4 @@ The Populator feature manages reusable data-generation templates and app environ
 | `countly.members` | Used for authentication/permission validation and audit actor context. |
 | `countly.apps` | Used for app-level validation in rights checks. |
 
-## Configuration & Settings
-
-No Populator-specific runtime setting is consumed by the documented endpoints.
-
-## Last Updated
-
-2026-02-17
+</details>

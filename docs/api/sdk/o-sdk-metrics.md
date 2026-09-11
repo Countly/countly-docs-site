@@ -3,6 +3,8 @@ sidebar_label: "SDK Metrics Read"
 keywords:
   - "/o"
   - "o"
+last_update:
+  date: "2026-03-05"
 ---
 
 # SDK - SDK Metrics Read
@@ -19,12 +21,7 @@ Returns SDK metrics time-object data.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. `api_key=YOUR_API_KEY`
-2. `auth_token=YOUR_AUTH_TOKEN`
-3. `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -41,6 +38,14 @@ Requires `sdk` `Read` permission.
 | `period` | String | No | Countly period parameter. |
 | `timezone` | String | No | Timezone used for period parsing. |
 | `action` | String | No | Optional `refresh` mode support from shared fetch pipeline. |
+
+## Examples
+
+### Read SDK metrics for 30 days
+
+```plaintext
+/o?method=sdks&api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&period=30days
+```
 
 ## Response
 
@@ -86,7 +91,7 @@ Requires `sdk` `Read` permission.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -96,26 +101,17 @@ Requires `sdk` `Read` permission.
 | Refresh read | `action=refresh` | Uses shared refresh flow from metrics fetch pipeline. | Raw time-object (refresh-oriented slice). |
 | Access failure | Missing auth or missing read rights | Stops before metrics fetch. | Wrapped error in `result`. |
 
-## Database Collections
+## Related Endpoints
+
+- [SDK - SDK Config Read](o-sdk-config.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
 | `countly.sdks` | SDK metrics source | Reads SDK metrics by app and time period. |
 
----
-
-## Examples
-
-### Read SDK metrics for 30 days
-
-```plaintext
-/o?method=sdks&api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&period=30days
-```
-
-## Related Endpoints
-
-- [SDK - SDK Config Read](o-sdk-config.md)
-
-## Last Updated
-
-2026-03-05
+</details>

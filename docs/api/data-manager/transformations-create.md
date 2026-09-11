@@ -4,18 +4,21 @@ keywords:
   - "/i/data-manager/transformation"
   - "transformation"
   - "data-manager"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Data Transformations - Create Rule
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
 ```text
 /i/data-manager/transformation
 ```
-
-> Ⓔ **Enterprise Only**
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
 
 ## Overview
 
@@ -26,12 +29,7 @@ Creates a transformation rule. Depending on `transformation.transformationProces
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -74,98 +72,6 @@ Decoded example:
   "transformationProcessTarget": "existing"
 }
 ```
-
-## Configuration Impact
-
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `COUNTLY_CONFIG_PROTOCOL` | `http` | Long-task callback URL construction for historical processing (`existing` / `both`) | If this is incorrect for your deployment, historical transformation runs may fail and return runtime errors instead of completing. |
-| `COUNTLY_CONFIG_HOSTNAME` | `localhost` | Long-task callback URL construction for historical processing (`existing` / `both`) | If this host is not reachable by the server itself, historical transformation runs may fail and return runtime errors. |
-
-## Response
-
-### Success Response
-
-Incoming-only mode (`transformationProcessTarget=incoming`):
-
-```json
-"Success"
-```
-
-Historical mode (`transformationProcessTarget=existing` or `both`):
-
-```json
-{
-  "result": {
-    "task_id": "03ccb0c8ac773298f62f8bdb5d0f8869cb78f788"
-  }
-}
-```
-
-### Response Fields
-
-| Field | Type | Description |
-|---|---|---|
-| `(root value)` | String | Root string value for incoming-only mode (`"Success"`). |
-| `result.task_id` | String | Long-task ID for historical processing modes. |
-
-### Error Responses
-
-- `400`
-
-```json
-{
-  "result": "Long task runtime error"
-}
-```
-
-- `500`
-
-```json
-{
-  "result": "Error"
-}
-```
-
-- `400` (auth validation)
-
-```json
-{
-  "result": "Missing parameter \"api_key\" or \"auth_token\""
-}
-```
-
-## Behavior/Processing
-
-### Behavior Modes
-
-| Mode | Trigger | Processing Path | Response Shape |
-|---|---|---|---|
-| Incoming-only | `transformationProcessTarget=incoming` (or omitted/default) | Saves transformation rule and applies it to new incoming data only. | Raw root string: `"Success"` |
-| Historical | `transformationProcessTarget=existing` or `both` | Saves transformation rule, schedules asynchronous historical processing, and starts background execution. | Wrapped object with `result.task_id` |
-
-### Impact on Other Data
-
-- Creates transformation rule records in `countly.datamanager_transforms`.
-- Schedules background long-task execution for historical modes (`existing` / `both`).
-- Updates historical datasets affected by the selected transformation target.
-- Refreshes Data Manager transformation cache for the app.
-
-## Audit & System Logs
-
-| Action | Trigger | Payload |
-|---|---|---|
-| `dm-transformation` | After successful transformation rule creation | `{"transform":"json_string","id":"rule_id"}` |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.datamanager_transforms` | Stores transformation rule definitions | Inserts new transformation documents (for example `actionType`, `parentEvent`, `transformTarget`, `transformResult`, `transformationProcessTarget`, `status`, `app`). |
-| `countly.long_tasks` | Tracks background processing for historical runs | Creates long-task records for `existing`/`both` processing, including task metadata, status, and execution request details. |
-| `countly.systemlogs` | Audit trail | Writes `dm-transformation` audit entries with transformation payload and created rule ID. |
-
----
 
 ## Examples
 
@@ -255,6 +161,75 @@ Historical mode (`transformationProcessTarget=existing` or `both`):
   }
 ```
 
+## Response
+
+### Success Response
+
+Incoming-only mode (`transformationProcessTarget=incoming`):
+
+```json
+"Success"
+```
+
+Historical mode (`transformationProcessTarget=existing` or `both`):
+
+```json
+{
+  "result": {
+    "task_id": "03ccb0c8ac773298f62f8bdb5d0f8869cb78f788"
+  }
+}
+```
+
+### Response Fields
+
+| Field | Type | Description |
+|---|---|---|
+| `(root value)` | String | Root string value for incoming-only mode (`"Success"`). |
+| `result.task_id` | String | Long-task ID for historical processing modes. |
+
+### Error Responses
+
+- `400`
+
+```json
+{
+  "result": "Long task runtime error"
+}
+```
+
+- `500`
+
+```json
+{
+  "result": "Error"
+}
+```
+
+- `400` (auth validation)
+
+```json
+{
+  "result": "Missing parameter \"api_key\" or \"auth_token\""
+}
+```
+
+## Behavior
+
+### Behavior Modes
+
+| Mode | Trigger | Processing Path | Response Shape |
+|---|---|---|---|
+| Incoming-only | `transformationProcessTarget=incoming` (or omitted/default) | Saves transformation rule and applies it to new incoming data only. | Raw root string: `"Success"` |
+| Historical | `transformationProcessTarget=existing` or `both` | Saves transformation rule, schedules asynchronous historical processing, and starts background execution. | Wrapped object with `result.task_id` |
+
+### Impact on Other Data
+
+- Creates transformation rule records in `countly.datamanager_transforms`.
+- Schedules background long-task execution for historical modes (`existing` / `both`).
+- Updates historical datasets affected by the selected transformation target.
+- Refreshes Data Manager transformation cache for the app.
+
 ## Operational Considerations
 
 - Historical modes are asynchronous and return `result.task_id` immediately.
@@ -268,16 +243,34 @@ Historical mode (`transformationProcessTarget=existing` or `both`):
 - `change-value` execution paths expect `targetRegex`; missing/invalid regex can fail during transformation processing.
 - `rerun` is reserved for system background callbacks and should not be used directly by API clients.
 
----
-
 ## Related Endpoints
 
 - [Data Transformations - Read](transformations-read.md)
 - [Data Transformations - Update Rule](transformation-rules-update.md)
 - [Data Transformations - Toggle Status](transformation-status-update.md)
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Last Updated
+**Configuration Impact**
 
-2026-02-16
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `COUNTLY_CONFIG_PROTOCOL` | `http` | Long-task callback URL construction for historical processing (`existing` / `both`) | If this is incorrect for your deployment, historical transformation runs may fail and return runtime errors instead of completing. |
+| `COUNTLY_CONFIG_HOSTNAME` | `localhost` | Long-task callback URL construction for historical processing (`existing` / `both`) | If this host is not reachable by the server itself, historical transformation runs may fail and return runtime errors. |
+
+**Audit & System Logs**
+
+| Action | Trigger | Payload |
+|---|---|---|
+| `dm-transformation` | After successful transformation rule creation | `{"transform":"json_string","id":"rule_id"}` |
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.datamanager_transforms` | Stores transformation rule definitions | Inserts new transformation documents (for example `actionType`, `parentEvent`, `transformTarget`, `transformResult`, `transformationProcessTarget`, `status`, `app`). |
+| `countly.long_tasks` | Tracks background processing for historical runs | Creates long-task records for `existing`/`both` processing, including task metadata, status, and execution request details. |
+| `countly.systemlogs` | Audit trail | Writes `dm-transformation` audit entries with transformation payload and created rule ID. |
+
+</details>

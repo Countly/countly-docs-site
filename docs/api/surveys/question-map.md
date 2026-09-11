@@ -5,9 +5,15 @@ keywords:
   - "question_map"
   - "surveys"
   - "survey"
+last_update:
+  date: "2026-04-18"
 ---
 
 # Surveys - Question Map
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -15,19 +21,13 @@ keywords:
 /o/surveys/survey/question_map
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Returns survey question schema map by widget ID(s).
 
 ## Authentication
 
-**Authentication methods**:
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -41,6 +41,16 @@ Returns survey question schema map by widget ID(s).
 | `auth_token` | String | Yes (or `api_key`) | Auth token authentication |
 | `app_id` | String | Yes | App ID |
 | `widget_ids` | String (JSON Array/String) | No | Widget ID list or single ID |
+
+## Examples
+
+```text
+/o/surveys/survey/question_map?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID
+```
+
+```text
+/o/surveys/survey/question_map?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&widget_ids=["67b9db56f67aab0012cd8899"]
+```
 
 ## Response
 
@@ -83,7 +93,7 @@ Returns survey question schema map by widget ID(s).
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Reads Survey widgets (`type=survey`) for the requested `app_id`.
 - If `widget_ids` is provided, parses it as JSON. It can be a widget ID string or an array of widget IDs.
@@ -91,41 +101,17 @@ Returns survey question schema map by widget ID(s).
 - Builds a map keyed by widget ID. Each widget entry includes `name` and one entry per question ID.
 - Each question entry includes question text as `name`, question `type`, and optional `choices` converted from an array into a key-value object.
 
-## Database Collections
+## Related Endpoints
+
+- [Surveys - Survey Data](survey-data.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
 | `countly.feedback_widgets` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 
----
-
-## Examples
-
-```text
-/o/surveys/survey/question_map?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID
-```
-
-```text
-/o/surveys/survey/question_map?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&widget_ids=["67b9db56f67aab0012cd8899"]
-```
-
-## Related Endpoints
-
-- [Surveys - Survey Data](survey-data.md)
-
-## Ⓔ Enterprise
-
-This feature is part of **Countly Enterprise**.
-
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions.
-
----
-
-## Last Updated
-
-2026-04-18
+</details>

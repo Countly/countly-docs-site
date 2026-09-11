@@ -4,6 +4,8 @@ keywords:
   - "/i/token/create"
   - "create"
   - "token"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Token - Token Create
@@ -20,9 +22,7 @@ Creates an auth token owned by the authenticated dashboard user.
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -40,6 +40,20 @@ Creates an auth token owned by the authenticated dashboard user.
 | `apps` | String | No | Comma-separated app IDs to restrict token scope. |
 | `endpoint` | String | No | Comma-separated endpoint regex patterns for token scope. |
 | `endpointquery` | JSON String (Array/Object) | No | Structured endpoint restrictions. If parse fails, `endpoint` fallback is used. |
+
+## Examples
+
+### Example 1: Create basic token
+
+```plaintext
+/i/token/create?api_key=YOUR_API_KEY&purpose=Mobile Integration
+```
+
+### Example 2: Create endpoint-restricted token
+
+```plaintext
+/i/token/create?api_key=YOUR_API_KEY&purpose=Read Analytics&endpoint=/o/apps,/o/analytics&ttl=3600&multi=false
+```
 
 ## Response
 
@@ -75,7 +89,7 @@ Creates an auth token owned by the authenticated dashboard user.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -84,31 +98,6 @@ Creates an auth token owned by the authenticated dashboard user.
 | Standard create | Authenticated user, token options parsed | Saves token with defaults/overrides. | Wrapped token string. |
 | Endpoint query mode | `endpointquery` parsed successfully | Stores parsed endpoint restrictions. | Wrapped token string. |
 | Endpoint fallback mode | `endpointquery` parse fails and `endpoint` exists | Stores comma-split `endpoint` patterns. | Wrapped token string. |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Owner validation | Validates token owner identity before save. |
-| `countly.auth_tokens` | Token storage | Removes expired rows, inserts new token row. |
-
----
-
-## Examples
-
-### Example 1: Create basic token
-
-```plaintext
-/i/token/create?api_key=YOUR_API_KEY&purpose=Mobile Integration
-```
-
-### Example 2: Create endpoint-restricted token
-
-```plaintext
-/i/token/create?api_key=YOUR_API_KEY&purpose=Read Analytics&endpoint=/o/apps,/o/analytics&ttl=3600&multi=false
-```
-
----
 
 ## Limitations
 
@@ -120,6 +109,14 @@ Creates an auth token owned by the authenticated dashboard user.
 - [Token Check](o-token-check.md)
 - [Token List](o-token-list.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Owner validation | Validates token owner identity before save. |
+| `countly.auth_tokens` | Token storage | Removes expired rows, inserts new token row. |
+
+</details>

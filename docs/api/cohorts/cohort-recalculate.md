@@ -1,15 +1,18 @@
 ---
 sidebar_label: "Recalculate"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Recalculate Cohort Membership
 
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
+
 ## Endpoint
 
 `/i/cohorts/recalculate`
-
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
 
 ## Overview
 
@@ -17,10 +20,8 @@ Manually triggers recalculation of a dynamic cohort's membership based on curren
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required permission**: `Update` on the `cohorts` feature
@@ -33,6 +34,18 @@ Manually triggers recalculation of a dynamic cohort's membership based on curren
 | auth_token | String | Yes (or api_key) | Auth token for authentication |
 | app_id | String | Yes | Application identifier |
 | cohort_id | String | Yes | ID of cohort to recalculate |
+
+## Examples
+
+### Example 1: Trigger cohort recalculation
+
+**Request**:
+```bash
+curl -X GET "https://your-server.com/i/cohorts/recalculate" \
+  -d "api_key=YOUR_API_KEY" \
+  -d "app_id=YOUR_APP_ID" \
+  -d "cohort_id=COHORT_ID"
+```
 
 ## Response
 
@@ -56,57 +69,23 @@ Manually triggers recalculation of a dynamic cohort's membership based on curren
 | 404 | `{"result": "Cohort does not exist"}` | Invalid cohort_id |
 | 400 | `{"result": "Insufficient permissions"}` | User lacks Update permission |
 
----
-
-## Behavior/Processing
+## Behavior
 
 - Validates update permission for `cohorts` feature.
 - Validates cohort exists.
 - Responds immediately with `Cohort update started`.
 - Triggers async recalculation via `setUpDataForCohort(..., {force: true})`.
 
----
-
-## Examples
-
-### Example 1: Trigger cohort recalculation
-
-**Request**:
-```bash
-curl -X GET "https://your-server.com/i/cohorts/recalculate" \
-  -d "api_key=YOUR_API_KEY" \
-  -d "app_id=YOUR_APP_ID" \
-  -d "cohort_id=COHORT_ID"
-```
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.cohorts` | Collection: | Updates cohort state |
-| `countly.cohortdata` | Collection: | Cleared if full recalculation requested |
-| `countly.app_users{app_id}` | Collection: | Updated with new cohort membership data |
-
----
-
 ## Limitations
 
 - Large cohorts with complex queries may take significant time to recalculate.
 - Response is immediate; calculation continues in background.
-
----
-
-## Database Collections
-
-- `countly.cohorts` - Stores cohort definitions and calculation state
 
 ## Related Endpoints
 
 - [Update cohort](cohort-edit.md) - POST /i/cohorts/edit
 - [Get cohort](cohort-single-read.md) - GET /o?method=get_cohort
 - [Get cohort state](cohort-state-read.md) - GET /o?method=cohortstate
-
----
 
 ## Use Cases
 
@@ -116,22 +95,19 @@ curl -X GET "https://your-server.com/i/cohorts/recalculate" \
 4. **Performance testing**: Benchmark recalculation duration for large cohorts
 5. **Data recovery**: Force recalculation after data inconsistency issues
 
+<details>
+<summary>Implementation details</summary>
 
----
+**Database Collections**
 
-## Ⓔ Enterprise
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.cohorts` | Collection: | Updates cohort state |
+| `countly.cohortdata` | Collection: | Cleared if full recalculation requested |
+| `countly.app_users{app_id}` | Collection: | Updated with new cohort membership data |
 
-This feature is part of **Countly Enterprise**.
+**Database Collections**
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
+- `countly.cohorts` - Stores cohort definitions and calculation state
 
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

@@ -4,6 +4,8 @@ keywords:
   - "/i/datamigration/export"
   - "export"
   - "datamigration"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Data Migration - Export
@@ -24,11 +26,7 @@ Starts export generation for one or more apps. It can:
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -48,6 +46,33 @@ Requires `data_migration` `Create` permission.
 | `args` | JSON String (Object) | No | Optional JSON-stringified helper args. |
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
+
+## Examples
+
+### Export archive only
+
+```text
+/i/datamigration/export?
+  apps=6991c75b024cb89cdc04efd2&
+  only_export=1
+```
+
+### Generate export commands only
+
+```text
+/i/datamigration/export?
+  apps=6991c75b024cb89cdc04efd2&
+  only_export=2
+```
+
+### Export and send to remote server
+
+```text
+/i/datamigration/export?
+  apps=6991c75b024cb89cdc04efd2&
+  server_address=http://target-countly.example.com&
+  server_token=2fc9d68f6f284f9fa95b93b7d598
+```
 
 ## Response
 
@@ -101,7 +126,7 @@ mongodump '...'
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -117,49 +142,6 @@ mongodump '...'
 - Creates export artifacts under plugin export workspace.
 - Asynchronous lifecycle updates can trigger send/import phases.
 
-## Audit & System Logs
-
-| Action | Trigger | Payload |
-|---|---|---|
-| `export_finished` / `export_failed` | Export lifecycle reaches terminal state | `{ app_ids, status, message }` |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.data_migrations` | Export lifecycle tracking | Creates/updates export state (`step`, `status`, `progress`, app list, remote send metadata). |
-| `countly.systemlogs` | Audit trail | Writes terminal export status actions via progress updater. |
-| `countly.*` and `countly_drill.*` | Export data source | Reads selected app data for package generation. |
-
----
-
-## Examples
-
-### Export archive only
-
-```text
-/i/datamigration/export?
-  apps=6991c75b024cb89cdc04efd2&
-  only_export=1
-```
-
-### Generate export commands only
-
-```text
-/i/datamigration/export?
-  apps=6991c75b024cb89cdc04efd2&
-  only_export=2
-```
-
-### Export and send to remote server
-
-```text
-/i/datamigration/export?
-  apps=6991c75b024cb89cdc04efd2&
-  server_address=http://target-countly.example.com&
-  server_token=2fc9d68f6f284f9fa95b93b7d598
-```
-
 ## Operational Considerations
 
 - Export processing is asynchronous; returned export ID should be tracked with status endpoints.
@@ -170,6 +152,21 @@ mongodump '...'
 - [Data Migration - Send Export](i-datamigration-sendexport.md)
 - [Data Migration - Get Status](o-datamigration-getstatus.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Audit & System Logs**
+
+| Action | Trigger | Payload |
+|---|---|---|
+| `export_finished` / `export_failed` | Export lifecycle reaches terminal state | `{ app_ids, status, message }` |
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.data_migrations` | Export lifecycle tracking | Creates/updates export state (`step`, `status`, `progress`, app list, remote send metadata). |
+| `countly.systemlogs` | Audit trail | Writes terminal export status actions via progress updater. |
+| `countly.*` and `countly_drill.*` | Export data source | Reads selected app data for package generation. |
+
+</details>

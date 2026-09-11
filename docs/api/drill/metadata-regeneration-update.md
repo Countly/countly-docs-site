@@ -4,11 +4,15 @@ keywords:
   - "/i/drill/regenerate_meta"
   - "regenerate_meta"
   - "drill"
+last_update:
+  date: "2026-04-17"
 ---
+
 # Regenerate metadata
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -22,11 +26,7 @@ Regenerates Drill event and user-property metadata for one app.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -41,6 +41,25 @@ Requires `drill` `Update` permission.
 | `wait_to_finish` | Boolean String | No | If set, waits for regeneration to finish and returns `Meta regeneration done`. Otherwise returns immediately. |
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
+
+## Examples
+
+### Start async regeneration
+
+```text
+/i/drill/regenerate_meta?
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  period=30days
+```
+
+### Wait for regeneration
+
+```text
+/i/drill/regenerate_meta?
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  period={"since":1735689600000}&
+  wait_to_finish=true
+```
 
 ## Response
 
@@ -84,7 +103,7 @@ Requires `drill` `Update` permission.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Parses `period`; invalid non-keyword periods return `Bad request parameter: period`.
 - Converts `period.since` objects to a timestamp range ending at request time.
@@ -92,7 +111,16 @@ Requires `drill` `Update` permission.
 - Writes completion status to system logs with action `meta_regeneration_finished`.
 - Returns immediately unless `wait_to_finish` is provided.
 
-## Database Collections
+## Related Endpoints
+
+- [Query Metadata - Read](query-metadata-read.md)
+- [Metadata Cleanup - Update](metadata-cleanup-update.md)
+- [Metadata Lists - Recheck](metadata-list-recheck-update.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -101,37 +129,4 @@ Requires `drill` `Update` permission.
 | `countly_drill.drill_events{appId/hash}` | Source event data | Reads Drill event data for metadata regeneration. |
 | `countly.systemlogs` | Audit trail | Stores `meta_regeneration_finished` completion status. |
 
----
-
-## Examples
-
-### Start async regeneration
-
-```text
-/i/drill/regenerate_meta?
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  period=30days
-```
-
-### Wait for regeneration
-
-```text
-/i/drill/regenerate_meta?
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  period={"since":1735689600000}&
-  wait_to_finish=true
-```
-
----
-
-## Related Endpoints
-
-- [Query Metadata - Read](query-metadata-read.md)
-- [Metadata Cleanup - Update](metadata-cleanup-update.md)
-- [Metadata Lists - Recheck](metadata-list-recheck-update.md)
-
----
-
-## Last Updated
-
-2026-04-17
+</details>

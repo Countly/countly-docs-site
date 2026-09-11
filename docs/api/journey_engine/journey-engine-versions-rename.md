@@ -6,9 +6,15 @@ keywords:
   - "rename"
   - "journey-engine"
   - "versions"
+last_update:
+  date: "2026-04-18"
 ---
 
 # Journey Engine - Versions Rename
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -16,19 +22,14 @@ keywords:
 /i/journey-engine/versions/rename
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Rename a journey version.
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required permission**: `Update` on the `journey_engine` feature
@@ -39,29 +40,6 @@ Request body JSON:
 
 - `id` (required): Version ID
 - `name` (required): New name
-
-## Response
-
-### Success Response
-
-```json
-{
-  "id": "67164f4a1f1bd90d6354430b",
-  "name": "v1 (Updated)"
-}
-```
-
-
-### Response Fields
-
-| Field | Type | Description |
-|---|---|---|
-| `id` | String | Renamed version ID from the request. |
-| `name` | String | New version name from the request. |
-
-### Error Responses
-
-- **500**: Rename error
 
 ## Examples
 
@@ -75,35 +53,45 @@ Content-Type: application/json
 }
 ```
 
-## Behavior/Processing
+## Response
+
+### Success Response
+
+```json
+{
+  "id": "67164f4a1f1bd90d6354430b",
+  "name": "v1 (Updated)"
+}
+```
+
+### Response Fields
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | String | Renamed version ID from the request. |
+| `name` | String | New version name from the request. |
+
+### Error Responses
+
+- **500**: Rename error
+
+## Behavior
 
 - Parses request body fields `id` and `name`.
 - Updates `journey_versions.name` for the requested version ID.
 - Returns the requested ID/name pair after the update call completes.
 
-## Database Collections
+## Related Endpoints
+
+- No related endpoints
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
 | `countly.journey_versions` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 
-## Related Endpoints
-
-- No related endpoints
-
-## Ⓔ Enterprise
-
-This feature is part of **Countly Enterprise**.
-
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-04-18
+</details>

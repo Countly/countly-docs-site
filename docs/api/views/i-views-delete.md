@@ -3,6 +3,8 @@ sidebar_label: "View Delete"
 keywords:
   - "/i/views"
   - "views"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Views - Delete
@@ -19,11 +21,7 @@ Deletes one or more views and removes associated aggregated/user-level view data
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -38,6 +36,28 @@ Requires `views` `Delete` permission.
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
 | `app_id` | String | Yes | Target app ID. |
 | `view_id` | String | Yes | Comma-separated list of view IDs to delete. |
+
+## Examples
+
+### Delete one view
+
+```text
+/i/views?
+  method=delete_view&
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  view_id=6991c75b024cb89cdc04efd2_home
+```
+
+### Delete multiple views
+
+```text
+/i/views?
+  method=delete_view&
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  view_id=6991c75b024cb89cdc04efd2_home,6991c75b024cb89cdc04efd2_checkout
+```
 
 ## Response
 
@@ -73,7 +93,7 @@ Requires `views` `Delete` permission.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -89,43 +109,6 @@ Requires `views` `Delete` permission.
 - Dispatches granular deletes for `[CLY]_view` and `[CLY]_action` in drill events.
 - Dispatches `/view/delete` hook for downstream cleanup in other features.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication and permission checks | Reads member account and access rights for delete validation. |
-| `countly.apps` | App validation/context loading | Validates `app_id` for delete scope. |
-| `countly.views` | View root metadata lookup | Reads app-level views root document before delete operations. |
-| `countly.app_viewsmeta` | View metadata deletion | Deletes metadata entries for removed view IDs. |
-| `countly.app_viewdata` | Aggregated view metric deletion | Deletes metric docs matching removed view IDs (`vw`). |
-| `countly.app_userviews` | User-view map cleanup (main) | Unsets deleted view fields from user view map documents. |
-| `countly.app_userviews{appId}` | User-view map cleanup (legacy app collection) | Unsets deleted view fields from legacy user view map documents. |
-| `countly_drill.drill_events` | Granular event cleanup | Deletes `[CLY]_view` and `[CLY]_action` records linked to deleted views. |
-
----
-
-## Examples
-
-### Delete one view
-
-```text
-/i/views?
-  method=delete_view&
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  view_id=6991c75b024cb89cdc04efd2_home
-```
-
-### Delete multiple views
-
-```text
-/i/views?
-  method=delete_view&
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  view_id=6991c75b024cb89cdc04efd2_home,6991c75b024cb89cdc04efd2_checkout
-```
-
 ## Operational Considerations
 
 - Deletion is destructive and cannot be reversed.
@@ -140,6 +123,20 @@ Requires `views` `Delete` permission.
 - [Views - Rename](i-views-rename.md)
 - [Views - Omit Segments](i-views-omit-segments.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication and permission checks | Reads member account and access rights for delete validation. |
+| `countly.apps` | App validation/context loading | Validates `app_id` for delete scope. |
+| `countly.views` | View root metadata lookup | Reads app-level views root document before delete operations. |
+| `countly.app_viewsmeta` | View metadata deletion | Deletes metadata entries for removed view IDs. |
+| `countly.app_viewdata` | Aggregated view metric deletion | Deletes metric docs matching removed view IDs (`vw`). |
+| `countly.app_userviews` | User-view map cleanup (main) | Unsets deleted view fields from user view map documents. |
+| `countly.app_userviews{appId}` | User-view map cleanup (legacy app collection) | Unsets deleted view fields from legacy user view map documents. |
+| `countly_drill.drill_events` | Granular event cleanup | Deletes `[CLY]_view` and `[CLY]_action` records linked to deleted views. |
+
+</details>

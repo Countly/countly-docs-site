@@ -1,6 +1,8 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Sources - API Documentation
@@ -14,14 +16,6 @@ The Sources feature tracks acquisition/referrer sources, provides source-level m
 - [Sources - Traffic Sources Read](o-sources-fetch.md)
 - [Sources - Search Keywords Read](o-sources-keywords.md)
 - [Sources - Store Mapping Read](o-sources-stores.md)
-
-## Database Collections
-
-| Collection | Purpose |
-|---|---|
-| `countly.sources` | Stores source attribution metrics aggregated by app and period. |
-| `countly.members` | Used by authenticated Sources endpoints for access validation. |
-| `countly.apps` | Used to validate app context for authenticated Sources endpoints. |
 
 ## Source Classification Overview
 
@@ -46,6 +40,15 @@ Before source metrics are read:
 |---|---|---|
 | `sources.sources_length_limit` | `100` | Maximum stored length of source/referrer value during ingest normalization. |
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Purpose |
+|---|---|
+| `countly.sources` | Stores source attribution metrics aggregated by app and period. |
+| `countly.members` | Used by authenticated Sources endpoints for access validation. |
+| `countly.apps` | Used to validate app context for authenticated Sources endpoints. |
+
+</details>

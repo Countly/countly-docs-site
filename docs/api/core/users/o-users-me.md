@@ -4,6 +4,8 @@ keywords:
   - "/o/users/me"
   - "me"
   - "users"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Users Management - Current User Read
@@ -20,9 +22,7 @@ Returns the currently authenticated dashboard user object.
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -34,6 +34,14 @@ Returns the currently authenticated dashboard user object.
 |---|---|---|---|
 | `api_key` | String | Yes (or use `auth_token`) | Dashboard API key. |
 | `auth_token` | String | Yes (or use `api_key`) | Dashboard auth token. |
+
+## Examples
+
+### Example 1: Read current user
+
+```plaintext
+/o/users/me?api_key=YOUR_API_KEY
+```
 
 ## Response
 
@@ -77,31 +85,13 @@ Returns the currently authenticated dashboard user object.
 
 Authentication and authorization failures are returned by the common auth layer.
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
 | Mode | Trigger | Response Shape |
 |---|---|---|
 | Current user response | Authenticated request | Raw member object without `password`. |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication source data. | Read during auth; handler returns authenticated member from request context. |
-
----
-
-## Examples
-
-### Example 1: Read current user
-
-```plaintext
-/o/users/me?api_key=YOUR_API_KEY
-```
-
----
 
 ## Limitations
 
@@ -112,6 +102,13 @@ Authentication and authorization failures are returned by the common auth layer.
 - [Users List](o-users-all.md)
 - [User Read By ID](o-users-id.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication source data. | Read during auth; handler returns authenticated member from request context. |
+
+</details>

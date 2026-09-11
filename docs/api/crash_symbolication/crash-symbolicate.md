@@ -4,9 +4,15 @@ keywords:
   - "/i/crash_symbols/symbolicate"
   - "symbolicate"
   - "crash_symbols"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Run symbolication
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -14,19 +20,14 @@ keywords:
 /i/crash_symbols/symbolicate
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Starts symbolication for a crash group using a selected symbol document.
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required permission**: `Update` on the `crashes` feature
@@ -41,6 +42,14 @@ Starts symbolication for a crash group using a selected symbol document.
 | `return_url` | String | Yes | Callback URL for external symbolication server flow |
 | `api_key` | String | Yes (or `auth_token`) | API key authentication |
 | `auth_token` | String | Yes (or `api_key`) | Auth token authentication |
+
+## Examples
+
+### Example 1: Start symbolication for a crash group
+
+```text
+/i/crash_symbols/symbolicate?api_key=YOUR_API_KEY&app_id=5f9c8a3b4d1e2a001f3b4567&crashgroup_id=65c5dd952c5f5300121a0009&symbol_id=65c5e0732c5f5300121a0020&return_url=https://your-server.com/i/crash_symbols/symbolicatation_result
+```
 
 ## Response
 
@@ -90,7 +99,7 @@ Success message depends on symbolication path:
 | 500 | `{ "result": "No original binary available" }` |
 | 500 | `{ "result": "Error loading JS source map file" }` |
 
-## Behavior/Processing
+## Behavior
 
 - Creates a job record in `symbolication_jobs` and updates crash group status fields.
 - Uses one of three paths:
@@ -99,9 +108,16 @@ Success message depends on symbolication path:
   - External symbolication server (`symbolication_server` + `symbolication_key`)
 - External-server path is asynchronous and returns after submitting job data.
 
----
+## Related Endpoints
 
-## Database Collections
+- [List Jobs](crash-jobs-list.md)
+- [Get Report](crash-report-get.md)
+- [Symbolication Result Callback](crash-symbolicate-result.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -110,37 +126,4 @@ Success message depends on symbolication path:
 | `countly.symbolication_jobs` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 | `countly_fs.crash_symbols` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 
----
-
-## Examples
-
-### Example 1: Start symbolication for a crash group
-
-```text
-/i/crash_symbols/symbolicate?api_key=YOUR_API_KEY&app_id=5f9c8a3b4d1e2a001f3b4567&crashgroup_id=65c5dd952c5f5300121a0009&symbol_id=65c5e0732c5f5300121a0020&return_url=https://your-server.com/i/crash_symbols/symbolicatation_result
-```
-
-## Related Endpoints
-
-- [List Jobs](crash-jobs-list.md)
-- [Get Report](crash-report-get.md)
-- [Symbolication Result Callback](crash-symbolicate-result.md)
-
----
-
-## Ⓔ Enterprise
-
-This feature is part of **Countly Enterprise**.
-
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

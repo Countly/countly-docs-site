@@ -5,9 +5,15 @@ keywords:
   - "GET /o/journey-engine/list"
   - "list"
   - "journey-engine"
+last_update:
+  date: "2026-04-18"
 ---
 
 # Journey Engine - List
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -15,19 +21,14 @@ keywords:
 /o/journey-engine/list
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 List all journey definitions for an app, including versions and instance counts.
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required permission**: `Read` on the `journey_engine` feature
@@ -36,6 +37,18 @@ List all journey definitions for an app, including versions and instance counts.
 
 - `app_id` (required): Application ID
 - `withDeletedJourneys` (optional): When true, returns `{active, deleted}` lists
+
+## Examples
+
+### List active journeys
+```
+GET /o/journey-engine/list?app_id=64afe321d5f9b2f77cb2c8ed
+```
+
+### Include deleted journeys
+```
+GET /o/journey-engine/list?app_id=64afe321d5f9b2f77cb2c8ed&withDeletedJourneys=true
+```
 
 ## Response
 
@@ -78,7 +91,6 @@ When `withDeletedJourneys=true`, the response is an object:
 }
 ```
 
-
 ### Response Fields
 
 | Field | Type | Description |
@@ -104,19 +116,7 @@ When `withDeletedJourneys=true`, the response is an object:
 
 - **500**: Query error
 
-## Examples
-
-### List active journeys
-```
-GET /o/journey-engine/list?app_id=64afe321d5f9b2f77cb2c8ed
-```
-
-### Include deleted journeys
-```
-GET /o/journey-engine/list?app_id=64afe321d5f9b2f77cb2c8ed&withDeletedJourneys=true
-```
-
-## Behavior/Processing
+## Behavior
 
 - Before listing, the handler patches deleted journeys that still have active versions by marking those versions as deleted.
 - Journey definitions are loaded from `journey_definition` where `appId` matches and status is not `deleted`.
@@ -125,7 +125,14 @@ GET /o/journey-engine/list?app_id=64afe321d5f9b2f77cb2c8ed&withDeletedJourneys=t
 - Counts are stored in `journey_definition` documents and are not aggregated at query time for performance reasons.
 - Results are sorted by status and then by newest `created` timestamp.
 
-## Database Collections
+## Related Endpoints
+
+- No related endpoints
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -133,23 +140,4 @@ GET /o/journey-engine/list?app_id=64afe321d5f9b2f77cb2c8ed&withDeletedJourneys=t
 | `countly.journey_versions` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 | `countly.members` | Member/account enrichment | Stores member profile fields (for example names/IDs) used to resolve actor metadata. |
 
-## Related Endpoints
-
-- No related endpoints
-
-## Ⓔ Enterprise
-
-This feature is part of **Countly Enterprise**.
-
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-04-18
+</details>

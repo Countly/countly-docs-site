@@ -5,14 +5,13 @@ sidebar_position: 1
 
 # Surveys
 
-> Ⓔ **Enterprise Only**  
-> This feature is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This feature is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Overview
 
 The Surveys feature enables comprehensive user feedback collection through customizable surveys and Net Promoter Score (NPS) surveys. Capture user satisfaction, collect feedback, and measure customer loyalty through targeted survey campaigns and targeted NPS surveys with advanced targeting and response analytics.
-
----
 
 ## Key Features
 
@@ -25,8 +24,6 @@ The Surveys feature enables comprehensive user feedback collection through custo
 - **Delivery Methods**: SDK-based and journey-engine delivery integration
 - **Response Analysis**: Question-level analytics and response filtering
 
----
-
 ## Survey Types
 
 ### Survey
@@ -38,8 +35,6 @@ Standardized 0-10 rating scale measuring customer loyalty with automatic categor
 - **Passives** (7-8): Satisfied but not loyal
 - **Detractors** (0-6): Unhappy customers
 
----
-
 ## Configuration Settings
 
 These settings control survey appearance and behavior:
@@ -49,23 +44,6 @@ These settings control survey appearance and behavior:
 | `main_color` | `#0166D6` | Primary color for survey UI |
 | `font_color` | `#0166D6` | Font color for survey text |
 | `feedback_logo` | Empty | Global logo stored in GridFS |
-
----
-
-## Database Collections
-
-- **Collection**: `countly.feedback_widgets`
-  - Stores survey/NPS widget definitions and configuration
-- **Collection**: `countly.completed_surveys{app_id}`
-  - Tracks which users have responded to which surveys
-- **Collection**: `countly_drill.drill_events`
-  - Stores survey responses as events ([CLY]_survey, [CLY]_nps)
-- **Collection**: `countly.members`
-  - Referenced for survey creator information (via join)
-- **Collection**: `countly.apps`
-  - Referenced for application timezone and metadata
-
----
 
 ## API Endpoints
 
@@ -91,8 +69,6 @@ These settings control survey appearance and behavior:
 - [Surveys - Update NPS Status](nps-status-update.md) - POST `/i/surveys/nps/status`
 - [Surveys - Upload Logo](upload-logo.md) - POST `/i/feedback/upload`
 
----
-
 ## Widget Lifecycle
 
 1. **Creation**: Define survey name, questions, appearance, targeting
@@ -102,8 +78,6 @@ These settings control survey appearance and behavior:
 5. **Analytics**: View responses, completion rates, NPS scores
 6. **Editing**: Modify survey parameters while active
 7. **Archiving**: Disable survey to stop new responses
-
----
 
 ## Targeting Options
 
@@ -115,8 +89,6 @@ Surveys can be targeted by:
   - `uSubmit`: Show on any user action
   - `uAlways`: Always show (even if already responded)
   - `uClose`: Show only when user closes previous response
-
----
 
 ## Response Fields
 
@@ -130,8 +102,6 @@ Surveys track:
   - Detractor %: Users rating 0-6
   - NPS Score: Promoter % - Detractor %
 
----
-
 ## Authentication Requirements
 
 All survey endpoints require:
@@ -143,14 +113,10 @@ All survey endpoints require:
   - Create/Update: Create and modify surveys
   - Delete: Remove surveys and responses
 
----
-
 ## Related Features
 
 - **[Cohorts](../cohorts/index.md)** - Segment users for survey targeting
 - **[Journey Engine](../journey_engine/index.md)** - Deliver surveys via automated journeys
-
----
 
 ## Common Use Cases
 
@@ -162,8 +128,6 @@ All survey endpoints require:
 6. **Product Research**: Launch surveys before feature development
 7. **Support Quality Rating**: Rate support interactions
 
----
-
 ## Best Practices
 
 - **Survey Frequency**: Limit survey exposure to avoid user fatigue
@@ -174,8 +138,6 @@ All survey endpoints require:
 - **Testing**: A/B test survey wording and timing for optimization
 - **Analysis**: Review responses regularly to inform product decisions
 
----
-
 ## Performance Considerations
 
 - Survey rendering done client-side via SDK (minimal server load)
@@ -184,15 +146,20 @@ All survey endpoints require:
 - NPS calculations performed on aggregated data
 - Targeting filtering applied before widget display
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Database Collections**
 
-This feature is part of **Countly Enterprise**.
+- **Collection**: `countly.feedback_widgets`
+  - Stores survey/NPS widget definitions and configuration
+- **Collection**: `countly.completed_surveys{app_id}`
+  - Tracks which users have responded to which surveys
+- **Collection**: `countly_drill.drill_events`
+  - Stores survey responses as events ([CLY]_survey, [CLY]_nps)
+- **Collection**: `countly.members`
+  - Referenced for survey creator information (via join)
+- **Collection**: `countly.apps`
+  - Referenced for application timezone and metadata
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
+</details>

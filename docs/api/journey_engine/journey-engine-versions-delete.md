@@ -6,9 +6,15 @@ keywords:
   - "delete"
   - "journey-engine"
   - "versions"
+last_update:
+  date: "2026-04-18"
 ---
 
 # Journey Engine - Versions Delete
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -16,19 +22,14 @@ keywords:
 /i/journey-engine/versions/delete
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Delete (soft-delete) a journey version. Active versions or versions with running instances cannot be deleted.
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required permission**: `Update` on the `journey_engine` feature
@@ -39,6 +40,17 @@ Request body JSON:
 
 - `id` (required): Version ID
 
+## Examples
+
+```json
+POST /i/journey-engine/versions/delete
+Content-Type: application/json
+
+{
+  "id": "67164f4a1f1bd90d6354430b"
+}
+```
+
 ## Response
 
 ### Success Response
@@ -48,7 +60,6 @@ Request body JSON:
   "id": "67164f4a1f1bd90d6354430b"
 }
 ```
-
 
 ### Response Fields
 
@@ -62,47 +73,24 @@ Request body JSON:
 - **404**: Version not found
 - **500**: Delete error
 
-## Examples
-
-```json
-POST /i/journey-engine/versions/delete
-Content-Type: application/json
-
-{
-  "id": "67164f4a1f1bd90d6354430b"
-}
-```
-
-## Behavior/Processing
+## Behavior
 
 - Loads the target version first and returns `Version not found` if it does not exist.
 - Rejects deletion when the version status is `active`.
 - Rejects deletion when a running journey instance references the version.
 - Soft-deletes by setting the version status to `deleted`.
 
-## Database Collections
+## Related Endpoints
+
+- No related endpoints
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
 | `countly.journey_versions` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 
-## Related Endpoints
-
-- No related endpoints
-
-## Ⓔ Enterprise
-
-This feature is part of **Countly Enterprise**.
-
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-04-18
+</details>

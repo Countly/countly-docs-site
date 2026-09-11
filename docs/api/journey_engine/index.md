@@ -1,33 +1,19 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Journeys - API Documentation
 
-> Ⓔ **Enterprise Only**  
-> This feature is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This feature is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Overview
 
 Journey Engine lets you build automated journeys that react to user events, profile changes, and engagement actions. A journey definition can have multiple versions, with a single active version at a time. Journeys create instances per user, track block execution, and compute performance metrics.
-
-## Database Collections
-
-| Collection | Purpose |
-|---|---|
-| `countly.journey_definition` | Stores journey definitions (name, status, app, creator) |
-| `countly.journey_versions` | Stores journey versions and block graphs |
-| `countly.journey_instances` | Stores per-user journey execution instances |
-| `countly.journey_logs` | Stores journey instance status logs |
-| `countly.journey_block_logs` | Stores per-block execution logs |
-| `countly.journey_stats` | Stores aggregated journey performance stats (daily) |
-| `countly.events` | Stores app event metadata (created via journey event API) |
-| `countly_drill.drill_meta` | Stores drill event metadata for custom events |
-| `countly.members` | Journey creator lookups |
-| `countly.apps` | App metadata for journey lookups |
-| `countly.app_users{appId}` | User profiles for instance lookups |
-| `countly.plugins` | Stores plugin config (including `journey_engine.cooldown` migration data) |
 
 ## Configuration & Settings
 
@@ -84,21 +70,24 @@ Most endpoints require the `journey_engine` feature permission. Some endpoints a
 - **Drill**: Journey filters and events use Drill data
 - **Surveys**: Survey events can advance journeys
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Database Collections**
 
-This feature is part of **Countly Enterprise**.
+| Collection | Purpose |
+|---|---|
+| `countly.journey_definition` | Stores journey definitions (name, status, app, creator) |
+| `countly.journey_versions` | Stores journey versions and block graphs |
+| `countly.journey_instances` | Stores per-user journey execution instances |
+| `countly.journey_logs` | Stores journey instance status logs |
+| `countly.journey_block_logs` | Stores per-block execution logs |
+| `countly.journey_stats` | Stores aggregated journey performance stats (daily) |
+| `countly.events` | Stores app event metadata (created via journey event API) |
+| `countly_drill.drill_meta` | Stores drill event metadata for custom events |
+| `countly.members` | Journey creator lookups |
+| `countly.apps` | App metadata for journey lookups |
+| `countly.app_users{appId}` | User profiles for instance lookups |
+| `countly.plugins` | Stores plugin config (including `journey_engine.cooldown` migration data) |
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

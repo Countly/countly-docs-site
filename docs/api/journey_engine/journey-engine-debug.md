@@ -5,9 +5,15 @@ keywords:
   - "GET /o/journey-engine/debug"
   - "debug"
   - "journey-engine"
+last_update:
+  date: "2026-04-18"
 ---
 
 # Journey Engine - Debug
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -15,19 +21,14 @@ keywords:
 /o/journey-engine/debug
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Admin-only debug endpoint that returns journeys, versions, instances, and block logs for a journey definition.
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 Requires **global admin** access.
@@ -40,6 +41,12 @@ Requires **global admin** access.
 - `appUserId` (optional): Filter instances by app user ID
 - `startTime` (optional): Filter instances by start time (ISO or ms)
 - `endTime` (optional): Filter instances by end time (ISO or ms)
+
+## Examples
+
+```
+GET /o/journey-engine/debug?journeyDefinitionId=67164f4a1f1bd90d6354430a&deviceId=device_123
+```
 
 ## Response
 
@@ -66,7 +73,6 @@ Requires **global admin** access.
   }
 ]
 ```
-
 
 ### Response Fields
 
@@ -107,13 +113,7 @@ Requires **global admin** access.
 }
 ```
 
-## Examples
-
-```
-GET /o/journey-engine/debug?journeyDefinitionId=67164f4a1f1bd90d6354430a&deviceId=device_123
-```
-
-## Behavior/Processing
+## Behavior
 
 - Requires the authenticated member to be a global admin.
 - Requires either `journeyDefinitionId` or `name`.
@@ -122,7 +122,14 @@ GET /o/journey-engine/debug?journeyDefinitionId=67164f4a1f1bd90d6354430a&deviceI
 - Filters version instances by `deviceId` and/or `appUserId` when provided.
 - The current handler intends to support `startTime`/`endTime`, but those filters reference the internal `match` object before it is initialized. Until the code is fixed, avoid relying on `startTime` and `endTime` for this endpoint.
 
-## Database Collections
+## Related Endpoints
+
+- No related endpoints
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -131,23 +138,4 @@ GET /o/journey-engine/debug?journeyDefinitionId=67164f4a1f1bd90d6354430a&deviceI
 | `countly.journey_instances` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 | `countly.journey_block_logs` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 
-## Related Endpoints
-
-- No related endpoints
-
-## Ⓔ Enterprise
-
-This feature is part of **Countly Enterprise**.
-
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-04-18
+</details>

@@ -1,12 +1,15 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-15"
 ---
 
 # Cohorts API Documentation
 
-> Ⓔ **Enterprise Only**  
-> This feature is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This feature is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Overview
 
@@ -74,7 +77,17 @@ Behavior summary:
 3. Remove users via [remove_users](cohort-remove-users.md).
 4. Group/organize or delete when no longer needed.
 
-## Database Collections
+## Related Features
+
+- Drill (cohort queries and drill metadata)
+- Users / App Users (membership and user profile resolution)
+- Dashboards (cohort widget data and cleanup)
+- Tasks / Long-running jobs (bulk add/remove and heavy recalculations)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 - `countly.cohorts`: cohort definitions, ownership, visibility, grouping, configuration
 - `countly.cohortUsers`: cohort membership records (especially manual/profile groups)
@@ -86,26 +99,4 @@ Behavior summary:
 - `countly_drill.cohort_meta`: drill-side cohort meta used by real-time/reset flows
 - `countly_drill.drill_meta{app_id}` and `countly_drill.drill_meta`: drill metadata touched during reset/cleanup paths
 
-## Related Features
-
-- Drill (cohort queries and drill metadata)
-- Users / App Users (membership and user profile resolution)
-- Dashboards (cohort widget data and cleanup)
-- Tasks / Long-running jobs (bulk add/remove and heavy recalculations)
-
----
-
-## Ⓔ Enterprise
-
-This feature is part of **Countly Enterprise**.
-
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions.
-
----
-
-_Last Updated: 2026-02-15_
+</details>

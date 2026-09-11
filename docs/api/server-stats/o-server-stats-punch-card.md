@@ -4,6 +4,8 @@ keywords:
   - "/o/server-stats/punch-card"
   - "punch-card"
   - "server-stats"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /o/server-stats/punch-card
@@ -20,11 +22,7 @@ Returns punch-card style hourly distribution for datapoints, sessions, and event
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. **API Key** (parameter): `api_key=YOUR_API_KEY`
-2. **Auth Token** (parameter): `auth_token=YOUR_AUTH_TOKEN`
-3. **Auth Token** (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -39,6 +37,20 @@ Authenticated dashboard user credentials are required (`api_key` or `auth_token`
 | `auth_token` | String | No | Auth token as query parameter or `countly-token` header. |
 | `period` | String | No | Period expression supported by Countly period parser (default: `30days`). |
 | `selected_app` | String | No | Restrict output to one app ID. |
+
+## Examples
+
+### Read default punch-card data
+
+```plaintext
+/o/server-stats/punch-card?api_key=YOUR_API_KEY
+```
+
+### Read punch-card for one app and month period
+
+```plaintext
+/o/server-stats/punch-card?api_key=YOUR_API_KEY&selected_app=YOUR_APP_ID&period=month
+```
 
 ## Response
 
@@ -123,7 +135,7 @@ Authenticated dashboard user credentials are required (`api_key` or `auth_token`
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -136,29 +148,6 @@ Authenticated dashboard user credentials are required (`api_key` or `auth_token`
 
 - This endpoint is read-only and does not mutate persisted metrics.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication validation | Reads member account and lock status during `authenticated-user validation` authentication. |
-| `countly.server_stats_data_points` | Stores monthly and hourly datapoint metrics per app | Reads period-matching documents and aggregates hourly buckets into punch-card output. |
-
----
-
-## Examples
-
-### Read default punch-card data
-
-```plaintext
-/o/server-stats/punch-card?api_key=YOUR_API_KEY
-```
-
-### Read punch-card for one app and month period
-
-```plaintext
-/o/server-stats/punch-card?api_key=YOUR_API_KEY&selected_app=YOUR_APP_ID&period=month
-```
-
 ## Limitations
 
 - Non-global users can only see data from accessible apps.
@@ -169,6 +158,14 @@ Authenticated dashboard user credentials are required (`api_key` or `auth_token`
 - [Server Stats - Data Points Read](o-server-stats-data-points.md)
 - [Server Stats - Top Read](o-server-stats-top.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication validation | Reads member account and lock status during `authenticated-user validation` authentication. |
+| `countly.server_stats_data_points` | Stores monthly and hourly datapoint metrics per app | Reads period-matching documents and aggregates hourly buckets into punch-card output. |
+
+</details>

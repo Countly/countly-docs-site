@@ -4,6 +4,8 @@ keywords:
   - "/i/crashes/resolve"
   - "resolve"
   - "crashes"
+last_update:
+  date: "2026-03-07"
 ---
 
 # Crashes - Resolve Crash Groups
@@ -20,12 +22,7 @@ Marks crash groups as resolved and records resolved version from each group's `l
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. `api_key=YOUR_API_KEY`
-2. `auth_token=YOUR_AUTH_TOKEN`
-3. `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -43,6 +40,12 @@ Requires `crashes` `Update` permission.
 | `args.crash_id` | String | No | Single crash group ID. |
 
 Provide `args.crashes` or `args.crash_id`.
+
+## Examples
+
+```plaintext
+/i/crashes/resolve?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&args={"crashes":["crash_group_1","crash_group_2"]}
+```
 
 ## Response
 
@@ -73,7 +76,7 @@ Provide `args.crashes` or `args.crash_id`.
 
 Standard auth/permission errors from update validation can also be returned.
 
-## Behavior/Processing
+## Behavior
 
 - Resolves crash IDs from `args.crashes` or `[args.crash_id]`.
 - For groups not already resolved, sets:
@@ -85,24 +88,19 @@ Standard auth/permission errors from update validation can also be returned.
 - Updates `meta` counters (`resolved`, `reoccurred`, `isnew`) when applicable.
 - Emits `crash_resolved` system log action per newly resolved group.
 
-## Database Collections
+## Related Endpoints
+
+- [Crashes - Unresolve Crash Groups](./i-crashes-unresolve.md)
+- [Crashes - Mark Resolving](./i-crashes-resolving.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
 | `countly.app_crashgroups{appId}` | Crash status and metadata | Reads target groups, updates group status fields, updates `meta` counter document. |
 | `countly.systemlogs` | Audit trail | Receives `crash_resolved` action(s). |
 
-## Examples
-
-```plaintext
-/i/crashes/resolve?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&args={"crashes":["crash_group_1","crash_group_2"]}
-```
-
-## Related Endpoints
-
-- [Crashes - Unresolve Crash Groups](./i-crashes-unresolve.md)
-- [Crashes - Mark Resolving](./i-crashes-resolving.md)
-
-## Last Updated
-
-2026-03-07
+</details>

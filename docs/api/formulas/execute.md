@@ -3,12 +3,15 @@ sidebar_label: "Execute"
 keywords:
   - "/o"
   - "o"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Execute formula
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -22,12 +25,7 @@ Executes a formula and returns calculated values by requested buckets. Supports 
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -52,11 +50,29 @@ Requires `formulas` `Read` permission.
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `api.*` | Server API defaults | Shared API execution controls (for example processing thresholds/limits). | Changes to API-level controls can affect runtime behavior, limits, or response timing for this endpoint. |
+```text
+/o?
+  method=calculated_metrics&
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  mode=saved&
+  metric_id=67bd31c92e7f0b0012ab4567&
+  bucket=["daily","weekly","single"]&
+  period=30days&
+  previous=true&
+  metric_details=true
+```
+
+```text
+/o?
+  method=calculated_metrics&
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  mode=unsaved&
+  formula=[{"variables":[{"ex":{"type":"source","name":"e","params":{"event":"purchase"}}}]}]&
+  bucket=["daily"]&
+  period=7days
+```
 
 ## Response
 
@@ -135,7 +151,7 @@ Requires `formulas` `Read` permission.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - `mode=unsaved` and `mode=snapshot` parse formula content directly from `formula`.
 - `mode=saved` loads formula by `metric_id` and enforces visibility (`global`, owner, or shared email).
@@ -144,49 +160,26 @@ Requires `formulas` `Read` permission.
 - If `mode` is missing/unsupported, the endpoint returns an empty object payload.
 - When `allow_longtask` is enabled, processing can be dispatched through long-task/report flow.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.calculated_metrics` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
-| `countly.long_tasks` | Background task tracking | Stores long-task lifecycle records for asynchronous endpoint processing. |
-
----
-
-## Examples
-
-```text
-/o?
-  method=calculated_metrics&
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  mode=saved&
-  metric_id=67bd31c92e7f0b0012ab4567&
-  bucket=["daily","weekly","single"]&
-  period=30days&
-  previous=true&
-  metric_details=true
-```
-
-```text
-/o?
-  method=calculated_metrics&
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  mode=unsaved&
-  formula=[{"variables":[{"ex":{"type":"source","name":"e","params":{"event":"purchase"}}}]}]&
-  bucket=["daily"]&
-  period=7days
-```
-
----
-
 ## Related Endpoints
 
 - [Formulas - Read](get-single.md)
 - [Formulas - List](list.md)
 - [Formulas - Save](save.md)
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Last Updated
+**Configuration Impact**
 
-2026-02-16
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `api.*` | Server API defaults | Shared API execution controls (for example processing thresholds/limits). | Changes to API-level controls can affect runtime behavior, limits, or response timing for this endpoint. |
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.calculated_metrics` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
+| `countly.long_tasks` | Background task tracking | Stores long-task lifecycle records for asynchronous endpoint processing. |
+
+</details>

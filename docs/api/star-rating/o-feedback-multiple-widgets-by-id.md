@@ -4,6 +4,8 @@ keywords:
   - "/o/feedback/multiple-widgets-by-id"
   - "multiple-widgets-by-id"
   - "feedback"
+last_update:
+  date: "2026-03-07"
 ---
 
 # Star Rating - Get Multiple Widgets
@@ -31,6 +33,15 @@ This endpoint does not enforce role-based feature permission checks.
 | Parameter | Type | Required | Description |
 |---|---|---|---|
 | `widgets` | String (JSON Array) | Yes | Array of widget ID strings. |
+
+## Examples
+
+### Read two widgets by IDs
+
+```plaintext
+/o/feedback/multiple-widgets-by-id?
+  widgets=["67a3d2f5c1a23b0f4d6c0201","67a3d2f5c1a23b0f4d6c0202"]
+```
 
 ## Response
 
@@ -80,32 +91,24 @@ This endpoint does not enforce role-based feature permission checks.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Parses `widgets` JSON array.
 - Converts each item to ObjectID and queries `feedback_widgets` with `$in`.
 - Returns empty array when no docs found in normal branch.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.feedback_widgets` | Widget source | Reads widgets by provided ID list. |
-
-## Examples
-
-### Read two widgets by IDs
-
-```plaintext
-/o/feedback/multiple-widgets-by-id?
-  widgets=["67a3d2f5c1a23b0f4d6c0201","67a3d2f5c1a23b0f4d6c0202"]
-```
 
 ## Related Endpoints
 
 - [Star Rating - Get Widget Details](o-feedback-widget.md)
 - [Star Rating - List All Widgets](o-feedback-widgets.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-03-07
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.feedback_widgets` | Widget source | Reads widgets by provided ID list. |
+
+</details>

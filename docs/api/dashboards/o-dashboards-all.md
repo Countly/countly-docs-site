@@ -4,6 +4,8 @@ keywords:
   - "/o/dashboards/all"
   - "all"
   - "dashboards"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Dashboards - Read All
@@ -20,11 +22,7 @@ Returns dashboards available to the current user. For full mode, each dashboard 
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -38,11 +36,20 @@ No separate feature permission flag is checked. Access is derived from dashboard
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `dashboards.sharing_status` | `true` | Sharing availability | Controls whether broad sharing options are available. This directly affects which dashboards can be visible to non-owners in list results. |
+### Read all accessible dashboards (full mode)
+
+```text
+/o/dashboards/all
+```
+
+### Read schema only
+
+```text
+/o/dashboards/all?
+  just_schema=true
+```
 
 ## Response
 
@@ -111,7 +118,7 @@ Schema-only mode:
 
 This handler returns `[]` for many internal error branches instead of explicit error payloads.
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -124,32 +131,6 @@ This handler returns `[]` for many internal error branches instead of explicit e
 
 - Read-only endpoint; no data writes.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.dashboards` | Dashboard listing and access filtering | Reads dashboard documents with ownership/sharing filters. |
-| `countly.widgets` | Widget metadata enrichment | Reads widgets referenced by each dashboard. |
-| `countly.apps` | App summary enrichment | Reads app documents referenced by widget app IDs. |
-| `countly.members` | Authentication and owner info enrichment | Reads current member context for access filtering and owner profile fields for enrichment. |
-
----
-
-## Examples
-
-### Read all accessible dashboards (full mode)
-
-```text
-/o/dashboards/all
-```
-
-### Read schema only
-
-```text
-/o/dashboards/all?
-  just_schema=true
-```
-
 ## Limitations
 
 - `just_schema` is evaluated by truthiness; values like `1` also activate schema-only mode.
@@ -160,6 +141,22 @@ This handler returns `[]` for many internal error branches instead of explicit e
 - [Dashboards - Read](o-dashboards.md)
 - [Dashboards - Read Widget](o-dashboards-widget.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Configuration Impact**
+
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `dashboards.sharing_status` | `true` | Sharing availability | Controls whether broad sharing options are available. This directly affects which dashboards can be visible to non-owners in list results. |
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.dashboards` | Dashboard listing and access filtering | Reads dashboard documents with ownership/sharing filters. |
+| `countly.widgets` | Widget metadata enrichment | Reads widgets referenced by each dashboard. |
+| `countly.apps` | App summary enrichment | Reads app documents referenced by widget app IDs. |
+| `countly.members` | Authentication and owner info enrichment | Reads current member context for access filtering and owner profile fields for enrichment. |
+
+</details>

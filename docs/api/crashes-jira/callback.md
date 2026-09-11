@@ -3,18 +3,21 @@ sidebar_label: "Callback"
 keywords:
   - "/i/crashes-jira"
   - "crashes-jira"
+last_update:
+  date: "2026-02-16"
 ---
 
 # OAuth callback
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
 ```
 /i/crashes-jira?method=callback
 ```
-
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
 
 ## Overview
 
@@ -37,11 +40,19 @@ Completes OAuth flow by exchanging request token and verifier for an access toke
 | `oauth_verifier` | String | Yes | OAuth verifier returned by JIRA |
 | `pretty_callback` | String | No | If present, redirects to `/crashes-jira/login_callback` page |
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `crashes-jira.*` | Crashes Jira integration defaults | Jira integration logic and synchronization behavior. | Changes to Jira integration settings can alter authentication, sync behavior, and returned integration state. |
+### Example 1: OAuth callback from JIRA
+
+```text
+/i/crashes-jira?method=callback&oauth_verifier=OAUTH_VERIFIER_VALUE
+```
+
+### Example 2: OAuth callback with UI redirect
+
+```text
+/i/crashes-jira?method=callback&oauth_verifier=OAUTH_VERIFIER_VALUE&pretty_callback=yes
+```
 
 ## Response
 
@@ -78,57 +89,31 @@ Pretty callback success:
 | 500 | `{ "result": "Failed to find oauth token: ..." }` |
 | 500 | `{ "result": "Failed to retrieve access token: ..." }` |
 
-## Behavior/Processing
+## Behavior
 
 1. Loads temporary OAuth token from `countly.crashes_jira` (`_id: "meta"`).
 2. Checks token age (10-minute timeout).
 3. Exchanges verifier for access token and stores `oauth.access_token`.
 4. Returns success response or UI redirect when `pretty_callback` is used.
 
----
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.crashes_jira` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
-
----
-
-## Examples
-
-### Example 1: OAuth callback from JIRA
-
-```text
-/i/crashes-jira?method=callback&oauth_verifier=OAUTH_VERIFIER_VALUE
-```
-
-### Example 2: OAuth callback with UI redirect
-
-```text
-/i/crashes-jira?method=callback&oauth_verifier=OAUTH_VERIFIER_VALUE&pretty_callback=yes
-```
-
 ## Related Endpoints
 
 - [JIRA for Crashes - Login](login.md)
 - [JIRA for Crashes - Check Login](check-login.md)
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Configuration Impact**
 
-This feature is part of **Countly Enterprise**.
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `crashes-jira.*` | Crashes Jira integration defaults | Jira integration logic and synchronization behavior. | Changes to Jira integration settings can alter authentication, sync behavior, and returned integration state. |
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
+**Database Collections**
 
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.crashes_jira` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 
----
-
-## Last Updated
-
-2026-02-16
+</details>

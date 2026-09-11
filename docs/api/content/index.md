@@ -1,19 +1,20 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-15"
 ---
 
 # Content - API Documentation
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This feature is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 **Feature**: content  
 **Type**: Enterprise  
 **Total Endpoints**: 12  
 **Last Updated**: February 15, 2026
-
----
 
 ## Overview
 
@@ -26,8 +27,6 @@ The Content Feature provides a comprehensive content management and delivery sys
 - User engagement orchestration
 - Survey distribution
 - Personalized messaging
-
----
 
 ## Quick Links
 
@@ -46,24 +45,6 @@ The Content Feature provides a comprehensive content management and delivery sys
 | [Queue - Debug](queue-debug.md) | Get queue status for user |
 | [SDK Read - Content Delivery](delivery-retrieve.md) | Fetch queued content for user (SDK) |
 
----
-
-## Database Collections
-
-| Collection | Purpose |
-|---|---|
-| `countly.content_blocks` | Stores content block definitions (layout, blocks, styling, metadata) |
-| `countly.content_queue` | User-specific content delivery queue with priority and expiry |
-| `countly_fs.content_assets{app_id}.files` | GridFS file metadata for uploaded assets |
-| `countly_fs.content_assets{app_id}.chunks` | GridFS binary chunks for uploaded assets |
-| `countly.feedback_widgets` | Survey widget definitions (integration with surveys feature) |
-| `countly.journey_versions` | Journey template versions (journey engine integration) |
-| `countly.journey_definition` | Journey definitions (journey engine integration) |
-| `countly.app_users{app_id}` | User state tracking content engagement |
-| `countly.members` | User profiles (content creator information) |
-
----
-
 ## Configuration & Settings
 
 Content behavior is mostly driven by content definitions and queue entries, with cooldown timing read from plugin configuration:
@@ -75,8 +56,6 @@ Content behavior is mostly driven by content definitions and queue entries, with
 - **Queue Expiry**: Configurable per content block delivery
 - **Queue Cooldown**: Read from `journey_engine.cooldown` with fallback from `content.cooldown` during migration logic
 - **Priority Values**: Numeric values are stored in queue entries; selection order is determined by queue sorting logic
-
----
 
 ## Feature Categories
 
@@ -116,8 +95,6 @@ Manage user content delivery queue and debug queue state.
 
 - [Queue - Debug](queue-debug.md): Get queue status and pending blocks for user
 - [SDK Read - Content Delivery](delivery-retrieve.md): Fetch next queued content for user (SDK endpoint)
-
----
 
 ## Content Block Structure
 
@@ -177,8 +154,6 @@ Manage user content delivery queue and debug queue state.
 }
 ```
 
----
-
 ## Key Concepts
 
 ### Engagement Queue System
@@ -233,8 +208,6 @@ Manage user content delivery queue and debug queue state.
 - Deletion checks prevent orphaned journey references
 - Journey queue clearing on completion/deletion
 
----
-
 ## Use Cases
 
 ### 1. In-App Marketing Campaign
@@ -252,15 +225,11 @@ Create responsive content that adapts positioning and sizing for phone, tablet, 
 ### 5. Journey-Orchestrated Experience
 Orchestrate multi-step customer journeys with sequential content delivery. Automatically clean up queue when journey completes.
 
----
-
 ## Related Features
 
 - **Journey Engine**: Orchestrates content delivery through journeys; integrates queue system
 - **Surveys Feature**: Survey widget integration; content blocks can embed surveys
 - **Analytics/Drill**: Tracks content engagement events
-
----
 
 ## Permissions & Authentication
 
@@ -269,8 +238,6 @@ All endpoints require user authentication and feature access:
 - **Write endpoints** (`/i/content*`): Require `validateCreate`, `validateUpdate`, or `validateDelete` based on operation
 - **SDK endpoint** (`/o/sdk/content`): Internal authentication
 - **Internal endpoints**: No authentication required (called by system/features only)
-
----
 
 ## Troubleshooting
 
@@ -299,8 +266,6 @@ All endpoints require user authentication and feature access:
 - Check content_queue collection for orphaned entries
 - Review system logs for errors
 
----
-
 ## Performance Optimization
 
 ### Asset Optimization
@@ -327,25 +292,25 @@ All endpoints require user authentication and feature access:
 
 2. **Responsive Heights:** Adjust heightMultiplier (0.6-1.2) for optimal appearance
 
----
-
 ## Conclusion
 
 The Content Feature provides enterprise-grade content management and delivery with flexible queuing, multi-device preview, asset optimization, and seamless journey integration. Its responsive positioning system and language localization support enable global campaigns while maintaining optimal user experience across all device types.
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Database Collections**
 
-This feature is part of **Countly Enterprise**.
+| Collection | Purpose |
+|---|---|
+| `countly.content_blocks` | Stores content block definitions (layout, blocks, styling, metadata) |
+| `countly.content_queue` | User-specific content delivery queue with priority and expiry |
+| `countly_fs.content_assets{app_id}.files` | GridFS file metadata for uploaded assets |
+| `countly_fs.content_assets{app_id}.chunks` | GridFS binary chunks for uploaded assets |
+| `countly.feedback_widgets` | Survey widget definitions (integration with surveys feature) |
+| `countly.journey_versions` | Journey template versions (journey engine integration) |
+| `countly.journey_definition` | Journey definitions (journey engine integration) |
+| `countly.app_users{app_id}` | User state tracking content engagement |
+| `countly.members` | User profiles (content creator information) |
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-**Last Updated**: 2026-02-15
+</details>

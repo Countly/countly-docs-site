@@ -1,12 +1,15 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-04-01"
 ---
 
 # Attribution - API Documentation
 
-> Ⓔ **Enterprise Only**  
-> This feature is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This feature is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Overview
 
@@ -21,7 +24,10 @@ Attribution APIs manage campaigns and return campaign performance data such as c
 - [Campaign Hide](i-campaign-hide.md) - `/i/campaign/hide`
 - [Campaign Show](i-campaign-show.md) - `/i/campaign/show`
 
-## Database Collections
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Purpose |
 |---|---|
@@ -30,6 +36,4 @@ Attribution APIs manage campaigns and return campaign performance data such as c
 | `countly.attribution` | Click-tracking records keyed by campaign/user fingerprint. |
 | `countly.campaign_users{appId}` | Per-app campaign user tracking documents. |
 
-## Last Updated
-
-2026-04-01
+</details>

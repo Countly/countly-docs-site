@@ -2,10 +2,12 @@
 sidebar_label: "Overview"
 sidebar_position: 1
 ---
+
 # Drill - API Documentation
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This feature is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Overview
 
@@ -74,7 +76,5 @@ From `plugins.setConfigs("drill", ...)` in `plugins/drill/api/api.js`:
 
 - Most Drill reads are exposed through `/o?method=...`.
 - Bookmark create/delete and maintenance operations are exposed through `/i/drill/<action>`.
-
----
 
 _Last Updated: 2026-04-17_

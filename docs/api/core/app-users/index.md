@@ -1,6 +1,8 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-17"
 ---
 
 # App Users Management
@@ -8,17 +10,6 @@ sidebar_label: "Overview"
 ## Overview
 
 Core app-user management APIs for direct user profile maintenance, export/download workflow, and loyalty analytics.
-
-## Database Collections
-
-| Collection | Purpose |
-|---|---|
-| `countly.app_users{appId}` | App-scoped user profiles and export metadata (`appUserExport`). |
-| `countly.apps` | App metadata and user-sequence (`seq`) used during user creation. |
-| `countly.exports` | Stored export payload rows for app-user export artifacts. |
-| `countly.long_tasks` | Long-task records for async export processing. |
-| `countly_drill.drill_events` | Granular drill events deleted during user removal cleanup. |
-| `countly_fs` | GridFS storage for generated app-user export archives. |
 
 ## Endpoint Index
 
@@ -45,6 +36,18 @@ Core app-user management APIs for direct user profile maintenance, export/downlo
 - Export can return either a direct result or task-based output depending on processing time and task state.
 - Download returns streamed content (archive stream first, then JSON-stream fallback).
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Purpose |
+|---|---|
+| `countly.app_users{appId}` | App-scoped user profiles and export metadata (`appUserExport`). |
+| `countly.apps` | App metadata and user-sequence (`seq`) used during user creation. |
+| `countly.exports` | Stored export payload rows for app-user export artifacts. |
+| `countly.long_tasks` | Long-task records for async export processing. |
+| `countly_drill.drill_events` | Granular drill events deleted during user removal cleanup. |
+| `countly_fs` | GridFS storage for generated app-user export archives. |
+
+</details>

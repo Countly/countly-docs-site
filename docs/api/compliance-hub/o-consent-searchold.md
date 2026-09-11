@@ -4,6 +4,8 @@ keywords:
   - "/o/consent/searchOld"
   - "searchOld"
   - "consent"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Compliance Hub - Consent Search Old
@@ -20,11 +22,7 @@ Legacy backup endpoint that searches old consent history documents from `consent
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -47,6 +45,19 @@ Requires `compliance_hub` `Read` permission.
 | `sEcho` | String or Number | No | Echo value returned in response. |
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
+
+## Examples
+
+### Search legacy consent history
+
+```text
+/o/consent/searchOld?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  sSearch=device_123&
+  limit=20&
+  skip=0
+```
 
 ## Response
 
@@ -126,7 +137,7 @@ Empty dataset response:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -139,29 +150,6 @@ Empty dataset response:
 
 - Read-only endpoint.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication and permission checks | Reads member account and feature access for read validation. |
-| `countly.apps` | App validation/context loading | Validates `app_id` and app context for search scope. |
-| `countly.consent_history` | Legacy consent history source | Reads old consent history documents by app/query filters. |
-
----
-
-## Examples
-
-### Search legacy consent history
-
-```text
-/o/consent/searchOld?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  sSearch=device_123&
-  limit=20&
-  skip=0
-```
-
 ## Limitations
 
 - Legacy backup endpoint for old consent-history data path.
@@ -171,6 +159,15 @@ Empty dataset response:
 
 - [Compliance Hub - Consent Search](o-consent-search.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication and permission checks | Reads member account and feature access for read validation. |
+| `countly.apps` | App validation/context loading | Validates `app_id` and app context for search scope. |
+| `countly.consent_history` | Legacy consent history source | Reads old consent history documents by app/query filters. |
+
+</details>

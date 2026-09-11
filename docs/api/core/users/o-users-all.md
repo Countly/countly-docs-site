@@ -4,6 +4,8 @@ keywords:
   - "/o/users/all"
   - "all"
   - "users"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Users Management - Users List
@@ -20,9 +22,7 @@ Returns all dashboard users as an object map keyed by user id.
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -35,12 +35,13 @@ Returns all dashboard users as an object map keyed by user id.
 | `api_key` | String | Yes (or use `auth_token`) | Dashboard API key. |
 | `auth_token` | String | Yes (or use `api_key`) | Dashboard auth token. |
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `security.login_tries` | Server config | `blocked` calculation | Defines failed-login step used to trigger blocked status. |
-| `security.login_wait` | Server config | `blocked` calculation | Defines block duration window in seconds. |
+### Example 1: List dashboard users
+
+```plaintext
+/o/users/all?api_key=YOUR_API_KEY
+```
 
 ## Response
 
@@ -100,7 +101,7 @@ Returns all dashboard users as an object map keyed by user id.
 
 Returned when user or failed-login queries fail while building the response.
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -108,25 +109,6 @@ Returned when user or failed-login queries fail while building the response.
 |---|---|---|
 | Normal list | Member and failed-login queries succeed | User map object keyed by `_id`. |
 | Query fallback | Member or failed-login query fails | Empty object `{}`. |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | User source data. | Reads all dashboard users (excluding sensitive fields). |
-| `countly.failed_logins` | Block-state source data. | Reads failed-login counters and timestamps for `blocked` calculation. |
-
----
-
-## Examples
-
-### Example 1: List dashboard users
-
-```plaintext
-/o/users/all?api_key=YOUR_API_KEY
-```
-
----
 
 ## Limitations
 
@@ -140,6 +122,21 @@ Returned when user or failed-login queries fail while building the response.
 - [Current User Read](o-users-me.md)
 - [Time Ban Reset](o-users-reset-timeban.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Configuration Impact**
+
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `security.login_tries` | Server config | `blocked` calculation | Defines failed-login step used to trigger blocked status. |
+| `security.login_wait` | Server config | `blocked` calculation | Defines block duration window in seconds. |
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | User source data. | Reads all dashboard users (excluding sensitive fields). |
+| `countly.failed_logins` | Block-state source data. | Reads failed-login counters and timestamps for `blocked` calculation. |
+
+</details>
