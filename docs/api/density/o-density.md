@@ -3,6 +3,8 @@ sidebar_label: "Density Read"
 keywords:
   - "/o"
   - "o"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /o?method=density
@@ -19,11 +21,7 @@ Returns density time-series metrics for the selected app and period.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -41,6 +39,28 @@ Countly API supports three authentication methods:
 | `timezone` | String | No | Optional timezone override for period handling. |
 | `timestamp` | Number | No | Optional timestamp for period anchoring. |
 | `action` | String | No | Optional `refresh` action for fetch behavior. |
+
+## Examples
+
+### Read density metrics for last 30 days
+
+```plaintext
+/o?
+  api_key=YOUR_API_KEY&
+  method=density&
+  app_id=6991c75b024cb89cdc04efd2&
+  period=30days
+```
+
+### Read density metrics for custom range
+
+```plaintext
+/o?
+  api_key=YOUR_API_KEY&
+  method=density&
+  app_id=6991c75b024cb89cdc04efd2&
+  period=[1738368000000,1738972800000]
+```
 
 ## Response
 
@@ -91,7 +111,7 @@ Countly API supports three authentication methods:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -103,7 +123,14 @@ Countly API supports three authentication methods:
 
 - Read-only endpoint.
 
-## Database Collections
+## Related Endpoints
+
+- [Density - Overview](index.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -111,32 +138,4 @@ Countly API supports three authentication methods:
 | `countly.apps` | App context validation | Reads app record for the requested `app_id` during access validation. |
 | `countly.density` | Density metric source | Reads density metric documents for requested app and period. |
 
-## Examples
-
-### Read density metrics for last 30 days
-
-```plaintext
-/o?
-  api_key=YOUR_API_KEY&
-  method=density&
-  app_id=6991c75b024cb89cdc04efd2&
-  period=30days
-```
-
-### Read density metrics for custom range
-
-```plaintext
-/o?
-  api_key=YOUR_API_KEY&
-  method=density&
-  app_id=6991c75b024cb89cdc04efd2&
-  period=[1738368000000,1738972800000]
-```
-
-## Related Endpoints
-
-- [Density - Overview](index.md)
-
-## Last Updated
-
-2026-02-17
+</details>

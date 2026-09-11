@@ -4,6 +4,8 @@ keywords:
   - "/i/crashes/delete"
   - "delete"
   - "crashes"
+last_update:
+  date: "2026-03-07"
 ---
 
 # Crashes - Delete Crash Groups
@@ -20,12 +22,7 @@ Deletes crash groups and their associated crash-user/share/granular records, the
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. `api_key=YOUR_API_KEY`
-2. `auth_token=YOUR_AUTH_TOKEN`
-3. `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -43,6 +40,12 @@ Requires `crashes` `Delete` permission.
 | `args.crash_id` | String | No | Single crash group ID. |
 
 Provide `args.crashes` or `args.crash_id`.
+
+## Examples
+
+```plaintext
+/i/crashes/delete?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&args={"crashes":["crash_group_1","crash_group_2"]}
+```
 
 ## Response
 
@@ -72,7 +75,7 @@ Provide `args.crashes` or `args.crash_id`.
 
 Standard auth/permission errors from delete validation can also be returned.
 
-## Behavior/Processing
+## Behavior
 
 - Loads matched crash groups and iterates each group.
 - Emits `crash_deleted` system log action with group payload.
@@ -81,7 +84,15 @@ Standard auth/permission errors from delete validation can also be returned.
 - Removes matching `app_crashusers{appId}` group rows and updates root group (`group=0`) crash/fatal counters.
 - Recomputes `meta.users` and `meta.usersfatal`, applies accumulated counter decrements to `meta`.
 
-## Database Collections
+## Related Endpoints
+
+- [Crashes - Hide Crash Groups](./i-crashes-hide.md)
+- [Crashes - Resolve Crash Groups](./i-crashes-resolve.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -92,17 +103,4 @@ Standard auth/permission errors from delete validation can also be returned.
 | `countly_drill.drill_events` | Drill crash event rows | Removes matching crash drill rows. |
 | `countly.systemlogs` | Audit trail | Receives `crash_deleted` action(s). |
 
-## Examples
-
-```plaintext
-/i/crashes/delete?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&args={"crashes":["crash_group_1","crash_group_2"]}
-```
-
-## Related Endpoints
-
-- [Crashes - Hide Crash Groups](./i-crashes-hide.md)
-- [Crashes - Resolve Crash Groups](./i-crashes-resolve.md)
-
-## Last Updated
-
-2026-03-07
+</details>

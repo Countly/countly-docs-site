@@ -4,6 +4,8 @@ keywords:
   - "/o/tasks/count"
   - "count"
   - "tasks"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /o/tasks/count
@@ -20,9 +22,7 @@ Returns grouped task counts for tasks visible to current user.
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -44,6 +44,25 @@ Returns grouped task counts for tasks visible to current user.
 - Visibility filter is always enforced: global tasks or tasks created by current member.
 - `query` parsing failures fall back to `{}`.
 - Unlike `/o/tasks/all` and `/o/tasks/list`, this endpoint does not add a `subtask` exclusion filter by default.
+
+## Examples
+
+### Example 1: Count visible tasks
+
+```plaintext
+/o/tasks/count?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2
+```
+
+### Example 2: Count tasks for last 30 days
+
+```plaintext
+/o/tasks/count?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  period=30days
+```
 
 ## Response
 
@@ -77,7 +96,7 @@ Returns grouped task counts for tasks visible to current user.
 {"result":"Missing parameter \"api_key\" or \"auth_token\""}
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -91,40 +110,6 @@ Returns grouped task counts for tasks visible to current user.
 
 - Read-only endpoint.
 
-## Audit & System Logs
-
-- No `/systemlogs` action is emitted by this endpoint.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication and visibility scoping | Reads caller identity used by read validation and creator visibility filtering. |
-| `countly.long_tasks` | Task count source | Aggregates visible tasks grouped by app ID. |
-
----
-
-## Examples
-
-### Example 1: Count visible tasks
-
-```plaintext
-/o/tasks/count?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2
-```
-
-### Example 2: Count tasks for last 30 days
-
-```plaintext
-/o/tasks/count?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  period=30days
-```
-
----
-
 ## Related Endpoints
 
 - [Tasks - Read All Tasks](./o-tasks-all.md)
@@ -134,6 +119,18 @@ Returns grouped task counts for tasks visible to current user.
 
 - Counts may include subtasks unless caller explicitly filters them out in `query`.
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Audit & System Logs**
+
+- No `/systemlogs` action is emitted by this endpoint.
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication and visibility scoping | Reads caller identity used by read validation and creator visibility filtering. |
+| `countly.long_tasks` | Task count source | Aggregates visible tasks grouped by app ID. |
+
+</details>

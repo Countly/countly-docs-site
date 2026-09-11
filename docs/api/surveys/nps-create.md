@@ -5,9 +5,15 @@ keywords:
   - "create"
   - "surveys"
   - "nps"
+last_update:
+  date: "2026-04-18"
 ---
 
 # Surveys - Create NPS
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -15,19 +21,13 @@ keywords:
 /i/surveys/nps/create
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Creates an NPS widget.
 
 ## Authentication
 
-**Authentication methods**:
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -47,6 +47,12 @@ Creates an NPS widget.
 | `followUpType` | String | No | Follow-up mode |
 | `appearance` | String (JSON Object) | No | Appearance configuration |
 | `targeting` | String (JSON Object) | No | Targeting rules/cohort source |
+
+## Examples
+
+```text
+/i/surveys/nps/create?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&name=NPS Q1&internalName=nps_q1&status=true&msg={"mainQuestion":"How likely are you to recommend us?"}
+```
 
 ## Response
 
@@ -85,7 +91,7 @@ Creates an NPS widget.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Parses and preprocesses widget properties such as `msg`, `appearance`, and `targeting`.
 - Validates NPS payload with NPS form property rules.
@@ -93,40 +99,20 @@ Creates an NPS widget.
 - Uploads `logo` when provided and records it in `appearance.logo`; if upload fails, the widget can still be created and the response includes the new `widgetId` with an error.
 - Creates a linked cohort when `targeting` is provided, stores its ID as `cohortID`, and emits `surveys_widget_created`.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.feedback_widgets` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
-| `countly.cohorts` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
-
----
-
-## Examples
-
-```text
-/i/surveys/nps/create?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&name=NPS Q1&internalName=nps_q1&status=true&msg={"mainQuestion":"How likely are you to recommend us?"}
-```
-
 ## Related Endpoints
 
 - [Surveys - Edit NPS](nps-edit.md)
 - [Surveys - Delete NPS](nps-delete.md)
 - [Surveys - Update NPS Status](nps-status-update.md)
 
-## Ⓔ Enterprise
+<details>
+<summary>Implementation details</summary>
 
-This feature is part of **Countly Enterprise**.
+**Database Collections**
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.feedback_widgets` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
+| `countly.cohorts` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions.
-
----
-
-## Last Updated
-
-2026-04-18
+</details>

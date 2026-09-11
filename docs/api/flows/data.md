@@ -3,12 +3,15 @@ sidebar_label: "Data"
 keywords:
   - "/o/flows"
   - "flows"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Get flow data
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -22,12 +25,7 @@ Returns calculated flow data document for a flow.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -43,11 +41,14 @@ Requires `flows` `Read` permission.
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `flows.*` | Flows feature defaults | Flows analytics query behavior and result shaping. | Changes to flows settings can affect returned paths, aggregation behavior, and limits. |
+```text
+/o/flows?
+  method=data&
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  _id=64f5c0d8f4f7ac0012ab3456_67bd31c92e7f0b0012ab4567
+```
 
 ## Response
 
@@ -75,38 +76,30 @@ Requires `flows` `Read` permission.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Validates `_id` prefix against `app_id`.
 - Reads `countly.flow_data` by `_id` regex (`^<flow_id>.*`).
 - Returns first matched document or `{}`.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.flow_data` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
-
----
-
-## Examples
-
-```text
-/o/flows?
-  method=data&
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  _id=64f5c0d8f4f7ac0012ab3456_67bd31c92e7f0b0012ab4567
-```
-
----
 
 ## Related Endpoints
 
 - [Flows - Calculate](calculate.md)
 - [Flows - Info](info.md)
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Last Updated
+**Configuration Impact**
 
-2026-02-16
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `flows.*` | Flows feature defaults | Flows analytics query behavior and result shaping. | Changes to flows settings can affect returned paths, aggregation behavior, and limits. |
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.flow_data` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
+
+</details>

@@ -4,9 +4,15 @@ keywords:
   - "/i/groups/save-user-group"
   - "save-user-group"
   - "groups"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Assign User to Groups
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -14,19 +20,14 @@ keywords:
 /i/groups/save-user-group
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Assigns a user to one or more groups, or clears all user group assignments when `group_id` is omitted/empty.
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required access**: global admin
@@ -45,50 +46,6 @@ Assigns a user to one or more groups, or clears all user group assignments when 
 |---|---|---|---|
 | `email` | String | Yes | User email |
 | `group_id` | Array | No | Group IDs to assign. Empty/omitted removes all group assignments |
-
-## Response
-
-### Success Response
-
-```json
-{
-  "result": "Success"
-}
-```
-
-### Response Fields
-
-| Field | Type | Description |
-|---|---|---|
-| `result` | String | Operation status |
-
-### Error Responses
-
-| HTTP Status | Response |
-|---|---|
-| 200 | `{ "result": "Not enough args" }` |
-| 400 | `{ "result": "User Not found" }` |
-| 400 | `{ "result": "group_id is wrong!" }` |
-| 400 | `{ "result": "Cannot add Global Admin to group" }` |
-| 400 | `{ "result": "Missing parameter \"api_key\" or \"auth_token\"" }` |
-
-## Behavior/Processing
-
-1. Validates user by `email`.
-2. When `group_id` is provided, validates groups and merges permissions from target groups.
-3. Synchronizes both sides of membership (`members.group_id` and `groups.users`).
-4. When `group_id` is missing/empty, removes all group assignments from the user.
-
----
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Endpoint data source | ** - User group assignments and effective permissions |
-| `countly.groups` | Endpoint data source | ** - Group user list synchronization |
-
----
 
 ## Examples
 
@@ -120,7 +77,38 @@ Endpoint form:
 https://your-server.com/i/groups/save-user-group?api_key=YOUR_API_KEY&args={"email":"analyst@example.com","group_id":[]}
 ```
 
----
+## Response
+
+### Success Response
+
+```json
+{
+  "result": "Success"
+}
+```
+
+### Response Fields
+
+| Field | Type | Description |
+|---|---|---|
+| `result` | String | Operation status |
+
+### Error Responses
+
+| HTTP Status | Response |
+|---|---|
+| 200 | `{ "result": "Not enough args" }` |
+| 400 | `{ "result": "User Not found" }` |
+| 400 | `{ "result": "group_id is wrong!" }` |
+| 400 | `{ "result": "Cannot add Global Admin to group" }` |
+| 400 | `{ "result": "Missing parameter \"api_key\" or \"auth_token\"" }` |
+
+## Behavior
+
+1. Validates user by `email`.
+2. When `group_id` is provided, validates groups and merges permissions from target groups.
+3. Synchronizes both sides of membership (`members.group_id` and `groups.users`).
+4. When `group_id` is missing/empty, removes all group assignments from the user.
 
 ## Related Endpoints
 
@@ -128,21 +116,14 @@ https://your-server.com/i/groups/save-user-group?api_key=YOUR_API_KEY&args={"ema
 - [Groups - Assign Many Users to a Group](save-many-user-groups.md)
 - [Groups - Remove User from Group](remove-user.md)
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Database Collections**
 
-This feature is part of **Countly Enterprise**.
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Endpoint data source | ** - User group assignments and effective permissions |
+| `countly.groups` | Endpoint data source | ** - Group user list synchronization |
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

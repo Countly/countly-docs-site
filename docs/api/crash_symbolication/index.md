@@ -1,12 +1,15 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Crash Symbolication - API Documentation
 
-> Ⓔ **Enterprise Only**  
-> This feature is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This feature is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Overview
 
@@ -70,22 +73,3 @@ Crash Symbolication uses `crashes` config scope values:
 
 - JavaScript stack traces are deobfuscated locally using source maps.
 - Native and other non-JS symbolication may use local minidump tooling or external symbolication server flow, depending on crash type.
-
----
-
-## Ⓔ Enterprise
-
-This feature is part of **Countly Enterprise**.
-
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-02-16

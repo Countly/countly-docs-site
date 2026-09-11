@@ -4,6 +4,8 @@ keywords:
   - "/i/users/update"
   - "update"
   - "users"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Users Management - User Update
@@ -20,9 +22,7 @@ Updates an existing dashboard user.
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -55,14 +55,19 @@ Updates an existing dashboard user.
 | `user_of` | Array | No | Backward-compatible app-user shorthand. |
 | `member_image` | String | No | Set to `delete` to clear image reference. |
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `security.password_min` | Server config | Password validation | Enforces minimum password length. |
-| `security.password_number` | Server config | Password validation | Requires number characters when enabled. |
-| `security.password_char` | Server config | Password validation | Requires uppercase characters when enabled. |
-| `security.password_symbol` | Server config | Password validation | Requires symbol characters when enabled. |
+### Example 1: Update email
+
+```plaintext
+/i/users/update?api_key=YOUR_API_KEY&args={"user_id":"67b3055b87d9f49e2f5f3201","email":"new@example.com"}
+```
+
+### Example 2: Update password and notify
+
+```plaintext
+/i/users/update?api_key=YOUR_API_KEY&args={"user_id":"67b3055b87d9f49e2f5f3201","password":"NewStrongPass123!","send_notification":true}
+```
 
 ## Response
 
@@ -108,7 +113,7 @@ Updates an existing dashboard user.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -123,39 +128,6 @@ Updates an existing dashboard user.
 - Removes password reset records for the user if email changes.
 - Removes active sessions/auth tokens when password is changed by another user.
 
-## Audit & System Logs
-
-| Action | Trigger |
-|---|---|
-| `user_updated` | Successful user update (when System Logs module is enabled). |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Primary user storage. | Reads existing user, updates target user, reads updated user. |
-| `countly.password_reset` | Reset/invite lifecycle. | Removes reset records when email changes. |
-| `countly.sessions_` | Session lifecycle. | Removes user sessions when password changed by another user. |
-| `countly.auth_tokens` | Token lifecycle. | Removes logged-in auth tokens when password changed by another user. |
-
----
-
-## Examples
-
-### Example 1: Update email
-
-```plaintext
-/i/users/update?api_key=YOUR_API_KEY&args={"user_id":"67b3055b87d9f49e2f5f3201","email":"new@example.com"}
-```
-
-### Example 2: Update password and notify
-
-```plaintext
-/i/users/update?api_key=YOUR_API_KEY&args={"user_id":"67b3055b87d9f49e2f5f3201","password":"NewStrongPass123!","send_notification":true}
-```
-
----
-
 ## Limitations
 
 - Global-admin-only endpoint.
@@ -166,6 +138,31 @@ Updates an existing dashboard user.
 - [User Create](i-users-create.md)
 - [User Delete](i-users-delete.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Configuration Impact**
+
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `security.password_min` | Server config | Password validation | Enforces minimum password length. |
+| `security.password_number` | Server config | Password validation | Requires number characters when enabled. |
+| `security.password_char` | Server config | Password validation | Requires uppercase characters when enabled. |
+| `security.password_symbol` | Server config | Password validation | Requires symbol characters when enabled. |
+
+**Audit & System Logs**
+
+| Action | Trigger |
+|---|---|
+| `user_updated` | Successful user update (when System Logs module is enabled). |
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Primary user storage. | Reads existing user, updates target user, reads updated user. |
+| `countly.password_reset` | Reset/invite lifecycle. | Removes reset records when email changes. |
+| `countly.sessions_` | Session lifecycle. | Removes user sessions when password changed by another user. |
+| `countly.auth_tokens` | Token lifecycle. | Removes logged-in auth tokens when password changed by another user. |
+
+</details>

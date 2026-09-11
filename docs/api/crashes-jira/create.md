@@ -3,9 +3,15 @@ sidebar_label: "Create"
 keywords:
   - "/i/crashes-jira"
   - "crashes-jira"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Create JIRA issue
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -13,19 +19,14 @@ keywords:
 /i/crashes-jira?method=create
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Creates a JIRA issue for a crash group and stores the issue key mapping in Countly.
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required permission**: `Create` on the `crashes` feature
@@ -42,11 +43,25 @@ Creates a JIRA issue for a crash group and stores the issue key mapping in Count
 | `api_key` | String | Yes (or `auth_token`) | API key authentication |
 | `auth_token` | String | Yes (or `api_key`) | Auth token authentication |
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `crashes-jira.*` | Crashes Jira integration defaults | Jira integration logic and synchronization behavior. | Changes to Jira integration settings can alter authentication, sync behavior, and returned integration state. |
+### Example 1: Create issue with default summary/description
+
+```text
+/i/crashes-jira?method=create&app_id=5f9c8a3b4d1e2a001f3b4567&crashgroup_id=65c5f2782c5f5300121a00c1&api_key=YOUR_API_KEY
+```
+
+### Example 2: Create issue with custom summary and description
+
+```text
+/i/crashes-jira?
+method=create&
+app_id=5f9c8a3b4d1e2a001f3b4567&
+crashgroup_id=65c5f2782c5f5300121a00c1&
+summary=Android crash on checkout&
+description=Crash reported in v2.3.1; Repro steps included&
+api_key=YOUR_API_KEY
+```
 
 ## Response
 
@@ -90,16 +105,28 @@ Issue already exists:
 | 500 | `{ "result": "Failed to store JIRA issue" }` |
 | 500 | `{ "result": "<JIRA validation errors combined>" }` |
 
-## Behavior/Processing
+## Behavior
 
 1. Validates app config under `app.plugins["crashes-jira"]` (`project`, `type`).
 2. Fetches crash group and checks if a mapping already exists.
 3. Creates issue in JIRA (`/rest/api/3/issue`) when missing.
 4. Stores mapping in `crashes_jira{app_id}` with `issue.key` and `created` timestamp.
 
----
+## Related Endpoints
 
-## Database Collections
+- [JIRA for Crashes - List](issues.md)
+- [JIRA for Crashes - Sync](sync.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Configuration Impact**
+
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `crashes-jira.*` | Crashes Jira integration defaults | Jira integration logic and synchronization behavior. | Changes to Jira integration settings can alter authentication, sync behavior, and returned integration state. |
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -108,48 +135,4 @@ Issue already exists:
 | `countly.crashes_jira` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 | `countly.crashes_jira{app_id}` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 
----
-
-## Examples
-
-### Example 1: Create issue with default summary/description
-
-```text
-/i/crashes-jira?method=create&app_id=5f9c8a3b4d1e2a001f3b4567&crashgroup_id=65c5f2782c5f5300121a00c1&api_key=YOUR_API_KEY
-```
-
-### Example 2: Create issue with custom summary and description
-
-```text
-/i/crashes-jira?
-method=create&
-app_id=5f9c8a3b4d1e2a001f3b4567&
-crashgroup_id=65c5f2782c5f5300121a00c1&
-summary=Android crash on checkout&
-description=Crash reported in v2.3.1; Repro steps included&
-api_key=YOUR_API_KEY
-```
-
-## Related Endpoints
-
-- [JIRA for Crashes - List](issues.md)
-- [JIRA for Crashes - Sync](sync.md)
-
----
-
-## Ⓔ Enterprise
-
-This feature is part of **Countly Enterprise**.
-
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

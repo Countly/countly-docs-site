@@ -6,9 +6,15 @@ keywords:
   - "active-users"
   - "journey-engine"
   - "stats"
+last_update:
+  date: "2026-04-18"
 ---
 
 # Journey Engine - Stats Active Users
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -16,19 +22,14 @@ keywords:
 /o/journey-engine/stats/active-users
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Return active user counts for journeys with comparison to previous period.
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required permission**: `Read` on the `journey_engine` feature
@@ -38,6 +39,12 @@ Return active user counts for journeys with comparison to previous period.
 - `journeyVersionId` (optional): Filter by journey version
 - `journeyDefinitionId` (optional): Filter by journey definition
 - `period` (optional): Time period for comparison (defaults to hourly)
+
+## Examples
+
+```
+GET /o/journey-engine/stats/active-users?journeyDefinitionId=67164f4a1f1bd90d6354430a&period=7days
+```
 
 ## Response
 
@@ -51,7 +58,6 @@ Return active user counts for journeys with comparison to previous period.
 }
 ```
 
-
 ### Response Fields
 
 | Field | Type | Description |
@@ -64,41 +70,23 @@ Return active user counts for journeys with comparison to previous period.
 
 - **500**: Query error
 
-## Examples
-
-```
-GET /o/journey-engine/stats/active-users?journeyDefinitionId=67164f4a1f1bd90d6354430a&period=7days
-```
-
-## Behavior/Processing
+## Behavior
 
 - Filters `journey_stats` by `journeyVersionId` and/or `journeyDefinitionId` when provided.
 - Uses Countly period helpers when `period` is provided; otherwise defaults to the helper's hourly/current behavior.
 - Calculates active users by summing `users_completed` for current and previous period arrays.
 
-## Database Collections
+## Related Endpoints
+
+- No related endpoints
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
 | `countly.journey_stats` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 
-## Related Endpoints
-
-- No related endpoints
-
-## Ⓔ Enterprise
-
-This feature is part of **Countly Enterprise**.
-
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-04-18
+</details>

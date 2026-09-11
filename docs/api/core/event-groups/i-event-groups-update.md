@@ -4,6 +4,8 @@ keywords:
   - "/i/event_groups/update"
   - "update"
   - "event_groups"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /i/event_groups/update
@@ -20,9 +22,7 @@ Updates event groups through one of three branches: full update (`args`), reorde
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -48,6 +48,26 @@ Updates event groups through one of three branches: full update (`args`), reorde
 | `event_order` | JSON array of group IDs | Branch 2: rewrites each group's `order` index by list position. |
 | `update_status` + `status` | JSON array + JSON boolean | Branch 3: toggles `status` for listed groups; when `status=false`, group keys are removed from `events.overview`. |
 | Branch precedence | `args` first, then `event_order`, then `update_status` | If multiple branch params are sent, only the first matching branch is executed. |
+
+## Examples
+
+### Example 1: Update one group object
+
+```plaintext
+/i/event_groups/update?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&args={"_id":"[CLY]_group_dfc09a75fff37cd46fa09d7c88ab77bb","name":"Playback Group Updated","description":"Edited description"}
+```
+
+### Example 2: Reorder groups
+
+```plaintext
+/i/event_groups/update?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&event_order=["[CLY]_group_id_1","[CLY]_group_id_2"]
+```
+
+### Example 3: Disable multiple groups
+
+```plaintext
+/i/event_groups/update?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&update_status=["[CLY]_group_id_1","[CLY]_group_id_2"]&status=false
+```
 
 ## Response
 
@@ -102,7 +122,7 @@ Updates event groups through one of three branches: full update (`args`), reorde
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -117,7 +137,20 @@ Updates event groups through one of three branches: full update (`args`), reorde
 
 - Status disable flow mutates `countly.events.overview` by removing disabled group keys.
 
-## Database Collections
+## Limitations
+
+- JSON payload parameters are parsed directly with `JSON.parse` in endpoint logic.
+- Sending multiple branch parameters in one request uses only the first branch in this order: `args` -> `event_order` -> `update_status`.
+
+## Related Endpoints
+
+- [Event Groups - Group Create](i-event-groups-create.md)
+- [Event Groups - Group Delete](i-event-groups-delete.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -125,38 +158,4 @@ Updates event groups through one of three branches: full update (`args`), reorde
 | `countly.event_groups` | Group definition updates | Updates group payload, order, or status by group IDs provided in request payload. |
 | `countly.events` | Event overview cleanup | Reads and updates `overview` when disabling group status. |
 
-## Examples
-
-### Example 1: Update one group object
-
-```plaintext
-/i/event_groups/update?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&args={"_id":"[CLY]_group_dfc09a75fff37cd46fa09d7c88ab77bb","name":"Playback Group Updated","description":"Edited description"}
-```
-
-### Example 2: Reorder groups
-
-```plaintext
-/i/event_groups/update?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&event_order=["[CLY]_group_id_1","[CLY]_group_id_2"]
-```
-
-### Example 3: Disable multiple groups
-
-```plaintext
-/i/event_groups/update?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&update_status=["[CLY]_group_id_1","[CLY]_group_id_2"]&status=false
-```
-
-## Limitations
-
-- JSON payload parameters are parsed directly with `JSON.parse` in endpoint logic.
-- Sending multiple branch parameters in one request uses only the first branch in this order: `args` -> `event_order` -> `update_status`.
-
----
-
-## Related Endpoints
-
-- [Event Groups - Group Create](i-event-groups-create.md)
-- [Event Groups - Group Delete](i-event-groups-delete.md)
-
-## Last Updated
-
-2026-02-17
+</details>

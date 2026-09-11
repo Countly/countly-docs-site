@@ -3,6 +3,8 @@ sidebar_label: "Consents Read"
 keywords:
   - "/o"
   - "o"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Compliance Hub - Consents Read
@@ -19,11 +21,7 @@ Returns consent metric time-series for the selected app and period.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -38,6 +36,18 @@ Requires `compliance_hub` `Read` permission.
 | `period` | String | No | Standard Countly period value. |
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
+
+## Examples
+
+### Read consent metrics for last 30 days
+
+```text
+/o?
+  method=consents&
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  period=30days
+```
 
 ## Response
 
@@ -94,7 +104,7 @@ Requires `compliance_hub` `Read` permission.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -106,7 +116,15 @@ Requires `compliance_hub` `Read` permission.
 
 - Read-only endpoint.
 
-## Database Collections
+## Related Endpoints
+
+- [Compliance Hub - Consent Current](o-consent-current.md)
+- [Compliance Hub - Consent Search](o-consent-search.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -114,25 +132,4 @@ Requires `compliance_hub` `Read` permission.
 | `countly.apps` | App validation/context loading | Validates `app_id` and timezone context when app-scoped validation applies. |
 | `countly.consents` | Consent metric source | Reads consent metric documents by app/time period. |
 
----
-
-## Examples
-
-### Read consent metrics for last 30 days
-
-```text
-/o?
-  method=consents&
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  period=30days
-```
-
-## Related Endpoints
-
-- [Compliance Hub - Consent Current](o-consent-current.md)
-- [Compliance Hub - Consent Search](o-consent-search.md)
-
-## Last Updated
-
-2026-02-17
+</details>

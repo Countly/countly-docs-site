@@ -4,6 +4,8 @@ keywords:
   - "/i/date_presets/update"
   - "update"
   - "date_presets"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /i/date_presets/update
@@ -20,9 +22,7 @@ Update date preset fields including sharing, favorites, and sort order.
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -47,6 +47,20 @@ Update date preset fields including sharing, favorites, and sort order.
 | `exclude_current_day` | JSON String (Boolean) | No | Updated current-day exclusion flag. |
 | `fav` | JSON String (Boolean) | No | Toggle favorite flag for current member. |
 | `sort_order` | JSON String (Number) | No | Updated order index. |
+
+## Examples
+
+### Example 1: Update name and share mode
+
+```plaintext
+/i/date_presets/update?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&preset_id=6992de8e6fbee4231c404429&name=Executive 30-Day View&share_with=all-users
+```
+
+### Example 2: Mark preset as favorite
+
+```plaintext
+/i/date_presets/update?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&preset_id=6992de8e6fbee4231c404429&fav=true
+```
 
 ## Response
 
@@ -150,7 +164,7 @@ Update date preset fields including sharing, favorites, and sort order.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -165,41 +179,26 @@ Update date preset fields including sharing, favorites, and sort order.
 - Updates neighboring preset documents when `sort_order` changes.
 - Favorite updates are user-specific and mutate shared `fav` array stored on preset.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication and share-scope evaluation | Reads caller identity and share visibility scope. |
-| `countly.date_presets` | Preset update target | Reads current preset and updates preset fields/sort ordering. |
-
----
-## Examples
-
-### Example 1: Update name and share mode
-
-```plaintext
-/i/date_presets/update?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&preset_id=6992de8e6fbee4231c404429&name=Executive 30-Day View&share_with=all-users
-```
-
-### Example 2: Mark preset as favorite
-
-```plaintext
-/i/date_presets/update?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&preset_id=6992de8e6fbee4231c404429&fav=true
-```
-
 ## Limitations
 
 - Additional top-level request fields (except `preset_id`, `fav`, `app_id`) are copied into stored preset object.
 - When `share_with` is not `selected-users`, shared email/group lists are cleared.
 - Sort-order reindexing after reorder is global within `countly.date_presets` (not app-scoped).
 
----
 ## Related Endpoints
 
 - [Date Presets - Preset Create](i-date-presets-create.md)
 - [Date Presets - Preset Delete](i-date-presets-delete.md)
 - [Date Presets - Preset Read by ID](o-date-presets-getbyid.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication and share-scope evaluation | Reads caller identity and share visibility scope. |
+| `countly.date_presets` | Preset update target | Reads current preset and updates preset fields/sort ordering. |
+
+</details>

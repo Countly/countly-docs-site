@@ -4,9 +4,15 @@ keywords:
   - "/i/funnels/add"
   - "add"
   - "funnels"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Create funnel
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -14,21 +20,13 @@ keywords:
 /i/funnels/add
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Creates a new funnel definition.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -48,6 +46,29 @@ Requires `funnels` `Create` permission.
 | `stepGroups` | JSON String (Array) | No | Per-step grouping config. |
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
+
+## Examples
+
+```text
+/i/funnels/add?
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  funnel_name=Purchase Funnel&
+  funnel_desc=Product view to purchase&
+  funnel_type=session-independent&
+  steps=["Product View","Add to Cart","Purchase"]&
+  queries=["{}","{}","{}"]&
+  queryTexts=["All Users","All Users","All Users"]&
+  stepGroups=[{"c":"and"},{"c":"and"},{"c":"and"}]
+```
+
+```text
+/i/funnels/add?
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  funnel_name=Checkout Funnel (Same Session)&
+  funnel_type=same-session&
+  steps=["[CLY]_session","Checkout Start","Purchase"]&
+  queries=["{}","{\"cc\":\"US\"}","{}"]
+```
 
 ## Response
 
@@ -83,47 +104,13 @@ Requires `funnels` `Create` permission.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Parses `steps`, `queries`, `queryTexts`, and `stepGroups` JSON-string parameters.
 - For `queries`, object entries are converted to JSON strings before save.
 - Rejects duplicate step events except special cases `[CLY]_view` and `[CLY]_session`.
 - Sets default `funnel_type` to `session-independent` when omitted.
 - Creates funnel document with creator and creation timestamp.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.funnels` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
-| `countly.systemlogs` | Audit trail | Contains system action records used by this endpoint for audit output or audit writes. |
-
----
-
-## Examples
-
-```text
-/i/funnels/add?
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  funnel_name=Purchase Funnel&
-  funnel_desc=Product view to purchase&
-  funnel_type=session-independent&
-  steps=["Product View","Add to Cart","Purchase"]&
-  queries=["{}","{}","{}"]&
-  queryTexts=["All Users","All Users","All Users"]&
-  stepGroups=[{"c":"and"},{"c":"and"},{"c":"and"}]
-```
-
-```text
-/i/funnels/add?
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  funnel_name=Checkout Funnel (Same Session)&
-  funnel_type=same-session&
-  steps=["[CLY]_session","Checkout Start","Purchase"]&
-  queries=["{}","{\"cc\":\"US\"}","{}"]
-```
-
----
 
 ## Related Endpoints
 
@@ -132,8 +119,14 @@ Requires `funnels` `Create` permission.
 - [Funnels - Delete](funnel-delete.md)
 - [Funnels - Analyze](funnel-query-read.md)
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Last Updated
+**Database Collections**
 
-2026-02-16
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.funnels` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
+| `countly.systemlogs` | Audit trail | Contains system action records used by this endpoint for audit output or audit writes. |
+
+</details>

@@ -3,6 +3,8 @@ sidebar_label: "Actions or Heatmap"
 keywords:
   - "/o/actions"
   - "actions"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Views - Actions/Heatmap Read
@@ -50,6 +52,31 @@ This endpoint supports two authentication modes:
 | `device.minWidth` / `device.maxWidth` | Numbers `>= 0` | Used to filter interaction points by captured `sg.width`. Invalid values return `400`. |
 | `actionType` | `click`, `scroll` | `click` matches by `up.lv` and includes `x`,`y`; `scroll` matches by `sg.view` and includes `y`. |
 | `period` | Supported period string or JSON range | Invalid period format returns `400 Bad request parameter: period`. |
+
+## Examples
+
+### Read click heatmap data
+
+```text
+/o/actions?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  view=/home&
+  actionType=click&
+  period=7days&
+  device={"minWidth":0,"maxWidth":1920}
+```
+
+### Read scroll heatmap data with token mode
+
+```text
+/o/actions?
+  app_key=YOUR_APP_KEY&
+  view=/home&
+  actionType=scroll&
+  period=30days&
+  device={"minWidth":320,"maxWidth":1440}
+```
 
 ## Response
 
@@ -148,7 +175,7 @@ This endpoint supports two authentication modes:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -163,41 +190,6 @@ This endpoint supports two authentication modes:
 
 - Read-only endpoint. No collections are modified.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Standard-mode authentication | Reads member account and permission state via read validation. |
-| `countly.apps` | Token-mode app resolution | Resolves app context from `app_key` and initializes app timezone context. |
-| `countly_drill.drill_events` | Heatmap interaction source | Reads `[CLY]_action` drill entries matching period/view/device filters. |
-
----
-
-## Examples
-
-### Read click heatmap data
-
-```text
-/o/actions?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  view=/home&
-  actionType=click&
-  period=7days&
-  device={"minWidth":0,"maxWidth":1920}
-```
-
-### Read scroll heatmap data with token mode
-
-```text
-/o/actions?
-  app_key=YOUR_APP_KEY&
-  view=/home&
-  actionType=scroll&
-  period=30days&
-  device={"minWidth":320,"maxWidth":1440}
-```
-
 ## Limitations
 
 - `view`, `period`, and valid `device` JSON are required for successful heatmap queries.
@@ -207,6 +199,15 @@ This endpoint supports two authentication modes:
 
 - [Views - Query](o-views.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Standard-mode authentication | Reads member account and permission state via read validation. |
+| `countly.apps` | Token-mode app resolution | Resolves app context from `app_key` and initializes app timezone context. |
+| `countly_drill.drill_events` | Heatmap interaction source | Reads `[CLY]_action` drill entries matching period/view/device filters. |
+
+</details>

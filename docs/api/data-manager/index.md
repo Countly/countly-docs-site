@@ -1,11 +1,15 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-16"
 ---
+
 # Data Manager - API Documentation
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This feature is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Overview
 
@@ -104,9 +108,3 @@ From `plugins.setConfigs("data-manager", ...)`:
 - Public Data Manager endpoints are documented here.
 - Deprecated and non-public lifecycle endpoints are intentionally excluded from endpoint docs.
 - Response examples in endpoint pages follow the runtime payload shape returned by each handler.
-
----
-
-## Last Updated
-
-2026-02-16

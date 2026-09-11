@@ -4,9 +4,15 @@ keywords:
   - "/i/campaign/create"
   - "campaign"
   - "create"
+last_update:
+  date: "2026-04-01"
 ---
 
 # /i/campaign/create
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -14,18 +20,13 @@ keywords:
 /i/campaign/create
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Creates an attribution campaign from the JSON object passed in `args`.
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -52,6 +53,12 @@ Creates an attribution campaign from the JSON object passed in `args`.
 - `type` optional campaign type
 - `typedata` optional type-specific object
 - `postbacks` optional array
+
+## Example
+
+```plaintext
+/i/campaign/create?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&args={"name":"Summer 2026","link":"https://example.com/install","cost":"0.5","costtype":"click","links":{"android":"https://play.google.com/store/apps/details?id=com.example"}}
+```
 
 ## Response
 
@@ -81,7 +88,7 @@ Creates an attribution campaign from the JSON object passed in `args`.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Parses `args` from JSON.
 - Generates `_id` automatically when missing.
@@ -89,20 +96,13 @@ Creates an attribution campaign from the JSON object passed in `args`.
 - Initializes summary counters such as `aclk`, `clk`, `ins`, `rev`, and `ses`.
 - If `costtype=campaign`, initializes `totalCost` with the campaign cost.
 
-## Database Collections
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
 | `countly.campaigns` | Campaign storage | Inserts a new campaign document. |
 
----
-
-## Example
-
-```plaintext
-/i/campaign/create?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&args={"name":"Summer 2026","link":"https://example.com/install","cost":"0.5","costtype":"click","links":{"android":"https://play.google.com/store/apps/details?id=com.example"}}
-```
-
-## Last Updated
-
-2026-04-01
+</details>

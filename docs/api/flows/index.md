@@ -5,8 +5,9 @@ sidebar_position: 1
 
 # Flows - API Documentation
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This feature is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Overview
 
@@ -78,7 +79,5 @@ Flows helps you analyze user journeys across events, views, and crash groups. Yo
 2. Run calculation with [Flows - Calculate](calculate.md).
 3. Read schema and result data with [Flows - Info](info.md) and [Flows - Data](data.md).
 4. Edit, disable, or delete as needed.
-
----
 
 _Last Updated: 2026-02-15_

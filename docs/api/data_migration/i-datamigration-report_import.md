@@ -4,6 +4,8 @@ keywords:
   - "/i/datamigration/report_import"
   - "report_import"
   - "datamigration"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Data Migration - Report Import Status
@@ -38,6 +40,18 @@ No user role permission check is required for this callback endpoint.
 | `status` | String | Yes | Import status value from target server (for example `finished`, `failed`). |
 | `message` | String | No | Additional status reason/message. |
 | `args` | JSON String (Object) | No | Optional JSON-stringified helper arguments. |
+
+## Examples
+
+### Report successful remote import
+
+```text
+/i/datamigration/report_import?
+  exportid=f9b35d90be5f2240eafced7c6bfdf130856cd0a7&
+  token=4f04966859f6eaec2f7164ca0a33ecb4&
+  status=finished&
+  message=Import complete
+```
 
 ## Response
 
@@ -89,7 +103,7 @@ No user role permission check is required for this callback endpoint.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -104,35 +118,6 @@ No user role permission check is required for this callback endpoint.
 - Updates migration state fields in `countly.data_migrations`.
 - If redirect is enabled on completed import, updates `countly.apps.redirect_url` for exported apps.
 
-## Audit & System Logs
-
-| Action | Trigger | Payload |
-|---|---|---|
-| `app_redirected` | Completed import with redirect enabled | `{ app_id, redirect_url }` |
-| `export_finished` / `export_failed` | Migration progress reaches terminal state through progress updater | `{ app_ids, status, message }` |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.data_migrations` | Export/import state tracking | Reads migration by `_id` and `server_token`; updates status/step/progress fields. |
-| `countly.apps` | Optional redirect handoff | Updates `redirect_url` for exported app IDs after successful import. |
-| `countly.systemlogs` | Audit trail | Writes redirect and terminal export status actions. |
-
----
-
-## Examples
-
-### Report successful remote import
-
-```text
-/i/datamigration/report_import?
-  exportid=f9b35d90be5f2240eafced7c6bfdf130856cd0a7&
-  token=4f04966859f6eaec2f7164ca0a33ecb4&
-  status=finished&
-  message=Import complete
-```
-
 ## Operational Considerations
 
 - This endpoint is part of asynchronous cross-server migration workflow; it updates status but does not block on full import pipeline operations.
@@ -146,6 +131,22 @@ No user role permission check is required for this callback endpoint.
 - [Data Migration - Import](i-datamigration-import.md)
 - [Data Migration - Get Status](o-datamigration-getstatus.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Audit & System Logs**
+
+| Action | Trigger | Payload |
+|---|---|---|
+| `app_redirected` | Completed import with redirect enabled | `{ app_id, redirect_url }` |
+| `export_finished` / `export_failed` | Migration progress reaches terminal state through progress updater | `{ app_ids, status, message }` |
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.data_migrations` | Export/import state tracking | Reads migration by `_id` and `server_token`; updates status/step/progress fields. |
+| `countly.apps` | Optional redirect handoff | Updates `redirect_url` for exported app IDs after successful import. |
+| `countly.systemlogs` | Audit trail | Writes redirect and terminal export status actions. |
+
+</details>

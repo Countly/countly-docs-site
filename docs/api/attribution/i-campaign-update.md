@@ -4,9 +4,15 @@ keywords:
   - "/i/campaign/update"
   - "campaign"
   - "update"
+last_update:
+  date: "2026-04-01"
 ---
 
 # /i/campaign/update
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -14,18 +20,13 @@ keywords:
 /i/campaign/update
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Updates selected fields of an existing attribution campaign using the JSON object passed in `args`.
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -39,6 +40,12 @@ Updates selected fields of an existing attribution campaign using the JSON objec
 | `auth_token` | String | Yes (or use `api_key`) | Dashboard auth token. |
 | `app_id` | String | Yes | Target app ID. |
 | `args` | JSON String (Object) | Yes | Update payload. Must include `_id`. |
+
+## Example
+
+```plaintext
+/i/campaign/update?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&args={"_id":"campaign-summer-2026","name":"Summer 2026 Retargeting","cost":"0.75"}
+```
 
 ## Response
 
@@ -60,27 +67,20 @@ Updates selected fields of an existing attribution campaign using the JSON objec
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Parses `args` from JSON.
 - Requires `_id` and updates only provided campaign fields.
 - Empty `name`, `type`, or `link` values are discarded.
 - Sets `edited_at` to the current Unix timestamp.
 
-## Database Collections
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
 | `countly.campaigns` | Campaign storage | Updates an existing campaign document. |
 
----
-
-## Example
-
-```plaintext
-/i/campaign/update?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&args={"_id":"campaign-summer-2026","name":"Summer 2026 Retargeting","cost":"0.75"}
-```
-
-## Last Updated
-
-2026-04-01
+</details>

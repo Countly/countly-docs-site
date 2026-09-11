@@ -4,6 +4,8 @@ keywords:
   - "/o/analytics/dashboard"
   - "dashboard"
   - "analytics"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /o/analytics/dashboard
@@ -20,9 +22,7 @@ Returns dashboard summary cards and top breakdowns for one or more periods.
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -39,12 +39,24 @@ Returns dashboard summary cards and top breakdowns for one or more periods.
 | `timezone` | String | No | Optional timezone override for period calculation. |
 | `timestamp` | Number | No | Optional reference timestamp. |
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `api.total_users` | `true` | Total user estimation | When disabled, total-user correction path is skipped. |
-| `api.metric_changes` | `true` | Total user correction history | When disabled, change-history adjustments are not applied. |
+### Example 1: Read default dashboard blocks
+
+```plaintext
+/o/analytics/dashboard?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2
+```
+
+### Example 2: Read one custom period block
+
+```plaintext
+/o/analytics/dashboard?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  period=7days
+```
 
 ## Response
 
@@ -118,7 +130,7 @@ Returns dashboard summary cards and top breakdowns for one or more periods.
 {"result":"User does not have right"}
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -131,11 +143,32 @@ Returns dashboard summary cards and top breakdowns for one or more periods.
 
 - Read-only endpoint. Does not modify stored analytics data.
 
-## Audit & System Logs
+## Operational Considerations
+
+- This endpoint loads multiple aggregate collections for each period key.
+- Wider/custom periods increase aggregation cost.
+
+## Related Endpoints
+
+- [Analytics - Read Countries](./o-analytics-countries.md)
+- [Analytics - Read Sessions](./o-analytics-sessions.md)
+- [Analytics - Read Tops](./o-analytics-tops.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Configuration Impact**
+
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `api.total_users` | `true` | Total user estimation | When disabled, total-user correction path is skipped. |
+| `api.metric_changes` | `true` | Total user correction history | When disabled, change-history adjustments are not applied. |
+
+**Audit & System Logs**
 
 - No `/systemlogs` action is emitted by this endpoint.
 
-## Database Collections
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -147,40 +180,4 @@ Returns dashboard summary cards and top breakdowns for one or more periods.
 | `countly.app_users{appId}` | Total-user correction baseline | Read when total-user estimation is enabled. |
 | `countly.metric_changes{appId}` | Total-user correction deltas | Read when metric-change correction is enabled. |
 
----
-
-## Examples
-
-### Example 1: Read default dashboard blocks
-
-```plaintext
-/o/analytics/dashboard?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2
-```
-
-### Example 2: Read one custom period block
-
-```plaintext
-/o/analytics/dashboard?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  period=7days
-```
-
-## Operational Considerations
-
-- This endpoint loads multiple aggregate collections for each period key.
-- Wider/custom periods increase aggregation cost.
-
----
-
-## Related Endpoints
-
-- [Analytics - Read Countries](./o-analytics-countries.md)
-- [Analytics - Read Sessions](./o-analytics-sessions.md)
-- [Analytics - Read Tops](./o-analytics-tops.md)
-
-## Last Updated
-
-2026-02-17
+</details>

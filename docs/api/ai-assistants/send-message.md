@@ -4,9 +4,15 @@ keywords:
   - "/i/ai-assistants/send-message"
   - "send-message"
   - "ai-assistants"
+last_update:
+  date: "2026-02-16"
 ---
 
 # AI Assistants - Send Message
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -14,19 +20,13 @@ keywords:
 /i/ai-assistants/send-message
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Sends a user message to AI Assistants and streams assistant output via Server-Sent Events (SSE).
 
 ## Authentication
 
-**Authentication Methods**:
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -46,6 +46,14 @@ Sends a user message to AI Assistants and streams assistant output via Server-Se
 | `userState.page` | String | No | Current page identifier |
 | `userState.widget` | String | No | Current widget identifier |
 | `userState.formData` | Object | No | Optional form data payload |
+
+## Examples
+
+### Example: Send message and consume SSE
+
+```bash
+curl "https://your-server.com/i/ai-assistants/send-message?api_key=YOUR_API_KEY&threadId=THREAD_ID&origin=drill&message=Show%20top%20events%20for%20last%207%20days"
+```
 
 ## Response
 
@@ -134,7 +142,7 @@ data: {"_id":"65a7c1e6f1c2a40001abc123","role":"assistant","createdOn":"2026-02-
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 1. Validates user authentication and required request fields.
 2. Requires provider configuration (`apiKey`, `apiProviderBaseURL`).
@@ -144,23 +152,6 @@ data: {"_id":"65a7c1e6f1c2a40001abc123","role":"assistant","createdOn":"2026-02-
 6. Streams response tokens via SSE.
 7. On completion, saves both user and assistant messages to thread.
 8. Records interaction telemetry and tool usage events.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.ai_assistants_threads` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
-| `countly.apps` | App configuration and metadata | Stores app-level feature settings and metadata used or modified by this endpoint. |
-
----
-
-## Examples
-
-### Example: Send message and consume SSE
-
-```bash
-curl "https://your-server.com/i/ai-assistants/send-message?api_key=YOUR_API_KEY&threadId=THREAD_ID&origin=drill&message=Show%20top%20events%20for%20last%207%20days"
-```
 
 ## Limitations
 
@@ -175,22 +166,14 @@ curl "https://your-server.com/i/ai-assistants/send-message?api_key=YOUR_API_KEY&
 - [AI Assistants - Create Thread](create-thread.md)
 - [AI Assistants - Rate Message](rate-message.md)
 
-## Ⓔ Enterprise
+<details>
+<summary>Implementation details</summary>
 
-This feature is part of **Countly Enterprise**.
+**Database Collections**
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.ai_assistants_threads` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
+| `countly.apps` | App configuration and metadata | Stores app-level feature settings and metadata used or modified by this endpoint. |
 
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions.
-
-## Last Updated
-
-2026-02-15
----
-
-## Last Updated
-
-2026-02-16
+</details>

@@ -4,9 +4,15 @@ keywords:
   - "/o/content/debug"
   - "debug"
   - "content"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Get queue debug info
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -14,19 +20,14 @@ keywords:
 /o/content/debug
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Returns user-friendly queue status details for one user.
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required permission**: `Read` on the `content` feature
@@ -39,6 +40,14 @@ Returns user-friendly queue status details for one user.
 | auth_token | String | Yes (or api_key) | Auth token for authentication |
 | app_id | String | Yes | Application identifier |
 | uid | String | Yes | User ID |
+
+## Examples
+
+### Example 1: Check Queue Status for a User
+
+```text
+/o/content/debug?api_key=YOUR_API_KEY&app_id=5be987d7b93798516eb5289a&uid=user_12345
+```
 
 ## Response
 
@@ -94,16 +103,22 @@ Returns user-friendly queue status details for one user.
 |---|---|
 | 500 | `"Error"` |
 
-## Behavior/Processing
+## Behavior
 
 1. Builds `EngagementQueue` for `app_id` + `uid`.
 2. Reads user state and up to 20 non-expired queue entries.
 3. Computes cooldown text and availability summary.
 4. Returns a user-friendly debug object.
 
----
+## Related Endpoints
 
-## Database Collections
+- [SDK Read - Content Delivery](delivery-retrieve.md): Retrieve content from queue
+- [Content Blocks - Read](blocks-read.md): Inspect content definitions
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -111,36 +126,4 @@ Returns user-friendly queue status details for one user.
 | `countly.app_users{app_id}` | Endpoint data source | ** - User content state (`content.last_view_ts`, `content.state_update_ts`) |
 | `countly.apps` | Endpoint data source | ** - App plugin cooldown configuration lookup |
 
----
-
-## Examples
-
-### Example 1: Check Queue Status for a User
-
-```text
-/o/content/debug?api_key=YOUR_API_KEY&app_id=5be987d7b93798516eb5289a&uid=user_12345
-```
-
-## Related Endpoints
-
-- [SDK Read - Content Delivery](delivery-retrieve.md): Retrieve content from queue
-- [Content Blocks - Read](blocks-read.md): Inspect content definitions
-
----
-
-## Ⓔ Enterprise
-
-This feature is part of **Countly Enterprise**.
-
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

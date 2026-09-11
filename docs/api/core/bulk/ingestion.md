@@ -4,6 +4,8 @@ sidebar_label: "Data Ingestion"
 keywords:
   - "/i"
   - "i"
+last_update:
+  date: "2026-04-01"
 ---
 
 # /i
@@ -81,6 +83,57 @@ Example event item:
     "currency": "USD"
   }
 }
+```
+
+## Examples
+
+### Example 1: Begin session with metrics
+
+```plaintext
+/i?
+  app_key=YOUR_APP_KEY&
+  device_id=device-123&
+  begin_session=1&
+  metrics={"_os":"iOS","_device":"iPhone","_app_version":"2.1.0"}
+```
+
+### Example 2: Send events
+
+```plaintext
+/i?
+  app_key=YOUR_APP_KEY&
+  device_id=device-123&
+  events=[{"key":"Purchase","count":1,"sum":19.99,"segmentation":{"plan":"pro"}}]
+```
+
+### Example 3: End session
+
+```plaintext
+/i?
+  app_key=YOUR_APP_KEY&
+  device_id=device-123&
+  end_session=1&
+  session_duration=245
+```
+
+### Example 4: Register push token
+
+```plaintext
+/i?
+  app_key=YOUR_APP_KEY&
+  device_id=device-123&
+  token_session=1&
+  test_mode=0&
+  android_token=YOUR_PUSH_TOKEN
+```
+
+### Example 5: Merge device IDs
+
+```plaintext
+/i?
+  app_key=YOUR_APP_KEY&
+  device_id=user-authenticated&
+  old_device_id=user-anonymous
 ```
 
 ## Plugin-Specific Payloads
@@ -397,13 +450,6 @@ Notes:
 - `location=lat,lng` is accepted for explicit GPS coordinates; `location=""` on `begin_session` is treated as location-tracking opt-out.
 - Feedback convenience endpoints [`/i/feedback/input`](../../star-rating/i-feedback-input.md) and `/i/feedback/inputs` both proxy into the main `/i` ingestion flow.
 
-## Configuration Impact
-
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `api.trim_trailing_ending_spaces` | `false` | Request normalization | When enabled, trims leading/trailing spaces from incoming values. |
-| `api.prevent_duplicate_requests` | `false` | Duplicate suppression | Duplicate payloads can be ignored when enabled. |
-
 ## Response
 
 ### Success Response
@@ -462,7 +508,7 @@ Ignored request success (for example duplicate/validation-cancelled request path
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -476,11 +522,35 @@ Ignored request success (for example duplicate/validation-cancelled request path
 
 - Updates ingestion-backed aggregates and user state depending on payload content.
 
-## Audit & System Logs
+## Operational Considerations
+
+- Keep payloads minimal and valid to reduce ingestion overhead.
+- High-frequency clients should use `/i/bulk` where batching is appropriate.
+
+## Limitations
+
+- Per-request payload validation can skip/ignore data paths that fail validation checks.
+- Success response does not include per-field ingestion processing details.
+
+## Related Endpoints
+
+- [Data Ingestion - Bulk Ingestion](./i-bulk.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Configuration Impact**
+
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `api.trim_trailing_ending_spaces` | `false` | Request normalization | When enabled, trims leading/trailing spaces from incoming values. |
+| `api.prevent_duplicate_requests` | `false` | Duplicate suppression | Duplicate payloads can be ignored when enabled. |
+
+**Audit & System Logs**
 
 - No `/systemlogs` action is emitted by this endpoint itself.
 
-## Database Collections
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -492,75 +562,4 @@ Ignored request success (for example duplicate/validation-cancelled request path
 | `countly.metric_changes{appId}` | Metric change tracking | Tracks historical metric transitions used by corrections. |
 | `countly_drill.drill_events` | Drill/raw event pipeline | Writes or forwards detailed event-level records. |
 
----
-
-## Examples
-
-### Example 1: Begin session with metrics
-
-```plaintext
-/i?
-  app_key=YOUR_APP_KEY&
-  device_id=device-123&
-  begin_session=1&
-  metrics={"_os":"iOS","_device":"iPhone","_app_version":"2.1.0"}
-```
-
-### Example 2: Send events
-
-```plaintext
-/i?
-  app_key=YOUR_APP_KEY&
-  device_id=device-123&
-  events=[{"key":"Purchase","count":1,"sum":19.99,"segmentation":{"plan":"pro"}}]
-```
-
-### Example 3: End session
-
-```plaintext
-/i?
-  app_key=YOUR_APP_KEY&
-  device_id=device-123&
-  end_session=1&
-  session_duration=245
-```
-
-### Example 4: Register push token
-
-```plaintext
-/i?
-  app_key=YOUR_APP_KEY&
-  device_id=device-123&
-  token_session=1&
-  test_mode=0&
-  android_token=YOUR_PUSH_TOKEN
-```
-
-### Example 5: Merge device IDs
-
-```plaintext
-/i?
-  app_key=YOUR_APP_KEY&
-  device_id=user-authenticated&
-  old_device_id=user-anonymous
-```
-
-## Operational Considerations
-
-- Keep payloads minimal and valid to reduce ingestion overhead.
-- High-frequency clients should use `/i/bulk` where batching is appropriate.
-
-## Limitations
-
-- Per-request payload validation can skip/ignore data paths that fail validation checks.
-- Success response does not include per-field ingestion processing details.
-
----
-
-## Related Endpoints
-
-- [Data Ingestion - Bulk Ingestion](./i-bulk.md)
-
-## Last Updated
-
-2026-04-01
+</details>

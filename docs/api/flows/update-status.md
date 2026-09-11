@@ -4,12 +4,15 @@ keywords:
   - "/i/flows/updateDisabled"
   - "updateDisabled"
   - "flows"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Update flow disabled status
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -23,12 +26,7 @@ Bulk-updates the `disabled` flag for multiple flows.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -42,6 +40,29 @@ Requires `flows` `Create` permission for this endpoint.
 | `data` | JSON String (Object) | Yes | Object mapping `flow_id -> true/false`. |
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
+
+## Examples
+
+### Disable two flows
+
+```text
+/i/flows/updateDisabled?
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  data={
+    "64f5c0d8f4f7ac0012ab3456_67bd31c92e7f0b0012ab4567": true,
+    "64f5c0d8f4f7ac0012ab3456_67bd31c92e7f0b0012ab4568": true
+  }
+```
+
+### Re-enable one flow
+
+```text
+/i/flows/updateDisabled?
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  data={
+    "64f5c0d8f4f7ac0012ab4567": false
+  }
+```
 
 ## Response
 
@@ -85,52 +106,24 @@ Requires `flows` `Create` permission for this endpoint.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Parses `data` JSON object.
 - Builds bulk update operations in `flow_schemas` by `_id` and `app_id`.
 - Sets `disabled=true` only when value is literal `true` or string `"true"`; otherwise sets `false`.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.flow_schemas` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
-
----
-
-## Examples
-
-### Disable two flows
-
-```text
-/i/flows/updateDisabled?
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  data={
-    "64f5c0d8f4f7ac0012ab3456_67bd31c92e7f0b0012ab4567": true,
-    "64f5c0d8f4f7ac0012ab3456_67bd31c92e7f0b0012ab4568": true
-  }
-```
-
-### Re-enable one flow
-
-```text
-/i/flows/updateDisabled?
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  data={
-    "64f5c0d8f4f7ac0012ab4567": false
-  }
-```
-
----
 
 ## Related Endpoints
 
 - [Flows - List](list.md)
 - [Flows - Calculate](calculate.md)
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Last Updated
+**Database Collections**
 
-2026-02-16
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.flow_schemas` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
+
+</details>

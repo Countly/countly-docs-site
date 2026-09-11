@@ -3,6 +3,8 @@ sidebar_label: "Logs Read"
 keywords:
   - "/o/errorlogs"
   - "errorlogs"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Error Logs - Logs Read
@@ -19,12 +21,7 @@ Returns discovered Countly log file contents as a key-value map (`log_key -> log
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. **API Key** (parameter): `api_key=YOUR_API_KEY`
-2. **Auth Token** (parameter): `auth_token=YOUR_AUTH_TOKEN`
-3. **Auth Token** (header): `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -37,6 +34,20 @@ Countly API supports three authentication methods:
 | `api_key` | String | Yes (or use `auth_token`) | API key for authentication. |
 | `auth_token` | String | No | Auth token as query parameter or `countly-token` header. |
 | `bytes` | Number | No | If greater than `0`, returns only the last N bytes (aligned to first full line in the read chunk) from each log. |
+
+## Examples
+
+### Read all logs (full)
+
+```plaintext
+/o/errorlogs?api_key=YOUR_API_KEY
+```
+
+### Read last 2000 bytes from each log
+
+```plaintext
+/o/errorlogs?api_key=YOUR_API_KEY&bytes=2000
+```
 
 ## Response
 
@@ -106,31 +117,13 @@ Countly API supports three authentication methods:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Validates global-admin permissions.
 - Discovers log files matching `countly-*.log` in server log directory.
 - Reads each log file (full content or tail bytes).
 - Returns discovered logs as one object map.
 - Read failures per file return empty string for that file key.
-
-## Database Collections
-
-This endpoint does not read or write database collections.
-
-## Examples
-
-### Read all logs (full)
-
-```plaintext
-/o/errorlogs?api_key=YOUR_API_KEY
-```
-
-### Read last 2000 bytes from each log
-
-```plaintext
-/o/errorlogs?api_key=YOUR_API_KEY&bytes=2000
-```
 
 ## Limitations
 
@@ -142,6 +135,11 @@ This endpoint does not read or write database collections.
 - [Error Logs - Single Log Read](o-errorlogs-log.md)
 - [Error Logs - Log Clear](i-errorlogs.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+This endpoint does not read or write database collections.
+
+</details>

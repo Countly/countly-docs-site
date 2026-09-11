@@ -1,15 +1,18 @@
 ---
 sidebar_label: "Reset Real-time"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Reset Real-time Cohort Data
 
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
+
 ## Endpoint
 
 `/i/cohorts/resetRealTimeData`
-
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
 
 ## Overview
 
@@ -17,10 +20,8 @@ Clears accumulated real-time data and resets real-time tracking state for all co
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required permission**: `Update` on the `cohorts` feature
@@ -32,6 +33,17 @@ Clears accumulated real-time data and resets real-time tracking state for all co
 | api_key | String | Yes (or auth_token) | API key for authentication |
 | auth_token | String | Yes (or api_key) | Auth token for authentication |
 | app_id | String | Yes | Application identifier |
+
+## Examples
+
+### Example 1: Reset real-time cohort data
+
+**Request**:
+```bash
+curl -X POST "https://your-server.com/i/cohorts/resetRealTimeData" \
+  -d "api_key=YOUR_API_KEY" \
+  -d "app_id=YOUR_APP_ID"
+```
 
 ## Response
 
@@ -54,9 +66,7 @@ Clears accumulated real-time data and resets real-time tracking state for all co
 | 400 | `{"result": "Insufficient permissions"}` | User lacks Update permission |
 | 400 | `{"result": "<error>"}` | Error returned by resetRealTimeData callback |
 
----
-
-## Behavior/Processing
+## Behavior
 
 - Calls `cohorts.resetRealTimeData({force:true, app_id})`.
 - Returns `{"result":"Success"}` when callback has no error.
@@ -68,28 +78,6 @@ Clears accumulated real-time data and resets real-time tracking state for all co
 - **Performance issue**: When real-time processing gets stuck
 - **Data maintenance**: When accumulated real-time data becomes inconsistent
 
----
-
-## Examples
-
-### Example 1: Reset real-time cohort data
-
-**Request**:
-```bash
-curl -X POST "https://your-server.com/i/cohorts/resetRealTimeData" \
-  -d "api_key=YOUR_API_KEY" \
-  -d "app_id=YOUR_APP_ID"
-```
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.cohorts` | Collection: | Resets state fields for all cohorts |
-| `countly.cohortdata` | Collection: | Optionally clears calculation cache |
-
----
-
 ## Limitations
 
 - Requires admin/manager permissions
@@ -97,21 +85,10 @@ curl -X POST "https://your-server.com/i/cohorts/resetRealTimeData" \
 - Real-time data is lost after reset (cannot be recovered)
 - Cohorts will be recalculated on next cycle (may take time)
 
----
-
-## Database Collections
-
-- `countly.cohortUsers` - Stores real-time cohort membership data
-- `countly.cohorts` - Stores cohort state for real-time recalculation
-- `countly.apps` - Enumerates apps for cleanup
-- `countly_drill.cohort_meta` - Clears cohort metadata in drill database
-
 ## Related Endpoints
 
 - [Recalculate cohort](cohort-recalculate.md) - POST /i/cohorts/recalculate
 - [Clean up data](cohort-cleanup.md) - POST /i/cohorts/cleanup
-
----
 
 ## Use Cases
 
@@ -121,22 +98,21 @@ curl -X POST "https://your-server.com/i/cohorts/resetRealTimeData" \
 4. **Configuration sync**: Ensure all cohorts consistent after config changes
 5. **Performance tuning**: Reset accumulated data before optimization cycle
 
+<details>
+<summary>Implementation details</summary>
 
----
+**Database Collections**
 
-## Ⓔ Enterprise
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.cohorts` | Collection: | Resets state fields for all cohorts |
+| `countly.cohortdata` | Collection: | Optionally clears calculation cache |
 
-This feature is part of **Countly Enterprise**.
+**Database Collections**
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
+- `countly.cohortUsers` - Stores real-time cohort membership data
+- `countly.cohorts` - Stores cohort state for real-time recalculation
+- `countly.apps` - Enumerates apps for cleanup
+- `countly_drill.cohort_meta` - Clears cohort metadata in drill database
 
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

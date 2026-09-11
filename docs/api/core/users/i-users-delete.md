@@ -4,6 +4,8 @@ keywords:
   - "/i/users/delete"
   - "delete"
   - "users"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Users Management - User Delete
@@ -20,9 +22,7 @@ Deletes one or more dashboard users.
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -41,6 +41,14 @@ Deletes one or more dashboard users.
 | Field | Type | Required | Description |
 |---|---|---|---|
 | `user_ids` | Array of String | Yes | Dashboard user ids to delete. |
+
+## Examples
+
+### Example 1: Delete two users
+
+```plaintext
+/i/users/delete?api_key=YOUR_API_KEY&args={"user_ids":["67b3055b87d9f49e2f5f3201","67b305de87d9f49e2f5f3202"]}
+```
 
 ## Response
 
@@ -84,7 +92,7 @@ Deletes one or more dashboard users.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -99,33 +107,6 @@ Deletes one or more dashboard users.
 - Deletes user auth tokens, user-owned notes, and user-owned date presets for successfully deleted users.
 - Deletion hooks from installed modules can remove additional user-linked data.
 
-## Audit & System Logs
-
-| Action | Trigger |
-|---|---|
-| `user_deleted` | Per-user successful deletion flow (when System Logs module is enabled). |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Primary user storage. | Reads target users and removes user records. |
-| `countly.auth_tokens` | Token lifecycle. | Removes all tokens owned by deleted users. |
-| `countly.notes` | User-linked notes cleanup. | Removes notes owned by deleted users. |
-| `countly.date_presets` | User-linked presets cleanup. | Removes presets owned by deleted users. |
-
----
-
-## Examples
-
-### Example 1: Delete two users
-
-```plaintext
-/i/users/delete?api_key=YOUR_API_KEY&args={"user_ids":["67b3055b87d9f49e2f5f3201","67b305de87d9f49e2f5f3202"]}
-```
-
----
-
 ## Limitations
 
 - Global-admin-only endpoint.
@@ -137,6 +118,22 @@ Deletes one or more dashboard users.
 - [Own Account Delete](i-users-delete-own-account.md)
 - [Users List](o-users-all.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Audit & System Logs**
+
+| Action | Trigger |
+|---|---|
+| `user_deleted` | Per-user successful deletion flow (when System Logs module is enabled). |
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Primary user storage. | Reads target users and removes user records. |
+| `countly.auth_tokens` | Token lifecycle. | Removes all tokens owned by deleted users. |
+| `countly.notes` | User-linked notes cleanup. | Removes notes owned by deleted users. |
+| `countly.date_presets` | User-linked presets cleanup. | Removes presets owned by deleted users. |
+
+</details>

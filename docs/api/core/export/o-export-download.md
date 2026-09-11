@@ -5,6 +5,8 @@ keywords:
   - "download"
   - "export"
   - "{task_id}"
+last_update:
+  date: "2026-02-17"
 ---
 
 # `/o/export/download/\{task_id\}`
@@ -21,9 +23,7 @@ Downloads a previously generated export file by task ID.
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -38,6 +38,16 @@ Downloads a previously generated export file by task ID.
 | `auth_token` | String | Yes (or use `api_key`) | Dashboard auth token. |
 | `app_id` | String | Yes (for non-global users) | App context used in access validation. |
 | `\{task_id\}` | String | Yes | Long task ID from `/o/export/requestQuery` response. |
+
+## Examples
+
+### Example 1: Download task output
+
+```plaintext
+/o/export/download/17f0f6c3a2c42cbced96d4a01f88f9a7f45bc7a5?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2
+```
 
 ## Response
 
@@ -97,7 +107,7 @@ JSON file example (download body):
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -111,30 +121,6 @@ JSON file example (download body):
 
 - Read-only endpoint. Does not modify export/task content.
 
-## Audit & System Logs
-
-- No `/systemlogs` action is emitted by this endpoint itself.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication and read-permission validation | Reads caller identity for core-read access validation. |
-| `countly.long_tasks` | Task lookup by ID | Reads task metadata (`report_name`, `type`, storage mode). |
-| `countly_fs.task_results` | Stored export file content | Reads and streams export file bytes. |
-
----
-
-## Examples
-
-### Example 1: Download task output
-
-```plaintext
-/o/export/download/17f0f6c3a2c42cbced96d4a01f88f9a7f45bc7a5?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2
-```
-
 ## Operational Considerations
 
 - Download availability depends on task completion and stored output.
@@ -145,13 +131,24 @@ JSON file example (download body):
 - If task output is empty and not in compatible legacy format, download fails.
 - Invalid or missing task IDs do not produce export output.
 
----
-
 ## Related Endpoints
 
 - [Data Export - Export Request Query](./o-export-requestquery.md)
 - [Tasks - Task Status](../tasks/o-tasks-task.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Audit & System Logs**
+
+- No `/systemlogs` action is emitted by this endpoint itself.
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication and read-permission validation | Reads caller identity for core-read access validation. |
+| `countly.long_tasks` | Task lookup by ID | Reads task metadata (`report_name`, `type`, storage mode). |
+| `countly_fs.task_results` | Stored export file content | Reads and streams export file bytes. |
+
+</details>

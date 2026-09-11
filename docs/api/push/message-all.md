@@ -5,6 +5,8 @@ keywords:
   - "all"
   - "push"
   - "message"
+last_update:
+  date: "2026-03-07"
 ---
 
 # /o/push/message/all
@@ -21,16 +23,9 @@ keywords:
 
 Returns push messages for one trigger group at a time with DataTables-style pagination and sorting.
 
----
-
 ## Authentication
 
-This endpoint requires authentication and uses `read-permission validation`.
-
-Supported authentication methods:
-- Query parameter: `api_key`
-- Query parameter: `auth_token`
-- Header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -55,6 +50,40 @@ Requires `Read` permission for Push Notifications.
 | `status` | String | No | Filter by message status |
 
 `*` Provide either `api_key` or `auth_token`.
+
+## Examples
+
+### List plain (scheduled) messages
+
+```plaintext
+https://your-server.com/o/push/message/all
+  ?api_key=YOUR_API_KEY
+  &app_id=6991c75b024cb89cdc04efd2
+  &iDisplayStart=0
+  &iDisplayLength=20
+  &iSortCol_0=5
+  &sSortDir_0=desc
+```
+
+### List automated messages only
+
+```plaintext
+https://your-server.com/o/push/message/all
+  ?api_key=YOUR_API_KEY
+  &app_id=6991c75b024cb89cdc04efd2
+  &auto=true
+```
+
+### List API-triggered messages including removed
+
+```plaintext
+https://your-server.com/o/push/message/all
+  ?api_key=YOUR_API_KEY
+  &app_id=6991c75b024cb89cdc04efd2
+  &api=true
+  &removed=true
+  &status=sent
+```
 
 ## Response
 
@@ -111,9 +140,7 @@ Requires `Read` permission for Push Notifications.
 }
 ```
 
----
-
-## Behavior/Processing
+## Behavior
 
 1. Builds base query with `app_id` and non-deleted state (unless `removed=true`).
 2. Trigger group is chosen exclusively:
@@ -128,54 +155,10 @@ Requires `Read` permission for Push Notifications.
 
 This endpoint is read-only and does not modify data.
 
-## Database Collections
-
-| Collection | Purpose | Key Fields |
-|---|---|---|
-| `countly.messages` | Source of push message documents | `_id`, `app`, `triggers`, `status`, `contents`, `result`, `info` |
-
----
-
-## Examples
-
-### List plain (scheduled) messages
-
-```plaintext
-https://your-server.com/o/push/message/all
-  ?api_key=YOUR_API_KEY
-  &app_id=6991c75b024cb89cdc04efd2
-  &iDisplayStart=0
-  &iDisplayLength=20
-  &iSortCol_0=5
-  &sSortDir_0=desc
-```
-
-### List automated messages only
-
-```plaintext
-https://your-server.com/o/push/message/all
-  ?api_key=YOUR_API_KEY
-  &app_id=6991c75b024cb89cdc04efd2
-  &auto=true
-```
-
-### List API-triggered messages including removed
-
-```plaintext
-https://your-server.com/o/push/message/all
-  ?api_key=YOUR_API_KEY
-  &app_id=6991c75b024cb89cdc04efd2
-  &api=true
-  &removed=true
-  &status=sent
-```
-
 ## Limitations
 
 - `auto` and `api` are mutually exclusive in practice due to `if / else if` logic; if both are set, `auto` takes precedence.
 - Sorting column index must map to supported internal columns (0-5).
-
----
 
 ## Related Endpoints
 
@@ -183,8 +166,13 @@ https://your-server.com/o/push/message/all
 - [Push Notifications - Message Create](./message-create.md)
 - [Push Notifications - Message Estimate](./message-estimate.md)
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Last Updated
+**Database Collections**
 
-2026-03-07
+| Collection | Purpose | Key Fields |
+|---|---|---|
+| `countly.messages` | Source of push message documents | `_id`, `app`, `triggers`, `status`, `contents`, `result`, `info` |
+
+</details>

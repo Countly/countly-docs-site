@@ -1,6 +1,8 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Remote Config
@@ -128,20 +130,20 @@ Default limits (configurable in feature settings):
 - **Maximum Parameters**: 1000 per app
 - **Maximum Conditions per Parameter**: 10
 
-## Database Collections
-
-- **`remoteconfig_parameters{app_id}`**: Stores parameters
-- **`remoteconfig_conditions{app_id}`**: Stores conditions
-
-Collections are automatically created per app and cleaned up on app deletion/reset.
-
 ## Related Features
 
 - **AB Testing Feature**: Automatically overrides remote config values for experiment variants
 - **Cohorts feature**: Conditions can target cohorts using `chr.{cohort_id}` fields
 - **Drill feature**: Condition query engine uses drill's filter processor
 
+<details>
+<summary>Implementation details</summary>
 
-## Last Updated
+**Database Collections**
 
-2026-02-17
+- **`remoteconfig_parameters{app_id}`**: Stores parameters
+- **`remoteconfig_conditions{app_id}`**: Stores conditions
+
+Collections are automatically created per app and cleaned up on app deletion/reset.
+
+</details>

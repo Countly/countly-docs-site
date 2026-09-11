@@ -1,6 +1,8 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Data Export - API Documentation
@@ -61,7 +63,3 @@ Export endpoints generate downloadable data files from collections, request hand
 
 - [Tasks - Task Status](../tasks/o-tasks-task.md)
 - [Tasks - All Tasks](../tasks/o-tasks-all.md)
-
-## Last Updated
-
-2026-02-17

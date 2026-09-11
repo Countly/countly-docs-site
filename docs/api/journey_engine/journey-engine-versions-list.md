@@ -6,9 +6,15 @@ keywords:
   - "list"
   - "journey-engine"
   - "versions"
+last_update:
+  date: "2026-04-18"
 ---
 
 # Journey Engine - Versions List
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -16,19 +22,14 @@ keywords:
 /o/journey-engine/versions/list
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 List all versions for a journey definition.
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required permission**: `Read` on the `journey_engine` feature
@@ -36,6 +37,12 @@ List all versions for a journey definition.
 ## Request Parameters
 
 - `journeyDefinitionId` (required): Journey definition ID
+
+## Examples
+
+```
+GET /o/journey-engine/versions/list?journeyDefinitionId=67164f4a1f1bd90d6354430a
+```
 
 ## Response
 
@@ -54,7 +61,6 @@ List all versions for a journey definition.
   }
 ]
 ```
-
 
 ### Response Fields
 
@@ -75,41 +81,23 @@ List all versions for a journey definition.
 - **400**: Invalid request
 - **500**: Query error
 
-## Examples
-
-```
-GET /o/journey-engine/versions/list?journeyDefinitionId=67164f4a1f1bd90d6354430a
-```
-
-## Behavior/Processing
+## Behavior
 
 - Requires `journeyDefinitionId`; missing value returns `Invalid request`.
 - Reads all matching documents from `journey_versions` with no status filter, so deleted versions can be returned.
 - Does not sort explicitly; MongoDB natural order applies unless the stored collection/index order changes.
 
-## Database Collections
+## Related Endpoints
+
+- No related endpoints
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
 | `countly.journey_versions` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 
-## Related Endpoints
-
-- No related endpoints
-
-## Ⓔ Enterprise
-
-This feature is part of **Countly Enterprise**.
-
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-04-18
+</details>

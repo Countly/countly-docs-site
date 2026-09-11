@@ -5,9 +5,15 @@ keywords:
   - "delete"
   - "surveys"
   - "nps"
+last_update:
+  date: "2026-04-18"
 ---
 
 # Surveys - Delete NPS
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -15,19 +21,13 @@ keywords:
 /i/surveys/nps/delete
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Deletes an NPS widget. Optionally removes linked response data.
 
 ## Authentication
 
-**Authentication methods**:
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -42,6 +42,12 @@ Deletes an NPS widget. Optionally removes linked response data.
 | `app_id` | String | Yes | App ID |
 | `widget_id` | String | Yes | Widget ID |
 | `with_data` | Boolean/String | No | Also remove widget response data |
+
+## Examples
+
+```text
+/i/surveys/nps/delete?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&widget_id=67b9db56f67aab0012cd8899
+```
 
 ## Response
 
@@ -68,7 +74,7 @@ Deletes an NPS widget. Optionally removes linked response data.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Loads the widget from `feedback_widgets` by `widget_id`; missing widgets return `Widget not found`.
 - Deletes the widget logo file when `appearance.logo` is set.
@@ -77,7 +83,15 @@ Deletes an NPS widget. Optionally removes linked response data.
 - If `with_data` is set, also removes related widget response/aggregate data; success emits `surveys_removed_with_data`.
 - Without `with_data`, only the widget record is removed; success emits `surveys_widget_removed`.
 
-## Database Collections
+## Related Endpoints
+
+- [Surveys - Create NPS](nps-create.md)
+- [Surveys - Update NPS Status](nps-status-update.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -85,32 +99,4 @@ Deletes an NPS widget. Optionally removes linked response data.
 | `countly.cohorts` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 | `countly_drill.drill_events` | Drill event records | Stores granular event rows queried or updated by this endpoint. |
 
----
-
-## Examples
-
-```text
-/i/surveys/nps/delete?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&widget_id=67b9db56f67aab0012cd8899
-```
-
-## Related Endpoints
-
-- [Surveys - Create NPS](nps-create.md)
-- [Surveys - Update NPS Status](nps-status-update.md)
-
-## Ⓔ Enterprise
-
-This feature is part of **Countly Enterprise**.
-
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions.
-
----
-
-## Last Updated
-
-2026-04-18
+</details>

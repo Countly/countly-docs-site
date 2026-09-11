@@ -1,6 +1,8 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Dashboards - API Documentation
@@ -24,16 +26,6 @@ The Dashboards feature provides customizable analytics boards composed of reusab
 - [Dashboards - Read Widget Layout](o-dashboards-widget-layout.md)
 - [Dashboards - Test Widgets](o-dashboards-test.md)
 
-## Database Collections
-
-| Collection | Purpose |
-|---|---|
-| `countly.dashboards` | Stores dashboard definitions, ownership, sharing settings, refresh settings, and widget references. |
-| `countly.widgets` | Stores widget configuration and layout metadata used by dashboard pages. |
-| `countly.apps` | Provides app metadata used when rendering dashboard widget context. |
-| `countly.members` | Provides member data for owner and sharing recipient resolution. |
-| `countly.systemlogs` | Stores audit entries for dashboard and widget create/update/delete actions. |
-
 ## Configuration & Settings
 
 | Setting | Default | Effect |
@@ -47,6 +39,17 @@ The Dashboards feature provides customizable analytics boards composed of reusab
 - Configure widget-level analytics and refresh behavior.
 - Audit dashboard and widget lifecycle events through system logs.
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Purpose |
+|---|---|
+| `countly.dashboards` | Stores dashboard definitions, ownership, sharing settings, refresh settings, and widget references. |
+| `countly.widgets` | Stores widget configuration and layout metadata used by dashboard pages. |
+| `countly.apps` | Provides app metadata used when rendering dashboard widget context. |
+| `countly.members` | Provides member data for owner and sharing recipient resolution. |
+| `countly.systemlogs` | Stores audit entries for dashboard and widget create/update/delete actions. |
+
+</details>

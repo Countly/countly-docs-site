@@ -4,9 +4,15 @@ keywords:
   - "/o/content/iframeDim"
   - "iframeDim"
   - "content"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Calculate widget positioning
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -14,19 +20,14 @@ keywords:
 /o/content/iframeDim
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Calculates widget geometry for one or more device inputs.
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required permission**: `Read` on the `content` feature
@@ -56,58 +57,6 @@ Calculates widget geometry for one or more device inputs.
   }
 ]
 ```
-
-## Response
-
-### Success Response
-
-```json
-[
-  {
-    "x": 100,
-    "y": 200,
-    "ww": 800,
-    "wh": 400,
-    "maxAllowedHeight": 600,
-    "baseHeight": 400
-  }
-]
-```
-
-### Response Fields
-
-| Field | Type | Description |
-|---|---|---|
-| x | Number | X coordinate |
-| y | Number | Y coordinate |
-| ww | Number | Widget width |
-| wh | Number | Widget height |
-| maxAllowedHeight | Number | Max allowed height for layout |
-| baseHeight | Number | Base height used in sizing |
-
-### Error Responses
-
-| HTTP Status | Response |
-|---|---|
-| 400 | `"Missing devices array object parameter"` |
-| 400 | `"Missing resolution parameter"` |
-| 400 | `"Missing position parameter"` |
-| 400 | `"Missing type parameter"` |
-| 400 | `"Invalid pos request"` or underlying error message |
-
-## Behavior/Processing
-
-1. Parses `devices` JSON payload.
-2. Validates each device has `resolution`, `position`, and `type`.
-3. Computes geometry for each item and returns output array in matching order.
-
----
-
-## Database Collections
-
-This endpoint does not read or write database collections.
-
----
 
 ## Examples
 
@@ -164,26 +113,60 @@ This endpoint does not read or write database collections.
 ]
 ```
 
+## Response
+
+### Success Response
+
+```json
+[
+  {
+    "x": 100,
+    "y": 200,
+    "ww": 800,
+    "wh": 400,
+    "maxAllowedHeight": 600,
+    "baseHeight": 400
+  }
+]
+```
+
+### Response Fields
+
+| Field | Type | Description |
+|---|---|---|
+| x | Number | X coordinate |
+| y | Number | Y coordinate |
+| ww | Number | Widget width |
+| wh | Number | Widget height |
+| maxAllowedHeight | Number | Max allowed height for layout |
+| baseHeight | Number | Base height used in sizing |
+
+### Error Responses
+
+| HTTP Status | Response |
+|---|---|
+| 400 | `"Missing devices array object parameter"` |
+| 400 | `"Missing resolution parameter"` |
+| 400 | `"Missing position parameter"` |
+| 400 | `"Missing type parameter"` |
+| 400 | `"Invalid pos request"` or underlying error message |
+
+## Behavior
+
+1. Parses `devices` JSON payload.
+2. Validates each device has `resolution`, `position`, and `type`.
+3. Computes geometry for each item and returns output array in matching order.
+
 ## Related Endpoints
 
 - [Content Blocks - Create](blocks-create.md): Create content with placement settings
 - [Content Blocks - Update](blocks-update.md): Update content with placement settings
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Database Collections**
 
-This feature is part of **Countly Enterprise**.
+This endpoint does not read or write database collections.
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

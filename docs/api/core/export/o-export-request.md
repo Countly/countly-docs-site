@@ -4,6 +4,8 @@ keywords:
   - "/o/export/request"
   - "request"
   - "export"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /o/export/request
@@ -20,9 +22,7 @@ Calls another API path, transforms the returned payload, and returns it as a dow
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -50,6 +50,33 @@ Calls another API path, transforms the returned payload, and returns it as a dow
 - If `data` parsing fails, an empty object is used.
 - If `projection`, `columnNames`, or `mapper` parsing fails, empty/default processing is used.
 - `prop` is applied after target response is received.
+
+## Examples
+
+### Example 1: Export dashboard countries using nested property extraction
+
+```plaintext
+/o/export/request?
+  api_key=YOUR_API_KEY&
+  path=/o/analytics/countries&
+  data={"app_id":"6991c75b024cb89cdc04efd2"}&
+  prop=30days&
+  type=csv&
+  filename=countries-30days
+```
+
+### Example 2: Export with custom column names
+
+```plaintext
+/o/export/request?
+  api_key=YOUR_API_KEY&
+  path=/o/analytics/tops&
+  data={"app_id":"6991c75b024cb89cdc04efd2","period":"30days"}&
+  prop=platforms&
+  columnNames={"name":"Platform","value":"Sessions","percent":"Share"}&
+  type=xlsx&
+  filename=top-platforms
+```
 
 ## Response
 
@@ -95,7 +122,7 @@ JSON export example (file content):
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -109,46 +136,6 @@ JSON export example (file content):
 
 - Read-only for this endpoint flow. It does not write export task records.
 
-## Audit & System Logs
-
-- No `/systemlogs` action is emitted by this endpoint itself.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication validation | Reads caller identity for management-read access validation. |
-| Depends on `path` | Target request data source | Reads whatever the referenced target API path reads. |
-
----
-
-## Examples
-
-### Example 1: Export dashboard countries using nested property extraction
-
-```plaintext
-/o/export/request?
-  api_key=YOUR_API_KEY&
-  path=/o/analytics/countries&
-  data={"app_id":"6991c75b024cb89cdc04efd2"}&
-  prop=30days&
-  type=csv&
-  filename=countries-30days
-```
-
-### Example 2: Export with custom column names
-
-```plaintext
-/o/export/request?
-  api_key=YOUR_API_KEY&
-  path=/o/analytics/tops&
-  data={"app_id":"6991c75b024cb89cdc04efd2","period":"30days"}&
-  prop=platforms&
-  columnNames={"name":"Platform","value":"Sessions","percent":"Share"}&
-  type=xlsx&
-  filename=top-platforms
-```
-
 ## Operational Considerations
 
 - Result shape depends on the referenced `path` and `prop`.
@@ -159,14 +146,24 @@ JSON export example (file content):
 - Invalid `path` behavior is inherited from the target endpoint and may return empty export output.
 - This endpoint does not create asynchronous task records by itself.
 
----
-
 ## Related Endpoints
 
 - [Data Export - Export Database](./o-export-db.md)
 - [Data Export - Export Request Query](./o-export-requestquery.md)
 - [Data Export - Export Data](./o-export-data.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Audit & System Logs**
+
+- No `/systemlogs` action is emitted by this endpoint itself.
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication validation | Reads caller identity for management-read access validation. |
+| Depends on `path` | Target request data source | Reads whatever the referenced target API path reads. |
+
+</details>

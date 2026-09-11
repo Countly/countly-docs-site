@@ -1,6 +1,8 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-17"
 ---
 
 # System - API Documentation
@@ -19,18 +21,6 @@ System endpoints expose operational runtime information for Countly, including v
 - [Kafka Events Meta Read](./o-system-kafka-events-meta.md) - `/o/system/kafka/events/meta`
 - [Observability Read](./o-system-observability.md) - `/o/system/observability`
 
-## Database Collections
-
-| Collection | Purpose |
-|---|---|
-| `countly.plugins` | Stores internal change-stream checkpoints used by aggregator status output. |
-| `countly.kafka_consumer_state` | Stores Kafka consumer partition processing state. |
-| `countly.kafka_consumer_health` | Stores consumer health metrics (rebalance/error/lag). |
-| `countly.kafka_lag_history` | Stores historical lag snapshots for time-series charts. |
-| `countly.kafka_connect_status` | Stores Kafka Connect connector state snapshots. |
-| `countly.kafka_consumer_events` | Stores Kafka consumer event log rows used by event listing and metadata filters. |
-| `countly_drill.drill_events` | Provides latest drill change date used in aggregator lag calculations. |
-
 ## Configuration & Settings
 
 - `kafka.connectApiUrl` affects whether Kafka Connect status is marked as enabled in `/o/system/kafka`.
@@ -43,6 +33,19 @@ System endpoints expose operational runtime information for Countly, including v
 - Build operational dashboards for Kafka processing performance.
 - Inspect available Kafka event filter values for troubleshooting views.
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Purpose |
+|---|---|
+| `countly.plugins` | Stores internal change-stream checkpoints used by aggregator status output. |
+| `countly.kafka_consumer_state` | Stores Kafka consumer partition processing state. |
+| `countly.kafka_consumer_health` | Stores consumer health metrics (rebalance/error/lag). |
+| `countly.kafka_lag_history` | Stores historical lag snapshots for time-series charts. |
+| `countly.kafka_connect_status` | Stores Kafka Connect connector state snapshots. |
+| `countly.kafka_consumer_events` | Stores Kafka consumer event log rows used by event listing and metadata filters. |
+| `countly_drill.drill_events` | Provides latest drill change date used in aggregator lag calculations. |
+
+</details>

@@ -4,9 +4,15 @@ keywords:
   - "/i/funnels/edit"
   - "edit"
   - "funnels"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Update funnel
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -14,21 +20,13 @@ keywords:
 /i/funnels/edit
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Updates existing funnel definitions using `funnel_map`.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -55,6 +53,34 @@ Requires `funnels` `Update` permission.
 | `queryTexts` | JSON String (Array) | Conditional | Updated per-step query text labels. |
 | `stepGroups` | JSON String (Array) | Conditional | Updated per-step grouping config. |
 | `order` | Number | Conditional | Funnel order update (when only ordering is changed). |
+
+## Examples
+
+```text
+/i/funnels/edit?
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  funnel_map={
+    "67f1c22912df5acb8f8d5caaf0f89a31": {
+      "funnel_name": "Purchase Funnel v2",
+      "funnel_desc": "Added checkout step",
+      "funnel_type": "session-independent",
+      "steps": "[\"Product View\",\"Add to Cart\",\"Checkout\",\"Purchase\"]",
+      "queries": "[\"{}\",\"{}\",\"{}\",\"{}\"]",
+      "queryTexts": "[\"All Users\",\"All Users\",\"All Users\",\"All Users\"]",
+      "stepGroups": "[{\"c\":\"and\"},{\"c\":\"and\"},{\"c\":\"and\"},{\"c\":\"and\"}]"
+    }
+  }
+```
+
+```text
+/i/funnels/edit?
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  funnel_map={
+    "67f1c22912df5acb8f8d5caaf0f89a31": {
+      "order": 1
+    }
+  }
+```
 
 ## Response
 
@@ -90,52 +116,13 @@ Requires `funnels` `Update` permission.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Parses `funnel_map` and nested JSON-string values (`steps`, `queries`, `queryTexts`, `stepGroups`).
 - For `queries`, object entries are converted to JSON strings before save.
 - Updates each mapped funnel by `_id` and `app_id`.
 - Supports two update styles: full funnel data update or order-only update.
 - Writes `funnel_updated` system log entries.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.funnels` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
-| `countly.systemlogs` | Audit trail | Contains system action records used by this endpoint for audit output or audit writes. |
-
----
-
-## Examples
-
-```text
-/i/funnels/edit?
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  funnel_map={
-    "67f1c22912df5acb8f8d5caaf0f89a31": {
-      "funnel_name": "Purchase Funnel v2",
-      "funnel_desc": "Added checkout step",
-      "funnel_type": "session-independent",
-      "steps": "[\"Product View\",\"Add to Cart\",\"Checkout\",\"Purchase\"]",
-      "queries": "[\"{}\",\"{}\",\"{}\",\"{}\"]",
-      "queryTexts": "[\"All Users\",\"All Users\",\"All Users\",\"All Users\"]",
-      "stepGroups": "[{\"c\":\"and\"},{\"c\":\"and\"},{\"c\":\"and\"},{\"c\":\"and\"}]"
-    }
-  }
-```
-
-```text
-/i/funnels/edit?
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  funnel_map={
-    "67f1c22912df5acb8f8d5caaf0f89a31": {
-      "order": 1
-    }
-  }
-```
-
----
 
 ## Related Endpoints
 
@@ -144,8 +131,14 @@ Requires `funnels` `Update` permission.
 - [Funnels - Update Group](funnel-group-update.md)
 - [Funnels - Delete](funnel-delete.md)
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Last Updated
+**Database Collections**
 
-2026-02-16
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.funnels` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
+| `countly.systemlogs` | Audit trail | Contains system action records used by this endpoint for audit output or audit writes. |
+
+</details>

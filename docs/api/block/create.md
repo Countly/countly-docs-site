@@ -4,9 +4,15 @@ keywords:
   - "/i/blocks/create"
   - "create"
   - "blocks"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Filtering Rules - Create
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -14,19 +20,13 @@ keywords:
 /i/blocks/create
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Creates a new filtering rule for an application.
 
 ## Authentication
 
-**Authentication Methods**:
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -40,6 +40,92 @@ Creates a new filtering rule for an application.
 | `auth_token` | String | Yes (or `api_key`) | Auth token authentication |
 | `app_id` | String | Yes | Application ID |
 | `blocks` | String | Yes | Stringified JSON rule object |
+
+## Examples
+
+### Example 1: Block all requests
+
+Endpoint:
+```text
+/i/blocks/create?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&blocks=<JSON_STRING>
+```
+
+`blocks` object before stringifying:
+```json
+{
+  "type": "all",
+  "key": "*",
+  "name": "Block all requests",
+  "rule": {},
+  "status": true
+}
+```
+
+### Example 2: Block a specific user
+
+Endpoint:
+```text
+/i/blocks/create?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&blocks=<JSON_STRING>
+```
+
+`blocks` object before stringifying:
+```json
+{
+  "type": "all",
+  "key": "*",
+  "name": "Block device A1234567890",
+  "rule": {
+    "did": {
+      "$in": [
+        "A1234567890"
+      ]
+    }
+  },
+  "status": true
+}
+```
+
+### Example 3: Block a specific event
+
+Endpoint:
+```text
+/i/blocks/create?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&blocks=<JSON_STRING>
+```
+
+`blocks` object before stringifying:
+```json
+{
+  "type": "event",
+  "key": "purchase",
+  "name": "Block purchase event",
+  "rule": {},
+  "status": true
+}
+```
+
+### Example 4: Block a specific event for a specific user
+
+Endpoint:
+```text
+/i/blocks/create?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&blocks=<JSON_STRING>
+```
+
+`blocks` object before stringifying:
+```json
+{
+  "type": "event",
+  "key": "purchase",
+  "name": "Block purchase for device A1234567890",
+  "rule": {
+    "did": {
+      "$in": [
+        "A1234567890"
+      ]
+    }
+  },
+  "status": true
+}
+```
 
 ## Block Object Structure
 
@@ -147,7 +233,7 @@ Decoded object example (before stringifying into `blocks`):
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 1. Validates `app_id` and create permission.
 2. Parses `blocks` JSON payload.
@@ -156,121 +242,18 @@ Decoded object example (before stringifying into `blocks`):
 5. Rejects duplicate rule by `type`, `key`, `name`, and `rule`.
 6. Sets `_onReq` for eligible request-level rules.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.apps` | App configuration and metadata | Stores app-level feature settings and metadata used or modified by this endpoint. |
-
----
-
-## Examples
-
-### Example 1: Block all requests
-
-Endpoint:
-```text
-/i/blocks/create?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&blocks=<JSON_STRING>
-```
-
-`blocks` object before stringifying:
-```json
-{
-  "type": "all",
-  "key": "*",
-  "name": "Block all requests",
-  "rule": {},
-  "status": true
-}
-```
-
-### Example 2: Block a specific user
-
-Endpoint:
-```text
-/i/blocks/create?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&blocks=<JSON_STRING>
-```
-
-`blocks` object before stringifying:
-```json
-{
-  "type": "all",
-  "key": "*",
-  "name": "Block device A1234567890",
-  "rule": {
-    "did": {
-      "$in": [
-        "A1234567890"
-      ]
-    }
-  },
-  "status": true
-}
-```
-
-### Example 3: Block a specific event
-
-Endpoint:
-```text
-/i/blocks/create?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&blocks=<JSON_STRING>
-```
-
-`blocks` object before stringifying:
-```json
-{
-  "type": "event",
-  "key": "purchase",
-  "name": "Block purchase event",
-  "rule": {},
-  "status": true
-}
-```
-
-### Example 4: Block a specific event for a specific user
-
-Endpoint:
-```text
-/i/blocks/create?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&blocks=<JSON_STRING>
-```
-
-`blocks` object before stringifying:
-```json
-{
-  "type": "event",
-  "key": "purchase",
-  "name": "Block purchase for device A1234567890",
-  "rule": {
-    "did": {
-      "$in": [
-        "A1234567890"
-      ]
-    }
-  },
-  "status": true
-}
-```
-
 ## Related Endpoints
 
 - [Filtering Rules - List](list.md)
 - [Filtering Rules - Update](update.md)
 
-## Ⓔ Enterprise
+<details>
+<summary>Implementation details</summary>
 
-This feature is part of **Countly Enterprise**.
+**Database Collections**
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.apps` | App configuration and metadata | Stores app-level feature settings and metadata used or modified by this endpoint. |
 
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions.
-
-## Last Updated
-
-2026-02-15
----
-
-## Last Updated
-
-2026-02-16
+</details>

@@ -4,6 +4,8 @@ keywords:
   - "/i/feedback/upload"
   - "upload"
   - "feedback"
+last_update:
+  date: "2026-03-07"
 ---
 
 # Star Rating - Upload Logo
@@ -20,12 +22,7 @@ Uploads a star-rating image asset into plugin storage.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. `api_key=YOUR_API_KEY`
-2. `auth_token=YOUR_AUTH_TOKEN`
-3. `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -40,6 +37,21 @@ Requires `global_plugins` `Update` permission.
 | `feedback_logo` | File | Conditional | Preferred upload field for feedback logo file. |
 | `file` | File | Conditional | Generic fallback upload field (used with `name`). |
 | `name` | String | Conditional | Required with `file`; used as output file identifier. |
+
+## Examples
+
+### Upload logo as `feedback_logo`
+
+```plaintext
+/i/feedback/upload?
+  api_key=YOUR_API_KEY
+```
+
+Multipart form body:
+
+```text
+feedback_logo=@/path/to/logo.png
+```
 
 ## Response
 
@@ -85,31 +97,12 @@ Requires `global_plugins` `Update` permission.
 
 Standard authentication/authorization errors from update validation can also be returned.
 
-## Behavior/Processing
+## Behavior
 
 - Endpoint is disabled when Surveys plugin is enabled (`surveysEnabled` branch returns `false`).
 - Accepts either `feedback_logo` or fallback `file` + `name` combination.
 - Validates MIME (`image/png`, `image/gif`, `image/jpeg`) and extension (`gif|jpeg|jpg|png`).
 - Stores image through Countly FS with overwrite mode.
-
-## Database Collections
-
-This endpoint does not read or write MongoDB collections directly.
-
-## Examples
-
-### Upload logo as `feedback_logo`
-
-```plaintext
-/i/feedback/upload?
-  api_key=YOUR_API_KEY
-```
-
-Multipart form body:
-
-```text
-feedback_logo=@/path/to/logo.png
-```
 
 ## Limitations
 
@@ -120,6 +113,11 @@ feedback_logo=@/path/to/logo.png
 
 - [Star Rating - Set Widget Logo](i-feedback-logo.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-03-07
+**Database Collections**
+
+This endpoint does not read or write MongoDB collections directly.
+
+</details>

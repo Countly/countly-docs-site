@@ -3,6 +3,8 @@ sidebar_label: "Slipping Read"
 keywords:
   - "/o/slipping"
   - "slipping"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /o/slipping
@@ -19,11 +21,7 @@ Returns slipping-away user metrics for configured inactivity periods. Each row i
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -53,15 +51,24 @@ Example `query`:
 - If cohorts feature is enabled, cohort filters are preprocessed and merged into `query`.
 - Invalid JSON in `query` is not rejected by this handler; request continues and can produce empty or unexpected counts.
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `slipping-away-users.p1` | `7` | Period thresholds | First output row uses this inactivity threshold (days). |
-| `slipping-away-users.p2` | `14` | Period thresholds | Second output row uses this inactivity threshold (days). |
-| `slipping-away-users.p3` | `30` | Period thresholds | Third output row uses this inactivity threshold (days). |
-| `slipping-away-users.p4` | `60` | Period thresholds | Fourth output row uses this inactivity threshold (days). |
-| `slipping-away-users.p5` | `90` | Period thresholds | Fifth output row uses this inactivity threshold (days). |
+### Read slipping metrics for all users
+
+```plaintext
+/o/slipping?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2
+```
+
+### Read slipping metrics filtered by user properties
+
+```plaintext
+/o/slipping?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  query={"country":"US","custom.premium":true}
+```
 
 ## Response
 
@@ -130,7 +137,7 @@ Example `query`:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -144,33 +151,6 @@ Example `query`:
 
 - Read-only endpoint.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication and permission validation | Reads member record by `api_key` or `auth_token` to verify read access. |
-| `countly.apps` | App context validation | Reads app record for the requested `app_id` during access validation. |
-| `countly.app_users{appId}` | Inactivity analysis source | Counts users by `lac` threshold and optional query filters. |
-
-## Examples
-
-### Read slipping metrics for all users
-
-```plaintext
-/o/slipping?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2
-```
-
-### Read slipping metrics filtered by user properties
-
-```plaintext
-/o/slipping?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  query={"country":"US","custom.premium":true}
-```
-
 ## Limitations
 
 - Endpoint executes one count query per configured threshold plus one total-user count query.
@@ -180,6 +160,25 @@ Example `query`:
 
 - [Slipping Away Users - Overview](index.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Configuration Impact**
+
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `slipping-away-users.p1` | `7` | Period thresholds | First output row uses this inactivity threshold (days). |
+| `slipping-away-users.p2` | `14` | Period thresholds | Second output row uses this inactivity threshold (days). |
+| `slipping-away-users.p3` | `30` | Period thresholds | Third output row uses this inactivity threshold (days). |
+| `slipping-away-users.p4` | `60` | Period thresholds | Fourth output row uses this inactivity threshold (days). |
+| `slipping-away-users.p5` | `90` | Period thresholds | Fifth output row uses this inactivity threshold (days). |
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication and permission validation | Reads member record by `api_key` or `auth_token` to verify read access. |
+| `countly.apps` | App context validation | Reads app record for the requested `app_id` during access validation. |
+| `countly.app_users{appId}` | Inactivity analysis source | Counts users by `lac` threshold and optional query filters. |
+
+</details>

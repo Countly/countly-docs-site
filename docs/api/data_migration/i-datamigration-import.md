@@ -4,6 +4,8 @@ keywords:
   - "/i/datamigration/import"
   - "import"
   - "datamigration"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Data Migration - Import
@@ -20,11 +22,7 @@ Starts a migration import from an uploaded archive file or an existing server fi
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 This endpoint also supports scoped import tokens created by `o/datamigration/createimporttoken`.
 
@@ -43,6 +41,29 @@ Requires `data_migration` `Create` permission (or valid scoped import token for 
 | `args` | JSON String (Object) | No | Optional JSON-stringified helper args. |
 | `api_key` | String | Conditional | Required if `auth_token` is not provided and no scoped token is used. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided and no scoped token is used. |
+
+## Examples
+
+### Start import from uploaded archive
+
+```text
+/i/datamigration/import?
+  exportid=f9b35d90be5f2240eafced7c6bfdf130856cd0a7
+```
+
+### Validate remote import token connection
+
+```text
+/i/datamigration/import?
+  test_con=1
+```
+
+### Start import from existing server file
+
+```text
+/i/datamigration/import?
+  existing_file=/var/backups/countly/f9b35d90be5f2240eafced7c6bfdf130856cd0a7.tar.gz
+```
 
 ## Response
 
@@ -96,7 +117,7 @@ Import started:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -110,46 +131,6 @@ Import started:
 
 - Creates/imports files under plugin import workspace.
 - Runs background import that can write to many Countly collections for migrated apps.
-
-## Audit & System Logs
-
-| Action | Trigger | Payload |
-|---|---|---|
-| `import_finished` / `import_failed` | Background import completion/failure | Import app IDs/names and export ID context |
-| `import_finished_response_ok` / `import_finished_response_failed` | Remote callback reporting outcome | Callback delivery metadata |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.data_migrations` | Migration status tracking (via helper progress/report flow) | Updates/creates migration status records during import lifecycle. |
-| `countly.systemlogs` | Audit trail | Writes import lifecycle actions. |
-| `countly.*` and `countly_drill.*` | Imported app data targets | Background import writes migrated application data into corresponding collections. |
-
----
-
-## Examples
-
-### Start import from uploaded archive
-
-```text
-/i/datamigration/import?
-  exportid=f9b35d90be5f2240eafced7c6bfdf130856cd0a7
-```
-
-### Validate remote import token connection
-
-```text
-/i/datamigration/import?
-  test_con=1
-```
-
-### Start import from existing server file
-
-```text
-/i/datamigration/import?
-  existing_file=/var/backups/countly/f9b35d90be5f2240eafced7c6bfdf130856cd0a7.tar.gz
-```
 
 ## Operational Considerations
 
@@ -166,6 +147,22 @@ Import started:
 - [Data Migration - Create Import Token](o-datamigration-createimporttoken.md)
 - [Data Migration - Get Status](o-datamigration-getstatus.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Audit & System Logs**
+
+| Action | Trigger | Payload |
+|---|---|---|
+| `import_finished` / `import_failed` | Background import completion/failure | Import app IDs/names and export ID context |
+| `import_finished_response_ok` / `import_finished_response_failed` | Remote callback reporting outcome | Callback delivery metadata |
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.data_migrations` | Migration status tracking (via helper progress/report flow) | Updates/creates migration status records during import lifecycle. |
+| `countly.systemlogs` | Audit trail | Writes import lifecycle actions. |
+| `countly.*` and `countly_drill.*` | Imported app data targets | Background import writes migrated application data into corresponding collections. |
+
+</details>

@@ -4,6 +4,8 @@ keywords:
   - "/o/reports/all"
   - "all"
   - "reports"
+last_update:
+  date: "2026-03-05"
 ---
 
 # Reports - Reports Read
@@ -20,12 +22,7 @@ Returns reports visible to the authenticated user.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. `api_key=YOUR_API_KEY`
-2. `auth_token=YOUR_AUTH_TOKEN`
-3. `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -38,6 +35,14 @@ Requires `reports` `Read` permission.
 | `api_key` | String | Yes (or use `auth_token`) | API key for authentication. |
 | `auth_token` | String | No | Auth token as query parameter or `countly-token` header. |
 | `app_id` | String | Yes | App id used by permission validation. |
+
+## Examples
+
+### Read reports for current user
+
+```plaintext
+/o/reports/all?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2
+```
 
 ## Response
 
@@ -74,33 +79,24 @@ Requires `reports` `Read` permission.
 
 Standard authentication/authorization errors from read validation.
 
-## Behavior/Processing
+## Behavior
 
 - Non-global admins only receive reports they own or where their email appears in `emails`.
 - Global admins receive all reports.
 - Missing `report_type` defaults to `core` in output.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.reports` | Reports source | Reads report definitions. |
-
----
-
-## Examples
-
-### Read reports for current user
-
-```plaintext
-/o/reports/all?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2
-```
 
 ## Related Endpoints
 
 - [Reports - Create](i-reports-create.md)
 - [Reports - Send](i-reports-send.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-03-05
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.reports` | Reports source | Reads report definitions. |
+
+</details>

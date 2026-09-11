@@ -4,6 +4,8 @@ keywords:
   - "/i/crashes/delete_comment"
   - "delete_comment"
   - "crashes"
+last_update:
+  date: "2026-03-07"
 ---
 
 # Crashes - Delete Comment
@@ -20,12 +22,7 @@ Deletes one comment from a crash group. Only the comment author or global admin 
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. `api_key=YOUR_API_KEY`
-2. `auth_token=YOUR_AUTH_TOKEN`
-3. `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -42,6 +39,12 @@ Requires `crashes` `Delete` permission.
 | `args.app_id` | String | Yes | App ID used by delete path. |
 | `args.crash_id` | String | Yes | Crash group ID. |
 | `args.comment_id` | String | Yes | Comment ID to delete. |
+
+## Examples
+
+```plaintext
+/i/crashes/delete_comment?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&args={"app_id":"6991c75b024cb89cdc04efd2","crash_id":"crash_group_1","comment_id":"comment_1"}
+```
 
 ## Response
 
@@ -73,31 +76,26 @@ Note: this endpoint returns `Success` even when the comment is missing or user i
 
 Standard auth/permission errors from delete validation can also be returned.
 
-## Behavior/Processing
+## Behavior
 
 - Finds target crash group and comment by `comment_id`.
 - If user is author or global admin, removes the comment from array.
 - Emits `crash_deleted_comment` system log action when delete is applied.
 - If comment not found / not permitted, returns `Success` without changes.
 
-## Database Collections
+## Related Endpoints
+
+- [Crashes - Add Comment](./i-crashes-add-comment.md)
+- [Crashes - Edit Comment](./i-crashes-edit-comment.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
 | `countly.app_crashgroups{appId}` | Crash comments | Pulls matching comment entry when authorized. |
 | `countly.systemlogs` | Audit trail | Receives `crash_deleted_comment` action when delete occurs. |
 
-## Examples
-
-```plaintext
-/i/crashes/delete_comment?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&args={"app_id":"6991c75b024cb89cdc04efd2","crash_id":"crash_group_1","comment_id":"comment_1"}
-```
-
-## Related Endpoints
-
-- [Crashes - Add Comment](./i-crashes-add-comment.md)
-- [Crashes - Edit Comment](./i-crashes-edit-comment.md)
-
-## Last Updated
-
-2026-03-07
+</details>

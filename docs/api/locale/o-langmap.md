@@ -3,6 +3,8 @@ sidebar_label: "Language Map Read"
 keywords:
   - "/o/langmap"
   - "langmap"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Locale - Language Map Read
@@ -28,6 +30,14 @@ Returns the in-memory language map used by Countly locale handling. The map is k
 ## Request Parameters
 
 This endpoint does not require request parameters.
+
+## Examples
+
+### Read language map
+
+```plaintext
+/o/langmap
+```
 
 ## Response
 
@@ -63,25 +73,11 @@ This endpoint does not require request parameters.
 
 No custom error responses are defined for this endpoint.
 
-## Behavior/Processing
+## Behavior
 
 - Uses prebuilt language map from locale utility initialization.
 - Returns map directly without database reads.
 - Includes normalized Chinese variants (`zh_hans`, `zh_hant`) where available.
-
-## Database Collections
-
-This endpoint does not read or write database collections.
-
----
-
-## Examples
-
-### Read language map
-
-```plaintext
-/o/langmap
-```
 
 ## Limitations
 
@@ -92,6 +88,11 @@ This endpoint does not read or write database collections.
 
 - [Locale - Languages Read](o-langs.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+This endpoint does not read or write database collections.
+
+</details>

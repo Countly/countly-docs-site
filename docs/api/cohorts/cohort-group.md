@@ -1,15 +1,18 @@
 ---
 sidebar_label: "Group"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Manage Cohort Grouping
 
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
+
 ## Endpoint
 
 `/i/cohorts/group`
-
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
 
 ## Overview
 
@@ -17,10 +20,8 @@ Organizes cohorts into named groups/categories for better organization and disco
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required permission**: `Update` on the `cohorts` feature
@@ -34,6 +35,19 @@ Organizes cohorts into named groups/categories for better organization and disco
 | app_id | String | Yes | Application identifier |
 | cohort_id | String | Yes | ID of cohort to group |
 | groups | Object (JSON) | Yes | Group map, for example `{"doc_audit":1}`; truthy sets, falsy unsets |
+
+## Examples
+
+### Example 1: Assign cohort to a group
+
+**Request**:
+```bash
+curl -X GET "https://your-server.com/i/cohorts/group" \
+  -d "api_key=YOUR_API_KEY" \
+  -d "app_id=YOUR_APP_ID" \
+  -d "cohort_id=COHORT_ID" \
+  -d 'groups={"vip_audiences":1}'
+```
 
 ## Response
 
@@ -58,9 +72,7 @@ Organizes cohorts into named groups/categories for better organization and disco
 | 400 | `{"result": "Insufficient permissions"}` | User lacks Update permission |
 | 400 | `{"result": "Cannot save data"}` | Update failure |
 
----
-
-## Behavior/Processing
+## Behavior
 
 - Validates update permission for `cohorts` feature.
 - Validates cohort exists for the specified app.
@@ -70,47 +82,15 @@ Organizes cohorts into named groups/categories for better organization and disco
 - Applies `$set`/`$unset` updates under `groups.<key>` based on provided map values
 - Writes systemlogs entry (`cohort_grouped`) with group information for audit trail.
 
----
-
-## Examples
-
-### Example 1: Assign cohort to a group
-
-**Request**:
-```bash
-curl -X GET "https://your-server.com/i/cohorts/group" \
-  -d "api_key=YOUR_API_KEY" \
-  -d "app_id=YOUR_APP_ID" \
-  -d "cohort_id=COHORT_ID" \
-  -d 'groups={"vip_audiences":1}'
-```
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.cohorts` | Collection: | Updates group membership field |
-| `countly.cohort_groups` | Collection: | (optional); Records group metadata if available |
-
----
-
 ## Limitations
 
 - `groups` must be a valid JSON object.
 - Endpoint updates `groups.<key>` flags directly on the cohort document.
 
----
-
-## Database Collections
-
-- `countly.cohorts` - Stores cohort group assignments
-
 ## Related Endpoints
 
 - [Get cohorts list](read.md) - GET /o?method=get_cohorts
 - [Get cohorts by list](cohort-list-read.md) - GET /o?method=get_cohort_list
-
----
 
 ## Use Cases
 
@@ -120,22 +100,18 @@ curl -X GET "https://your-server.com/i/cohorts/group" \
 4. **Quick access**: Move frequently used cohorts to organized groups
 5. **Campaign management**: Group cohorts related to specific campaigns
 
+<details>
+<summary>Implementation details</summary>
 
----
+**Database Collections**
 
-## Ⓔ Enterprise
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.cohorts` | Collection: | Updates group membership field |
+| `countly.cohort_groups` | Collection: | (optional); Records group metadata if available |
 
-This feature is part of **Countly Enterprise**.
+**Database Collections**
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
+- `countly.cohorts` - Stores cohort group assignments
 
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

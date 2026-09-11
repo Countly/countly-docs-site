@@ -4,6 +4,8 @@ keywords:
   - "/i/dashboards/create"
   - "create"
   - "dashboards"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Dashboards - Create
@@ -20,11 +22,7 @@ Creates a dashboard with sharing settings and optional auto-refresh. You can als
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -55,11 +53,36 @@ Each sharing array parameter must decode to a JSON array. Examples:
 - `shared_email_edit`: `["editor@company.com"]`
 - `shared_user_groups_view`: `["65dc6a52a2f7156eb2576f00"]`
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `dashboards.sharing_status` | `true` | Validation | If disabled, non-eligible users cannot create shared dashboards and receive `sharing_denied`. |
+### Create private dashboard
+
+```text
+/i/dashboards/create?
+  name=Executive Overview&
+  share_with=none&
+  theme=1
+```
+
+### Create selected-user dashboard with sharing lists
+
+```text
+/i/dashboards/create?
+  name=Regional KPI Board&
+  share_with=selected-users&
+  shared_email_view=["viewer@company.com"]&
+  shared_email_edit=["editor@company.com"]&
+  shared_user_groups_view=["65dc6a52a2f7156eb2576f00"]
+```
+
+### Duplicate an existing dashboard
+
+```text
+/i/dashboards/create?
+  name=Q2 Dashboard Copy&
+  share_with=none&
+  copy_dash_id=65e1f3d2a4f41a5f6f6d7701
+```
 
 ## Response
 
@@ -120,7 +143,7 @@ Each sharing array parameter must decode to a JSON array. Examples:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -135,55 +158,6 @@ Each sharing array parameter must decode to a JSON array. Examples:
 - Inserts a dashboard document into `countly.dashboards`.
 - When `copy_dash_id` is used, inserts cloned widgets into `countly.widgets`.
 - Optional invitation flow reads users from `countly.members` and sends emails.
-
-## Audit & System Logs
-
-| Action | Trigger | Payload |
-|---|---|---|
-| `dashboard_added` | After dashboard insert succeeds | Created dashboard fields |
-| `widget_added` | For each cloned widget in copy flow | Cloned widget payload |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.dashboards` | Dashboard storage | Inserts dashboard document with sharing, theme, refresh, and widget references. |
-| `countly.widgets` | Widget duplication | Reads source widgets and inserts cloned widgets when `copy_dash_id` is used. |
-| `countly.members` | Authentication and share invitation resolution | Reads authenticated member context; optionally reads recipient emails for group/all-user invitation expansion. |
-| `countly.systemlogs` | Audit trail | Writes `dashboard_added` and `widget_added` entries via `/systemlogs`. |
-
----
-
-## Examples
-
-### Create private dashboard
-
-```text
-/i/dashboards/create?
-  name=Executive Overview&
-  share_with=none&
-  theme=1
-```
-
-### Create selected-user dashboard with sharing lists
-
-```text
-/i/dashboards/create?
-  name=Regional KPI Board&
-  share_with=selected-users&
-  shared_email_view=["viewer@company.com"]&
-  shared_email_edit=["editor@company.com"]&
-  shared_user_groups_view=["65dc6a52a2f7156eb2576f00"]
-```
-
-### Duplicate an existing dashboard
-
-```text
-/i/dashboards/create?
-  name=Q2 Dashboard Copy&
-  share_with=none&
-  copy_dash_id=65e1f3d2a4f41a5f6f6d7701
-```
 
 ## Operational Considerations
 
@@ -200,6 +174,29 @@ Each sharing array parameter must decode to a JSON array. Examples:
 - [Dashboards - Update](i-dashboards-update.md)
 - [Dashboards - Read All](o-dashboards-all.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Configuration Impact**
+
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `dashboards.sharing_status` | `true` | Validation | If disabled, non-eligible users cannot create shared dashboards and receive `sharing_denied`. |
+
+**Audit & System Logs**
+
+| Action | Trigger | Payload |
+|---|---|---|
+| `dashboard_added` | After dashboard insert succeeds | Created dashboard fields |
+| `widget_added` | For each cloned widget in copy flow | Cloned widget payload |
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.dashboards` | Dashboard storage | Inserts dashboard document with sharing, theme, refresh, and widget references. |
+| `countly.widgets` | Widget duplication | Reads source widgets and inserts cloned widgets when `copy_dash_id` is used. |
+| `countly.members` | Authentication and share invitation resolution | Reads authenticated member context; optionally reads recipient emails for group/all-user invitation expansion. |
+| `countly.systemlogs` | Audit trail | Writes `dashboard_added` and `widget_added` entries via `/systemlogs`. |
+
+</details>

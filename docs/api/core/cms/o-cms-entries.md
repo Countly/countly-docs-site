@@ -4,6 +4,8 @@ keywords:
   - "/o/cms/entries"
   - "entries"
   - "cms"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /o/cms/entries
@@ -20,9 +22,7 @@ Read CMS cache entries for a supported API ID.
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -37,11 +37,19 @@ Read CMS cache entries for a supported API ID.
 | `_id` | String | Yes | CMS API ID. Allowed values: `server-guides`, `server-consents`, `server-intro-video`, `server-quick-start`, `server-guide-config`. |
 | `query` | JSON String (Object) | No | Optional filter object merged into cache lookup logic. Invalid JSON is ignored. |
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `config.enableGuides` | Server config value | Response data enrichment | For `_id=server-guide-config`, response `data[0].enableGuides` falls back to this config value when missing/falsy in cached data. |
+### Example 1: Read guides entries
+
+```plaintext
+/o/cms/entries?api_key=YOUR_API_KEY&_id=server-guides
+```
+
+### Example 2: Read guide-config with filter
+
+```plaintext
+/o/cms/entries?api_key=YOUR_API_KEY&_id=server-guide-config&query={"platform":"server"}
+```
 
 ## Response
 
@@ -92,7 +100,7 @@ Read CMS cache entries for a supported API ID.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -106,39 +114,30 @@ Read CMS cache entries for a supported API ID.
 
 - This endpoint is read-only and does not modify stored data.
 
-## Database Collections
+## Limitations
+
+- `_id` must be one of the supported API IDs.
+- Invalid `query` JSON does not return a parse error; it is ignored.
+
+## Related Endpoints
+
+- [CMS - Entries Save](i-cms-save-entries.md)
+- [CMS - Cache Clear](i-cms-clear.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Configuration Impact**
+
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `config.enableGuides` | Server config value | Response data enrichment | For `_id=server-guide-config`, response `data[0].enableGuides` falls back to this config value when missing/falsy in cached data. |
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
 | `countly.members` | Authentication validation | Reads member identity for access validation. |
 | `countly.cms_cache` | CMS cache source | Reads cached entries by `_id` prefix (and optional query conditions). |
 
----
-## Examples
-
-### Example 1: Read guides entries
-
-```plaintext
-/o/cms/entries?api_key=YOUR_API_KEY&_id=server-guides
-```
-
-### Example 2: Read guide-config with filter
-
-```plaintext
-/o/cms/entries?api_key=YOUR_API_KEY&_id=server-guide-config&query={"platform":"server"}
-```
-
-## Limitations
-
-- `_id` must be one of the supported API IDs.
-- Invalid `query` JSON does not return a parse error; it is ignored.
-
----
-## Related Endpoints
-
-- [CMS - Entries Save](i-cms-save-entries.md)
-- [CMS - Cache Clear](i-cms-clear.md)
-
-## Last Updated
-
-2026-02-17
+</details>

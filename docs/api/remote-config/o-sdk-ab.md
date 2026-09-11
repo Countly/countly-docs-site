@@ -3,6 +3,8 @@ sidebar_label: "AB Enrollment"
 keywords:
   - "/o/sdk"
   - "sdk"
+last_update:
+  date: "2026-03-05"
 ---
 
 # Remote Config - AB Enrollment
@@ -45,6 +47,20 @@ No dashboard permission check is applied. Access is determined by SDK app/device
 | `tz` | String | No | Optional timezone context. |
 | `ip_address` | String | No | Optional IP override for geo-derived properties. |
 
+## Examples
+
+### Enroll for two parameter keys
+
+```plaintext
+/o/sdk?method=ab&app_key=YOUR_APP_KEY&device_id=device-123&keys=["button_color","price_plan"]
+```
+
+### Enroll with metrics for targeting
+
+```plaintext
+/o/sdk?method=ab&app_key=YOUR_APP_KEY&device_id=device-123&keys=["welcome_message"]&metrics={"platform":"iOS","country":"US"}
+```
+
 ## Response
 
 ### Success Response
@@ -79,46 +95,29 @@ No dashboard permission check is applied. Access is determined by SDK app/device
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - `keys` is parsed from JSON string; if parsing fails or list is empty, request returns `Missing Keys`.
 - Only parameters that are eligible through A/B logic are processed for enrollment.
 - Endpoint returns a success message, not enrolled parameter values.
-
-## Database Collections
-
-This endpoint does not directly query database collections.
-
-Enrollment candidates are resolved via the `/ab/parameters` integration hook.
-
----
-
-## Examples
-
-### Enroll for two parameter keys
-
-```plaintext
-/o/sdk?method=ab&app_key=YOUR_APP_KEY&device_id=device-123&keys=["button_color","price_plan"]
-```
-
-### Enroll with metrics for targeting
-
-```plaintext
-/o/sdk?method=ab&app_key=YOUR_APP_KEY&device_id=device-123&keys=["welcome_message"]&metrics={"platform":"iOS","country":"US"}
-```
 
 ## Limitations
 
 - Requires non-empty `keys` array.
 - Response does not include resolved config values.
 
----
-
 ## Related Endpoints
 
 - [Remote Config - SDK Read](o-sdk-rc.md)
 - [Remote Config - SDK Fetch (Legacy Alias)](o-sdk-fetch.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-03-05
+**Database Collections**
+
+This endpoint does not directly query database collections.
+
+Enrollment candidates are resolved via the `/ab/parameters` integration hook.
+
+</details>

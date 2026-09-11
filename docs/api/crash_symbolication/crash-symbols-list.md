@@ -3,9 +3,15 @@ sidebar_label: "List Symbols"
 keywords:
   - "/o"
   - "o"
+last_update:
+  date: "2026-04-18"
 ---
 
 # List symbols
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -13,19 +19,14 @@ keywords:
 /o?method=crash_symbols
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Returns all uploaded symbol documents for the selected app.
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required permission**: `Read` on the `crashes` feature
@@ -39,11 +40,13 @@ Returns all uploaded symbol documents for the selected app.
 | `api_key` | String | Yes (or `auth_token`) | API key authentication |
 | `auth_token` | String | Yes (or `api_key`) | Auth token authentication |
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `crashes.*` | Crashes feature defaults | Crash-symbol data retrieval and filtering behavior. | Changes to crash settings can alter which crash-symbol records are returned. |
+### Example 1: List symbols
+
+```text
+/o?method=crash_symbols&app_id=5f9c8a3b4d1e2a001f3b4567&api_key=YOUR_API_KEY
+```
 
 ## Response
 
@@ -81,7 +84,7 @@ Returns all uploaded symbol documents for the selected app.
 |---|---|
 | 401 | `{ "result": "User does not exist" }` or auth validation message |
 
-## Behavior/Processing
+## Behavior
 
 - Requires `Read` permission on the `crashes` feature.
 - Reads all documents from `app_crashsymbols{app_id}`.
@@ -90,43 +93,25 @@ Returns all uploaded symbol documents for the selected app.
 - If the collection read fails or returns no rows, the handler returns an empty array.
 - Returned documents are not projected; any stored metadata fields on the symbol document can be present.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.app_crashsymbols{app_id}` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
-
----
-
-## Examples
-
-### Example 1: List symbols
-
-```text
-/o?method=crash_symbols&app_id=5f9c8a3b4d1e2a001f3b4567&api_key=YOUR_API_KEY
-```
-
 ## Related Endpoints
 
 - [Add Symbol](crash-symbols-add.md)
 - [Edit Symbol](crash-symbols-edit.md)
 - [Remove Symbol](crash-symbols-remove.md)
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Configuration Impact**
 
-This feature is part of **Countly Enterprise**.
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `crashes.*` | Crashes feature defaults | Crash-symbol data retrieval and filtering behavior. | Changes to crash settings can alter which crash-symbol records are returned. |
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
+**Database Collections**
 
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.app_crashsymbols{app_id}` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 
----
-
-## Last Updated
-
-2026-04-18
+</details>

@@ -4,6 +4,8 @@ keywords:
   - "/o/datamigration/getstatus"
   - "getstatus"
   - "datamigration"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Data Migration - Get Status
@@ -20,11 +22,7 @@ Returns one migration status record by export ID.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -38,6 +36,15 @@ Requires `data_migration` `Read` permission.
 | `args` | JSON String (Object) | No | Optional JSON-stringified helper args. |
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
+
+## Examples
+
+### Get status for one export
+
+```text
+/o/datamigration/getstatus?
+  exportid=f9b35d90be5f2240eafced7c6bfdf130856cd0a7
+```
 
 ## Response
 
@@ -83,7 +90,7 @@ Requires `data_migration` `Read` permission.
 "data-migration.exportid-missing"
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -97,28 +104,18 @@ Requires `data_migration` `Read` permission.
 
 - Read-only endpoint.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.data_migrations` | Migration status lookup | Reads migration record by `_id`. |
-
----
-
-## Examples
-
-### Get status for one export
-
-```text
-/o/datamigration/getstatus?
-  exportid=f9b35d90be5f2240eafced7c6bfdf130856cd0a7
-```
-
 ## Related Endpoints
 
 - [Data Migration - Export](i-datamigration-export.md)
 - [Data Migration - Send Existing Export](i-datamigration-sendexport.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.data_migrations` | Migration status lookup | Reads migration record by `_id`. |
+
+</details>

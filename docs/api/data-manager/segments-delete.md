@@ -5,11 +5,15 @@ keywords:
   - "delete"
   - "data-manager"
   - "segment"
+last_update:
+  date: "2026-02-16"
 ---
+
 # Delete event segments
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -23,12 +27,7 @@ Deletes one or more segments from event metadata and related drill/event data st
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -61,6 +60,17 @@ Decoded example:
 ]
 ```
 
+## Examples
+
+```text
+/i/data-manager/segment/delete?
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  eventSegments=[
+    {"event":"purchase","segment":"country"},
+    {"event":"purchase","segment":"price"}
+  ]
+```
+
 ## Response
 
 ### Success Response
@@ -87,7 +97,7 @@ Common parse/runtime failure path (for example invalid `eventSegments` JSON):
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Removes segment metadata from `countly_drill.drill_meta`.
 - Pulls segment names from `countly.events.segments.{event}`.
@@ -95,13 +105,25 @@ Common parse/runtime failure path (for example invalid `eventSegments` JSON):
 - Deletes related `events_data` rows for that segment key pattern.
 - Writes `dm-segment-delete` logs and invalidates cache.
 
-## Audit & System Logs
+## Limitations
+
+- Error responses can surface as generic HTTP `500` with `{"result":"Server error"}` for parse/runtime failures.
+
+## Related Endpoints
+
+- [Event Segments - Read](event-segments-read.md)
+- [Segment Status - Update](segment-status-update.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Audit & System Logs**
 
 | Action | Trigger | Payload |
 |---|---|---|
 | `dm-segment-delete` | Per deleted event+segment pair | `{ segment, ev }` |
 
-## Database Collections
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -111,34 +133,4 @@ Common parse/runtime failure path (for example invalid `eventSegments` JSON):
 | `countly.events_data` | Aggregated event data | Deletes and unsets segment-related aggregate rows/metadata for deleted segment keys. |
 | `countly.systemlogs` | Audit trail | Writes `dm-segment-delete` entries per deleted event/segment pair. |
 
----
-
-## Examples
-
-```text
-/i/data-manager/segment/delete?
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  eventSegments=[
-    {"event":"purchase","segment":"country"},
-    {"event":"purchase","segment":"price"}
-  ]
-```
-
----
-
-## Limitations
-
-- Error responses can surface as generic HTTP `500` with `{"result":"Server error"}` for parse/runtime failures.
-
----
-
-## Related Endpoints
-
-- [Event Segments - Read](event-segments-read.md)
-- [Segment Status - Update](segment-status-update.md)
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

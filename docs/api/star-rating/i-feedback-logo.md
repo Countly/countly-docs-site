@@ -4,6 +4,8 @@ keywords:
   - "/i/feedback/logo"
   - "logo"
   - "feedback"
+last_update:
+  date: "2026-03-07"
 ---
 
 # Star Rating - Set Widget Logo
@@ -20,12 +22,7 @@ Uploads a logo file and returns generated logo filename for widget configuration
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. `api_key=YOUR_API_KEY`
-2. `auth_token=YOUR_AUTH_TOKEN`
-3. `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -39,6 +36,22 @@ Requires `star_rating` `Create` permission.
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
 | `identifier` | String | Yes | File identifier used as output filename prefix. |
 | `logo` | File | No | Image file; if omitted, upload helper still returns success branch. |
+
+## Examples
+
+### Upload widget logo
+
+```plaintext
+/i/feedback/logo?
+  api_key=YOUR_API_KEY&
+  identifier=widget_logo_1
+```
+
+Multipart form body:
+
+```text
+logo=@/path/to/logo.png
+```
 
 ## Response
 
@@ -84,36 +97,21 @@ Requires `star_rating` `Create` permission.
 
 Standard authentication/authorization errors from create validation can also be returned.
 
-## Behavior/Processing
+## Behavior
 
 - Uses shared file-upload helper with same validation rules as upload endpoint.
 - Returns `result` as plain filename string through wrapped `result` response.
-
-## Database Collections
-
-This endpoint does not read or write MongoDB collections directly.
-
-## Examples
-
-### Upload widget logo
-
-```plaintext
-/i/feedback/logo?
-  api_key=YOUR_API_KEY&
-  identifier=widget_logo_1
-```
-
-Multipart form body:
-
-```text
-logo=@/path/to/logo.png
-```
 
 ## Related Endpoints
 
 - [Star Rating - Upload Logo](i-feedback-upload.md)
 - [Star Rating - Edit Widget](i-feedback-widgets-edit.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-03-07
+**Database Collections**
+
+This endpoint does not read or write MongoDB collections directly.
+
+</details>

@@ -4,18 +4,21 @@ keywords:
   - "/o/sdk/content"
   - "content"
   - "sdk"
+last_update:
+  date: "2026-02-16"
 ---
 
 # SDK Read - Content Delivery
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
 ```
 /o/sdk/content
 ```
-
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
 
 ## Overview
 
@@ -55,6 +58,50 @@ Supported `resolution` formats before stringifying:
   }
 }
 ```
+
+```json
+{
+  "landscape": {
+    "width": 1920,
+    "height": 1080
+  },
+  "portrait": {
+    "width": 1080,
+    "height": 1920
+  }
+}
+```
+
+## Examples
+
+### Example 1: Standard SDK Request
+
+```text
+/o/sdk/content?app_key=YOUR_APP_KEY&device_id=device_abc_123&resolution=<JSON_STRING>&la=en
+```
+
+`resolution` object before stringifying:
+
+```json
+{
+  "l": {
+    "w": 1170,
+    "h": 2532
+  },
+  "p": {
+    "w": 1170,
+    "h": 2532
+  }
+}
+```
+
+### Example 2: Alternative Resolution Format
+
+```text
+/o/sdk/content?app_key=YOUR_APP_KEY&device_id=device_abc_123&resolution=<JSON_STRING>
+```
+
+`resolution` object before stringifying:
 
 ```json
 {
@@ -133,7 +180,7 @@ When no content is eligible:
 | 500 | `"Invalid device id"` (survey flow) |
 | 500 | `"Invalid app key"` (survey flow) |
 
-## Behavior/Processing
+## Behavior
 
 1. Parses and validates `resolution`.
 2. Builds engagement queue context for current app user.
@@ -141,9 +188,15 @@ When no content is eligible:
 4. Loads content definition from `content_blocks` or `feedback_widgets` (survey type).
 5. Calculates landscape/portrait geometry and returns `html` + `geo`.
 
----
+## Related Endpoints
 
-## Database Collections
+- [Queue - Debug](queue-debug.md): Debug queue state
+- [Positioning - Calculate](positioning-calculate.md): Geometry preview calculation
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -153,72 +206,4 @@ When no content is eligible:
 | `countly.app_users{app_id}` | Endpoint data source | ** - User lookup/state initialization for queue context |
 | `countly.apps` | Endpoint data source | ** - App-level cooldown config lookup |
 
----
-
-## Examples
-
-### Example 1: Standard SDK Request
-
-```text
-/o/sdk/content?app_key=YOUR_APP_KEY&device_id=device_abc_123&resolution=<JSON_STRING>&la=en
-```
-
-`resolution` object before stringifying:
-
-```json
-{
-  "l": {
-    "w": 1170,
-    "h": 2532
-  },
-  "p": {
-    "w": 1170,
-    "h": 2532
-  }
-}
-```
-
-### Example 2: Alternative Resolution Format
-
-```text
-/o/sdk/content?app_key=YOUR_APP_KEY&device_id=device_abc_123&resolution=<JSON_STRING>
-```
-
-`resolution` object before stringifying:
-
-```json
-{
-  "landscape": {
-    "width": 1920,
-    "height": 1080
-  },
-  "portrait": {
-    "width": 1080,
-    "height": 1920
-  }
-}
-```
-
-## Related Endpoints
-
-- [Queue - Debug](queue-debug.md): Debug queue state
-- [Positioning - Calculate](positioning-calculate.md): Geometry preview calculation
-
----
-
-## Ⓔ Enterprise
-
-This feature is part of **Countly Enterprise**.
-
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

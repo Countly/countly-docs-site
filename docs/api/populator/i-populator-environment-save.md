@@ -5,6 +5,8 @@ keywords:
   - "save"
   - "populator"
   - "environment"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Populator - Environment Save
@@ -21,11 +23,7 @@ Creates generated environment users from a selected template and can also regist
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -92,6 +90,37 @@ Decoded example for `users`:
 
 Send it stringified in the request.
 
+## Examples
+
+### Create environment and register metadata
+
+```text
+https://your-server.com/i/populator/environment/save?
+  app_id=6991c75b024cb89cdc04efd2&
+  api_key=YOUR_API_KEY&
+  setEnviromentInformationOnce=true&
+  users=[{"appId":"6991c75b024cb89cdc04efd2","templateId":"65f0cbf8bca6b8e8fbf7f901","environmentName":"Production Seed","userName":"qa_user_001","platform":"iOS","device":"iPhone 15","appVersion":"3.2.1","deviceId":"device-ios-001","custom":{"plan":"premium"}}]
+```
+
+### Add more users to an existing environment
+
+```text
+https://your-server.com/i/populator/environment/save?
+  app_id=6991c75b024cb89cdc04efd2&
+  api_key=YOUR_API_KEY&
+  users=[{"appId":"6991c75b024cb89cdc04efd2","templateId":"65f0cbf8bca6b8e8fbf7f901","environmentName":"Production Seed","userName":"qa_user_145","platform":"Android","device":"Pixel 8","appVersion":"3.2.1","deviceId":"device-android-145","custom":{"plan":"free"}}]
+```
+
+### Seed a staging environment with mixed devices
+
+```text
+https://your-server.com/i/populator/environment/save?
+  app_id=6991c75b024cb89cdc04efd2&
+  api_key=YOUR_API_KEY&
+  setEnviromentInformationOnce=true&
+  users=[{"appId":"6991c75b024cb89cdc04efd2","templateId":"65f0cbf8bca6b8e8fbf7f901","environmentName":"Staging EU","userName":"stg_ios_01","platform":"iOS","device":"iPhone 14","appVersion":"3.1.0","deviceId":"stg-ios-01","custom":{"region":"EU"}},{"appId":"6991c75b024cb89cdc04efd2","templateId":"65f0cbf8bca6b8e8fbf7f901","environmentName":"Staging EU","userName":"stg_web_01","platform":"Web","device":"Chrome","appVersion":"3.1.0","deviceId":"stg-web-01","custom":{"region":"EU"}}]
+```
+
 ## Response
 
 ### Success Response
@@ -142,7 +171,7 @@ Send it stringified in the request.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -157,54 +186,6 @@ Send it stringified in the request.
 - When `setEnviromentInformationOnce` is truthy, inserts one metadata row into `countly.populator_environments`.
 - Environment ID is deterministic: SHA-1 of `appId + environmentName`.
 
-## Audit & System Logs
-
-| Action | Trigger | Payload |
-|---|---|---|
-| `populator_environment_created` | Metadata insert branch succeeds (`setEnviromentInformationOnce` truthy) | `{ environmentId, environmentName, appId, templateId }` |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.populator_environment_users` | Generated environment users | Inserts one document per user with `_id`, user profile fields, and `createdAt`. |
-| `countly.populator_environments` | Environment metadata | Inserts environment record (`_id`, `name`, `templateId`, `appId`, `createdAt`) when metadata branch is enabled. |
-| `countly.members` | Authentication and authorization | Reads member context for permission checks. |
-| `countly.apps` | App rights validation | Reads app access context from `app_id`. |
-
----
-
-## Examples
-
-### Create environment and register metadata
-
-```text
-https://your-server.com/i/populator/environment/save?
-  app_id=6991c75b024cb89cdc04efd2&
-  api_key=YOUR_API_KEY&
-  setEnviromentInformationOnce=true&
-  users=[{"appId":"6991c75b024cb89cdc04efd2","templateId":"65f0cbf8bca6b8e8fbf7f901","environmentName":"Production Seed","userName":"qa_user_001","platform":"iOS","device":"iPhone 15","appVersion":"3.2.1","deviceId":"device-ios-001","custom":{"plan":"premium"}}]
-```
-
-### Add more users to an existing environment
-
-```text
-https://your-server.com/i/populator/environment/save?
-  app_id=6991c75b024cb89cdc04efd2&
-  api_key=YOUR_API_KEY&
-  users=[{"appId":"6991c75b024cb89cdc04efd2","templateId":"65f0cbf8bca6b8e8fbf7f901","environmentName":"Production Seed","userName":"qa_user_145","platform":"Android","device":"Pixel 8","appVersion":"3.2.1","deviceId":"device-android-145","custom":{"plan":"free"}}]
-```
-
-### Seed a staging environment with mixed devices
-
-```text
-https://your-server.com/i/populator/environment/save?
-  app_id=6991c75b024cb89cdc04efd2&
-  api_key=YOUR_API_KEY&
-  setEnviromentInformationOnce=true&
-  users=[{"appId":"6991c75b024cb89cdc04efd2","templateId":"65f0cbf8bca6b8e8fbf7f901","environmentName":"Staging EU","userName":"stg_ios_01","platform":"iOS","device":"iPhone 14","appVersion":"3.1.0","deviceId":"stg-ios-01","custom":{"region":"EU"}},{"appId":"6991c75b024cb89cdc04efd2","templateId":"65f0cbf8bca6b8e8fbf7f901","environmentName":"Staging EU","userName":"stg_web_01","platform":"Web","device":"Chrome","appVersion":"3.1.0","deviceId":"stg-web-01","custom":{"region":"EU"}}]
-```
-
 ## Operational Considerations
 
 - `users` is parsed as JSON; invalid JSON falls back to an empty list and returns `Missing params: users`.
@@ -216,8 +197,6 @@ https://your-server.com/i/populator/environment/save?
 - Success response does not return environment ID or inserted counts.
 - Environment/user IDs depend on client-supplied `appId`, `templateId`, `environmentName`, and `deviceId` fields.
 
----
-
 ## Related Endpoints
 
 - [Populator - Environment Check](o-populator-environment-check.md)
@@ -225,6 +204,22 @@ https://your-server.com/i/populator/environment/save?
 - [Populator - Environment Read](o-populator-environment-get.md)
 - [Populator - Environment Remove](o-populator-environment-remove.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Audit & System Logs**
+
+| Action | Trigger | Payload |
+|---|---|---|
+| `populator_environment_created` | Metadata insert branch succeeds (`setEnviromentInformationOnce` truthy) | `{ environmentId, environmentName, appId, templateId }` |
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.populator_environment_users` | Generated environment users | Inserts one document per user with `_id`, user profile fields, and `createdAt`. |
+| `countly.populator_environments` | Environment metadata | Inserts environment record (`_id`, `name`, `templateId`, `appId`, `createdAt`) when metadata branch is enabled. |
+| `countly.members` | Authentication and authorization | Reads member context for permission checks. |
+| `countly.apps` | App rights validation | Reads app access context from `app_id`. |
+
+</details>

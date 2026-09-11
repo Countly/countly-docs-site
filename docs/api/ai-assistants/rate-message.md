@@ -4,9 +4,15 @@ keywords:
   - "/i/ai-assistants/rate-message"
   - "rate-message"
   - "ai-assistants"
+last_update:
+  date: "2026-02-16"
 ---
 
 # AI Assistants - Rate Message
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -14,19 +20,13 @@ keywords:
 /i/ai-assistants/rate-message
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Rates one assistant message in a thread and records feedback telemetry.
 
 ## Authentication
 
-**Authentication Methods**:
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -43,6 +43,14 @@ Rates one assistant message in a thread and records feedback telemetry.
 | `threadId` | String | Yes | Thread ID |
 | `messageId` | String | Yes | Message ID in thread |
 | `rating` | String | Yes | Rating value (typically `thumbs_up` or `thumbs_down`) |
+
+## Examples
+
+### Example: Rate a message
+
+```bash
+curl "https://your-server.com/i/ai-assistants/rate-message?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&threadId=THREAD_ID&messageId=MESSAGE_ID&rating=thumbs_up"
+```
 
 ## Response
 
@@ -111,7 +119,7 @@ Rates one assistant message in a thread and records feedback telemetry.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 1. Validates user authentication and required parameters.
 2. Loads thread and verifies ownership.
@@ -120,44 +128,19 @@ Rates one assistant message in a thread and records feedback telemetry.
 5. Emits feedback tracking event.
 6. Returns `{ "ok": 1 }`.
 
-## Database Collections
+## Related Endpoints
+
+- [AI Assistants - Load Thread](load-thread.md)
+- [AI Assistants - Send Message](send-message.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
 | `countly.ai_assistants_threads` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 | `countly.apps` | App configuration and metadata | Stores app-level feature settings and metadata used or modified by this endpoint. |
 
----
-
-## Examples
-
-### Example: Rate a message
-
-```bash
-curl "https://your-server.com/i/ai-assistants/rate-message?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&threadId=THREAD_ID&messageId=MESSAGE_ID&rating=thumbs_up"
-```
-
-## Related Endpoints
-
-- [AI Assistants - Load Thread](load-thread.md)
-- [AI Assistants - Send Message](send-message.md)
-
-## Ⓔ Enterprise
-
-This feature is part of **Countly Enterprise**.
-
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions.
-
-## Last Updated
-
-2026-02-15
----
-
-## Last Updated
-
-2026-02-16
+</details>

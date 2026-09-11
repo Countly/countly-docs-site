@@ -3,9 +3,15 @@ sidebar_label: "List Jobs"
 keywords:
   - "/o"
   - "o"
+last_update:
+  date: "2026-04-18"
 ---
 
 # List symbolication jobs
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -13,19 +19,14 @@ keywords:
 /o?method=crash_jobs
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Lists symbolication jobs with optional platform/status filtering and DataTable pagination.
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required permission**: `Read` on the `crashes` feature
@@ -45,11 +46,19 @@ Lists symbolication jobs with optional platform/status filtering and DataTable p
 | `api_key` | String | Yes (or `auth_token`) | API key authentication |
 | `auth_token` | String | Yes (or `api_key`) | Auth token authentication |
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `crashes.*` | Crashes feature defaults | Crash-job query behavior and filtering options used by this endpoint. | Changes to crashes settings can alter which job rows are returned or how they are grouped/filtered. |
+### Example 1: List all jobs
+
+```text
+/o?method=crash_jobs&app_id=5f9c8a3b4d1e2a001f3b4567&api_key=YOUR_API_KEY
+```
+
+### Example 2: Filter by status and platform
+
+```text
+/o?method=crash_jobs&app_id=5f9c8a3b4d1e2a001f3b4567&platform=JavaScript&status=success&api_key=YOUR_API_KEY
+```
 
 ## Response
 
@@ -111,7 +120,7 @@ Default (`outputFormat=rows`):
 | 200 | `false` when aggregation fails |
 | 401 | `{ "result": "User does not exist" }` or auth validation message |
 
-## Behavior/Processing
+## Behavior
 
 - Requires `Read` permission on the `crashes` feature.
 - Queries `symbolication_jobs` with an initial match on `app_id`.
@@ -121,48 +130,24 @@ Default (`outputFormat=rows`):
 - The handler excludes `app_id` from returned rows and defaults to `outputFormat=rows` unless a DataTable output format is requested.
 - Aggregation errors return `false`.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.symbolication_jobs` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
-
----
-
-## Examples
-
-### Example 1: List all jobs
-
-```text
-/o?method=crash_jobs&app_id=5f9c8a3b4d1e2a001f3b4567&api_key=YOUR_API_KEY
-```
-
-### Example 2: Filter by status and platform
-
-```text
-/o?method=crash_jobs&app_id=5f9c8a3b4d1e2a001f3b4567&platform=JavaScript&status=success&api_key=YOUR_API_KEY
-```
-
 ## Related Endpoints
 
 - [Run Symbolication](crash-symbolicate.md)
 - [Symbolication Result Callback](crash-symbolicate-result.md)
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Configuration Impact**
 
-This feature is part of **Countly Enterprise**.
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `crashes.*` | Crashes feature defaults | Crash-job query behavior and filtering options used by this endpoint. | Changes to crashes settings can alter which job rows are returned or how they are grouped/filtered. |
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
+**Database Collections**
 
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.symbolication_jobs` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 
----
-
-## Last Updated
-
-2026-04-18
+</details>

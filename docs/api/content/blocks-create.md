@@ -4,9 +4,15 @@ keywords:
   - "/i/content/save"
   - "save"
   - "content"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Create content block
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -14,19 +20,14 @@ keywords:
 /i/content/save
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Creates a new content block document.
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required permission**: `Create` on the `content` feature
@@ -44,49 +45,6 @@ Creates a new content block document.
 
 `details` object keys used by server: `created`, `creatorId`, `favorite`, `title`.
 For create flow, server overwrites `details.created` with current timestamp.
-
-## Response
-
-### Success Response
-
-```json
-{
-  "status": "Success",
-  "contentId": "507f1f77bcf86cd799439011"
-}
-```
-
-### Response Fields
-
-| Field | Type | Description |
-|---|---|---|
-| status | String | Operation status |
-| contentId | String | Created content block ObjectID |
-
-### Error Responses
-
-| HTTP Status | Response |
-|---|---|
-| 400 | JSON parsing error or `"Invalid request"` |
-| 400 | Validation/processing error message (`e.message`) |
-| 500 | `"Error"` |
-
-## Behavior/Processing
-
-1. Parses `blocks` and `details` from JSON strings.
-2. Builds document with app/type/blocks/details.
-3. Sets `details.updated = Date.now` and `details.created = Date.now` for new record.
-4. Inserts into `countly.content_blocks`.
-
----
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.content_blocks` | Endpoint data source | ** - Content block definitions |
-
----
 
 ## Examples
 
@@ -160,27 +118,52 @@ For create flow, server overwrites `details.created` with current timestamp.
 ]
 ```
 
+## Response
+
+### Success Response
+
+```json
+{
+  "status": "Success",
+  "contentId": "507f1f77bcf86cd799439011"
+}
+```
+
+### Response Fields
+
+| Field | Type | Description |
+|---|---|---|
+| status | String | Operation status |
+| contentId | String | Created content block ObjectID |
+
+### Error Responses
+
+| HTTP Status | Response |
+|---|---|
+| 400 | JSON parsing error or `"Invalid request"` |
+| 400 | Validation/processing error message (`e.message`) |
+| 500 | `"Error"` |
+
+## Behavior
+
+1. Parses `blocks` and `details` from JSON strings.
+2. Builds document with app/type/blocks/details.
+3. Sets `details.updated = Date.now` and `details.created = Date.now` for new record.
+4. Inserts into `countly.content_blocks`.
+
 ## Related Endpoints
 
 - [Content Blocks - Read](blocks-read.md): Retrieve content blocks
 - [Content Blocks - Update](blocks-update.md): Update a content block
 - [Content Blocks - Delete](blocks-delete.md): Delete a content block
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Database Collections**
 
-This feature is part of **Countly Enterprise**.
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.content_blocks` | Endpoint data source | ** - Content block definitions |
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

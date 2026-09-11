@@ -3,6 +3,8 @@ sidebar_label: "Get Ratings Widgets"
 keywords:
   - "/o/sdk"
   - "sdk"
+last_update:
+  date: "2026-03-07"
 ---
 
 # Star Rating - Get Ratings Widgets
@@ -33,6 +35,17 @@ No role-based feature permission checks are required for this endpoint.
 | `app_key` | String | Yes | App key for SDK request validation. |
 | `device_id` | String | Yes | Device ID for SDK request validation. |
 | `av` | String | No | Optional app version in SDK request context. |
+
+## Examples
+
+### Get SDK widgets
+
+```plaintext
+/o/sdk?
+  method=feedback&
+  app_key=YOUR_APP_KEY&
+  device_id=device_123
+```
 
 ## Response
 
@@ -73,29 +86,12 @@ No role-based feature permission checks are required for this endpoint.
 
 - SDK validation errors from `/o/sdk` authentication path can be returned (for example missing/invalid `app_key` or `device_id`).
 
-## Behavior/Processing
+## Behavior
 
 - Endpoint returns only when `method=feedback` and Surveys plugin is disabled.
 - Dispatches `/feedback/widgets` and wraps returned widget array in `{ "result": [...] }`.
 - Filters to widgets with `status=true` and `type="rating"` for current app.
 - Applies cohort-based filtering when Cohorts plugin is enabled.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.feedback_widgets` | Widget source | Reads active rating widgets for app. |
-
-## Examples
-
-### Get SDK widgets
-
-```plaintext
-/o/sdk?
-  method=feedback&
-  app_key=YOUR_APP_KEY&
-  device_id=device_123
-```
 
 ## Limitations
 
@@ -105,6 +101,13 @@ No role-based feature permission checks are required for this endpoint.
 
 - [Star Rating - List All Widgets](o-feedback-widgets.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-03-07
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.feedback_widgets` | Widget source | Reads active rating widgets for app. |
+
+</details>

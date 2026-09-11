@@ -4,6 +4,8 @@ keywords:
   - "/o/alert/list"
   - "list"
   - "alert"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Alerts - List
@@ -20,11 +22,7 @@ Returns alert configurations visible to the current user together with aggregate
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -37,6 +35,16 @@ Requires `alerts` `Read` permission.
 | `app_id` | String | Conditional | Required for non-global-admin users during read validation. |
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
+
+## Examples
+
+### List alerts
+
+```text
+/o/alert/list?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2
+```
 
 ## Response
 
@@ -117,7 +125,7 @@ Requires `alerts` `Read` permission.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -130,7 +138,16 @@ Requires `alerts` `Read` permission.
 
 - Read-only endpoint.
 
-## Database Collections
+## Related Endpoints
+
+- [Alerts - Save](i-alert-save.md)
+- [Alerts - Delete](i-alert-delete.md)
+- [Alerts - Update Status](i-alert-status.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -139,24 +156,4 @@ Requires `alerts` `Read` permission.
 | `countly.alerts` | Alert rule listing | Reads alert documents (all or by `createdBy`). |
 | `countly.alerts_data` | Alert count metrics | Reads scoped total/today counters for the alerts list response. |
 
----
-
-## Examples
-
-### List alerts
-
-```text
-/o/alert/list?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2
-```
-
-## Related Endpoints
-
-- [Alerts - Save](i-alert-save.md)
-- [Alerts - Delete](i-alert-delete.md)
-- [Alerts - Update Status](i-alert-status.md)
-
-## Last Updated
-
-2026-02-17
+</details>

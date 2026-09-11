@@ -5,23 +5,13 @@ sidebar_label: "Overview"
 
 # Online Users
 
-> Ⓔ **Enterprise Only**  
-> This feature is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This feature is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Overview
 
 The Online Users feature provides real-time monitoring of users actively using your application at any given moment. It tracks simultaneous user sessions across multiple time granularities (current, minutes, hours, days, and overall maximums) with optional segmentation by geography, device type, and carrier. The feature also includes configurable alert systems to notify administrators when online user counts exceed thresholds or fall patterns. Perfect for monitoring app health, capacity planning, and identifying usage spikes or anomalies.
-
-## Database Collections
-
-| Collection | Purpose |
-|---|---|
-| `countly.concurrent_users_max` | Stores maximum online user counts (overall, per-app) with TTL-based expiration |
-| `countly.concurrent_users_active` | Current active session state with processing flags and cache timestamps |
-| `countly.concurrent_users_alerts` | Alert definitions and execution status tracking for online user thresholds |
-| `countly.members` | User profiles (referenced when returning alert creator information) |
-| `countly.apps` | Application metadata (referenced during initialization and alerts) |
-| `countly.app_users{appId}` | Application-specific user sessions (indexed by last_sync and session cookie) |
 
 ## Configuration & Settings
 
@@ -285,15 +275,18 @@ All endpoints require user authentication:
   - `validateUpdate` for existing alerts
   - `validateDelete` for alert removal
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Database Collections**
 
-This feature is part of **Countly Enterprise**.
+| Collection | Purpose |
+|---|---|
+| `countly.concurrent_users_max` | Stores maximum online user counts (overall, per-app) with TTL-based expiration |
+| `countly.concurrent_users_active` | Current active session state with processing flags and cache timestamps |
+| `countly.concurrent_users_alerts` | Alert definitions and execution status tracking for online user thresholds |
+| `countly.members` | User profiles (referenced when returning alert creator information) |
+| `countly.apps` | Application metadata (referenced during initialization and alerts) |
+| `countly.app_users{appId}` | Application-specific user sessions (indexed by last_sync and session cookie) |
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
+</details>

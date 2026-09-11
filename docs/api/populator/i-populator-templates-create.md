@@ -5,6 +5,8 @@ keywords:
   - "create"
   - "populator"
   - "templates"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Populator - Template Create
@@ -21,11 +23,7 @@ Creates a new data-population template. Templates define the user/event/view/beh
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -95,6 +93,31 @@ Example payload:
 }
 ```
 
+## Examples
+
+### Create a mobile subscription template
+
+```text
+https://your-server.com/i/populator/templates/create?
+  app_id=6991c75b024cb89cdc04efd2&
+  api_key=YOUR_API_KEY&
+  name=Subscription Demo&
+  uniqueUserCount=1200&
+  platformType=["iOS","Android"]&
+  isDefault=true
+```
+
+### Create a web-only template
+
+```text
+https://your-server.com/i/populator/templates/create?
+  app_id=6991c75b024cb89cdc04efd2&
+  api_key=YOUR_API_KEY&
+  name=Checkout Web Journey&
+  uniqueUserCount=450&
+  platformType=["Web"]
+```
+
 ## Response
 
 ### Success Response
@@ -161,7 +184,7 @@ Example payload:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -175,53 +198,10 @@ Example payload:
 - Inserts one document into `countly.populator_templates`.
 - Sets `generatedOn` timestamp during insert.
 
-## Audit & System Logs
-
-| Action | Trigger | Payload |
-|---|---|---|
-| `populator_template_created` | Template insert succeeds | Full created template payload. |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.populator_templates` | Template storage | Reads by `name` for uniqueness, inserts new template document. |
-| `countly.members` | Authentication and authorization | Reads member context for permission checks. |
-| `countly.apps` | App rights validation | Reads app access context from `app_id`. |
-
----
-
-## Examples
-
-### Create a mobile subscription template
-
-```text
-https://your-server.com/i/populator/templates/create?
-  app_id=6991c75b024cb89cdc04efd2&
-  api_key=YOUR_API_KEY&
-  name=Subscription Demo&
-  uniqueUserCount=1200&
-  platformType=["iOS","Android"]&
-  isDefault=true
-```
-
-### Create a web-only template
-
-```text
-https://your-server.com/i/populator/templates/create?
-  app_id=6991c75b024cb89cdc04efd2&
-  api_key=YOUR_API_KEY&
-  name=Checkout Web Journey&
-  uniqueUserCount=450&
-  platformType=["Web"]
-```
-
 ## Limitations
 
 - Template name uniqueness is checked globally.
 - `behavior.sequences=[]` is normalized to an empty `behavior` object.
-
----
 
 ## Related Endpoints
 
@@ -229,6 +209,21 @@ https://your-server.com/i/populator/templates/create?
 - [Populator - Template Read](o-populator-templates.md)
 - [Populator - Template Remove](i-populator-templates-remove.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Audit & System Logs**
+
+| Action | Trigger | Payload |
+|---|---|---|
+| `populator_template_created` | Template insert succeeds | Full created template payload. |
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.populator_templates` | Template storage | Reads by `name` for uniqueness, inserts new template document. |
+| `countly.members` | Authentication and authorization | Reads member context for permission checks. |
+| `countly.apps` | App rights validation | Reads app access context from `app_id`. |
+
+</details>

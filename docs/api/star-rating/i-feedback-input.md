@@ -5,6 +5,8 @@ keywords:
   - "GET /i/feedback/input"
   - "input"
   - "feedback"
+last_update:
+  date: "2026-03-31"
 ---
 
 # Star Rating - Record Feedback
@@ -98,6 +100,29 @@ The following fields are automatically computed by the server during ingestion a
 | `ratingSum` | Numeric cast of `rating` (used for aggregation). |
 | `platform_version_rate` | Composite key in the format `{platform}**{app_version}**{rating}**{widget_id}**` used for segmented event aggregation. |
 
+## Examples
+
+### Basic rating submission (minimal)
+
+```plaintext
+GET /i/feedback/input?app_key=YOUR_APP_KEY&device_id=device_123&events=[{"key":"[CLY]_star_rating","count":1,"segmentation":{"rating":4,"widget_id":"67a3d2f5c1a23b0f4d6c0201"}}]
+```
+
+### Full rating with comment and email
+
+```plaintext
+GET /i/feedback/input?app_key=YOUR_APP_KEY&device_id=device_123&events=[{"key":"[CLY]_star_rating","count":1,"sum":1,"segmentation":{"rating":5,"widget_id":"67a3d2f5c1a23b0f4d6c0201","comment":"Love this app!","email":"user@example.com","contactMe":true,"platform":"iOS","app_version":"2.1.0"}}]
+```
+
+### cURL example
+
+```bash
+curl -G "https://your-countly-server.com/i/feedback/input" \
+  --data-urlencode "app_key=YOUR_APP_KEY" \
+  --data-urlencode "device_id=device_123" \
+  --data-urlencode 'events=[{"key":"[CLY]_star_rating","count":1,"sum":1,"segmentation":{"rating":3,"widget_id":"67a3d2f5c1a23b0f4d6c0201","comment":"It is okay","platform":"Android","app_version":"1.5.2"}}]'
+```
+
 ## Response
 
 ### Success Response
@@ -133,7 +158,7 @@ This error is returned when:
 
 Non-200 responses from the proxied `/i` ingestion request are forwarded back to the client with the original status code and `result` payload.
 
-## Behavior/Processing
+## Behavior
 
 1. Parses the `events` query parameter as JSON.
 2. Validates that the array contains exactly one event with key `[CLY]_star_rating`.
@@ -147,7 +172,14 @@ Non-200 responses from the proxied `/i` ingestion request are forwarded back to 
 4. Proxies the full request to `/i` with `no_checksum=true` via `requestProcessor.processRequest`.
 5. Returns the proxied response status and body to the client.
 
-## Database Collections
+## Related Endpoints
+
+- [Star Rating - Get Feedback Data](o-feedback-data.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 This handler does not directly read or write to collections. The proxied `/i` request ultimately writes to:
 
@@ -156,33 +188,4 @@ This handler does not directly read or write to collections. The proxied `/i` re
 | `events{app_id_hash}` | Aggregated event data keyed by the `platform_version_rate` segmentation. |
 | `drill_events` (in `countly_drill` DB) | Individual event records with full segmentation (including `comment`, `email`, `contactMe`, `widget_id`, `rating`, `platform`, `app_version`). |
 
-## Examples
-
-### Basic rating submission (minimal)
-
-```plaintext
-GET /i/feedback/input?app_key=YOUR_APP_KEY&device_id=device_123&events=[{"key":"[CLY]_star_rating","count":1,"segmentation":{"rating":4,"widget_id":"67a3d2f5c1a23b0f4d6c0201"}}]
-```
-
-### Full rating with comment and email
-
-```plaintext
-GET /i/feedback/input?app_key=YOUR_APP_KEY&device_id=device_123&events=[{"key":"[CLY]_star_rating","count":1,"sum":1,"segmentation":{"rating":5,"widget_id":"67a3d2f5c1a23b0f4d6c0201","comment":"Love this app!","email":"user@example.com","contactMe":true,"platform":"iOS","app_version":"2.1.0"}}]
-```
-
-### cURL example
-
-```bash
-curl -G "https://your-countly-server.com/i/feedback/input" \
-  --data-urlencode "app_key=YOUR_APP_KEY" \
-  --data-urlencode "device_id=device_123" \
-  --data-urlencode 'events=[{"key":"[CLY]_star_rating","count":1,"sum":1,"segmentation":{"rating":3,"widget_id":"67a3d2f5c1a23b0f4d6c0201","comment":"It is okay","platform":"Android","app_version":"1.5.2"}}]'
-```
-
-## Related Endpoints
-
-- [Star Rating - Get Feedback Data](o-feedback-data.md)
-
-## Last Updated
-
-2026-03-31
+</details>

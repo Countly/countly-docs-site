@@ -3,12 +3,15 @@ sidebar_label: "List"
 keywords:
   - "/o/flows"
   - "flows"
+last_update:
+  date: "2026-02-16"
 ---
 
 # List flows
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -22,12 +25,7 @@ Returns paginated flow schemas for the app in DataTables-compatible format.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -47,6 +45,17 @@ Requires `flows` `Read` permission.
 | `sEcho` | String | No | Echo value returned in response. |
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
+
+## Examples
+
+```text
+/o/flows?
+  method=list&
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  iDisplayStart=0&
+  iDisplayLength=10&
+  sSearch=signup
+```
 
 ## Response
 
@@ -81,41 +90,25 @@ Requires `flows` `Read` permission.
 
 This endpoint does not define a dedicated structured error payload; error output can vary by failure path.
 
-## Behavior/Processing
+## Behavior
 
 - Reads `countly.flow_schemas` by app-prefixed `_id`.
 - Parses `user_segmentation` JSON string when possible.
 - Cleans quoted `period` strings.
 - Forces `status="disabled"` when `disabled` flag is set.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.flow_schemas` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
-
----
-
-## Examples
-
-```text
-/o/flows?
-  method=list&
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  iDisplayStart=0&
-  iDisplayLength=10&
-  sSearch=signup
-```
-
----
-
 ## Related Endpoints
 
 - [Flows - Info](info.md)
 - [Flows - Create](create.md)
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Last Updated
+**Database Collections**
 
-2026-02-16
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.flow_schemas` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
+
+</details>

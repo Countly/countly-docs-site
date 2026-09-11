@@ -3,9 +3,15 @@ sidebar_label: "Counts"
 keywords:
   - "/o"
   - "o"
+last_update:
+  date: "2026-04-18"
 ---
 
 # User Profiles - Counts
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -13,19 +19,13 @@ keywords:
 /o?method=user_counts
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Returns total user count and unidentified user count.
 
 ## Authentication
 
-**Authentication methods**:
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -39,6 +39,12 @@ Returns total user count and unidentified user count.
 | `auth_token` | String | Yes (or `api_key`) | Auth token authentication |
 | `app_id` | String | Yes | App ID |
 | `method` | String | Yes | Must be `user_counts` |
+
+## Examples
+
+```text
+/o?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&method=user_counts
+```
 
 ## Response
 
@@ -67,7 +73,7 @@ Returns total user count and unidentified user count.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Requires `Read` permission on the User Profiles feature.
 - Reads from `app_users{app_id}`.
@@ -76,37 +82,17 @@ Returns total user count and unidentified user count.
 - The endpoint does not apply query, segment, cohort, or date filters.
 - The handler returns only `{unidentified, total}`.
 
-## Database Collections
+## Related Endpoints
+
+- [User Profiles - List or Profile](list.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
 | `countly.app_users{appId}` | Per-app user profiles | Stores user-level properties and profile fields affected by this endpoint. |
 
----
-
-## Examples
-
-```text
-/o?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&method=user_counts
-```
-
-## Related Endpoints
-
-- [User Profiles - List or Profile](list.md)
-
-## Ⓔ Enterprise
-
-This feature is part of **Countly Enterprise**.
-
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions.
-
----
-
-## Last Updated
-
-2026-04-18
+</details>

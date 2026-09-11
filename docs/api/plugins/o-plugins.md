@@ -3,6 +3,8 @@ sidebar_label: "Features List"
 keywords:
   - "/o/plugins"
   - "plugins"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /o/plugins
@@ -19,11 +21,7 @@ Returns available feature definitions by combining filesystem plugin metadata wi
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. **API Key** (parameter): `api_key=YOUR_API_KEY`
-2. **Auth Token** (parameter): `auth_token=YOUR_AUTH_TOKEN`
-3. **Auth Token** (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -35,6 +33,14 @@ Countly API supports three authentication methods:
 |---|---|---|---|
 | `api_key` | String | Yes (or use `auth_token`) | API key for authentication. |
 | `auth_token` | String | No | Auth token as query parameter or `countly-token` header. |
+
+## Examples
+
+### List all features and states
+
+```plaintext
+/o/plugins?api_key=YOUR_API_KEY
+```
 
 ## Response
 
@@ -122,28 +128,13 @@ Countly API supports three authentication methods:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Reads `_id: "plugins"` state map from database.
 - Enumerates plugin directories and package metadata.
 - Builds response entries only for known plugin keys.
 - Adds localization fallback for disabled features when localization files are present. Localization file selection uses authenticated member language (`params.member.lang`) when available.
 - Returns metadata array as raw root output.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Global-admin validation | Reads authenticated user and global-admin status. |
-| `countly.plugins` | Stores current feature enablement map | Reads `plugins.{feature_code}` flags under `_id: "plugins"`. |
-
-## Examples
-
-### List all features and states
-
-```plaintext
-/o/plugins?api_key=YOUR_API_KEY
-```
 
 ## Limitations
 
@@ -155,6 +146,14 @@ Countly API supports three authentication methods:
 - [Features - Feature State Update](i-plugins.md)
 - [Features - Feature State Check](o-plugins-check.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Global-admin validation | Reads authenticated user and global-admin status. |
+| `countly.plugins` | Stores current feature enablement map | Reads `plugins.{feature_code}` flags under `_id: "plugins"`. |
+
+</details>

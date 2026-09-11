@@ -3,6 +3,8 @@ sidebar_label: "System Logs Metadata"
 keywords:
   - "/o"
   - "o"
+last_update:
+  date: "2026-03-05"
 ---
 
 # System Logs - Metadata
@@ -21,12 +23,7 @@ Returns available system log metadata values (for example known action keys) and
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. `api_key=YOUR_API_KEY`
-2. `auth_token=YOUR_AUTH_TOKEN`
-3. `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -40,6 +37,14 @@ Requires Global Admin access.
 | `api_key` | String | Yes (or use `auth_token`) | API key for authentication. |
 | `auth_token` | String | No | Auth token as query parameter or `countly-token` header. |
 | `app_id` | String | Yes | App id required by the global-admin read validation path. |
+
+## Examples
+
+### Read metadata for system logs filters
+
+```plaintext
+/o?method=systemlogs_meta&api_key=YOUR_API_KEY&app_id=APP_ID
+```
 
 ## Response
 
@@ -125,40 +130,29 @@ Requires Global Admin access.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Reads metadata from `countly.systemlogs` document `_id: "meta_v2"`.
 - Decodes stored metadata keys before returning them.
 - Always returns `users` array, even when no metadata is available.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.systemlogs` | Metadata source | Reads metadata document (`meta_v2`) with known action values. |
-| `countly.members` | User filter source | Reads member list with `username`, `email`, and `full_name`. |
-
----
-
-## Examples
-
-### Read metadata for system logs filters
-
-```plaintext
-/o?method=systemlogs_meta&api_key=YOUR_API_KEY&app_id=APP_ID
-```
-
 ## Limitations
 
 - Metadata values depend on previously recorded actions; new actions appear only after first write.
-
----
 
 ## Related Endpoints
 
 - [System Logs - Query](o-systemlogs-query.md)
 - [System Logs - Record](i-systemlogs.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-03-05
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.systemlogs` | Metadata source | Reads metadata document (`meta_v2`) with known action values. |
+| `countly.members` | User filter source | Reads member list with `username`, `email`, and `full_name`. |
+
+</details>

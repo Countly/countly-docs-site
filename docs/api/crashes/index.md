@@ -1,21 +1,13 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Crashes
 
 The **Crashes** feature collects, analyzes, and manages application crash reports with stack traces, device information, and occurrence tracking.
-
-
-## Database Collections
-
-| Collection | Purpose |
-|---|---|
-| `app_crashes{appId}` | Crash group summaries with occurrence counts, status (resolved/unresolved), and first/last seen timestamps |
-| `app_crashdata{appId}` | Individual crash reports with full stack traces, device info, breadcrumbs, and custom logs |
-| `app_crashusers{app_id}` | User-crash associations tracking which users experienced which crashes |
-
 
 ## Configuration & Settings
 
@@ -46,6 +38,15 @@ Crash processing settings from `features.setConfigs`:
 - [O Reports](./o-reports.md)
 - [O User Crashes](./o-user-crashes.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Purpose |
+|---|---|
+| `app_crashes{appId}` | Crash group summaries with occurrence counts, status (resolved/unresolved), and first/last seen timestamps |
+| `app_crashdata{appId}` | Individual crash reports with full stack traces, device info, breadcrumbs, and custom logs |
+| `app_crashusers{app_id}` | User-crash associations tracking which users experienced which crashes |
+
+</details>

@@ -1,15 +1,18 @@
 ---
 sidebar_label: "Add Members"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Add Users to Cohort
 
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
+
 ## Endpoint
 
 `/i/cohorts/add_users`
-
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
 
 ## Overview
 
@@ -17,10 +20,8 @@ Adds users to a manual cohort (profile group) using four flexible input methods:
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required permission**: `Update` on the `profile groups` feature
@@ -37,6 +38,59 @@ Adds users to a manual cohort (profile group) using four flexible input methods:
 | uids | Array (JSON) | One of: query, uids, import_file, or text | JSON array of user UIDs to add: `["uid1", "uid2", "uid3"]` |
 | import_file | File | One of: query, uids, import_file, or text | File upload (JSON, CSV, or TXT) containing user IDs |
 | text | String | One of: query, uids, import_file, or text | Line-separated text with device IDs or UIDs |
+
+## Examples
+
+### Example 1: Add users by UID array
+
+**Request**:
+```bash
+curl -X GET "https://your-server.com/i/cohorts/add_users" \
+  -d "api_key=YOUR_API_KEY" \
+  -d "app_id=YOUR_APP_ID" \
+  -d "cohort=COHORT_ID" \
+  -d 'uids=["user_123","user_456","user_789"]'
+```
+
+### Example 2: Add users using Drill query
+
+**Request**:
+```bash
+curl -X GET "https://your-server.com/i/cohorts/add_users" \
+  -d "api_key=YOUR_API_KEY" \
+  -d "app_id=YOUR_APP_ID" \
+  -d "cohort=COHORT_ID" \
+  -d 'query={"country": "US", "subscription": "premium"}'
+```
+
+### Example 3: Add users from file upload (JSON format)
+
+**Request**:
+```bash
+curl -X POST "https://your-server.com/i/cohorts/add_users" \
+  -d "api_key=YOUR_API_KEY" \
+  -d "app_id=YOUR_APP_ID" \
+  -d "cohort=COHORT_ID" \
+  -F "import_file=@users.json"
+```
+
+**File contents (users.json)**:
+```json
+{
+  "uids": ["user_123", "user_456", "user_789"]
+}
+```
+
+### Example 4: Add users from text (line-separated IDs)
+
+**Request**:
+```bash
+curl -X GET "https://your-server.com/i/cohorts/add_users" \
+  -d "api_key=YOUR_API_KEY" \
+  -d "app_id=YOUR_APP_ID" \
+  -d "cohort=COHORT_ID" \
+  -d "text=device_id_1\ndevice_id_2\ndevice_id_3"
+```
 
 ## Response
 
@@ -65,9 +119,7 @@ Adds users to a manual cohort (profile group) using four flexible input methods:
 | 400 | `{"result": "Insufficient permissions"}` | User lacks Update permission on profile groups |
 | 400 | `{"result": "Failed"}` | Long-task output on processing failure |
 
----
-
-## Behavior/Processing
+## Behavior
 
 Adds one or more users to a manual cohort using one of four input methods:
 
@@ -123,60 +175,22 @@ Adds one or more users to a manual cohort using one of four input methods:
   - cohort hash fields in user profiles (`countly.app_users{app_id}` under `chr.<cohort_id>`)
 - Writes audit/system log entries for add success/failure.
 
-## Examples
+## Related Endpoints
 
-### Example 1: Add users by UID array
+- [Remove users from cohort](cohort-remove-users.md) - POST /i/cohorts/remove_users
+- [Create cohort](cohort-create.md) - POST /i/cohorts/add
+- [Get cohort](cohort-single-read.md) - GET /o?method=get_cohort
 
-**Request**:
-```bash
-curl -X GET "https://your-server.com/i/cohorts/add_users" \
-  -d "api_key=YOUR_API_KEY" \
-  -d "app_id=YOUR_APP_ID" \
-  -d "cohort=COHORT_ID" \
-  -d 'uids=["user_123","user_456","user_789"]'
-```
+## Limitations
 
-### Example 2: Add users using Drill query
+- Intended for manual cohorts (profile groups) workflows.
+- Import processing is asynchronous and handled as a long-task.
+- Requests must include one of `query`, `uids`, `import_file`, or `text`.
 
-**Request**:
-```bash
-curl -X GET "https://your-server.com/i/cohorts/add_users" \
-  -d "api_key=YOUR_API_KEY" \
-  -d "app_id=YOUR_APP_ID" \
-  -d "cohort=COHORT_ID" \
-  -d 'query={"country": "US", "subscription": "premium"}'
-```
+<details>
+<summary>Implementation details</summary>
 
-### Example 3: Add users from file upload (JSON format)
-
-**Request**:
-```bash
-curl -X POST "https://your-server.com/i/cohorts/add_users" \
-  -d "api_key=YOUR_API_KEY" \
-  -d "app_id=YOUR_APP_ID" \
-  -d "cohort=COHORT_ID" \
-  -F "import_file=@users.json"
-```
-
-**File contents (users.json)**:
-```json
-{
-  "uids": ["user_123", "user_456", "user_789"]
-}
-```
-
-### Example 4: Add users from text (line-separated IDs)
-
-**Request**:
-```bash
-curl -X GET "https://your-server.com/i/cohorts/add_users" \
-  -d "api_key=YOUR_API_KEY" \
-  -d "app_id=YOUR_APP_ID" \
-  -d "cohort=COHORT_ID" \
-  -d "text=device_id_1\ndevice_id_2\ndevice_id_3"
-```
-
-## Database Collections
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -186,37 +200,4 @@ curl -X GET "https://your-server.com/i/cohorts/add_users" \
 | `countly.app_users{app_id}` | Collection: | Creates or updates user records |
 | `chr` | Adds cohort reference in | object for membership tracking |
 
----
-
-## Related Endpoints
-
-- [Remove users from cohort](cohort-remove-users.md) - POST /i/cohorts/remove_users
-- [Create cohort](cohort-create.md) - POST /i/cohorts/add
-- [Get cohort](cohort-single-read.md) - GET /o?method=get_cohort
-
----
-
-## Limitations
-
-- Intended for manual cohorts (profile groups) workflows.
-- Import processing is asynchronous and handled as a long-task.
-- Requests must include one of `query`, `uids`, `import_file`, or `text`.
-
----
-
-## Ⓔ Enterprise
-
-This feature is part of **Countly Enterprise**.
-
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

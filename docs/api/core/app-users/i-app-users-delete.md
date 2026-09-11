@@ -4,6 +4,8 @@ keywords:
   - "/i/app_users/delete"
   - "delete"
   - "app_users"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /i/app_users/delete
@@ -20,9 +22,7 @@ Delete app users by query and clean linked data.
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -37,6 +37,20 @@ Delete app users by query and clean linked data.
 | `app_id` | String | Yes | Target app ID. |
 | `query` | JSON String (Object) | Yes | Query selecting users to delete. Must be non-empty. |
 | `force` | Boolean/String | No | Required when query matches more than one user. |
+
+## Examples
+
+### Example 1: Delete single app user
+
+```plaintext
+/i/app_users/delete?api_key=YOUR_API_KEY&app_id=64b0ac10c2c3ce0012dd1001&query={"uid":"1"}
+```
+
+```json
+{
+  "result": "User deleted"
+}
+```
 
 ## Response
 
@@ -114,7 +128,7 @@ Delete app users by query and clean linked data.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -131,37 +145,6 @@ Delete app users by query and clean linked data.
 - Removes export artifacts linked in `appUserExport` (including `countly.exports` export rows).
 - Deletes user image files for removed users when picture links exist.
 
-## Audit & System Logs
-
-| Action | Trigger | Payload |
-|---|---|---|
-| `app_user_deleted` | After successful app-user deletion flow | `{ app_id, query, uids }` |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication and permission validation | Reads member identity and app-level write permissions. |
-| `countly.app_users{appId}` | Primary user deletion target | Reads matched users (including `uid`, `picture`, `appUserExport`) and removes matched user documents. |
-| `countly_drill.drill_events` | Granular-event cleanup | Deletes granular event rows for removed user IDs. |
-| `countly.exports` | Export payload cleanup | Deletes export rows tied to removed users' export artifacts. |
-| `countly_fs` | Export archive cleanup | Removes app-user export archive objects when linked exports exist. |
-
----
-## Examples
-
-### Example 1: Delete single app user
-
-```plaintext
-/i/app_users/delete?api_key=YOUR_API_KEY&app_id=64b0ac10c2c3ce0012dd1001&query={"uid":"1"}
-```
-
-```json
-{
-  "result": "User deleted"
-}
-```
-
 ## Operational Considerations
 
 - Multi-user deletion can be expensive because it runs plugin cleanup, granular-event cleanup, export cleanup, and file cleanup.
@@ -173,12 +156,28 @@ Delete app users by query and clean linked data.
 - Multi-user delete requires explicit `force`.
 - Deletion can fail when plugin-level cleanup fails for matched users.
 
----
 ## Related Endpoints
 
 - [App Users - Update](i-app-users-update.md)
 - [App Users - Export](i-app-users-export.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Audit & System Logs**
+
+| Action | Trigger | Payload |
+|---|---|---|
+| `app_user_deleted` | After successful app-user deletion flow | `{ app_id, query, uids }` |
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication and permission validation | Reads member identity and app-level write permissions. |
+| `countly.app_users{appId}` | Primary user deletion target | Reads matched users (including `uid`, `picture`, `appUserExport`) and removes matched user documents. |
+| `countly_drill.drill_events` | Granular-event cleanup | Deletes granular event rows for removed user IDs. |
+| `countly.exports` | Export payload cleanup | Deletes export rows tied to removed users' export artifacts. |
+| `countly_fs` | Export archive cleanup | Removes app-user export archive objects when linked exports exist. |
+
+</details>

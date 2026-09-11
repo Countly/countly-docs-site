@@ -4,6 +4,8 @@ keywords:
   - "/o/app_users/loyalty"
   - "loyalty"
   - "app_users"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /o/app_users/loyalty
@@ -20,9 +22,7 @@ Return loyalty distribution buckets for all-time, last 7 days, and last 30 days.
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -36,6 +36,24 @@ Return loyalty distribution buckets for all-time, last 7 days, and last 30 days.
 | `auth_token` | String | Yes (or use `api_key`) | Dashboard auth token. |
 | `app_id` | String | Yes | Target app ID. |
 | `query` | JSON String (Object) | No | Optional filter query applied before loyalty bucket aggregation. |
+
+## Examples
+
+### Example 1: Loyalty distribution
+
+```plaintext
+/o/app_users/loyalty?api_key=YOUR_API_KEY&app_id=64b0ac10c2c3ce0012dd1001
+```
+
+```json
+{
+  "all": [
+    {"_id":"1","count":120,"index":0}
+  ],
+  "7days": [],
+  "30days": []
+}
+```
 
 ## Response
 
@@ -83,7 +101,7 @@ Aggregation-fallback shape (still HTTP `200`):
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -98,42 +116,23 @@ Aggregation-fallback shape (still HTTP `200`):
 - If Cohorts is enabled, cohort filters in `query` are preprocessed and merged before aggregation.
 - This can change which users are included in loyalty buckets even when the raw query payload is unchanged.
 
-## Database Collections
+## Limitations
+
+- Query parse failures silently fall back to `{}` filter.
+
+## Related Endpoints
+
+- [App Users - Export](i-app-users-export.md)
+- [App Users - Download Export](o-app-users-download.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
 | `countly.members` | Authentication and permission validation | Reads member identity and app-level read permissions. |
 | `countly.app_users{appId}` | Loyalty aggregation source | Reads `sc` (session count), `ls` (last seen), and filter-matched user fields to build loyalty buckets. |
 
----
-## Examples
-
-### Example 1: Loyalty distribution
-
-```plaintext
-/o/app_users/loyalty?api_key=YOUR_API_KEY&app_id=64b0ac10c2c3ce0012dd1001
-```
-
-```json
-{
-  "all": [
-    {"_id":"1","count":120,"index":0}
-  ],
-  "7days": [],
-  "30days": []
-}
-```
-
-## Limitations
-
-- Query parse failures silently fall back to `{}` filter.
-
----
-## Related Endpoints
-
-- [App Users - Export](i-app-users-export.md)
-- [App Users - Download Export](o-app-users-download.md)
-
-## Last Updated
-
-2026-02-17
+</details>

@@ -4,6 +4,8 @@ keywords:
   - "/i/date_presets/create"
   - "create"
   - "date_presets"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /i/date_presets/create
@@ -20,9 +22,7 @@ Create a date preset with ownership, sharing metadata, favorite list, and displa
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -43,6 +43,20 @@ Create a date preset with ownership, sharing metadata, favorite list, and displa
 | `shared_user_groups_edit` | JSON String (Array) | No | Shared edit group list. |
 | `shared_user_groups_view` | JSON String (Array) | No | Shared view group list. |
 | `exclude_current_day` | JSON String (Boolean) | No | Current-day exclusion flag (`true` or `false`). |
+
+## Examples
+
+### Example 1: Create private preset
+
+```plaintext
+/i/date_presets/create?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&name=Last 7 Days vs Today&range=["7days","today"]&share_with=none
+```
+
+### Example 2: Create selected-users shared preset
+
+```plaintext
+/i/date_presets/create?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&name=Marketing Review&range=["30days","today"]&share_with=selected-users&shared_email_view=["analyst@example.com"]
+```
 
 ## Response
 
@@ -147,7 +161,7 @@ Create a date preset with ownership, sharing metadata, favorite list, and displa
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -160,40 +174,25 @@ Create a date preset with ownership, sharing metadata, favorite list, and displa
 
 - Inserts new preset at top order (`sort_order=0`) and increments `sort_order` for existing presets.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication | Reads caller member identity for write validation and owner assignment. |
-| `countly.date_presets` | Preset creation target | Inserts new preset and updates `sort_order` of other presets. |
-
----
-## Examples
-
-### Example 1: Create private preset
-
-```plaintext
-/i/date_presets/create?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&name=Last 7 Days vs Today&range=["7days","today"]&share_with=none
-```
-
-### Example 2: Create selected-users shared preset
-
-```plaintext
-/i/date_presets/create?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&name=Marketing Review&range=["30days","today"]&share_with=selected-users&shared_email_view=["analyst@example.com"]
-```
-
 ## Limitations
 
 - `range` array must contain exactly 2 entries.
 - Additional top-level request fields (except `app_id`) are copied into stored preset object.
 - Sort-order reindexing after insert is global within `countly.date_presets` (not app-scoped).
 
----
 ## Related Endpoints
 
 - [Date Presets - Preset Update](i-date-presets-update.md)
 - [Date Presets - Preset Read All](o-date-presets-getall.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication | Reads caller member identity for write validation and owner assignment. |
+| `countly.date_presets` | Preset creation target | Inserts new preset and updates `sort_order` of other presets. |
+
+</details>

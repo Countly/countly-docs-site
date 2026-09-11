@@ -4,6 +4,8 @@ keywords:
   - "/i/remote-config/add-condition"
   - "add-condition"
   - "remote-config"
+last_update:
+  date: "2026-03-05"
 ---
 
 # Remote Config - Condition Create
@@ -20,12 +22,7 @@ Creates a condition document used for targeting parameter values.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. `api_key=YOUR_API_KEY`
-2. `auth_token=YOUR_AUTH_TOKEN`
-3. `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -48,6 +45,14 @@ Requires `remote_config` `Update` permission.
 | `condition_color` | Number | Yes | Color index used by dashboard. |
 | `condition` | Object/String | Yes | Condition query definition. |
 | `seed_value` | String | No | Seed used in rollout percentile logic. |
+
+## Examples
+
+### Create condition
+
+```plaintext
+/i/remote-config/add-condition?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&condition={"condition_name":"iOS Users","condition_color":1,"condition":{"up._os":{"$eq":"iOS"}},"seed_value":"button_color"}
+```
 
 ## Response
 
@@ -97,34 +102,25 @@ Requires `remote_config` `Update` permission.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Parses `condition` JSON string.
 - Serializes nested `condition.condition` object to JSON string before storing.
 - Emits system log action: `rc_condition_created`.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly_out.remoteconfig_conditions{appId}` | Condition storage | Validates duplicates and inserts condition document. |
-| `countly.systemlogs` | Audit trail | Receives `rc_condition_created` action. |
-
----
-
-## Examples
-
-### Create condition
-
-```plaintext
-/i/remote-config/add-condition?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&condition={"condition_name":"iOS Users","condition_color":1,"condition":{"up._os":{"$eq":"iOS"}},"seed_value":"button_color"}
-```
 
 ## Related Endpoints
 
 - [Remote Config - Condition Update](condition-update.md)
 - [Remote Config - Condition Delete](condition-remove.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-03-05
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly_out.remoteconfig_conditions{appId}` | Condition storage | Validates duplicates and inserts condition document. |
+| `countly.systemlogs` | Audit trail | Receives `rc_condition_created` action. |
+
+</details>

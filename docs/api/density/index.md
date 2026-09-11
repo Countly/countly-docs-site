@@ -1,6 +1,8 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Density
@@ -11,13 +13,6 @@ The **Density** feature provides API endpoints for managing density functionalit
 
 - [Density - Read](o-density.md)
 
-## Database Collections
-
-| Collection | Purpose |
-|---|---|
-| `countly.density` | Aggregated density metric documents used by density analytics reads. |
-
-
 ## Configuration & Settings
 
 Density analytics uses core tracking. No additional configuration.
@@ -26,6 +21,13 @@ Density analytics uses core tracking. No additional configuration.
 
 - [O Density](./o-density.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Purpose |
+|---|---|
+| `countly.density` | Aggregated density metric documents used by density analytics reads. |
+
+</details>

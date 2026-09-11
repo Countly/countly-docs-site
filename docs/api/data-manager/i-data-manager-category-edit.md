@@ -5,6 +5,8 @@ keywords:
   - "edit"
   - "data-manager"
   - "category"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /i/data-manager/category/edit
@@ -21,11 +23,7 @@ Bulk updates category names and upserts missing category IDs for the selected ap
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. **API Key** (parameter): `api_key=YOUR_API_KEY`
-2. **Auth Token** (parameter): `auth_token=YOUR_AUTH_TOKEN`
-3. **Auth Token** (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -54,6 +52,14 @@ Example:
   {"_id": "65f0b7d9a1b2c3d4e5f60789", "name": "Revenue"},
   {"name": "Retention"}
 ]
+```
+
+## Examples
+
+### Update and upsert categories in one request
+
+```plaintext
+/i/data-manager/category/edit?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&categories=[{"_id":"65f0b7d9a1b2c3d4e5f60789","name":"Revenue"},{"name":"Retention"}]
 ```
 
 ## Response
@@ -96,7 +102,7 @@ Example:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Validates update access for `data_manager`.
 - Parses `categories` JSON string.
@@ -106,29 +112,6 @@ Example:
 ### Impact on Other Data
 
 - Updates or inserts category records in `countly.event_categories`.
-
-## Audit & System Logs
-
-| Action | Trigger | Payload |
-|---|---|---|
-| `dm-category-edit` | Bulk write request is accepted | `{ categories: [ ... ] }` |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication and permission validation | Reads member record by `api_key` or `auth_token` to verify update access. |
-| `countly.apps` | App context validation | Reads app record for the requested `app_id` during access validation. |
-| `countly.event_categories` | Stores per-app event category definitions | Bulk updates existing docs and upserts missing IDs. |
-| `countly.systemlogs` | Stores audit trail for management actions | Receives audit entry dispatched for category edit. |
-
-## Examples
-
-### Update and upsert categories in one request
-
-```plaintext
-/i/data-manager/category/edit?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&categories=[{"_id":"65f0b7d9a1b2c3d4e5f60789","name":"Revenue"},{"name":"Retention"}]
-```
 
 ## Limitations
 
@@ -141,6 +124,22 @@ Example:
 - [Data Manager - Category Create](i-data-manager-category-create.md)
 - [Data Manager - Category Delete](i-data-manager-category-delete.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Audit & System Logs**
+
+| Action | Trigger | Payload |
+|---|---|---|
+| `dm-category-edit` | Bulk write request is accepted | `{ categories: [ ... ] }` |
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication and permission validation | Reads member record by `api_key` or `auth_token` to verify update access. |
+| `countly.apps` | App context validation | Reads app record for the requested `app_id` during access validation. |
+| `countly.event_categories` | Stores per-app event category definitions | Bulk updates existing docs and upserts missing IDs. |
+| `countly.systemlogs` | Stores audit trail for management actions | Receives audit entry dispatched for category edit. |
+
+</details>

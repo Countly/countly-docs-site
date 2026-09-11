@@ -6,6 +6,8 @@ keywords:
   - "system"
   - "kafka"
   - "events"
+last_update:
+  date: "2026-02-17"
 ---
 
 # System - Kafka Events Meta Read
@@ -22,9 +24,7 @@ Returns distinct filter values for Kafka event logs: event types, consumer group
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -36,6 +36,23 @@ Returns distinct filter values for Kafka event logs: event types, consumer group
 |---|---|---|---|
 | `api_key` | String | Yes (or use `auth_token`) | Dashboard API key. |
 | `auth_token` | String | Yes (or use `api_key`) | Dashboard auth token. |
+
+## Examples
+
+### Example 1: Read Kafka events filter metadata
+
+```plaintext
+/o/system/kafka/events/meta?api_key=YOUR_API_KEY
+```
+
+```json
+{
+  "eventTypes": ["consume", "error"],
+  "groupIds": ["countly-events"],
+  "topics": ["events"],
+  "clusterIds": ["cluster-a"]
+}
+```
 
 ## Response
 
@@ -69,7 +86,7 @@ Returns distinct filter values for Kafka event logs: event types, consumer group
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -78,33 +95,6 @@ Returns distinct filter values for Kafka event logs: event types, consumer group
 | Cache hit | Request arrives within 30-second meta cache TTL | Cached meta object. |
 | Cache miss | Cache expired or not created yet | Recomputed meta object from distinct queries. |
 | Query failure | Distinct query throws | Wrapped error message. |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.kafka_consumer_events` | Source for filter value extraction. | Reads distinct values of `type`, `groupId`, `topic`, `clusterId`. |
-
----
-
-## Examples
-
-### Example 1: Read Kafka events filter metadata
-
-```plaintext
-/o/system/kafka/events/meta?api_key=YOUR_API_KEY
-```
-
-```json
-{
-  "eventTypes": ["consume", "error"],
-  "groupIds": ["countly-events"],
-  "topics": ["events"],
-  "clusterIds": ["cluster-a"]
-}
-```
-
----
 
 ## Operational Considerations
 
@@ -116,6 +106,13 @@ Returns distinct filter values for Kafka event logs: event types, consumer group
 - [Kafka Events List](./o-system-kafka-events.md)
 - [Kafka Status Read](./o-system-kafka.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.kafka_consumer_events` | Source for filter value extraction. | Reads distinct values of `type`, `groupId`, `topic`, `clusterId`. |
+
+</details>

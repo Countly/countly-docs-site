@@ -3,6 +3,8 @@ sidebar_label: "User Config Read"
 keywords:
   - "/o/userconfigs"
   - "userconfigs"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Features - User Config Read
@@ -19,11 +21,7 @@ Returns user-level configuration values for the authenticated dashboard user.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -35,6 +33,14 @@ Requires an authenticated dashboard user.
 |---|---|---|---|
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
+
+## Examples
+
+### Read current user config
+
+```text
+/o/userconfigs?api_key=YOUR_API_KEY
+```
 
 ## Response
 
@@ -106,7 +112,7 @@ Requires an authenticated dashboard user.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -118,27 +124,18 @@ Requires an authenticated dashboard user.
 
 This endpoint is read-only and does not modify data.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication and user settings lookup | Reads authenticated user and uses `member.settings` to build user config response. |
-
----
-
-## Examples
-
-### Read current user config
-
-```text
-/o/userconfigs?api_key=YOUR_API_KEY
-```
-
 ## Related Endpoints
 
 - [Features - User Config Update](i-userconfigs.md)
 - [Features - Global Config Read](o-configs.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication and user settings lookup | Reads authenticated user and uses `member.settings` to build user config response. |
+
+</details>

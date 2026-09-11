@@ -1,6 +1,8 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Analytics - API Documentation
@@ -53,7 +55,3 @@ Analytics endpoints return aggregated usage, geography, event, and behavior metr
 
 - Metrics are aggregation-based and can be empty for low-traffic apps or unsupported metric keys.
 - Large periods and high-cardinality segmentation increase processing cost.
-
-## Last Updated
-
-2026-02-17

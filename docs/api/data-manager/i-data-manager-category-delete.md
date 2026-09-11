@@ -5,6 +5,8 @@ keywords:
   - "delete"
   - "data-manager"
   - "category"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /i/data-manager/category/delete
@@ -21,11 +23,7 @@ Deletes category documents by ID for the selected app.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. **API Key** (parameter): `api_key=YOUR_API_KEY`
-2. **Auth Token** (parameter): `auth_token=YOUR_AUTH_TOKEN`
-3. **Auth Token** (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -44,6 +42,14 @@ Example:
 
 ```json
 ["65f0b7d9a1b2c3d4e5f60789", "65f0b7d9a1b2c3d4e5f60790"]
+```
+
+## Examples
+
+### Delete two categories
+
+```plaintext
+/i/data-manager/category/delete?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&categoryIds=["65f0b7d9a1b2c3d4e5f60789","65f0b7d9a1b2c3d4e5f60790"]
 ```
 
 ## Response
@@ -86,7 +92,7 @@ Example:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Validates delete access for `data_manager`.
 - Parses `categoryIds` JSON string.
@@ -96,29 +102,6 @@ Example:
 ### Impact on Other Data
 
 - Removes matching category records from `countly.event_categories`.
-
-## Audit & System Logs
-
-| Action | Trigger | Payload |
-|---|---|---|
-| `dm-category-delete` | Delete request is accepted | `{ ids: [ ... ] }` |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication and permission validation | Reads member record by `api_key` or `auth_token` to verify delete access. |
-| `countly.apps` | App context validation | Reads app record for the requested `app_id` during access validation. |
-| `countly.event_categories` | Stores per-app event category definitions | Deletes records for provided IDs scoped by app. |
-| `countly.systemlogs` | Stores audit trail for management actions | Receives audit entry dispatched for category delete. |
-
-## Examples
-
-### Delete two categories
-
-```plaintext
-/i/data-manager/category/delete?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&categoryIds=["65f0b7d9a1b2c3d4e5f60789","65f0b7d9a1b2c3d4e5f60790"]
-```
 
 ## Limitations
 
@@ -131,6 +114,22 @@ Example:
 - [Data Manager - Category Create](i-data-manager-category-create.md)
 - [Data Manager - Category Edit](i-data-manager-category-edit.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Audit & System Logs**
+
+| Action | Trigger | Payload |
+|---|---|---|
+| `dm-category-delete` | Delete request is accepted | `{ ids: [ ... ] }` |
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication and permission validation | Reads member record by `api_key` or `auth_token` to verify delete access. |
+| `countly.apps` | App context validation | Reads app record for the requested `app_id` during access validation. |
+| `countly.event_categories` | Stores per-app event category definitions | Deletes records for provided IDs scoped by app. |
+| `countly.systemlogs` | Stores audit trail for management actions | Receives audit entry dispatched for category delete. |
+
+</details>

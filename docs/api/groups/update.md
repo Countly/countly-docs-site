@@ -4,9 +4,15 @@ keywords:
   - "/i/groups/update"
   - "update"
   - "groups"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Update Group
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -14,19 +20,14 @@ keywords:
 /i/groups/update
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Updates an existing group definition and optionally reprocesses assigned users.
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required access**: global admin
@@ -51,6 +52,28 @@ Updates an existing group definition and optionally reprocesses assigned users.
 | `admin_of` | Array | No | Backward-compatible app admin mapping input |
 | `user_of` | Array | No | Backward-compatible app user mapping input |
 | `permission` | Object | No | Updated permission object |
+
+## Examples
+
+### Example: Update Group
+
+Endpoint form:
+
+```text
+https://your-server.com/i/groups/update?api_key=YOUR_API_KEY&args={"_id":"507f1f77bcf86cd799439011","name":"Marketing Team","groupID":"marketing-team","global_admin":false,"permission":{}}
+```
+
+Decoded `args` object:
+
+```json
+{
+  "_id": "507f1f77bcf86cd799439011",
+  "name": "Marketing Team",
+  "groupID": "marketing-team",
+  "global_admin": false,
+  "permission": {}
+}
+```
 
 ## Response
 
@@ -87,7 +110,7 @@ Updates an existing group definition and optionally reprocesses assigned users.
 | 400 | `{ "result": "Missing parameter \"api_key\" or \"auth_token\"" }` |
 | 400 | Error object from update path |
 
-## Behavior/Processing
+## Behavior
 
 1. Validates required fields in `args`.
 2. Ensures `groupID` uniqueness excluding current group.
@@ -95,62 +118,20 @@ Updates an existing group definition and optionally reprocesses assigned users.
 4. If `users` is provided, rebuilds user permission state.
 5. If `users` is omitted/empty, removes this group from previously linked users.
 
----
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.groups` | Endpoint data source | ** - Updated group record |
-| `countly.members` | Endpoint data source | ** - Updated during group membership synchronization |
-
----
-
-## Examples
-
-### Example: Update Group
-
-Endpoint form:
-
-```text
-https://your-server.com/i/groups/update?api_key=YOUR_API_KEY&args={"_id":"507f1f77bcf86cd799439011","name":"Marketing Team","groupID":"marketing-team","global_admin":false,"permission":{}}
-```
-
-Decoded `args` object:
-
-```json
-{
-  "_id": "507f1f77bcf86cd799439011",
-  "name": "Marketing Team",
-  "groupID": "marketing-team",
-  "global_admin": false,
-  "permission": {}
-}
-```
-
----
-
 ## Related Endpoints
 
 - [Groups - Create Group](create.md)
 - [Groups - Delete Group](delete.md)
 - [Groups - Get Group Details](details.md)
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Database Collections**
 
-This feature is part of **Countly Enterprise**.
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.groups` | Endpoint data source | ** - Updated group record |
+| `countly.members` | Endpoint data source | ** - Updated during group membership synchronization |
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

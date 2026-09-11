@@ -4,6 +4,8 @@ keywords:
   - "/o/push/dashboard"
   - "dashboard"
   - "push"
+last_update:
+  date: "2026-03-07"
 ---
 
 # /o/push/dashboard
@@ -20,16 +22,9 @@ keywords:
 
 Returns aggregated push performance metrics (sent and action), split by regular, automated, and API-triggered traffic, with platform breakdowns and enabled-user counts.
 
----
-
 ## Authentication
 
-This endpoint requires authentication and uses `read-permission validation`.
-
-Supported authentication methods:
-- Query parameter: `api_key`
-- Query parameter: `auth_token`
-- Header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -44,6 +39,16 @@ Requires `Read` permission for Push Notifications.
 | `app_id` | ObjectID | Yes | App ID |
 
 `*` Provide either `api_key` or `auth_token`.
+
+## Examples
+
+### Read dashboard metrics
+
+```plaintext
+https://your-server.com/o/push/dashboard
+  ?api_key=YOUR_API_KEY
+  &app_id=6991c75b024cb89cdc04efd2
+```
 
 ## Response
 
@@ -145,9 +150,7 @@ Requires `Read` permission for Push Notifications.
 }
 ```
 
----
-
-## Behavior/Processing
+## Behavior
 
 1. Validates `app_id` as ObjectID.
 2. Builds event queries for `[CLY]_push_sent` and `[CLY]_push_action` over the last 13 months window.
@@ -160,32 +163,10 @@ Requires `Read` permission for Push Notifications.
 
 This endpoint is read-only and does not modify data.
 
-## Database Collections
-
-| Collection | Purpose | Key Fields |
-|---|---|---|
-| `countly.events_data` | Event aggregates for push sent/action metrics | `_id`, `e`, `s`, `d` |
-| `countly.app_users{appId}` | Token presence and total users for enabled/user counters | token fields (`tk*`) |
-| `countly.creds` | Detects legacy FCM credential mode | `type`, `key`, `serviceAccountFile` |
-
----
-
-## Examples
-
-### Read dashboard metrics
-
-```plaintext
-https://your-server.com/o/push/dashboard
-  ?api_key=YOUR_API_KEY
-  &app_id=6991c75b024cb89cdc04efd2
-```
-
 ## Limitations
 
 - Daily charts for automated/API groups are fixed to last 30 days.
 - Weekly/monthly totals are computed from event aggregates, not live raw events.
-
----
 
 ## Related Endpoints
 
@@ -193,8 +174,15 @@ https://your-server.com/o/push/dashboard
 - [Push Notifications - Message Get](./message-get.md)
 - [Push Notifications - User History](./user.md)
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Last Updated
+**Database Collections**
 
-2026-03-07
+| Collection | Purpose | Key Fields |
+|---|---|---|
+| `countly.events_data` | Event aggregates for push sent/action metrics | `_id`, `e`, `s`, `d` |
+| `countly.app_users{appId}` | Token presence and total users for enabled/user counters | token fields (`tk*`) |
+| `countly.creds` | Detects legacy FCM credential mode | `type`, `key`, `serviceAccountFile` |
+
+</details>

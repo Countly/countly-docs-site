@@ -3,9 +3,15 @@ sidebar_label: "Read Table"
 keywords:
   - "/o"
   - "o"
+last_update:
+  date: "2026-02-16"
 ---
 
 # User Profiles - Events Table
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -13,19 +19,13 @@ keywords:
 /o?method=user_details&calculate=eventsTable
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Returns per-user event table data with filtering and pagination.
 
 ## Authentication
 
-**Authentication methods**:
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -54,11 +54,15 @@ Returns per-user event table data with filtering and pagination.
 | `paginationMode` | String | No | Cursor mode (`snapshot` or `live`) |
 | `dbOverride` | String | No | Query adapter override |
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `users.*` | User profile feature defaults | User-details retrieval behavior in profile endpoints. | Changes to user feature settings can affect which profile-related fields/aggregations are returned. |
+```text
+/o?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&method=user_details&calculate=eventsTable&uid=u_102&period=30days&event=all&iDisplayStart=0&iDisplayLength=20
+```
+
+```text
+/o?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&method=user_details&calculate=eventsTable&uid=u_102&period=30days&event=purchase&dbOverride=clickhouse&paginationMode=snapshot
+```
 
 ## Response
 
@@ -103,49 +107,31 @@ Returns per-user event table data with filtering and pagination.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Maps shorthand system event names (for example `view`, `crash`, `survey`) to internal keys.
 - Supports Mongo-like pagination and cursor pagination.
 - If endpoint returns error from backend query layer, response includes message wrapper.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly_drill.drill_events` | Drill event records | Stores granular event rows queried or updated by this endpoint. |
-| `countly.app_users{appId}` | Per-app user profiles | Stores user-level properties and profile fields affected by this endpoint. |
-
----
-
-## Examples
-
-```text
-/o?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&method=user_details&calculate=eventsTable&uid=u_102&period=30days&event=all&iDisplayStart=0&iDisplayLength=20
-```
-
-```text
-/o?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&method=user_details&calculate=eventsTable&uid=u_102&period=30days&event=purchase&dbOverride=clickhouse&paginationMode=snapshot
-```
 
 ## Related Endpoints
 
 - [User Profiles - Sessions](sessions.md)
 - [User Profiles - Timeline Graph](graph.md)
 
-## Ⓔ Enterprise
+<details>
+<summary>Implementation details</summary>
 
-This feature is part of **Countly Enterprise**.
+**Configuration Impact**
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `users.*` | User profile feature defaults | User-details retrieval behavior in profile endpoints. | Changes to user feature settings can affect which profile-related fields/aggregations are returned. |
 
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions.
+**Database Collections**
 
----
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly_drill.drill_events` | Drill event records | Stores granular event rows queried or updated by this endpoint. |
+| `countly.app_users{appId}` | Per-app user profiles | Stores user-level properties and profile fields affected by this endpoint. |
 
-## Last Updated
-
-2026-02-16
+</details>

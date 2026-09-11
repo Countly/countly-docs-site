@@ -4,6 +4,8 @@ keywords:
   - "/o/consent/search"
   - "search"
   - "consent"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Compliance Hub - Consent Search
@@ -20,11 +22,7 @@ Searches consent event history with filtering, sorting, and pagination. Supports
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -51,6 +49,30 @@ Requires `compliance_hub` `Read` permission.
 | `sEcho` | String or Number | No | Echo value returned in DataTables-style response. |
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
+
+## Examples
+
+### Search consents with MongoDB pagination
+
+```text
+/o/consent/search?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  sSearch=device_123&
+  limit=20&
+  skip=0
+```
+
+### Search consents with ClickHouse cursor
+
+```text
+/o/consent/search?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  db_override=clickhouse&
+  limit=50&
+  paginationMode=snapshot
+```
 
 ## Response
 
@@ -149,7 +171,7 @@ ClickHouse path (`db_override=clickhouse`):
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -162,7 +184,15 @@ ClickHouse path (`db_override=clickhouse`):
 
 - Read-only endpoint.
 
-## Database Collections
+## Related Endpoints
+
+- [Compliance Hub - Consent Current](o-consent-current.md)
+- [Compliance Hub - Consent Search Old](o-consent-searchold.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -171,37 +201,4 @@ ClickHouse path (`db_override=clickhouse`):
 | `countly_drill.drill_events` | Primary consent-event history source | Reads `[CLY]_consent` event rows for MongoDB adapter. |
 | ClickHouse consent events table | Consent-event history source (ClickHouse adapter) | Reads consent events via ClickHouse query adapter when enabled. |
 
----
-
-## Examples
-
-### Search consents with MongoDB pagination
-
-```text
-/o/consent/search?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  sSearch=device_123&
-  limit=20&
-  skip=0
-```
-
-### Search consents with ClickHouse cursor
-
-```text
-/o/consent/search?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  db_override=clickhouse&
-  limit=50&
-  paginationMode=snapshot
-```
-
-## Related Endpoints
-
-- [Compliance Hub - Consent Current](o-consent-current.md)
-- [Compliance Hub - Consent Search Old](o-consent-searchold.md)
-
-## Last Updated
-
-2026-02-17
+</details>

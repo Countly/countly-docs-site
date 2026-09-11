@@ -4,11 +4,15 @@ keywords:
   - "/i/data-manager/event"
   - "event"
   - "data-manager"
+last_update:
+  date: "2026-02-16"
 ---
+
 # Create event metadata
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -22,12 +26,7 @@ Creates a new event definition in Data Manager metadata, including segment defin
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -71,6 +70,22 @@ Decoded example:
 }
 ```
 
+## Examples
+
+```text
+/i/data-manager/event?
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  event={
+    "key":"purchase",
+    "name":"Purchase",
+    "description":"Purchase event",
+    "segments":[
+      {"name":"country","type":"s"},
+      {"name":"price","type":"n"}
+    ]
+  }
+```
+
 ## Response
 
 ### Success Response
@@ -95,7 +110,7 @@ Decoded example:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Parses `event` payload and normalizes `event.key` format before storing.
 - Prevents duplicate events by checking existing drill meta record.
@@ -103,13 +118,22 @@ Decoded example:
 - Updates `countly.events` (`list`, `segments`, and `map`).
 - Sets `is_visible=false` on creation and writes `dm-event-create` system log.
 
-## Audit & System Logs
+## Related Endpoints
+
+- [Events Extended - Read](events-extended-read.md)
+- [Event Properties - Update](event-properties-update.md)
+- [Event Status - Update](event-status-update.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Audit & System Logs**
 
 | Action | Trigger | Payload |
 |---|---|---|
 | `dm-event-create` | After new event metadata is created | `{ event: JSON.stringify(event), ev: shortEventKey }` |
 
-## Database Collections
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -117,34 +141,4 @@ Decoded example:
 | `countly.events` | Event list and map metadata | Adds the event to `list`, writes `segments.{event}`, and initializes `map.{event}` with visibility/name/description fields. |
 | `countly.systemlogs` | Audit trail | Writes `dm-event-create` with created event details. |
 
----
-
-## Examples
-
-```text
-/i/data-manager/event?
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  event={
-    "key":"purchase",
-    "name":"Purchase",
-    "description":"Purchase event",
-    "segments":[
-      {"name":"country","type":"s"},
-      {"name":"price","type":"n"}
-    ]
-  }
-```
-
----
-
-## Related Endpoints
-
-- [Events Extended - Read](events-extended-read.md)
-- [Event Properties - Update](event-properties-update.md)
-- [Event Status - Update](event-status-update.md)
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

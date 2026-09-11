@@ -4,6 +4,8 @@ keywords:
   - "/i/crashes/hide"
   - "hide"
   - "crashes"
+last_update:
+  date: "2026-03-07"
 ---
 
 # Crashes - Hide Crash Groups
@@ -20,12 +22,7 @@ Marks one or more crash groups as hidden.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. `api_key=YOUR_API_KEY`
-2. `auth_token=YOUR_AUTH_TOKEN`
-3. `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -43,6 +40,12 @@ Requires `crashes` `Update` permission.
 | `args.crashes` | Array of Strings | No | List of crash group IDs. |
 
 Provide `args.crashes` or `args.crash_id`.
+
+## Examples
+
+```plaintext
+/i/crashes/hide?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&args={"crashes":["crash_group_1","crash_group_2"]}
+```
 
 ## Response
 
@@ -72,29 +75,24 @@ Provide `args.crashes` or `args.crash_id`.
 
 Standard auth/permission errors from update validation can also be returned.
 
-## Behavior/Processing
+## Behavior
 
 - Resolves crash IDs from `args.crashes` or `[args.crash_id]`.
 - Updates matching crash groups with `is_hidden=true`.
 - Emits one `crash_hidden` system log action per crash ID.
 
-## Database Collections
+## Related Endpoints
+
+- [Crashes - Show Crash Groups](./i-crashes-show.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
 | `countly.app_crashgroups{appId}` | Crash group visibility | Updates `is_hidden=true` for selected groups. |
 | `countly.systemlogs` | Audit trail | Receives `crash_hidden` action(s). |
 
-## Examples
-
-```plaintext
-/i/crashes/hide?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&args={"crashes":["crash_group_1","crash_group_2"]}
-```
-
-## Related Endpoints
-
-- [Crashes - Show Crash Groups](./i-crashes-show.md)
-
-## Last Updated
-
-2026-03-07
+</details>

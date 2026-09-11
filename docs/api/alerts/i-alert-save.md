@@ -4,6 +4,8 @@ keywords:
   - "/i/alert/save"
   - "save"
   - "alert"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Alerts - Save
@@ -20,11 +22,7 @@ Creates a new alert or updates an existing alert configuration.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -74,6 +72,36 @@ Decoded update example:
   "enabled": false,
   "compareValue": 30
 }
+```
+
+## Examples
+
+### Create alert
+
+```text
+/i/alert/save?
+  app_id=6991c75b024cb89cdc04efd2&
+  api_key=YOUR_API_KEY&
+  alert_config={
+    "alertName":"Crash Spike",
+    "alertDataType":"crashes",
+    "alertDataSubType":"critical",
+    "selectedApps":["6991c75b024cb89cdc04efd2"],
+    "enabled":true
+  }
+```
+
+### Update alert
+
+```text
+/i/alert/save?
+  app_id=6991c75b024cb89cdc04efd2&
+  api_key=YOUR_API_KEY&
+  alert_config={
+    "_id":"65f0cbf8bca6b8e8fbf7f901",
+    "enabled":false,
+    "compareValue":25
+  }
 ```
 
 ## Response
@@ -178,7 +206,7 @@ Validation-failure branch:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -193,46 +221,6 @@ Validation-failure branch:
 - Updates alert cache invalidation state so alert processor picks up create/update changes.
 - In update flow, `createdBy` is overwritten with the current member ID.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication and permission checks | Reads member account and access rights for create validation. |
-| `countly.apps` | App validation/context loading | Validates `app_id` for non-global-admin create access. |
-| `countly.alerts` | Alert rule persistence | Inserts new alert documents or updates existing alert documents. |
-
----
-
-## Examples
-
-### Create alert
-
-```text
-/i/alert/save?
-  app_id=6991c75b024cb89cdc04efd2&
-  api_key=YOUR_API_KEY&
-  alert_config={
-    "alertName":"Crash Spike",
-    "alertDataType":"crashes",
-    "alertDataSubType":"critical",
-    "selectedApps":["6991c75b024cb89cdc04efd2"],
-    "enabled":true
-  }
-```
-
-### Update alert
-
-```text
-/i/alert/save?
-  app_id=6991c75b024cb89cdc04efd2&
-  api_key=YOUR_API_KEY&
-  alert_config={
-    "_id":"65f0cbf8bca6b8e8fbf7f901",
-    "enabled":false,
-    "compareValue":25
-  }
-```
-
 ## Limitations
 
 - Update flow permission is still `Create` (not `Update`) because the handler is guarded by `create-permission validation`.
@@ -244,6 +232,15 @@ Validation-failure branch:
 - [Alerts - Update Status](i-alert-status.md)
 - [Alerts - List](o-alert-list.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication and permission checks | Reads member account and access rights for create validation. |
+| `countly.apps` | App validation/context loading | Validates `app_id` for non-global-admin create access. |
+| `countly.alerts` | Alert rule persistence | Inserts new alert documents or updates existing alert documents. |
+
+</details>

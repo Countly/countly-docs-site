@@ -5,6 +5,8 @@ keywords:
   - "toggle"
   - "push"
   - "message"
+last_update:
+  date: "2026-03-07"
 ---
 
 # Push - Message Toggle
@@ -21,12 +23,7 @@ Starts or stops a toggleable push message.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. `api_key=YOUR_API_KEY`
-2. `auth_token=YOUR_AUTH_TOKEN`
-3. `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -41,6 +38,18 @@ Requires `push` `Update` permission.
 | `app_id` | String | Yes | App ID used by permission validation. |
 | `_id` | String (ObjectID) | Yes | Message ID to toggle. |
 | `active` | Boolean String | Yes | `true` to activate, `false` to stop. |
+
+## Examples
+
+### Activate a message
+
+```plaintext
+/i/push/message/toggle?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  _id=67a3d2f5c1a23b0f4d6c0101&
+  active=true
+```
 
 ## Response
 
@@ -121,7 +130,7 @@ Requires `push` `Update` permission.
 
 Standard authentication/authorization errors from update validation can also be returned.
 
-## Behavior/Processing
+## Behavior
 
 - Validates `_id` and `active` (`BooleanString`).
 - Loads message by ID.
@@ -135,25 +144,6 @@ Standard authentication/authorization errors from update validation can also be 
 - Updates message scheduling/runtime state in `countly.messages`.
 - Adds one audit entry in `countly.systemlogs` for activation/deactivation.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.messages` | Push message storage | Reads target message and updates runtime state through message model operations. |
-| `countly.systemlogs` | Audit trail | Receives activation/deactivation actions. |
-
-## Examples
-
-### Activate a message
-
-```plaintext
-/i/push/message/toggle?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  _id=67a3d2f5c1a23b0f4d6c0101&
-  active=true
-```
-
 ## Limitations
 
 - One-time/plain messages are not toggleable.
@@ -163,6 +153,14 @@ Standard authentication/authorization errors from update validation can also be 
 - [Push - Message Update](message-update.md)
 - [Push - Message Delete](message-remove.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-03-07
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.messages` | Push message storage | Reads target message and updates runtime state through message model operations. |
+| `countly.systemlogs` | Audit trail | Receives activation/deactivation actions. |
+
+</details>

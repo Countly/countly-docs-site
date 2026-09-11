@@ -5,6 +5,8 @@ keywords:
   - "get"
   - "populator"
   - "environment"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Populator - Environment Read
@@ -21,11 +23,7 @@ Returns generated users for a specific environment in a DataTables-compatible pa
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -44,6 +42,43 @@ Requires `Read` permission for the Populator feature.
 | `iDisplayStart` | Number | No | Offset. Default is `0`. |
 | `iDisplayLength` | Number | No | Limit. `-1` means no limit. |
 | `sSearch` | String | No | Case-insensitive substring filter for `userName`. |
+
+## Examples
+
+### Read first page of users
+
+```text
+https://your-server.com/o/populator/environment/get?
+  app_id=6991c75b024cb89cdc04efd2&
+  template_id=65f0cbf8bca6b8e8fbf7f901&
+  environment_id=3c7ffdf5b8200ee192968ad89dd4e180d5386c01&
+  api_key=YOUR_API_KEY&
+  iDisplayStart=0&
+  iDisplayLength=50&
+  sEcho=1
+```
+
+### Search users by name in environment
+
+```text
+https://your-server.com/o/populator/environment/get?
+  app_id=6991c75b024cb89cdc04efd2&
+  template_id=65f0cbf8bca6b8e8fbf7f901&
+  environment_id=3c7ffdf5b8200ee192968ad89dd4e180d5386c01&
+  api_key=YOUR_API_KEY&
+  sSearch=qa_user
+```
+
+### Read full environment user list
+
+```text
+https://your-server.com/o/populator/environment/get?
+  app_id=6991c75b024cb89cdc04efd2&
+  template_id=65f0cbf8bca6b8e8fbf7f901&
+  environment_id=3c7ffdf5b8200ee192968ad89dd4e180d5386c01&
+  api_key=YOUR_API_KEY&
+  iDisplayLength=-1
+```
 
 ## Response
 
@@ -128,7 +163,7 @@ Requires `Read` permission for the Populator feature.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -137,53 +172,6 @@ Requires `Read` permission for the Populator feature.
 | Full list mode | `iDisplayLength` missing or `-1` | Counts matching users and returns all rows after optional skip. | Raw root object with `aaData` array |
 | Paginated mode | `iDisplayLength` provided and not `-1` | Counts matching users, applies `skip` + `limit`. | Raw root object with `aaData` page |
 | Search mode | `sSearch` provided | Adds case-insensitive `userName` regex filter before count/query. | Raw root object with filtered `aaData` |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.populator_environment_users` | Generated environment users | Counts and aggregates users matching `_id` prefix and optional `userName` regex. |
-| `countly.members` | Authentication and authorization | Reads member context for permission checks. |
-| `countly.apps` | App rights validation | Reads app access context from `app_id`. |
-
----
-
-## Examples
-
-### Read first page of users
-
-```text
-https://your-server.com/o/populator/environment/get?
-  app_id=6991c75b024cb89cdc04efd2&
-  template_id=65f0cbf8bca6b8e8fbf7f901&
-  environment_id=3c7ffdf5b8200ee192968ad89dd4e180d5386c01&
-  api_key=YOUR_API_KEY&
-  iDisplayStart=0&
-  iDisplayLength=50&
-  sEcho=1
-```
-
-### Search users by name in environment
-
-```text
-https://your-server.com/o/populator/environment/get?
-  app_id=6991c75b024cb89cdc04efd2&
-  template_id=65f0cbf8bca6b8e8fbf7f901&
-  environment_id=3c7ffdf5b8200ee192968ad89dd4e180d5386c01&
-  api_key=YOUR_API_KEY&
-  sSearch=qa_user
-```
-
-### Read full environment user list
-
-```text
-https://your-server.com/o/populator/environment/get?
-  app_id=6991c75b024cb89cdc04efd2&
-  template_id=65f0cbf8bca6b8e8fbf7f901&
-  environment_id=3c7ffdf5b8200ee192968ad89dd4e180d5386c01&
-  api_key=YOUR_API_KEY&
-  iDisplayLength=-1
-```
 
 ## Operational Considerations
 
@@ -196,8 +184,6 @@ https://your-server.com/o/populator/environment/get?
 - Requires all three identifiers (`app_id`, `template_id`, `environment_id`) before auth/permission checks continue.
 - `iTotalRecords` and `iTotalDisplayRecords` are the same value.
 
----
-
 ## Related Endpoints
 
 - [Populator - Environment List](o-populator-environment-list.md)
@@ -205,6 +191,15 @@ https://your-server.com/o/populator/environment/get?
 - [Populator - Environment Save](i-populator-environment-save.md)
 - [Populator - Environment Remove](o-populator-environment-remove.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.populator_environment_users` | Generated environment users | Counts and aggregates users matching `_id` prefix and optional `userName` regex. |
+| `countly.members` | Authentication and authorization | Reads member context for permission checks. |
+| `countly.apps` | App rights validation | Reads app access context from `app_id`. |
+
+</details>

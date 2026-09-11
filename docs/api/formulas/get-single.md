@@ -4,12 +4,15 @@ keywords:
   - "/o/calculated_metrics/metric"
   - "metric"
   - "calculated_metrics"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Read formula
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -23,12 +26,7 @@ Returns a single formula document. Also supports `mode=has_reports` to return re
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -46,6 +44,21 @@ Countly API supports three authentication methods:
 | `for_widgets` | Boolean/String | No | If provided, standard mode returns only `_id` and `title`. |
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
+
+## Examples
+
+```text
+/o/calculated_metrics/metric?
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  _id=67bd31c92e7f0b0012ab4567
+```
+
+```text
+/o/calculated_metrics/metric?
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  mode=has_reports&
+  metric_id=67bd31c92e7f0b0012ab4567
+```
 
 ## Response
 
@@ -92,46 +105,26 @@ Countly API supports three authentication methods:
 
 No explicit error response is returned by this handler for standard read; missing/unauthorized formula returns an empty object (`{}`).
 
-## Behavior/Processing
+## Behavior
 
 - Standard read mode applies visibility rules (`global`, owner, or shared email).
 - Standard response excludes the `expression` field.
 - `for_widgets` returns minimized fields (`_id`, `title`) in standard mode.
 - `mode=has_reports` counts related entries in `long_tasks` using `metric_id`.
 
-## Database Collections
+## Related Endpoints
+
+- [Formulas - Execute](execute.md)
+- [Formulas - List](list.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
 | `countly.calculated_metrics` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 | `countly.long_tasks` | Background task tracking | Stores long-task lifecycle records for asynchronous endpoint processing. |
 
----
-
-## Examples
-
-```text
-/o/calculated_metrics/metric?
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  _id=67bd31c92e7f0b0012ab4567
-```
-
-```text
-/o/calculated_metrics/metric?
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  mode=has_reports&
-  metric_id=67bd31c92e7f0b0012ab4567
-```
-
----
-
-## Related Endpoints
-
-- [Formulas - Execute](execute.md)
-- [Formulas - List](list.md)
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

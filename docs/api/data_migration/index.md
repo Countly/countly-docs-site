@@ -1,6 +1,8 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Data Migration - API Documentation
@@ -26,15 +28,6 @@ The Data Migration feature exports app data from one Countly environment and imp
 - [Data Migration - Validate Remote Connection](o-datamigration-validateconnection.md)
 - [Data Migration - Get Runtime Config](o-datamigration-get_config.md)
 
-## Database Collections
-
-| Collection | Purpose |
-|---|---|
-| `countly.data_migrations` | Tracks export/import jobs, progress, remote handoff details, and status history fields. |
-| `countly.auth_tokens` | Stores scoped import tokens created for migration import endpoint access. |
-| `countly.systemlogs` | Stores migration lifecycle audit actions (for example export/import success/failure and callback reporting). |
-| `countly.*` and `countly_drill.*` | Source/target app data collections read during export and written during import. |
-
 ## Configuration & Settings
 
 | Setting | Default | Effect |
@@ -50,6 +43,16 @@ The Data Migration feature exports app data from one Countly environment and imp
 4. Start import (`i/datamigration/import`) and track status (`o/datamigration/getstatus`).
 5. Clean up local artifacts when done (`i/datamigration/delete_export`, `i/datamigration/delete_import`, `i/datamigration/delete_all`).
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Purpose |
+|---|---|
+| `countly.data_migrations` | Tracks export/import jobs, progress, remote handoff details, and status history fields. |
+| `countly.auth_tokens` | Stores scoped import tokens created for migration import endpoint access. |
+| `countly.systemlogs` | Stores migration lifecycle audit actions (for example export/import success/failure and callback reporting). |
+| `countly.*` and `countly_drill.*` | Source/target app data collections read during export and written during import. |
+
+</details>

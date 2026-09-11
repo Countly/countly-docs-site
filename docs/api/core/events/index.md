@@ -1,6 +1,8 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Events Management
@@ -8,16 +10,6 @@ sidebar_label: "Overview"
 ## Overview
 
 Events management endpoints control event metadata and lifecycle: visibility, mapping, segment whitelisting, and permanent event deletion.
-
-## Database Collections
-
-| Collection | Purpose |
-|---|---|
-| `countly.members` | Provides member identity and app-level permissions used by events write/read validators. |
-| `countly.events` | Stores app-level event metadata (`list`, `order`, `map`, `overview`, `segments`, `omitted_segments`, `whitelisted_segments`). |
-| `countly.events_data` | Stores aggregated event and segment metric documents touched by event configuration cleanup. |
-| `countly.events{sha1(eventKey+appId)}` | Per-event aggregate collection dropped during event deletion. |
-| `countly_drill.drill_meta` | Stores drill event and segment metadata used/updated by edit-map operations. |
 
 ## Configuration & Settings
 
@@ -40,6 +32,17 @@ Events management endpoints control event metadata and lifecycle: visibility, ma
 - Visibility and mapping changes update metadata only; they do not automatically delete all historical event data.
 - Event deletion is destructive and can remove event datasets and related integrations.
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Purpose |
+|---|---|
+| `countly.members` | Provides member identity and app-level permissions used by events write/read validators. |
+| `countly.events` | Stores app-level event metadata (`list`, `order`, `map`, `overview`, `segments`, `omitted_segments`, `whitelisted_segments`). |
+| `countly.events_data` | Stores aggregated event and segment metric documents touched by event configuration cleanup. |
+| `countly.events{sha1(eventKey+appId)}` | Per-event aggregate collection dropped during event deletion. |
+| `countly_drill.drill_meta` | Stores drill event and segment metadata used/updated by edit-map operations. |
+
+</details>

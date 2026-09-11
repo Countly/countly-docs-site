@@ -4,12 +4,15 @@ sidebar_label: "Overview"
 keywords:
   - "/o/active_users"
   - "active_users"
+last_update:
+  date: "2026-02-15"
 ---
 
 # Active Users
 
-> Ⓔ **Enterprise Only**  
-> This feature is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This feature is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Overview
 
@@ -222,7 +225,7 @@ Cache entries are recalculated when:
 2. **Avoid Aggressive Polling**: Calculations are asynchronous; refresh on reasonable intervals
 3. **Check "calculating" Flag**: If `true`, display "data updating" notification to users
 4. **Handle Timezone**: Ensure app's timezone setting is configured correctly
-5. **Cache Results Client-Side**: Don't call endpoint multiple times per minute
+5. **Cache Results Client-Side**: Do not call endpoint multiple times per minute
 
 ### Data Integrity
 
@@ -300,7 +303,7 @@ Cache entries are recalculated when:
 
 ### Timezone-Related Discrepancies
 
-**Problem**: DAU counts don't match expected values; suspect timezone issue
+**Problem**: DAU counts do not match expected values; suspect timezone issue
 
 **Solutions**:
 - Verify app's configured timezone in app settings
@@ -385,17 +388,3 @@ async function getActiveUsers(appId) {
   console.table(dau);
 }
 ```
----
-
-## Ⓔ Enterprise
-
-This feature is part of **Countly Enterprise**.
-
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
-**Last Updated**: 2026-02-15

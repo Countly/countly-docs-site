@@ -7,9 +7,15 @@ keywords:
   - "journey-engine"
   - "stats"
   - "active-users"
+last_update:
+  date: "2026-04-18"
 ---
 
 # Journey Engine - Stats Active Users Detail
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -17,19 +23,14 @@ keywords:
 /o/journey-engine/stats/active-users/detail
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Return active user counts grouped by interval (daily, weekly, monthly).
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required permission**: `Read` on the `journey_engine` feature
@@ -41,6 +42,12 @@ Return active user counts grouped by interval (daily, weekly, monthly).
 - `period` (optional): Time period filter
 - `interval` (optional): `daily`, `weekly`, or `monthly` (default: daily)
 
+## Examples
+
+```
+GET /o/journey-engine/stats/active-users/detail?journeyDefinitionId=67164f4a1f1bd90d6354430a&period=30days&interval=daily
+```
+
 ## Response
 
 ### Success Response
@@ -51,7 +58,6 @@ Return active user counts grouped by interval (daily, weekly, monthly).
   {"_id": {"year": 2024, "month": 1, "day": 2}, "activeUsers": 30}
 ]
 ```
-
 
 ### Response Fields
 
@@ -68,42 +74,24 @@ Return active user counts grouped by interval (daily, weekly, monthly).
 
 - **500**: Query error
 
-## Examples
-
-```
-GET /o/journey-engine/stats/active-users/detail?journeyDefinitionId=67164f4a1f1bd90d6354430a&period=30days&interval=daily
-```
-
-## Behavior/Processing
+## Behavior
 
 - Uses Countly period helpers to build the current period date array.
 - Filters by `journeyVersionId` and/or `journeyDefinitionId` when provided.
 - Groups by `daily`, `weekly`, or `monthly`; any other interval falls back to an empty group key.
 - Sorts by year, month, week, and day.
 
-## Database Collections
+## Related Endpoints
+
+- No related endpoints
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
 | `countly.journey_stats` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 
-## Related Endpoints
-
-- No related endpoints
-
-## Ⓔ Enterprise
-
-This feature is part of **Countly Enterprise**.
-
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-04-18
+</details>

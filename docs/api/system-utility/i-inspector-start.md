@@ -4,6 +4,8 @@ keywords:
   - "/i/inspector/start"
   - "start"
   - "inspector"
+last_update:
+  date: "2026-03-07"
 ---
 
 # System Utility - Start Inspector
@@ -20,12 +22,7 @@ Starts Node inspector mode (master process) with auto-stop timeout.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. `api_key=YOUR_API_KEY`
-2. `auth_token=YOUR_AUTH_TOKEN`
-3. `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -38,11 +35,11 @@ Requires Global Admin access.
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `api.masterInspectorPort` | `9229` | Inspector connection info | Returned `ports` array uses this configured port value. |
+```plaintext
+/i/inspector/start?api_key=YOUR_API_KEY
+```
 
 ## Response
 
@@ -71,21 +68,22 @@ Requires Global Admin access.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Starts inspector and sets a 2-hour auto-stop timer.
 - If already running, returns `500` with error text.
 
-## Database Collections
+<details>
+<summary>Implementation details</summary>
+
+**Configuration Impact**
+
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `api.masterInspectorPort` | `9229` | Inspector connection info | Returned `ports` array uses this configured port value. |
+
+**Database Collections**
 
 This endpoint does not read or write database collections.
 
-## Examples
-
-```plaintext
-/i/inspector/start?api_key=YOUR_API_KEY
-```
-
-## Last Updated
-
-2026-03-07
+</details>

@@ -5,6 +5,8 @@ keywords:
   - "edit"
   - "populator"
   - "templates"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Populator - Template Edit
@@ -21,11 +23,7 @@ Updates an existing populator template. This endpoint replaces the template docu
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -65,6 +63,35 @@ Requires `Update` permission for the Populator feature.
 | `views` | Array | No | Screen/view generation definitions. |
 | `sequences` | Array | No | Sequence definitions used for behavior flows. |
 | `behavior` | Object | No | Additional behavior controls. |
+
+## Examples
+
+### Rename and adjust template volume
+
+```text
+https://your-server.com/i/populator/templates/edit?
+  app_id=6991c75b024cb89cdc04efd2&
+  api_key=YOUR_API_KEY&
+  template_id=65f0cbf8bca6b8e8fbf7f901&
+  _id=65f0cbf8bca6b8e8fbf7f901&
+  name=Subscription Demo v2&
+  uniqueUserCount=1500&
+  platformType=["iOS","Android"]
+```
+
+### Update template for web expansion
+
+```text
+https://your-server.com/i/populator/templates/edit?
+  app_id=6991c75b024cb89cdc04efd2&
+  api_key=YOUR_API_KEY&
+  template_id=65f0cbf8bca6b8e8fbf7f901&
+  _id=65f0cbf8bca6b8e8fbf7f901&
+  name=Subscription Demo v2&
+  uniqueUserCount=1800&
+  platformType=["iOS","Android","Web"]&
+  isDefault=true
+```
 
 ## Response
 
@@ -140,7 +167,7 @@ Requires `Update` permission for the Populator feature.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -156,57 +183,10 @@ Requires `Update` permission for the Populator feature.
 - Updates `lastEditedBy` with current member name.
 - Optionally overrides `generatedOn` from `generated_on`.
 
-## Audit & System Logs
-
-| Action | Trigger | Payload |
-|---|---|---|
-| `populator_template_edited` | Template replace succeeds | `{ before, update }` objects for audit comparison. |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.populator_templates` | Template storage | Reads by `name` for uniqueness and replaces target template document. |
-| `countly.members` | Authentication and authorization | Reads member context and editor name. |
-| `countly.apps` | App rights validation | Reads app access context from `app_id`. |
-
----
-
-## Examples
-
-### Rename and adjust template volume
-
-```text
-https://your-server.com/i/populator/templates/edit?
-  app_id=6991c75b024cb89cdc04efd2&
-  api_key=YOUR_API_KEY&
-  template_id=65f0cbf8bca6b8e8fbf7f901&
-  _id=65f0cbf8bca6b8e8fbf7f901&
-  name=Subscription Demo v2&
-  uniqueUserCount=1500&
-  platformType=["iOS","Android"]
-```
-
-### Update template for web expansion
-
-```text
-https://your-server.com/i/populator/templates/edit?
-  app_id=6991c75b024cb89cdc04efd2&
-  api_key=YOUR_API_KEY&
-  template_id=65f0cbf8bca6b8e8fbf7f901&
-  _id=65f0cbf8bca6b8e8fbf7f901&
-  name=Subscription Demo v2&
-  uniqueUserCount=1800&
-  platformType=["iOS","Android","Web"]&
-  isDefault=true
-```
-
 ## Limitations
 
 - This endpoint uses full-document replacement; fields omitted from the submitted payload are not preserved automatically.
 - Duplicate-name check compares submitted `_id` with matched documents; `_id` should match `template_id` for same-template renames.
-
----
 
 ## Related Endpoints
 
@@ -214,6 +194,21 @@ https://your-server.com/i/populator/templates/edit?
 - [Populator - Template Read](o-populator-templates.md)
 - [Populator - Template Remove](i-populator-templates-remove.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Audit & System Logs**
+
+| Action | Trigger | Payload |
+|---|---|---|
+| `populator_template_edited` | Template replace succeeds | `{ before, update }` objects for audit comparison. |
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.populator_templates` | Template storage | Reads by `name` for uniqueness and replaces target template document. |
+| `countly.members` | Authentication and authorization | Reads member context and editor name. |
+| `countly.apps` | App rights validation | Reads app access context from `app_id`. |
+
+</details>

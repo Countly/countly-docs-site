@@ -4,6 +4,8 @@ keywords:
   - "/i/sdk-config/update-parameter"
   - "update-parameter"
   - "sdk-config"
+last_update:
+  date: "2026-03-05"
 ---
 
 # SDK - Config Parameter Update
@@ -20,12 +22,7 @@ Updates SDK config document for an app using `parameter` payload.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. `api_key=YOUR_API_KEY`
-2. `auth_token=YOUR_AUTH_TOKEN`
-3. `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -39,6 +36,14 @@ Requires `sdk` `Update` permission.
 | `auth_token` | String | No | Auth token as query parameter or `countly-token` header. |
 | `app_id` | String | Yes | App id. |
 | `parameter` | String (JSON Object) or Object | Yes | Full SDK config object to save under `config`. |
+
+## Examples
+
+### Update SDK config via parameter payload
+
+```plaintext
+/i/sdk-config/update-parameter?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&parameter={"tracking":true,"crt":true,"eqs":100}
+```
 
 ## Response
 
@@ -74,32 +79,23 @@ Requires `sdk` `Update` permission.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Parses `parameter` if provided as JSON string.
 - Saves payload as full `config` object for app.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly_out.sdk_configs` | SDK config storage | Upserts app config as `{ _id: app_id, config: parameter }`. |
-
----
-
-## Examples
-
-### Update SDK config via parameter payload
-
-```plaintext
-/i/sdk-config/update-parameter?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&parameter={"tracking":true,"crt":true,"eqs":100}
-```
 
 ## Related Endpoints
 
 - [SDK - Config Upload](o-config-upload.md)
 - [SDK - Config Read](o-sdk-config-read.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-03-05
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly_out.sdk_configs` | SDK config storage | Upserts app config as `{ _id: app_id, config: parameter }`. |
+
+</details>

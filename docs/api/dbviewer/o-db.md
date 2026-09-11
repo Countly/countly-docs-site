@@ -3,6 +3,8 @@ sidebar_label: "Databases List"
 keywords:
   - "/o/db"
   - "db"
+last_update:
+  date: "2026-03-07"
 ---
 
 # DB Viewer - Databases List
@@ -22,12 +24,7 @@ Returns the list of databases and collections/tables available to the current us
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. `api_key=YOUR_API_KEY`
-2. `auth_token=YOUR_AUTH_TOKEN`
-3. `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -40,6 +37,20 @@ Requires DB Viewer access (`dbviewer` read right for app-scoped users).
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
 | `app_id` | String | No | Restricts output to collections/tables accessible for that app (when user has access). |
+
+## Examples
+
+### List accessible databases
+
+```plaintext
+/o/db?api_key=YOUR_API_KEY
+```
+
+### List databases scoped to one app
+
+```plaintext
+/o/db?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2
+```
 
 ## Response
 
@@ -100,33 +111,13 @@ Requires DB Viewer access (`dbviewer` read right for app-scoped users).
 
 Standard authentication and authorization errors from user validation can also be returned.
 
-## Behavior/Processing
+## Behavior
 
 - When `db`/`dbs`, `collection`, `document`, `aggregation`, and `action=get_indexes` are all omitted, this endpoint runs in database-list mode.
 - MongoDB collections `system.indexes` and `sessions_*` are excluded.
 - Collection/table entries are filtered by user access (`dbviewer` rights and app scoping).
 - ClickHouse databases/tables are included only if ClickHouse plugin is enabled.
 - Collection names are transformed into UI-friendly labels in the `collections` object keys.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.apps` | App lookup for name mapping and app filtering | Reads app IDs and names used to generate readable collection labels and app-scoped filtering. |
-
-## Examples
-
-### List accessible databases
-
-```plaintext
-/o/db?api_key=YOUR_API_KEY
-```
-
-### List databases scoped to one app
-
-```plaintext
-/o/db?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2
-```
 
 ## Related Endpoints
 
@@ -135,6 +126,13 @@ Standard authentication and authorization errors from user validation can also b
 - [DB Viewer - Indexes Read](o-db-indexes.md)
 - [DB Viewer - Aggregation Query](o-db-aggregation.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-03-07
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.apps` | App lookup for name mapping and app filtering | Reads app IDs and names used to generate readable collection labels and app-scoped filtering. |
+
+</details>

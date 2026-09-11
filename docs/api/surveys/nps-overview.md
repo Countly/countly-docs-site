@@ -5,9 +5,15 @@ keywords:
   - "overview"
   - "surveys"
   - "nps"
+last_update:
+  date: "2026-04-18"
 ---
 
 # Surveys - NPS Overview Metrics
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -15,19 +21,13 @@ keywords:
 /o/surveys/nps/overview
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Returns summary metrics for one NPS widget (`widget_id`) or aggregated metrics for all NPS widgets.
 
 ## Authentication
 
-**Authentication methods**:
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -43,6 +43,12 @@ Returns summary metrics for one NPS widget (`widget_id`) or aggregated metrics f
 | `widget_id` | String | No | Widget-specific overview |
 | `status` | Boolean/String | No | Status filter for aggregated overview |
 | `calculate_totals` | Boolean/String | No | Includes `totals-calculated` for widget mode |
+
+## Examples
+
+```text
+/o/surveys/nps/overview?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&widget_id=67b9db56f67aab0012cd8899
+```
 
 ## Response
 
@@ -82,7 +88,7 @@ Returns summary metrics for one NPS widget (`widget_id`) or aggregated metrics f
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - With `widget_id`, loads one widget, joins creator details from `members`, and returns the widget document.
 - With `calculate_totals`, additionally calculates period totals for `shown` and `responded` from the NPS aggregate model and stores them in `totals-calculated`.
@@ -90,39 +96,19 @@ Returns summary metrics for one NPS widget (`widget_id`) or aggregated metrics f
 - For NPS widgets with responses, converts promoter/detractor/passive counts to percentages and calculates `nps` as promoter percentage minus detractor percentage.
 - Aggregated overview returns widget status totals plus summed `responded`, `shown`, and NPS score fields.
 
-## Database Collections
+## Related Endpoints
+
+- [Surveys - NPS Widgets](nps-widgets.md)
+- [Surveys - NPS Data](nps-data.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
 | `countly.feedback_widgets` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 | `countly.members` | Member/account enrichment | Stores member profile fields (for example names/IDs) used to resolve actor metadata. |
 
----
-
-## Examples
-
-```text
-/o/surveys/nps/overview?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&widget_id=67b9db56f67aab0012cd8899
-```
-
-## Related Endpoints
-
-- [Surveys - NPS Widgets](nps-widgets.md)
-- [Surveys - NPS Data](nps-data.md)
-
-## Ⓔ Enterprise
-
-This feature is part of **Countly Enterprise**.
-
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions.
-
----
-
-## Last Updated
-
-2026-04-18
+</details>

@@ -3,6 +3,8 @@ sidebar_label: "Feature State Update"
 keywords:
   - "/i/plugins"
   - "plugins"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /i/plugins
@@ -19,11 +21,7 @@ Updates feature enablement state by applying a JSON object passed in the `plugin
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. **API Key** (parameter): `api_key=YOUR_API_KEY`
-2. **Auth Token** (parameter): `auth_token=YOUR_AUTH_TOKEN`
-3. **Auth Token** (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -50,6 +48,20 @@ Example `plugin` payload:
   "drill": true,
   "cohorts": false
 }
+```
+
+## Examples
+
+### Enable two features
+
+```plaintext
+/i/plugins?api_key=YOUR_API_KEY&plugin={"drill":true,"cohorts":true}
+```
+
+### Disable a feature
+
+```plaintext
+/i/plugins?api_key=YOUR_API_KEY&plugin={"crashes":false}
 ```
 
 ## Response
@@ -133,7 +145,7 @@ Parameter-rejected branch:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -146,33 +158,6 @@ Parameter-rejected branch:
 
 - Updates feature flags under `_id: "plugins"` in `countly.plugins`.
 - Reloads in-memory plugin config state used by API processes.
-
-## Audit & System Logs
-
-| Action | Trigger | Payload |
-|---|---|---|
-| `change_plugins` | Valid `plugin` object is persisted | `{ before: feature map before change, update: submitted feature map }` |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Global-admin validation | Reads authenticated user and global-admin status. |
-| `countly.plugins` | Stores feature enablement/configuration state | Updates `plugins.{feature_code}` keys under `_id: "plugins"`. |
-
-## Examples
-
-### Enable two features
-
-```plaintext
-/i/plugins?api_key=YOUR_API_KEY&plugin={"drill":true,"cohorts":true}
-```
-
-### Disable a feature
-
-```plaintext
-/i/plugins?api_key=YOUR_API_KEY&plugin={"crashes":false}
-```
 
 ## Operational Considerations
 
@@ -191,6 +176,20 @@ Parameter-rejected branch:
 - [Features - Feature List](o-plugins.md)
 - [Features - Global Config Read](o-configs.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Audit & System Logs**
+
+| Action | Trigger | Payload |
+|---|---|---|
+| `change_plugins` | Valid `plugin` object is persisted | `{ before: feature map before change, update: submitted feature map }` |
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Global-admin validation | Reads authenticated user and global-admin status. |
+| `countly.plugins` | Stores feature enablement/configuration state | Updates `plugins.{feature_code}` keys under `_id: "plugins"`. |
+
+</details>

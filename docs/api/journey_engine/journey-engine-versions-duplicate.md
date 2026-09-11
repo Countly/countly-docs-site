@@ -6,9 +6,15 @@ keywords:
   - "duplicate"
   - "journey-engine"
   - "versions"
+last_update:
+  date: "2026-04-18"
 ---
 
 # Journey Engine - Versions Duplicate
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -16,19 +22,14 @@ keywords:
 /i/journey-engine/versions/duplicate
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Create a new draft version by duplicating an existing version.
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required permission**: `Create` on the `journey_engine` feature
@@ -38,6 +39,17 @@ Create a new draft version by duplicating an existing version.
 Request body JSON:
 
 - `id` (required): Version ID to duplicate
+
+## Examples
+
+```json
+POST /i/journey-engine/versions/duplicate
+Content-Type: application/json
+
+{
+  "id": "67164f4a1f1bd90d6354430b"
+}
+```
 
 ## Response
 
@@ -59,7 +71,6 @@ Request body JSON:
   ]
 }
 ```
-
 
 ### Response Fields
 
@@ -87,18 +98,7 @@ Request body JSON:
 }
 ```
 
-## Examples
-
-```json
-POST /i/journey-engine/versions/duplicate
-Content-Type: application/json
-
-{
-  "id": "67164f4a1f1bd90d6354430b"
-}
-```
-
-## Behavior/Processing
+## Behavior
 
 - Loads the source version by `id`.
 - Returns `Version not found` when the source version does not exist.
@@ -107,29 +107,17 @@ Content-Type: application/json
 - New version name is `<source name> copy`.
 - Copies the source `blocks`, uses the same `appId`, and sets status to `draft`.
 
-## Database Collections
+## Related Endpoints
+
+- No related endpoints
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
 | `countly.journey_versions` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 
-## Related Endpoints
-
-- No related endpoints
-
-## Ⓔ Enterprise
-
-This feature is part of **Countly Enterprise**.
-
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-04-18
+</details>

@@ -4,6 +4,8 @@ keywords:
   - "/o/server-stats/data-points"
   - "data-points"
   - "server-stats"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /o/server-stats/data-points
@@ -20,11 +22,7 @@ Returns aggregated server data-point metrics (sessions/events and derived totals
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. **API Key** (parameter): `api_key=YOUR_API_KEY`
-2. **Auth Token** (parameter): `auth_token=YOUR_AUTH_TOKEN`
-3. **Auth Token** (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -39,6 +37,20 @@ Authenticated dashboard user credentials are required (`api_key` or `auth_token`
 | `auth_token` | String | No | Auth token as query parameter or `countly-token` header. |
 | `period` | String | No | Period expression supported by Countly period parser (default: `30days`). |
 | `selected_app` | String | No | Restrict output to one app ID. |
+
+## Examples
+
+### Read datapoints for default period
+
+```plaintext
+/o/server-stats/data-points?api_key=YOUR_API_KEY
+```
+
+### Read datapoints for one app and custom period
+
+```plaintext
+/o/server-stats/data-points?api_key=YOUR_API_KEY&selected_app=YOUR_APP_ID&period=60days
+```
 
 ## Response
 
@@ -128,7 +140,7 @@ Authenticated dashboard user credentials are required (`api_key` or `auth_token`
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -142,29 +154,6 @@ Authenticated dashboard user credentials are required (`api_key` or `auth_token`
 
 - This endpoint is read-only and does not mutate persisted metrics.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication validation | Reads member account and lock status during `authenticated-user validation` authentication. |
-| `countly.server_stats_data_points` | Stores monthly and hourly datapoint metrics per app | Reads period-matching metric documents and aggregates counters for output. |
-
----
-
-## Examples
-
-### Read datapoints for default period
-
-```plaintext
-/o/server-stats/data-points?api_key=YOUR_API_KEY
-```
-
-### Read datapoints for one app and custom period
-
-```plaintext
-/o/server-stats/data-points?api_key=YOUR_API_KEY&selected_app=YOUR_APP_ID&period=60days
-```
-
 ## Limitations
 
 - Metric output depends on pre-aggregated `server_stats_data_points` documents.
@@ -175,6 +164,14 @@ Authenticated dashboard user credentials are required (`api_key` or `auth_token`
 - [Server Stats - Punch Card Read](o-server-stats-punch-card.md)
 - [Server Stats - Top Read](o-server-stats-top.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication validation | Reads member account and lock status during `authenticated-user validation` authentication. |
+| `countly.server_stats_data_points` | Stores monthly and hourly datapoint metrics per app | Reads period-matching metric documents and aggregates counters for output. |
+
+</details>

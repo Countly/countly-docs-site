@@ -3,6 +3,8 @@ sidebar_label: "Internal Events Read"
 keywords:
   - "/o/internal-events"
   - "internal-events"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /o/internal-events
@@ -19,11 +21,7 @@ Returns the deduplicated list of internal Countly event keys available in the ru
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. **API Key** (parameter): `api_key=YOUR_API_KEY`
-2. **Auth Token** (parameter): `auth_token=YOUR_AUTH_TOKEN`
-3. **Auth Token** (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -36,6 +34,14 @@ Countly API supports three authentication methods:
 | `api_key` | String | Yes (or use `auth_token`) | API key for authentication. |
 | `auth_token` | String | No | Auth token as query parameter or `countly-token` header. |
 | `app_id` | String | Conditionally required | Required for non-global users under read-permission validation. |
+
+## Examples
+
+### Read internal event keys
+
+```plaintext
+/o/internal-events?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID
+```
 
 ## Response
 
@@ -122,26 +128,11 @@ Countly API supports three authentication methods:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Reads internal events from core and drill internal event registries.
 - Merges both sets and removes duplicates.
 - Returns the resulting array as raw output.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Read-permission validation | Reads authenticated user and feature access rights. |
-| `countly.apps` | App validation for non-global-admin users | Reads app context for `app_id` validation. |
-
-## Examples
-
-### Read internal event keys
-
-```plaintext
-/o/internal-events?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID
-```
 
 ## Limitations
 
@@ -152,6 +143,14 @@ Countly API supports three authentication methods:
 
 - [Features - Feature List](o-plugins.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Read-permission validation | Reads authenticated user and feature access rights. |
+| `countly.apps` | App validation for non-global-admin users | Reads app context for `app_id` validation. |
+
+</details>

@@ -4,6 +4,8 @@ keywords:
   - "/i/date_presets/delete"
   - "delete"
   - "date_presets"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /i/date_presets/delete
@@ -20,9 +22,7 @@ Delete a date preset and compact `sort_order` for presets that were below it.
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -37,6 +37,14 @@ Delete a date preset and compact `sort_order` for presets that were below it.
 | `auth_token` | String | Yes (or use `api_key`) | Dashboard auth token. |
 | `app_id` | String | Yes | App ID used by write-access validation. |
 | `preset_id` | String | Yes | Preset ID (24-char hex). |
+
+## Examples
+
+### Example 1: Delete one preset
+
+```plaintext
+/i/date_presets/delete?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&preset_id=6992de8e6fbee4231c404429
+```
 
 ## Response
 
@@ -93,7 +101,7 @@ Delete a date preset and compact `sort_order` for presets that were below it.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -106,34 +114,24 @@ Delete a date preset and compact `sort_order` for presets that were below it.
 
 - Deletion updates the ordering of remaining presets by decrementing `sort_order` for entries below the deleted item.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.date_presets` | Preset lookup, deletion, and ordering compaction | Reads target preset by `_id`, deletes it, then updates other preset documents' `sort_order`. |
-| `countly.members` | Authentication and caller identity resolution | Resolves `member._id` / `global_admin` context used for authorization checks. |
-
----
-## Examples
-
-### Example 1: Delete one preset
-
-```plaintext
-/i/date_presets/delete?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&preset_id=6992de8e6fbee4231c404429
-```
-
 ## Limitations
 
 - `app_id` is required for write-access validation, but deletion is keyed by `preset_id`.
 - The `sort_order` compaction update is not filtered by app, so it affects all presets with greater `sort_order`.
-
----
 
 ## Related Endpoints
 
 - [Date Presets - Preset Update](i-date-presets-update.md)
 - [Date Presets - Preset Read All](o-date-presets-getall.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.date_presets` | Preset lookup, deletion, and ordering compaction | Reads target preset by `_id`, deletes it, then updates other preset documents' `sort_order`. |
+| `countly.members` | Authentication and caller identity resolution | Resolves `member._id` / `global_admin` context used for authorization checks. |
+
+</details>

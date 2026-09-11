@@ -4,9 +4,15 @@ keywords:
   - "/i/push/approve"
   - "approve"
   - "push"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Push Approver - Approve or Reject Message
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -14,19 +20,13 @@ keywords:
 /i/push/approve
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Approves or rejects a push message that is waiting for approver action.
 
 ## Authentication
 
-**Authentication methods**:
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -41,6 +41,16 @@ Approves or rejects a push message that is waiting for approver action.
 | `auth_token` | String | Yes (or `api_key`) | Auth token authentication |
 | `_id` | String (ObjectID) | Yes | Push message ID |
 | `approve` | Boolean String | Yes | `true` to approve, `false` to reject |
+
+## Examples
+
+```text
+/i/push/approve?api_key=YOUR_API_KEY&_id=67b9c2e2f67aab0012cd3456&approve=true
+```
+
+```text
+/i/push/approve?api_key=YOUR_API_KEY&_id=67b9c2e2f67aab0012cd3456&approve=false
+```
 
 ## Response
 
@@ -98,49 +108,25 @@ Approves or rejects a push message that is waiting for approver action.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Validates `_id` and `approve` with `common.validateArgs(...)`.
 - Rejects self-approval/rejection attempts by message creator.
 - On approve: updates message status to `active`, writes approver metadata, then schedules eligible message sending.
 - On reject: updates message status to `rejected`, writes rejector metadata, and notifies creator by email.
 
-## Database Collections
+## Related Endpoints
+
+- [Push Approver - Approval Flow](push-approver-approval-flow.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
 | `countly.messages` | Push/message records | Stores message lifecycle and approval/scheduling state used by this endpoint. |
 | `countly.members` | Member/account enrichment | Stores member profile fields (for example names/IDs) used to resolve actor metadata. |
 
----
-
-## Examples
-
-```text
-/i/push/approve?api_key=YOUR_API_KEY&_id=67b9c2e2f67aab0012cd3456&approve=true
-```
-
-```text
-/i/push/approve?api_key=YOUR_API_KEY&_id=67b9c2e2f67aab0012cd3456&approve=false
-```
-
-## Related Endpoints
-
-- [Push Approver - Approval Flow](push-approver-approval-flow.md)
-
-## Ⓔ Enterprise
-
-This feature is part of **Countly Enterprise**.
-
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions.
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

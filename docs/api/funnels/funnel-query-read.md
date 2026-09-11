@@ -3,9 +3,15 @@ sidebar_label: "Analyze"
 keywords:
   - "/o"
   - "o"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Analyze funnel
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -13,21 +19,13 @@ keywords:
 /o?method=funnel
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Calculates funnel progression data for a funnel definition and selected period/filter.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -53,11 +51,32 @@ Requires `funnels` `Read` permission.
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `funnels.funnel_caching` | `true` | Cache read/write behavior for funnel results. | Repeated requests can return cached results faster (until cache expires/invalidates). |
+```text
+/o?
+  method=funnel&
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  funnel=67f1c22912df5acb8f8d5caaf0f89a31&
+  period=30days
+```
+
+```text
+/o?
+  method=funnel&
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  funnel=67f1c22912df5acb8f8d5caaf0f89a31&
+  period=30days&
+  filter={"cc":"US","d.ios":true}
+```
+
+```text
+/o?
+  method=funnel&
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  funnel=67f1c22912df5acb8f8d5caaf0f89a31&
+  users_between_steps=0|1
+```
 
 ## Response
 
@@ -153,7 +172,7 @@ Requires `funnels` `Read` permission.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - If `task_id` is provided, endpoint returns parsed stored task output.
 - For active drill-enabled deployments, processing uses task manager and may return `task_id`.
@@ -161,7 +180,23 @@ Requires `funnels` `Read` permission.
 - In normal mode, per-user raw `step.data` objects are removed before response.
 - If drill storage is unavailable, returns zeroed step structure based on funnel definition.
 
-## Database Collections
+## Related Endpoints
+
+- [Funnels - Read](funnel-single-read.md)
+- [Funnels - Read Data](funnel-data-read.md)
+- [Funnels - Read User](user-funnels-read.md)
+- [Funnels - List](read.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Configuration Impact**
+
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `funnels.funnel_caching` | `true` | Cache read/write behavior for funnel results. | Repeated requests can return cached results faster (until cache expires/invalidates). |
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -172,46 +207,4 @@ Requires `funnels` `Read` permission.
 | `countly.app_users{appId}` | Per-app user profiles | Stores user-level properties and profile fields affected by this endpoint. |
 | `countly_fs.funnels_cache` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 
----
-
-## Examples
-
-```text
-/o?
-  method=funnel&
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  funnel=67f1c22912df5acb8f8d5caaf0f89a31&
-  period=30days
-```
-
-```text
-/o?
-  method=funnel&
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  funnel=67f1c22912df5acb8f8d5caaf0f89a31&
-  period=30days&
-  filter={"cc":"US","d.ios":true}
-```
-
-```text
-/o?
-  method=funnel&
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  funnel=67f1c22912df5acb8f8d5caaf0f89a31&
-  users_between_steps=0|1
-```
-
----
-
-## Related Endpoints
-
-- [Funnels - Read](funnel-single-read.md)
-- [Funnels - Read Data](funnel-data-read.md)
-- [Funnels - Read User](user-funnels-read.md)
-- [Funnels - List](read.md)
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

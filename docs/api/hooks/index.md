@@ -1,6 +1,8 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Hooks - API Documentation
@@ -23,14 +25,6 @@ The Hooks feature lets you automate actions when Countly events or schedules mat
 - Effect execution for actions such as HTTP requests, email sending, or custom code.
 - Rule-level enable/disable control and test execution before production use.
 
-## Database Collections
-
-| Collection | Purpose |
-|---|---|
-| `countly.hooks` | Stores hook rules, trigger/effect configurations, enabled state, metadata, and recent error logs. |
-| `countly.members` | Stores dashboard user profiles used for access checks and creator display names. |
-| `countly.apps` | Stores app definitions used during permission and app-context validation. |
-
 ## Configuration & Settings
 
 Hooks behavior is affected by `hooks` configuration values:
@@ -41,6 +35,15 @@ Hooks behavior is affected by `hooks` configuration values:
 - `requestLimit`: Per-hook execution cap per time window (`0` disables throttling).
 - `timeWindowForRequestLimit`: Time window (milliseconds) used with `requestLimit`.
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Purpose |
+|---|---|
+| `countly.hooks` | Stores hook rules, trigger/effect configurations, enabled state, metadata, and recent error logs. |
+| `countly.members` | Stores dashboard user profiles used for access checks and creator display names. |
+| `countly.apps` | Stores app definitions used during permission and app-context validation. |
+
+</details>

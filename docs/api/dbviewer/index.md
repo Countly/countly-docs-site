@@ -1,19 +1,13 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Dbviewer
 
 The **DB Viewer** feature provides direct database access for advanced users to query and inspect database collections and documents.
-
-
-## Database Collections
-
-| Collection | Purpose |
-|---|---|
-| `*` | DBViewer provides read access to all collections in the database |
-
 
 ## Configuration & Settings
 
@@ -27,6 +21,13 @@ DBViewer configuration managed through user permissions. No feature-specific set
 - [O Db Indexes](./o-db-indexes.md)
 - [O Db](./o-db.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Purpose |
+|---|---|
+| `*` | DBViewer provides read access to all collections in the database |
+
+</details>

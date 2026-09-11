@@ -1,6 +1,8 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Views - API Documentation
@@ -17,7 +19,16 @@ The Views feature tracks page/screen views, supports segmented view analytics, p
 - [Views - Omit Segments](i-views-omit-segments.md)
 - [Views - Delete](i-views-delete.md)
 
-## Database Collections
+## Configuration & Settings
+
+| Setting | Default | Purpose |
+|---|---|---|
+| `api.request_threshold` | Server configuration | Influences long-task threshold behavior for heavy `views` query branches (`getTotals`, graph mode). |
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Purpose |
 |---|---|
@@ -29,12 +40,4 @@ The Views feature tracks page/screen views, supports segmented view analytics, p
 | `countly.members` | Used for authenticated endpoint access validation. |
 | `countly.apps` | Used for app context validation and timezone resolution. |
 
-## Configuration & Settings
-
-| Setting | Default | Purpose |
-|---|---|---|
-| `api.request_threshold` | Server configuration | Influences long-task threshold behavior for heavy `views` query branches (`getTotals`, graph mode). |
-
-## Last Updated
-
-2026-02-17
+</details>

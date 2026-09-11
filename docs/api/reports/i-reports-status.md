@@ -4,6 +4,8 @@ keywords:
   - "/i/reports/status"
   - "status"
   - "reports"
+last_update:
+  date: "2026-03-07"
 ---
 
 # Reports - Report Status Update
@@ -20,12 +22,7 @@ Updates `enabled` status for one or more reports in a bulk operation.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. `api_key=YOUR_API_KEY`
-2. `auth_token=YOUR_AUTH_TOKEN`
-3. `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -40,6 +37,17 @@ Requires `reports` `Update` permission.
 | `app_id` | String | Yes | App ID used by permission validation. |
 | `args` | String (JSON Object) | Yes | Status map where keys are report IDs and values are booleans. |
 | `args.[reportId]` | Boolean | Yes | `true` to enable, `false` to disable. |
+
+## Examples
+
+### Disable two reports in one call
+
+```plaintext
+/i/reports/status?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  args={"6262742dbf7392a8bfd8c1f6":false,"6262742dbf7392a8bfd8c1f7":false}
+```
 
 ## Response
 
@@ -69,7 +77,7 @@ Requires `reports` `Update` permission.
 
 Standard authentication/authorization errors from update validation can also be returned.
 
-## Behavior/Processing
+## Behavior
 
 - Parses `args` JSON before route execution.
 - Builds unordered bulk operation on `countly.reports`.
@@ -79,23 +87,6 @@ Standard authentication/authorization errors from update validation can also be 
 ### Impact on Other Data
 
 - Updates `enabled` field on report documents in `countly.reports`.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.reports` | Report storage | Bulk updates `enabled` field for provided report IDs. |
-
-## Examples
-
-### Disable two reports in one call
-
-```plaintext
-/i/reports/status?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  args={"6262742dbf7392a8bfd8c1f6":false,"6262742dbf7392a8bfd8c1f7":false}
-```
 
 ## Limitations
 
@@ -107,6 +98,13 @@ Standard authentication/authorization errors from update validation can also be 
 - [Reports - Report Update](i-reports-update.md)
 - [Reports - Reports Read](o-reports-all.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-03-07
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.reports` | Report storage | Bulk updates `enabled` field for provided report IDs. |
+
+</details>

@@ -4,6 +4,8 @@ keywords:
   - "/i/events/delete_events"
   - "delete_events"
   - "events"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /i/events/delete_events
@@ -20,9 +22,7 @@ Permanently delete one or more events and remove associated event metadata refer
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -36,6 +36,14 @@ Permanently delete one or more events and remove associated event metadata refer
 | `auth_token` | String | Yes (or use `api_key`) | Dashboard auth token. |
 | `app_id` | String | Yes | Target app ID. |
 | `events` | JSON String (Array) | Yes | Event key list to delete. |
+
+## Examples
+
+### Example 1: Delete two events
+
+```plaintext
+/i/events/delete_events?api_key=YOUR_API_KEY&app_id=64b0ac10c2c3ce0012dd1001&events=["Legacy Event","Internal Debug Event"]
+```
 
 ## Response
 
@@ -78,7 +86,7 @@ Permanently delete one or more events and remove associated event metadata refer
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -94,29 +102,6 @@ Permanently delete one or more events and remove associated event metadata refer
 - Removes deleted event keys from `countly.events` metadata fields (`list`, `order`, `overview`, `map`, `segments`, `omitted_segments`).
 - Triggers event-delete integration hooks so additional feature data can be cleaned.
 
-## Audit & System Logs
-
-| Action | Trigger | Payload |
-|---|---|---|
-| `event_deleted` | After successful core deletion update path | `{ events, appID }` with deleted event key list. |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication and permission validation | Reads member identity and app-level delete permissions. |
-| `countly.events` | Event metadata update target | Reads event metadata and removes references to deleted event keys. |
-| `countly.events{sha1(eventKey+appId)}` | Per-event aggregate storage | Drops event aggregate collections for each deleted event key. |
-
----
-## Examples
-
-### Example 1: Delete two events
-
-```plaintext
-/i/events/delete_events?api_key=YOUR_API_KEY&app_id=64b0ac10c2c3ce0012dd1001&events=["Legacy Event","Internal Debug Event"]
-```
-
 ## Operational Considerations
 
 - Event deletion is destructive and cannot be reversed through this endpoint.
@@ -127,12 +112,26 @@ Permanently delete one or more events and remove associated event metadata refer
 
 - Event keys must be provided as a JSON array string.
 
----
 ## Related Endpoints
 
 - [Events - Event Mapping Update](i-events-edit-map.md)
 - [Events - Event Visibility Update](i-events-change-visibility.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Audit & System Logs**
+
+| Action | Trigger | Payload |
+|---|---|---|
+| `event_deleted` | After successful core deletion update path | `{ events, appID }` with deleted event key list. |
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication and permission validation | Reads member identity and app-level delete permissions. |
+| `countly.events` | Event metadata update target | Reads event metadata and removes references to deleted event keys. |
+| `countly.events{sha1(eventKey+appId)}` | Per-event aggregate storage | Drops event aggregate collections for each deleted event key. |
+
+</details>

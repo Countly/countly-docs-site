@@ -4,11 +4,15 @@ keywords:
   - "/i/data-manager/transform-history"
   - "transform-history"
   - "data-manager"
+last_update:
+  date: "2026-02-16"
 ---
+
 # Data Transformations - Run on Historical Range
 
-> Ⓔ **Enterprise Only**
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -22,12 +26,7 @@ Runs a transformation payload against historical data for a selected date range.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -72,6 +71,20 @@ Decoded example:
 | `transformation.actionType` | Values starting with `SEGMENT`, `EVENT`, or `PROPERTY` | Selects which historical entity domain is transformed (event segment, event, or user property). |
 | `period` / `date` / `from` / `to` | Standard Countly date selectors | Defines the historical time window processed by this request. |
 
+## Examples
+
+```text
+/i/data-manager/transform-history?
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  period=30days&
+  transformation={
+    "actionType":"SEGMENT_RENAME",
+    "parentEvent":"purchase",
+    "transformTarget":["country_code"],
+    "transformResult":"country"
+  }
+```
+
 ## Response
 
 ### Success Response
@@ -96,7 +109,7 @@ Decoded example:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -108,34 +121,6 @@ Decoded example:
 
 - Applies transformation logic to historical event/segment/property data stores.
 
-## Audit & System Logs
-
-- This endpoint does not emit a dedicated `/systemlogs` action.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly_drill.drill_events` | Historical drill event source/target | Reads and updates historical event rows affected by the requested transformation action. |
-| `countly.events_data` | Aggregated historical metrics | Reads and updates aggregate metric rows impacted by rename/merge operations. |
-| `countly_drill.drill_meta` | Metadata reference and update target | Reads/writes related metadata needed by persistence branch execution. |
-
----
-
-## Examples
-
-```text
-/i/data-manager/transform-history?
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  period=30days&
-  transformation={
-    "actionType":"SEGMENT_RENAME",
-    "parentEvent":"purchase",
-    "transformTarget":["country_code"],
-    "transformResult":"country"
-  }
-```
-
 ## Operational Considerations
 
 - Historical execution runs in request context here (no task manager wrapper in this endpoint).
@@ -146,15 +131,24 @@ Decoded example:
 - Endpoint currently executes only `rename` and `merge` action branches in this path.
 - Malformed `transformation` JSON returns generic `500 Error`.
 
----
-
 ## Related Endpoints
 
 - [Data Transformations - Create Rule](transformations-create.md)
 - [Data Transformations - Update Rule](transformation-rules-update.md)
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Last Updated
+**Audit & System Logs**
 
-2026-02-16
+- This endpoint does not emit a dedicated `/systemlogs` action.
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly_drill.drill_events` | Historical drill event source/target | Reads and updates historical event rows affected by the requested transformation action. |
+| `countly.events_data` | Aggregated historical metrics | Reads and updates aggregate metric rows impacted by rename/merge operations. |
+| `countly_drill.drill_meta` | Metadata reference and update target | Reads/writes related metadata needed by persistence branch execution. |
+
+</details>

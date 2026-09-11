@@ -5,8 +5,9 @@ sidebar_label: "Overview"
 
 # OpenID Connect (OIDC) Authentication
 
-> Ⓔ **Enterprise Only**  
-> This feature is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This feature is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Overview
 
@@ -73,16 +74,6 @@ Create Session → Redirect to Dashboard
 | `scope` | `'openid profile email'` | String | OIDC scope request (standard: openid, profile, email, groups) | `COUNTLY_CONFIG_PLUGINOIDC_SCOPE` |
 | `response_type` | `'code'` | String | OAuth2 response type (authorization code flow) | `COUNTLY_CONFIG_PLUGINOIDC_RESPONSETYPE` |
 | `prompt` | `'login'` | String | Login prompt behavior (login, consent, select_account, none) | `COUNTLY_CONFIG_PLUGINOIDC_PROMPT` |
-
-## Database Collections
-
-The OIDC feature integrates with existing Countly collections (no separate collections created):
-
-| Collection | Purpose |
-|------------|---------|
-| `countly.members` | User accounts created via OIDC authentication; includes email, profile information, and assigned roles |
-
-User information is stored during first login via OIDC. Subsequent logins update user profile (email lookup via email field).
 
 ## Configuration Methods
 
@@ -338,7 +329,7 @@ Allow OIDC login for all users but restrict admin access:
 **Solutions**:
 - Verify OIDC provider's public keys are current
 - Check system time is synchronized (NTP enabled)
-- Confirm token hasn't expired
+- Confirm token has not expired
 - Verify provider's algorithm matches token validation code
 - Test provider's token validation endpoint
 
@@ -409,16 +400,17 @@ Optional; used to obtain new tokens without re-authentication. Enables long-live
 - [Google OAuth2 Documentation](https://developers.google.com/identity/protocols/oauth2)
 - [Auth0 OpenID Connect](https://auth0.com/docs/get-started/authentication-and-authorization-flow/openid-connect-protocol)
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Database Collections**
 
-This feature is part of **Countly Enterprise**.
+The OIDC feature integrates with existing Countly collections (no separate collections created):
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
+| Collection | Purpose |
+|------------|---------|
+| `countly.members` | User accounts created via OIDC authentication; includes email, profile information, and assigned roles |
 
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
+User information is stored during first login via OIDC. Subsequent logins update user profile (email lookup via email field).
 
+</details>

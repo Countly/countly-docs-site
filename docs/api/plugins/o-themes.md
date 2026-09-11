@@ -3,6 +3,8 @@ sidebar_label: "Themes List"
 keywords:
   - "/o/themes"
   - "themes"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /o/themes
@@ -19,11 +21,7 @@ Returns available dashboard theme names discovered from the frontend themes dire
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. **API Key** (parameter): `api_key=YOUR_API_KEY`
-2. **Auth Token** (parameter): `auth_token=YOUR_AUTH_TOKEN`
-3. **Auth Token** (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -35,6 +33,14 @@ Countly API supports three authentication methods:
 |---|---|---|---|
 | `api_key` | String | Yes (or use `auth_token`) | API key for authentication. |
 | `auth_token` | String | No | Auth token as query parameter or `countly-token` header. |
+
+## Examples
+
+### Read available themes
+
+```plaintext
+/o/themes?api_key=YOUR_API_KEY
+```
 
 ## Response
 
@@ -105,26 +111,12 @@ Countly API supports three authentication methods:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Reads the frontend themes directory.
 - Ensures output is always an array.
 - Prepends empty-string default entry.
 - Removes `.gitignore` from the returned list.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | User authentication | Reads authenticated user account for access validation. |
-
-## Examples
-
-### Read available themes
-
-```plaintext
-/o/themes?api_key=YOUR_API_KEY
-```
 
 ## Limitations
 
@@ -135,6 +127,13 @@ Countly API supports three authentication methods:
 
 - [Features - User Config Update](i-userconfigs.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | User authentication | Reads authenticated user account for access validation. |
+
+</details>

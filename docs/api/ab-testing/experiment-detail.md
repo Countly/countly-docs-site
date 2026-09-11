@@ -4,9 +4,15 @@ keywords:
   - "/o/ab-testing/experiment-detail"
   - "experiment-detail"
   - "ab-testing"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Get Experiment Details
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -14,19 +20,14 @@ keywords:
 /o/ab-testing/experiment-detail
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Retrieve detailed results for a single experiment, including statistical analysis, winner determination, and performance metrics.
 
 ## Authentication
 
-**Authentication Methods**:
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - Read (ab_testing feature)
@@ -39,6 +40,15 @@ Retrieve detailed results for a single experiment, including statistical analysi
 | `auth_token` | String | Yes (or use `api_key`) | Auth token for authentication |
 | `app_id` | String | Yes | Application identifier |
 | `experiment_id` | String | Yes | Experiment ObjectId |
+
+## Examples
+
+### Example 1: Fetch Experiment Details
+
+**Request**:
+```bash
+curl "https://your-server.com/o/ab-testing/experiment-detail?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&experiment_id=EXPERIMENT_ID"
+```
 
 ## Response
 
@@ -129,13 +139,7 @@ If the experiment is not found, the response is an empty object:
 {}
 ```
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly_out.ab_testing_experiments{appId}` | Primary: | Stores experiment definitions and results. |
-
-## Behavior/Processing
+## Behavior
 
 - Fetches experiment by `experiment_id`.
 - Removes `size` and `position` fields from response.
@@ -143,36 +147,19 @@ If the experiment is not found, the response is an empty object:
 - For running experiments, computes live results before responding.
 - Returns `{}` when the experiment does not exist.
 
-## Examples
-
-### Example 1: Fetch Experiment Details
-
-**Request**:
-```bash
-curl "https://your-server.com/o/ab-testing/experiment-detail?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&experiment_id=EXPERIMENT_ID"
-```
-
 ## Related Endpoints
 
 - [Get Specific Experiments](experiment-read.md)
 - [List All Experiments](read.md)
 - [Check Bayesian Models](check-models.md)
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Database Collections**
 
-This feature is part of **Countly Enterprise**.
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly_out.ab_testing_experiments{appId}` | Primary: | Stores experiment definitions and results. |
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

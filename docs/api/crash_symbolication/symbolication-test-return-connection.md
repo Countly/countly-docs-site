@@ -4,9 +4,15 @@ keywords:
   - "/o/symbolication/test_symbolication_return_connection"
   - "test_symbolication_return_connection"
   - "symbolication"
+last_update:
+  date: "2026-04-13"
 ---
 
 # Test symbolication return connection
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -14,19 +20,13 @@ keywords:
 /o/symbolication/test_symbolication_return_connection
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Checks whether the symbolication server can reach Countly's callback URL.
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -40,6 +40,14 @@ Checks whether the symbolication server can reach Countly's callback URL.
 | `return_url` | String | Yes | Callback URL to validate reverse reachability. |
 | `api_key` | String | Yes (or `auth_token`) | API key authentication. |
 | `auth_token` | String | Yes (or `api_key`) | Auth token authentication. |
+
+## Examples
+
+### Test return connection
+
+```text
+/o/symbolication/test_symbolication_return_connection?server_url=https://symbolication.example.com&return_url=https://your-server.com/i/crash_symbols/symbolicatation_result?symbolication_test=1&api_key=YOUR_API_KEY
+```
 
 ## Response
 
@@ -62,25 +70,13 @@ true
 | Upstream status | `{ "result": "<body.msg>" }` for return-connection test failures |
 | 401 | `{ "result": "User does not exist" }` or auth validation message |
 
-## Behavior/Processing
+## Behavior
 
 - Calls the remote symbolication server return-connection check endpoint derived from `server_url`.
 - Uses sub-action in URL path (not a query `action` parameter).
-
-## Examples
-
-### Test return connection
-
-```text
-/o/symbolication/test_symbolication_return_connection?server_url=https://symbolication.example.com&return_url=https://your-server.com/i/crash_symbols/symbolicatation_result?symbolication_test=1&api_key=YOUR_API_KEY
-```
 
 ## Related Endpoints
 
 - [Test Symbolication Server](symbolication-test.md)
 - [Test Symbolication API Key](symbolication-test-key.md)
 - [Test Symbolication Endpoints](symbolication-test-endpoints.md)
-
-## Last Updated
-
-2026-04-13

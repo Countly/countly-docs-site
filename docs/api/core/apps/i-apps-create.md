@@ -4,6 +4,8 @@ keywords:
   - "/i/apps/create"
   - "create"
   - "apps"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /i/apps/create
@@ -20,9 +22,7 @@ Create a new app definition, initialize core app-user indexes, and optionally up
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -48,13 +48,19 @@ Create a new app definition, initialize core app-user indexes, and optionally up
 | `key` | String | No | App key. Generated automatically when missing. |
 | `checksum_salt` | String | No | Optional checksum salt used by SDK checksum workflows. |
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `apps.country` | Server config | Input normalization | Invalid/missing `args.country` is replaced with this default value. |
-| `apps.timezone` | Server config | Input normalization | Invalid/missing `args.timezone` is replaced with this default value. |
-| `apps.category` | Server config | Input normalization | Invalid/missing `args.category` is replaced with this default value. |
+### Example 1: Create app with defaults
+
+```plaintext
+/i/apps/create?api_key=YOUR_API_KEY&args={"name":"My App"}
+```
+
+### Example 2: Create app with explicit region/timezone
+
+```plaintext
+/i/apps/create?api_key=YOUR_API_KEY&args={"name":"My App","country":"US","timezone":"America/New_York","category":"6"}
+```
 
 ## Response
 
@@ -117,7 +123,7 @@ Create a new app definition, initialize core app-user indexes, and optionally up
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -132,7 +138,29 @@ Create a new app definition, initialize core app-user indexes, and optionally up
 - Dispatches app-create integration hooks so other features can initialize app-scoped data.
 - If app image is uploaded, stores image content in app image storage.
 
-## Database Collections
+## Limitations
+
+- Only global admins can create apps through this endpoint.
+- App type must be supported by enabled app-type integrations; invalid values are normalized to `mobile`.
+
+## Related Endpoints
+
+- [Apps - App Update](i-apps-update.md)
+- [Apps - App Delete](i-apps-delete.md)
+- [Apps - App Read Details](o-apps-details.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Configuration Impact**
+
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `apps.country` | Server config | Input normalization | Invalid/missing `args.country` is replaced with this default value. |
+| `apps.timezone` | Server config | Input normalization | Invalid/missing `args.timezone` is replaced with this default value. |
+| `apps.category` | Server config | Input normalization | Invalid/missing `args.category` is replaced with this default value. |
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -141,33 +169,4 @@ Create a new app definition, initialize core app-user indexes, and optionally up
 | `countly.app_users{appId}` | App-user profile index initialization | Creates indexes on the newly created app-user collection namespace. |
 | `countly_fs` | App image storage | Stores app image file when image upload is included. |
 
----
-## Examples
-
-### Example 1: Create app with defaults
-
-```plaintext
-/i/apps/create?api_key=YOUR_API_KEY&args={"name":"My App"}
-```
-
-### Example 2: Create app with explicit region/timezone
-
-```plaintext
-/i/apps/create?api_key=YOUR_API_KEY&args={"name":"My App","country":"US","timezone":"America/New_York","category":"6"}
-```
-
-## Limitations
-
-- Only global admins can create apps through this endpoint.
-- App type must be supported by enabled app-type integrations; invalid values are normalized to `mobile`.
-
----
-## Related Endpoints
-
-- [Apps - App Update](i-apps-update.md)
-- [Apps - App Delete](i-apps-delete.md)
-- [Apps - App Read Details](o-apps-details.md)
-
-## Last Updated
-
-2026-02-17
+</details>

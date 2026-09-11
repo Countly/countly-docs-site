@@ -6,9 +6,15 @@ keywords:
   - "list"
   - "journey-engine"
   - "journey-instances"
+last_update:
+  date: "2026-04-18"
 ---
 
 # Journey Engine - Journey Instances List
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -16,19 +22,14 @@ keywords:
 /o/journey-engine/journey-instances/list
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 List journey instances, optionally filtered by journey, status, or app user.
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 Requires **global admin** access.
@@ -39,6 +40,12 @@ Requires **global admin** access.
 - `journeyDefinitionId` (optional): Filter by journey definition ID
 - `status` (optional): Instance status
 - `appUserId` (optional): Filter by app user ID
+
+## Examples
+
+```
+GET /o/journey-engine/journey-instances/list?journeyDefinitionId=67164f4a1f1bd90d6354430a&status=completed
+```
 
 ## Response
 
@@ -57,7 +64,6 @@ Requires **global admin** access.
   }
 ]
 ```
-
 
 ### Response Fields
 
@@ -81,41 +87,23 @@ Requires **global admin** access.
 
 - **401**: Not authorized
 
-## Examples
-
-```
-GET /o/journey-engine/journey-instances/list?journeyDefinitionId=67164f4a1f1bd90d6354430a&status=completed
-```
-
-## Behavior/Processing
+## Behavior
 
 - Requires the authenticated member to be a global admin.
 - Filters by `journeyVersionId`, `journeyDefinitionId`, `status`, and/or `appUserId` when provided.
 - Sorts results by `startTime` descending.
 
-## Database Collections
+## Related Endpoints
+
+- No related endpoints
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
 | `countly.journey_instances` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 
-## Related Endpoints
-
-- No related endpoints
-
-## Ⓔ Enterprise
-
-This feature is part of **Countly Enterprise**.
-
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-04-18
+</details>

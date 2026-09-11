@@ -4,6 +4,8 @@ keywords:
   - "/i/app_users/export"
   - "export"
   - "app_users"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /i/app_users/export
@@ -20,9 +22,7 @@ Start or reuse an app-user export task.
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -37,11 +37,29 @@ Start or reuse an app-user export task.
 | `app_id` | String | Yes | Target app ID. |
 | `query` | JSON String (Object) | Yes | Mongo-style query selecting users for export. |
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `api.request_threshold` | Server config value | Sync/async response switching | If export processing exceeds the threshold, the endpoint returns a task ID and completes in the background. |
+### Example 1: Start export task
+
+```plaintext
+/i/app_users/export?api_key=YOUR_API_KEY&app_id=64b0ac10c2c3ce0012dd1001&query={"uid":"1"}
+```
+
+```json
+{
+  "result": "appUser_64b0ac10c2c3ce0012dd1001_1.json"
+}
+```
+
+### Example 2: Long-task response (threshold exceeded)
+
+```json
+{
+  "result": {
+    "task_id": "03ccb0c8ac773298f62f8bdb5d0f8869cb78f788"
+  }
+}
+```
 
 ## Response
 
@@ -128,7 +146,7 @@ Request finished in normal request window:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -144,47 +162,6 @@ Request finished in normal request window:
 - For single-user exports, updates `countly.app_users{appId}` by setting `appUserExport`.
 - Invokes feature integrations so additional feature data can be included in the same export package.
 
-## Audit & System Logs
-
-| Action | Trigger | Payload |
-|---|---|---|
-| `export_app_user_started` | Export process starts for matched users | `{ result, uids, app_id, info, export_file }` |
-| `export_app_user` | Export completes or fails | `{ result, uids, app_id, info, export_file }` (fields vary by success/error branch) |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication and permission validation | Reads member identity and app-level write permissions. |
-| `countly.app_users{appId}` | Export source and metadata update | Reads matched user profiles; may set `appUserExport` for single-user export. |
-| `countly.exports` | Export payload storage | Stores exported rows from app users and plugin-provided collections. |
-| `countly.long_tasks` | Async task tracking | Stores long-task metadata/results when export runs asynchronously. |
-
----
-## Examples
-
-### Example 1: Start export task
-
-```plaintext
-/i/app_users/export?api_key=YOUR_API_KEY&app_id=64b0ac10c2c3ce0012dd1001&query={"uid":"1"}
-```
-
-```json
-{
-  "result": "appUser_64b0ac10c2c3ce0012dd1001_1.json"
-}
-```
-
-### Example 2: Long-task response (threshold exceeded)
-
-```json
-{
-  "result": {
-    "task_id": "03ccb0c8ac773298f62f8bdb5d0f8869cb78f788"
-  }
-}
-```
-
 ## Operational Considerations
 
 - The endpoint can return either a final filename or a task reference depending on runtime duration.
@@ -196,12 +173,34 @@ Request finished in normal request window:
 - Success payload shape is mode-dependent (`task_id` vs wrapped `result`).
 - Export fails when the query does not match any users.
 
----
 ## Related Endpoints
 
 - [App Users - Download Export](o-app-users-download.md)
 - [App Users - Delete Export](i-app-users-deleteexport.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Configuration Impact**
+
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `api.request_threshold` | Server config value | Sync/async response switching | If export processing exceeds the threshold, the endpoint returns a task ID and completes in the background. |
+
+**Audit & System Logs**
+
+| Action | Trigger | Payload |
+|---|---|---|
+| `export_app_user_started` | Export process starts for matched users | `{ result, uids, app_id, info, export_file }` |
+| `export_app_user` | Export completes or fails | `{ result, uids, app_id, info, export_file }` (fields vary by success/error branch) |
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication and permission validation | Reads member identity and app-level write permissions. |
+| `countly.app_users{appId}` | Export source and metadata update | Reads matched user profiles; may set `appUserExport` for single-user export. |
+| `countly.exports` | Export payload storage | Stores exported rows from app users and plugin-provided collections. |
+| `countly.long_tasks` | Async task tracking | Stores long-task metadata/results when export runs asynchronously. |
+
+</details>

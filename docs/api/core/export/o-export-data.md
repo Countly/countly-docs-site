@@ -4,6 +4,8 @@ keywords:
   - "/o/export/data"
   - "data"
   - "export"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /o/export/data
@@ -20,9 +22,7 @@ Converts a provided payload into an export file without querying a collection.
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -43,6 +43,28 @@ Converts a provided payload into an export file without querying a collection.
 
 - If `data` is a string and `raw` is not set, it must be valid JSON.
 - Object payloads are converted to array form before export conversion.
+
+## Examples
+
+### Example 1: Export provided array as CSV
+
+```plaintext
+/o/export/data?
+  api_key=YOUR_API_KEY&
+  data=[{"event":"Purchase","count":19,"sum":233.74},{"event":"Subscription","count":8,"sum":159.92}]&
+  type=csv&
+  filename=event-summary
+```
+
+### Example 2: Export provided payload as JSON
+
+```plaintext
+/o/export/data?
+  api_key=YOUR_API_KEY&
+  data={"rows":[{"country":"US","users":124},{"country":"ES","users":48}]}&
+  type=json&
+  filename=country-users
+```
 
 ## Response
 
@@ -95,7 +117,7 @@ JSON export example (file content):
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -108,52 +130,27 @@ JSON export example (file content):
 
 - No collection writes. This endpoint only formats and returns output.
 
-## Audit & System Logs
-
-- No `/systemlogs` action is emitted by this endpoint.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication validation | Reads caller identity for management-read access validation. |
-
----
-
-## Examples
-
-### Example 1: Export provided array as CSV
-
-```plaintext
-/o/export/data?
-  api_key=YOUR_API_KEY&
-  data=[{"event":"Purchase","count":19,"sum":233.74},{"event":"Subscription","count":8,"sum":159.92}]&
-  type=csv&
-  filename=event-summary
-```
-
-### Example 2: Export provided payload as JSON
-
-```plaintext
-/o/export/data?
-  api_key=YOUR_API_KEY&
-  data={"rows":[{"country":"US","users":124},{"country":"ES","users":48}]}&
-  type=json&
-  filename=country-users
-```
-
 ## Operational Considerations
 
 - Large payloads increase conversion memory/time.
 - For very large exports, prefer asynchronous request-query export.
-
----
 
 ## Related Endpoints
 
 - [Data Export - Export Request](./o-export-request.md)
 - [Data Export - Export Request Query](./o-export-requestquery.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Audit & System Logs**
+
+- No `/systemlogs` action is emitted by this endpoint.
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication validation | Reads caller identity for management-read access validation. |
+
+</details>

@@ -3,6 +3,8 @@ sidebar_label: "Indexes Read"
 keywords:
   - "/o/db"
   - "db"
+last_update:
+  date: "2026-03-07"
 ---
 
 # DB Viewer - Indexes Read
@@ -19,12 +21,7 @@ Returns index definitions for the selected MongoDB collection.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. `api_key=YOUR_API_KEY`
-2. `auth_token=YOUR_AUTH_TOKEN`
-3. `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -39,6 +36,14 @@ Requires DB Viewer access (`dbviewer` read right for app-scoped users).
 | `db` / `dbs` | String | Yes | MongoDB database name. |
 | `collection` | String | Yes | Collection name. |
 | `action` | String | Yes | Must be `get_indexes`. |
+
+## Examples
+
+### Read indexes for a collection
+
+```plaintext
+/o/db?api_key=YOUR_API_KEY&db=countly&collection=members&action=get_indexes
+```
 
 ## Response
 
@@ -98,29 +103,22 @@ On index-read failure, this handler returns raw string output:
 "Somethings went wrong"
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Runs only when `action=get_indexes` with `db` and `collection` provided.
 - Uses MongoDB `collection.indexes()` and wraps results in DB Viewer pagination envelope.
 - Access is checked per collection for non-admin users.
-
-## Database Collections
-
-This endpoint reads index metadata from the selected MongoDB collection.
-
-## Examples
-
-### Read indexes for a collection
-
-```plaintext
-/o/db?api_key=YOUR_API_KEY&db=countly&collection=members&action=get_indexes
-```
 
 ## Related Endpoints
 
 - [DB Viewer - Collection Query](o-db-collection.md)
 - [DB Viewer - Databases List](o-db.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-03-07
+**Database Collections**
+
+This endpoint reads index metadata from the selected MongoDB collection.
+
+</details>

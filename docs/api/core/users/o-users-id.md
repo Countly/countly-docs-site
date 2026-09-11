@@ -4,6 +4,8 @@ keywords:
   - "/o/users/id"
   - "id"
   - "users"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Users Management - User Read By ID
@@ -20,9 +22,7 @@ Returns one dashboard user as an object map keyed by the user id.
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -35,6 +35,14 @@ Returns one dashboard user as an object map keyed by the user id.
 | `api_key` | String | Yes (or use `auth_token`) | Dashboard API key. |
 | `auth_token` | String | Yes (or use `api_key`) | Dashboard auth token. |
 | `id` | String | Yes | Dashboard user id. |
+
+## Examples
+
+### Example 1: Read user by id
+
+```plaintext
+/o/users/id?api_key=YOUR_API_KEY&id=67b3055b87d9f49e2f5f3201
+```
 
 ## Response
 
@@ -100,7 +108,7 @@ Returns one dashboard user as an object map keyed by the user id.
 
 Returned when the target user does not exist or query fails.
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -108,24 +116,6 @@ Returned when the target user does not exist or query fails.
 |---|---|---|
 | User found | Valid `id` and member exists | User map object keyed by id. |
 | Missing/unknown user | Missing `id` or member not found | `401` message (missing id) or `{}` (not found/query failure). |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | User source data. | Reads one dashboard user by `_id`. |
-
----
-
-## Examples
-
-### Example 1: Read user by id
-
-```plaintext
-/o/users/id?api_key=YOUR_API_KEY&id=67b3055b87d9f49e2f5f3201
-```
-
----
 
 ## Limitations
 
@@ -138,6 +128,13 @@ Returned when the target user does not exist or query fails.
 - [Users List](o-users-all.md)
 - [Current User Read](o-users-me.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | User source data. | Reads one dashboard user by `_id`. |
+
+</details>

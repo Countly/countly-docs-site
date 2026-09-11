@@ -4,6 +4,8 @@ keywords:
   - "/o/analytics/sessions"
   - "sessions"
   - "analytics"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /o/analytics/sessions
@@ -20,9 +22,7 @@ Returns session aggregates as subperiod points for the requested period.
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -39,6 +39,27 @@ Returns session aggregates as subperiod points for the requested period.
 | `bucket` | String | No | Bucket override (`daily` or `monthly`). |
 | `timezone` | String | No | Optional timezone override. |
 | `timestamp` | Number | No | Optional reference timestamp. |
+
+## Examples
+
+### Example 1: Read 7-day session timeline
+
+```plaintext
+/o/analytics/sessions?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  period=7days
+```
+
+### Example 2: Read monthly bucketed timeline
+
+```plaintext
+/o/analytics/sessions?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  period=30days&
+  bucket=monthly
+```
 
 ## Response
 
@@ -81,7 +102,7 @@ Returns session aggregates as subperiod points for the requested period.
 {"result":"User does not have right"}
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -94,46 +115,9 @@ Returns session aggregates as subperiod points for the requested period.
 
 - Read-only endpoint.
 
-## Audit & System Logs
-
-- No `/systemlogs` action is emitted by this endpoint.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication and permission validation | Reads member record by `api_key` or `auth_token` to verify read access. |
-| `countly.apps` | App context validation | Reads app record (`timezone`, app state) for the requested `app_id`. |
-| `countly.users{appId}` | Session aggregate source | Read to build subperiod session timeline. |
-
----
-
-## Examples
-
-### Example 1: Read 7-day session timeline
-
-```plaintext
-/o/analytics/sessions?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  period=7days
-```
-
-### Example 2: Read monthly bucketed timeline
-
-```plaintext
-/o/analytics/sessions?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  period=30days&
-  bucket=monthly
-```
-
 ## Operational Considerations
 
 - Larger periods return more points and can increase response size.
-
----
 
 ## Related Endpoints
 
@@ -141,6 +125,19 @@ Returns session aggregates as subperiod points for the requested period.
 - [Analytics - Read Loyalty](./o-analytics-loyalty.md)
 - [Analytics - Read Frequency](./o-analytics-frequency.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Audit & System Logs**
+
+- No `/systemlogs` action is emitted by this endpoint.
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication and permission validation | Reads member record by `api_key` or `auth_token` to verify read access. |
+| `countly.apps` | App context validation | Reads app record (`timezone`, app state) for the requested `app_id`. |
+| `countly.users{appId}` | Session aggregate source | Read to build subperiod session timeline. |
+
+</details>

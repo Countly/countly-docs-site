@@ -4,18 +4,21 @@ keywords:
   - "/i/crash_symbols/upload_symbol"
   - "upload_symbol"
   - "crash_symbols"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Upload symbol (SDK)
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
 ```
 /i/crash_symbols/upload_symbol
 ```
-
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
 
 ## Overview
 
@@ -44,6 +47,19 @@ Uploads symbol files using `app_key` instead of dashboard member authentication.
 | `timestamp` | Number | No | Optional upload timestamp input for time init |
 | `note` | String | No | Optional note |
 
+## Examples
+
+### Example 1: SDK tool upload
+
+```bash
+curl -X POST "https://your-server.com/i/crash_symbols/upload_symbol" \
+  -F "app_key=YOUR_APP_KEY" \
+  -F "platform=ios" \
+  -F "build=A1B2C3D4-1234-5678-ABCD-1234567890EF" \
+  -F "symbols=@symbols.zip" \
+  -F "sym_tool_ver=2.3.0"
+```
+
 ## Response
 
 ### Success Response
@@ -71,15 +87,21 @@ Uploads symbol files using `app_key` instead of dashboard member authentication.
 | 500 | `{ "result": "Error creating symbol file directory" }` |
 | 500 | `{ "result": "Error saving symbol files" }` |
 
-## Behavior/Processing
+## Behavior
 
 1. Resolves app by `app_key`.
 2. Sets default `sym_tool_ver=unknown` when missing.
 3. Executes shared upload flow (`handleSymbolFileUpload`).
 
----
+## Related Endpoints
 
-## Database Collections
+- [Add Symbol](crash-symbols-add.md)
+- [List Symbols](crash-symbols-list.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -87,41 +109,4 @@ Uploads symbol files using `app_key` instead of dashboard member authentication.
 | `countly.app_crashsymbols{app_id}` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 | `countly_fs.crash_symbols` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 
----
-
-## Examples
-
-### Example 1: SDK tool upload
-
-```bash
-curl -X POST "https://your-server.com/i/crash_symbols/upload_symbol" \
-  -F "app_key=YOUR_APP_KEY" \
-  -F "platform=ios" \
-  -F "build=A1B2C3D4-1234-5678-ABCD-1234567890EF" \
-  -F "symbols=@symbols.zip" \
-  -F "sym_tool_ver=2.3.0"
-```
-
-## Related Endpoints
-
-- [Add Symbol](crash-symbols-add.md)
-- [List Symbols](crash-symbols-list.md)
-
----
-
-## Ⓔ Enterprise
-
-This feature is part of **Countly Enterprise**.
-
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

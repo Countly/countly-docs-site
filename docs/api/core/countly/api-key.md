@@ -3,6 +3,8 @@ sidebar_label: "API Key Read"
 keywords:
   - "/api-key"
   - "api-key"
+last_update:
+  date: "2026-04-01"
 ---
 
 # /api-key
@@ -30,6 +32,23 @@ Returns the dashboard member's API key using HTTP Basic authentication.
 ## Request Parameters
 
 This endpoint does not use query parameters. Provide credentials through the `Authorization: Basic ...` header.
+
+## Examples
+
+### Example 1: Read API key with cURL
+
+```bash
+curl -u "admin@example.com:YOUR_PASSWORD" \
+  https://your-server.com/api-key
+```
+
+### Example 2: Read API key with explicit header
+
+```bash
+curl \
+  -H "Authorization: Basic BASE64(username:password)" \
+  https://your-server.com/api-key
+```
 
 ## Response
 
@@ -63,39 +82,13 @@ Server Error
 
 Returned if brute-force status lookup fails.
 
-## Behavior/Processing
+## Behavior
 
 - Parses HTTP Basic credentials from the request.
 - Checks login brute-force state before password verification.
 - Verifies the password hash for the provided username.
 - Updates `last_login` for the member on success.
 - Returns the raw API key string, not JSON.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Credential validation and API key source | Reads member credentials and returns `api_key`; updates `last_login` on success. |
-| `countly.failed_logins` | Brute-force protection state | Reads and resets failed-login state through the brute-force utility flow. |
-
----
-
-## Examples
-
-### Example 1: Read API key with cURL
-
-```bash
-curl -u "admin@example.com:YOUR_PASSWORD" \
-  https://your-server.com/api-key
-```
-
-### Example 2: Read API key with explicit header
-
-```bash
-curl \
-  -H "Authorization: Basic BASE64(username:password)" \
-  https://your-server.com/api-key
-```
 
 ## Limitations
 
@@ -108,6 +101,14 @@ curl \
 - [Current User Read](../users/o-users-me.md)
 - [Users List](../users/o-users-all.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-04-01
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Credential validation and API key source | Reads member credentials and returns `api_key`; updates `last_login` on success. |
+| `countly.failed_logins` | Brute-force protection state | Reads and resets failed-login state through the brute-force utility flow. |
+
+</details>

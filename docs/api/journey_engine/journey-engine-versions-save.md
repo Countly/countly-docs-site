@@ -6,9 +6,15 @@ keywords:
   - "save"
   - "journey-engine"
   - "versions"
+last_update:
+  date: "2026-04-18"
 ---
 
 # Journey Engine - Versions Save
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -16,19 +22,14 @@ keywords:
 /i/journey-engine/versions/save
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Create a new journey version or update blocks for an existing version.
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required permission**: `Create` on the `journey_engine` feature
@@ -42,6 +43,32 @@ Request body JSON:
 - `name` (required for create): Version name
 - `blocks` (required): Block graph for the version
 - `_id` (optional): Version ID for update case
+
+## Examples
+
+### Create new version
+```json
+POST /i/journey-engine/versions/save
+Content-Type: application/json
+
+{
+  "journeyDefinitionId": "67164f4a1f1bd90d6354430a",
+  "appId": "64afe321d5f9b2f77cb2c8ed",
+  "name": "v2",
+  "blocks": [{"id": "block_1", "subType": "incoming-data"}]
+}
+```
+
+### Update version blocks
+```json
+POST /i/journey-engine/versions/save
+Content-Type: application/json
+
+{
+  "_id": "67164f4a1f1bd90d6354430b",
+  "blocks": [{"id": "block_1", "subType": "incoming-data"}]
+}
+```
 
 ## Response
 
@@ -63,7 +90,6 @@ Request body JSON:
   ]
 }
 ```
-
 
 ### Response Fields
 
@@ -97,33 +123,7 @@ Request body JSON:
 }
 ```
 
-## Examples
-
-### Create new version
-```json
-POST /i/journey-engine/versions/save
-Content-Type: application/json
-
-{
-  "journeyDefinitionId": "67164f4a1f1bd90d6354430a",
-  "appId": "64afe321d5f9b2f77cb2c8ed",
-  "name": "v2",
-  "blocks": [{"id": "block_1", "subType": "incoming-data"}]
-}
-```
-
-### Update version blocks
-```json
-POST /i/journey-engine/versions/save
-Content-Type: application/json
-
-{
-  "_id": "67164f4a1f1bd90d6354430b",
-  "blocks": [{"id": "block_1", "subType": "incoming-data"}]
-}
-```
-
-## Behavior/Processing
+## Behavior
 
 - Parses request body JSON and returns `Invalid request` if it is empty.
 - If `_id` is provided, updates only `blocks` for that existing version and returns the request body.
@@ -131,29 +131,17 @@ Content-Type: application/json
 - New version number is computed as the current maximum version number for the definition plus one.
 - New versions are always created with status `draft`.
 
-## Database Collections
+## Related Endpoints
+
+- No related endpoints
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
 | `countly.journey_versions` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 
-## Related Endpoints
-
-- No related endpoints
-
-## Ⓔ Enterprise
-
-This feature is part of **Countly Enterprise**.
-
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-04-18
+</details>

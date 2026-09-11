@@ -4,18 +4,21 @@ keywords:
   - "/i/cohorts/add"
   - "add"
   - "cohorts"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Create New Cohort
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
 ```text
 /i/cohorts/add
 ```
-
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
 
 ## Overview
 
@@ -26,9 +29,8 @@ Creates a new cohort for the app. Supports:
 
 ## Authentication
 
-- API key parameter: `api_key`
-- Auth token parameter: `auth_token`
-- Auth token header: `countly-token`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - Required permission: `Create` on `cohorts`
@@ -54,57 +56,6 @@ Creates a new cohort for the app. Supports:
 - `event` is required
 - `type` is required
 - `period` is required
-
-## Response
-
-### Success Response
-
-```json
-{
-  "result": "5f9c8a3b4d1e2a001f3b4567",
-  "duplicate": false
-}
-```
-
-### Response Fields
-
-| Field | Type | Description |
-|---|---|---|
-| `result` | String | Created cohort ID |
-| `duplicate` | Boolean | `true` if equivalent cohort already existed |
-
-### Error Responses
-
-| HTTP Status | Error Response | Description |
-|---|---|---|
-| `400` | `{"result":"Not enough args"}` | Required input missing |
-| `400` | `{"result":"Invalid visibility"}` | `visibility` is not `global`/`private` |
-| `400` | `{"result":"All steps must contain event"}` | Step missing `event` |
-| `400` | `{"result":"All steps must contain type"}` | Step missing `type` |
-| `400` | `{"result":"All steps must contain period"}` | Step missing `period` |
-
-Notes:
-
-- Auth/permission failures are handled by authentication and permission validation.
-
-## Behavior/Processing
-
-- Parses `steps`, `user_segmentation`, and `shared_email_edit` when passed as JSON strings.
-- Defaults `visibility` to `global` when not provided.
-- Converts nested `query`/`times` objects inside steps and `user_segmentation` into JSON strings before persistence.
-- Generates cohort ID from steps + app id + current time.
-- Returns created/existing cohort ID with duplicate flag.
-- For non-manual cohorts:
-  - with `realtime_cohorts=false`, starts calculation flow
-  - with `realtime_cohorts=true`, prepares initial real-time state
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.cohorts` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
-
----
 
 ## Examples
 
@@ -220,6 +171,49 @@ https://your-server.com/i/cohorts/add
 &shared_email_edit=["analyst@company.com","manager@company.com"]
 ```
 
+## Response
+
+### Success Response
+
+```json
+{
+  "result": "5f9c8a3b4d1e2a001f3b4567",
+  "duplicate": false
+}
+```
+
+### Response Fields
+
+| Field | Type | Description |
+|---|---|---|
+| `result` | String | Created cohort ID |
+| `duplicate` | Boolean | `true` if equivalent cohort already existed |
+
+### Error Responses
+
+| HTTP Status | Error Response | Description |
+|---|---|---|
+| `400` | `{"result":"Not enough args"}` | Required input missing |
+| `400` | `{"result":"Invalid visibility"}` | `visibility` is not `global`/`private` |
+| `400` | `{"result":"All steps must contain event"}` | Step missing `event` |
+| `400` | `{"result":"All steps must contain type"}` | Step missing `type` |
+| `400` | `{"result":"All steps must contain period"}` | Step missing `period` |
+
+Notes:
+
+- Auth/permission failures are handled by authentication and permission validation.
+
+## Behavior
+
+- Parses `steps`, `user_segmentation`, and `shared_email_edit` when passed as JSON strings.
+- Defaults `visibility` to `global` when not provided.
+- Converts nested `query`/`times` objects inside steps and `user_segmentation` into JSON strings before persistence.
+- Generates cohort ID from steps + app id + current time.
+- Returns created/existing cohort ID with duplicate flag.
+- For non-manual cohorts:
+  - with `realtime_cohorts=false`, starts calculation flow
+  - with `realtime_cohorts=true`, prepares initial real-time state
+
 ## Limitations
 
 - `cohort_name` is required.
@@ -252,8 +246,6 @@ Feature config scope: `cohorts`
 - Use `visibility=private` for sensitive/internal cohorts and share edit access explicitly.
 - Validate segmentation JSON before sending to avoid parse failures.
 
----
-
 ## Related Endpoints
 
 - [Cohorts - Read List](read.md)
@@ -262,21 +254,13 @@ Feature config scope: `cohorts`
 - [Cohorts - Delete](cohort-delete.md)
 - [Cohorts - Add Users](cohort-add-users.md)
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Database Collections**
 
-This feature is part of **Countly Enterprise**.
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.cohorts` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions.
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

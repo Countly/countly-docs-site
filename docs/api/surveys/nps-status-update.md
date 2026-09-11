@@ -5,9 +5,15 @@ keywords:
   - "status"
   - "surveys"
   - "nps"
+last_update:
+  date: "2026-04-18"
 ---
 
 # Surveys - Update NPS Status
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -15,19 +21,13 @@ keywords:
 /i/surveys/nps/status
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Bulk-updates NPS widget active status.
 
 ## Authentication
 
-**Authentication methods**:
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -41,6 +41,12 @@ Bulk-updates NPS widget active status.
 | `auth_token` | String | Yes (or `api_key`) | Auth token authentication |
 | `app_id` | String | Yes | App ID |
 | `data` | String (JSON Object) | Yes | Widget ID to status map |
+
+## Examples
+
+```text
+/i/surveys/nps/status?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&data={"67b9db56f67aab0012cd8899":false}
+```
 
 ## Response
 
@@ -74,7 +80,7 @@ Bulk-updates NPS widget active status.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Parses `data` as a JSON object mapping widget IDs to desired status values.
 - Values `true` and `"true"` set `status=true`; all other values set `status=false`.
@@ -82,38 +88,18 @@ Bulk-updates NPS widget active status.
 - Returns `Nothing to update` when the parsed object has no keys.
 - Emits `surveys_widget_status` system log action on success.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.feedback_widgets` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
-
----
-
-## Examples
-
-```text
-/i/surveys/nps/status?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&data={"67b9db56f67aab0012cd8899":false}
-```
-
 ## Related Endpoints
 
 - [Surveys - Edit NPS](nps-edit.md)
 - [Surveys - Delete NPS](nps-delete.md)
 
-## Ⓔ Enterprise
+<details>
+<summary>Implementation details</summary>
 
-This feature is part of **Countly Enterprise**.
+**Database Collections**
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.feedback_widgets` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions.
-
----
-
-## Last Updated
-
-2026-04-18
+</details>

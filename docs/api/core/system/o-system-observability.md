@@ -4,6 +4,8 @@ keywords:
   - "/o/system/observability"
   - "observability"
   - "system"
+last_update:
+  date: "2026-02-17"
 ---
 
 # System - Observability Read
@@ -20,9 +22,7 @@ Collects observability payloads from installed modules and returns them as a lis
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -34,6 +34,23 @@ Collects observability payloads from installed modules and returns them as a lis
 |---|---|---|---|
 | `api_key` | String | Yes (or use `auth_token`) | Dashboard API key. |
 | `auth_token` | String | Yes (or use `api_key`) | Dashboard auth token. |
+
+## Examples
+
+### Example 1: Read observability payloads
+
+```plaintext
+/o/system/observability?api_key=YOUR_API_KEY
+```
+
+```json
+[
+  {
+    "service": "kafka",
+    "status": "ok"
+  }
+]
+```
 
 ## Response
 
@@ -72,7 +89,7 @@ Collects observability payloads from installed modules and returns them as a lis
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -80,31 +97,6 @@ Collects observability payloads from installed modules and returns them as a lis
 |---|---|---|
 | Successful collection | Observability providers return data successfully | Array of fulfilled observability payloads (can be empty). |
 | Collection failure | Dispatch callback returns error | Wrapped error message. |
-
-## Database Collections
-
-This endpoint does not directly read or write database collections.
-
----
-
-## Examples
-
-### Example 1: Read observability payloads
-
-```plaintext
-/o/system/observability?api_key=YOUR_API_KEY
-```
-
-```json
-[
-  {
-    "service": "kafka",
-    "status": "ok"
-  }
-]
-```
-
----
 
 ## Operational Considerations
 
@@ -120,6 +112,11 @@ This endpoint does not directly read or write database collections.
 - [Kafka Status Read](./o-system-kafka.md)
 - [Aggregator Status Read](./o-system-aggregator.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+This endpoint does not directly read or write database collections.
+
+</details>

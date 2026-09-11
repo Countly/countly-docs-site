@@ -4,6 +4,8 @@ keywords:
   - "/i/crashes/modify_share"
   - "modify_share"
   - "crashes"
+last_update:
+  date: "2026-03-07"
 ---
 
 # Crashes - Modify Share Data
@@ -20,12 +22,7 @@ Updates custom share payload stored on a crash group.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. `api_key=YOUR_API_KEY`
-2. `auth_token=YOUR_AUTH_TOKEN`
-3. `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -41,6 +38,12 @@ Requires `crashes` `Update` permission.
 | `args` | JSON String (Object) | Yes | Action payload. |
 | `args.crash_id` | String | Yes | Crash group ID. |
 | `args.data` | Object | Yes | Share payload stored to crash group `share` field. |
+
+## Examples
+
+```plaintext
+/i/crashes/modify_share?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&args={"crash_id":"crash_group_1","data":{"allow_download":true}}
+```
 
 ## Response
 
@@ -78,29 +81,24 @@ Requires `crashes` `Update` permission.
 
 Standard auth/permission errors from update validation can also be returned.
 
-## Behavior/Processing
+## Behavior
 
 - Updates `share` field in `app_crashgroups{appId}` for the target crash group.
 - Emits `crash_modify_share` system log action with submitted share payload.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.app_crashgroups{appId}` | Crash group share data | Updates `share` object for target crash group. |
-| `countly.systemlogs` | Audit trail | Receives `crash_modify_share` action. |
-
-## Examples
-
-```plaintext
-/i/crashes/modify_share?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&args={"crash_id":"crash_group_1","data":{"allow_download":true}}
-```
 
 ## Related Endpoints
 
 - [Crashes - Share Crash Group](./i-crashes-share.md)
 - [Crashes - Unshare Crash Group](./i-crashes-unshare.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-03-07
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.app_crashgroups{appId}` | Crash group share data | Updates `share` object for target crash group. |
+| `countly.systemlogs` | Audit trail | Receives `crash_modify_share` action. |
+
+</details>

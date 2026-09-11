@@ -4,6 +4,8 @@ keywords:
   - "/i/dashboards/remove-widget"
   - "remove-widget"
   - "dashboards"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Dashboards - Remove Widget
@@ -20,11 +22,7 @@ Removes a widget from a dashboard and deletes the widget document.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -41,6 +39,16 @@ Dashboard sharing rules control access:
 | `widget_id` | String | Yes | Widget ID (24-char ObjectId string). |
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
+
+## Examples
+
+### Remove one widget
+
+```text
+/i/dashboards/remove-widget?
+  dashboard_id=65e1f3d2a4f41a5f6f6d7701&
+  widget_id=65e1f5f8a4f41a5f6f6d7703
+```
 
 ## Response
 
@@ -113,7 +121,7 @@ Dashboard sharing rules control access:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -129,33 +137,6 @@ Dashboard sharing rules control access:
 - Deletes widget from `countly.widgets`.
 - Dispatches widget deleted event to dashboard listeners.
 
-## Audit & System Logs
-
-| Action | Trigger | Payload |
-|---|---|---|
-| `widget_deleted` | After successful dashboard pull and widget delete | Deleted widget payload plus dashboard name |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication and dashboard-share access checks | Reads current member record and group/share context for edit/view validation. |
-| `countly.dashboards` | Ownership and linkage update | Reads dashboard-widget relationship and removes widget ID from dashboard. |
-| `countly.widgets` | Widget storage | Deletes widget document by `_id`. |
-| `countly.systemlogs` | Audit trail | Writes `widget_deleted` entry. |
-
----
-
-## Examples
-
-### Remove one widget
-
-```text
-/i/dashboards/remove-widget?
-  dashboard_id=65e1f3d2a4f41a5f6f6d7701&
-  widget_id=65e1f5f8a4f41a5f6f6d7703
-```
-
 ## Limitations
 
 - The handler parses `widget` if passed, but does not use it for deletion logic.
@@ -166,6 +147,22 @@ Dashboard sharing rules control access:
 - [Dashboards - Add Widget](i-dashboards-add-widget.md)
 - [Dashboards - Update Widget](i-dashboards-update-widget.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Audit & System Logs**
+
+| Action | Trigger | Payload |
+|---|---|---|
+| `widget_deleted` | After successful dashboard pull and widget delete | Deleted widget payload plus dashboard name |
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication and dashboard-share access checks | Reads current member record and group/share context for edit/view validation. |
+| `countly.dashboards` | Ownership and linkage update | Reads dashboard-widget relationship and removes widget ID from dashboard. |
+| `countly.widgets` | Widget storage | Deletes widget document by `_id`. |
+| `countly.systemlogs` | Audit trail | Writes `widget_deleted` entry. |
+
+</details>

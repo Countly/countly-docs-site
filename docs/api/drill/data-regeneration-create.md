@@ -4,11 +4,15 @@ keywords:
   - "/i/drill/regeneration"
   - "regeneration"
   - "drill"
+last_update:
+  date: "2026-04-17"
 ---
+
 # Regenerate Drill data
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -22,11 +26,7 @@ Starts Drill data regeneration for sessions, custom/system events, or views.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -44,6 +44,37 @@ Requires `drill` `Create` permission.
 | `wait_to_finish` | Boolean String | No | If set, runs with `force=false`; otherwise regeneration is forced through the long-task path. |
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
+
+## Examples
+
+### Regenerate sessions
+
+```text
+/i/drill/regeneration?
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  method=sessions&
+  period=30days
+```
+
+### Regenerate one event
+
+```text
+/i/drill/regeneration?
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  method=events&
+  event=Purchase&
+  period=7days
+```
+
+### Regenerate selected views
+
+```text
+/i/drill/regeneration?
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  method=views&
+  view_id=["home","checkout"]&
+  period=30days
+```
 
 ## Response
 
@@ -109,7 +140,7 @@ Event and session regeneration can return the result produced by the relevant re
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Parses `period`; invalid non-keyword periods return `Bad request parameter: period`.
 - Converts `period.since` objects to a timestamp range ending at request time.
@@ -118,7 +149,15 @@ Event and session regeneration can return the result produced by the relevant re
 - `method=sessions` regenerates session Drill data.
 - `method=views` regenerates one, multiple, or all views and writes a `view_recalculation_finished` system log entry.
 
-## Database Collections
+## Related Endpoints
+
+- [Query Segmentation - Read](query-segmentation-read.md)
+- [Metadata Regeneration - Update](metadata-regeneration-update.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -127,48 +166,4 @@ Event and session regeneration can return the result produced by the relevant re
 | `countly_drill.drill_events{appId/hash}` | Drill data | Rebuilds Drill event/session/view data. |
 | `countly.systemlogs` | Audit trail | Stores view recalculation completion status. |
 
----
-
-## Examples
-
-### Regenerate sessions
-
-```text
-/i/drill/regeneration?
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  method=sessions&
-  period=30days
-```
-
-### Regenerate one event
-
-```text
-/i/drill/regeneration?
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  method=events&
-  event=Purchase&
-  period=7days
-```
-
-### Regenerate selected views
-
-```text
-/i/drill/regeneration?
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  method=views&
-  view_id=["home","checkout"]&
-  period=30days
-```
-
----
-
-## Related Endpoints
-
-- [Query Segmentation - Read](query-segmentation-read.md)
-- [Metadata Regeneration - Update](metadata-regeneration-update.md)
-
----
-
-## Last Updated
-
-2026-04-17
+</details>

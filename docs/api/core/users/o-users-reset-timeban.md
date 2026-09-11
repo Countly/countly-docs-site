@@ -4,6 +4,8 @@ keywords:
   - "/o/users/reset_timeban"
   - "reset_timeban"
   - "users"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Users Management - Time Ban Reset
@@ -20,9 +22,7 @@ Resets failed-login time-ban state for one username.
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -35,6 +35,18 @@ Resets failed-login time-ban state for one username.
 | `api_key` | String | Yes (or use `auth_token`) | Dashboard API key. |
 | `auth_token` | String | Yes (or use `api_key`) | Dashboard auth token. |
 | `username` | String | Yes | Username whose failed-login ban record should be removed. |
+
+## Examples
+
+### Example 1: Reset lock for user
+
+```plaintext
+/o/users/reset_timeban?api_key=YOUR_API_KEY&username=jane
+```
+
+```json
+true
+```
 
 ## Response
 
@@ -60,7 +72,7 @@ true
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -68,28 +80,6 @@ true
 |---|---|---|
 | Reset success | Delete query executes without DB error | Raw boolean `true`. |
 | Reset failure | DB remove operation errors | Wrapped error message. |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.failed_logins` | Failed-login lock source. | Removes one lock counter record by username-based key. |
-
----
-
-## Examples
-
-### Example 1: Reset lock for user
-
-```plaintext
-/o/users/reset_timeban?api_key=YOUR_API_KEY&username=jane
-```
-
-```json
-true
-```
-
----
 
 ## Limitations
 
@@ -99,6 +89,13 @@ true
 
 - [Users List](o-users-all.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.failed_logins` | Failed-login lock source. | Removes one lock counter record by username-based key. |
+
+</details>

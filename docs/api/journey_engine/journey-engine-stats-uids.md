@@ -6,9 +6,15 @@ keywords:
   - "uids"
   - "journey-engine"
   - "stats"
+last_update:
+  date: "2026-04-18"
 ---
 
 # Journey Engine - Stats Uids
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -16,19 +22,14 @@ keywords:
 /o/journey-engine/stats/uids
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Retrieve unique user IDs for a given stats metric (entered, engaged, completed, etc.).
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required permission**: `Read` on the `journey_engine` feature
@@ -46,6 +47,12 @@ Retrieve unique user IDs for a given stats metric (entered, engaged, completed, 
 - `journeyDefinitionId` (optional): Filter by journey definition
 - `period` (optional): Time period filter
 
+## Examples
+
+```
+GET /o/journey-engine/stats/uids?uidType=users_completed&journeyDefinitionId=67164f4a1f1bd90d6354430a&period=30days
+```
+
 ## Response
 
 ### Success Response
@@ -57,7 +64,6 @@ Retrieve unique user IDs for a given stats metric (entered, engaged, completed, 
   "total": 3
 }
 ```
-
 
 ### Response Fields
 
@@ -73,42 +79,24 @@ Retrieve unique user IDs for a given stats metric (entered, engaged, completed, 
 - **400**: Missing or invalid uidType
 - **500**: Query error
 
-## Examples
-
-```
-GET /o/journey-engine/stats/uids?uidType=users_completed&journeyDefinitionId=67164f4a1f1bd90d6354430a&period=30days
-```
-
-## Behavior/Processing
+## Behavior
 
 - Requires `uidType`.
 - Accepts only `users_entered`, `users_engaged`, `users_completed`, `content_viewed`, `content_interacted`, and `users_drop_off`.
 - Filters `journey_stats` by `journeyVersionId`, `journeyDefinitionId`, and current period array when provided.
 - Reads from the matching `<uidType>_uids` array, unwinds values, groups unique ids, sorts by uid, and returns them as `uids`.
 
-## Database Collections
+## Related Endpoints
+
+- No related endpoints
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
 | `countly.journey_stats` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 
-## Related Endpoints
-
-- No related endpoints
-
-## Ⓔ Enterprise
-
-This feature is part of **Countly Enterprise**.
-
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-04-18
+</details>

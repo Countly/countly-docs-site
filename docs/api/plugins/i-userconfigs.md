@@ -3,6 +3,8 @@ sidebar_label: "User Config Update"
 keywords:
   - "/i/userconfigs"
   - "userconfigs"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /i/userconfigs
@@ -19,11 +21,7 @@ Updates user-level configuration overrides for the authenticated global admin us
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. **API Key** (parameter): `api_key=YOUR_API_KEY`
-2. **Auth Token** (parameter): `auth_token=YOUR_AUTH_TOKEN`
-3. **Auth Token** (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -54,11 +52,19 @@ Example `configs` payload:
 }
 ```
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `member.settings.{namespace}.{setting}` | No override | Response content | Stored user-level overrides determine what values are returned in the user config response payload. |
+### Set user-level frontend session timeout
+
+```plaintext
+/i/userconfigs?api_key=YOUR_API_KEY&configs={"frontend":{"session_timeout":15}}
+```
+
+### Set multiple user-level frontend preferences
+
+```plaintext
+/i/userconfigs?api_key=YOUR_API_KEY&configs={"frontend":{"session_timeout":20,"table_rows":50}}
+```
 
 ## Response
 
@@ -138,7 +144,7 @@ Example `configs` payload:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Parses `configs` as JSON; empty or invalid payload returns `Error updating configs`.
 - Merges submitted values into the authenticated member's `settings` object.
@@ -150,27 +156,6 @@ Example `configs` payload:
 - Updates `settings.*` fields on the authenticated user document in `countly.members`.
 - May update token expiry metadata in `countly.auth_tokens`.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Stores dashboard user profile and settings | Updates authenticated user's `settings.{namespace}.{setting}` values. |
-| `countly.auth_tokens` | Stores active dashboard auth tokens | Updates `ttl` and `ends` for authenticated user's `LoggedInAuth` tokens when session timeout is provided. |
-
-## Examples
-
-### Set user-level frontend session timeout
-
-```plaintext
-/i/userconfigs?api_key=YOUR_API_KEY&configs={"frontend":{"session_timeout":15}}
-```
-
-### Set multiple user-level frontend preferences
-
-```plaintext
-/i/userconfigs?api_key=YOUR_API_KEY&configs={"frontend":{"session_timeout":20,"table_rows":50}}
-```
-
 ## Limitations
 
 - This endpoint updates the authenticated global admin user only.
@@ -181,6 +166,20 @@ Example `configs` payload:
 - [Features - Global Config Update](i-configs.md)
 - [Features - Global Config Read](o-configs.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Configuration Impact**
+
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `member.settings.{namespace}.{setting}` | No override | Response content | Stored user-level overrides determine what values are returned in the user config response payload. |
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Stores dashboard user profile and settings | Updates authenticated user's `settings.{namespace}.{setting}` values. |
+| `countly.auth_tokens` | Stores active dashboard auth tokens | Updates `ttl` and `ends` for authenticated user's `LoggedInAuth` tokens when session timeout is provided. |
+
+</details>

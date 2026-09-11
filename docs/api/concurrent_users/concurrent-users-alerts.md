@@ -1,15 +1,18 @@
 ---
 sidebar_label: "Get Alerts"
+last_update:
+  date: "2026-04-18"
 ---
 
 # Concurrent Users - Get Alerts
 
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
+
 ## Endpoint
 
 `/o?method=concurrent_alerts`
-
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
 
 ## Overview
 
@@ -17,10 +20,8 @@ Retrieve all online user alerts accessible to your user. Results include alerts 
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required permission**: `Read` on the Online Users feature (`concurrent_users`)
@@ -33,11 +34,22 @@ Retrieve all online user alerts accessible to your user. Results include alerts 
 | auth_token | String | Yes (or api_key) | Auth token for authentication |
 | app_id | String | Yes | Application ID used by the read-permission validator before listing visible alerts |
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `concurrent_users.*` | Online Users feature defaults | Live-count and alert behavior for online-user endpoints. | Changes to Online Users settings can alter alert handling, thresholds, or returned live metrics. |
+### Example: List all accessible alerts
+
+```bash
+curl "https://your-server.com/o?method=concurrent_alerts" \
+  -d "api_key=YOUR_API_KEY" \
+  -d "app_id=YOUR_APP_ID"
+```
+
+### Example: List alerts with auth token header
+
+```bash
+curl -H "countly-token: YOUR_AUTH_TOKEN" \
+  "https://your-server.com/o?method=concurrent_alerts&app_id=YOUR_APP_ID"
+```
 
 ## Response
 
@@ -92,7 +104,7 @@ Retrieve all online user alerts accessible to your user. Results include alerts 
 | 400 | `{\"result\": \"Insufficient permissions\"}` | User lacks Read permission on feature |
 | 500 | `{\"result\": \"Concurrent users API error.\"}` | Server error in alert retrieval |
 
-## Behavior/Processing
+## Behavior
 
 - Requires `Read` permission on `concurrent_users`.
 - Reads alerts from `concurrent_users_alerts` using the same visibility filter as the Online Users feature. Global admins can see all alerts; other users only see alerts for visible apps.
@@ -101,13 +113,6 @@ Retrieve all online user alerts accessible to your user. Results include alerts 
 - Does not paginate in the handler; the full visible alert list is returned.
 - Database/read errors return `Concurrent users API error.`.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.concurrent_users_alerts` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
-| `countly.members` | Member/account enrichment | Stores member profile fields (for example names/IDs) used to resolve actor metadata. |
-
 ## Limitations
 
 - Results filtered by user permissions: global admins see all alerts; others see only alerts for apps they have access to
@@ -115,44 +120,26 @@ Retrieve all online user alerts accessible to your user. Results include alerts 
 - Alert definitions cannot be modified after creation; must delete and recreate to change type
 - `last_triggered` field only appears if the alert has fired at least once
 
-## Examples
-
-### Example: List all accessible alerts
-
-```bash
-curl "https://your-server.com/o?method=concurrent_alerts" \
-  -d "api_key=YOUR_API_KEY" \
-  -d "app_id=YOUR_APP_ID"
-```
-
-### Example: List alerts with auth token header
-
-```bash
-curl -H "countly-token: YOUR_AUTH_TOKEN" \
-  "https://your-server.com/o?method=concurrent_alerts&app_id=YOUR_APP_ID"
-```
-
 ## Related Endpoints
 
 - [Create or Update Alert](concurrent-users-alert-save.md) - Create a new alert or update existing one
 - [Delete Alert](concurrent-users-alert-delete.md) - Remove an alert
 - [Update Alert Status](concurrent-users-alert-status.md) - Enable or disable alerts
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Configuration Impact**
 
-This feature is part of **Countly Enterprise**.
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `concurrent_users.*` | Online Users feature defaults | Live-count and alert behavior for online-user endpoints. | Changes to Online Users settings can alter alert handling, thresholds, or returned live metrics. |
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
+**Database Collections**
 
-Last Updated: 2026-04-18
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.concurrent_users_alerts` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
+| `countly.members` | Member/account enrichment | Stores member profile fields (for example names/IDs) used to resolve actor metadata. |
 
----
-
-## Last Updated
-
-2026-02-16
+</details>

@@ -4,6 +4,8 @@ keywords:
   - "/i/hook/test"
   - "test"
   - "hook"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Hooks - Test
@@ -20,11 +22,7 @@ Runs a hook configuration with provided mock input and returns execution results
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -94,6 +92,29 @@ Decoded `mock_data` example:
   "uid": "user_12345",
   "event": "/cohort/enter"
 }
+```
+
+## Examples
+
+### Test a hook with mock data
+
+```text
+/i/hook/test?
+  app_id=6991c75b024cb89cdc04efd2&
+  api_key=YOUR_API_KEY&
+  hook_config={
+    "name":"Test HTTP effect",
+    "description":"Validate outgoing call payload",
+    "apps":["6991c75b024cb89cdc04efd2"],
+    "trigger":{"type":"InternalEventTrigger","configuration":{"eventType":"/cohort/enter"}},
+    "effects":[{"type":"HTTPEffect","configuration":{"method":"post","url":"https://example.com/webhooks/countly","requestData":"{\"uid\":\"{{uid}}\"}"}}],
+    "enabled":true
+  }&
+  mock_data={
+    "app_id":"6991c75b024cb89cdc04efd2",
+    "uid":"user_12345",
+    "event":"/cohort/enter"
+  }
 ```
 
 ## Response
@@ -284,7 +305,7 @@ Decoded `mock_data` example:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -296,38 +317,6 @@ Decoded `mock_data` example:
 ### Impact on Other Data
 
 This endpoint does not insert/update/delete hook documents.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication and permission checks | Reads member account and access metadata. |
-| `countly.apps` | App validation for non-global-admin users | Reads app context during permission validation. |
-
----
-
-## Examples
-
-### Test a hook with mock data
-
-```text
-/i/hook/test?
-  app_id=6991c75b024cb89cdc04efd2&
-  api_key=YOUR_API_KEY&
-  hook_config={
-    "name":"Test HTTP effect",
-    "description":"Validate outgoing call payload",
-    "apps":["6991c75b024cb89cdc04efd2"],
-    "trigger":{"type":"InternalEventTrigger","configuration":{"eventType":"/cohort/enter"}},
-    "effects":[{"type":"HTTPEffect","configuration":{"method":"post","url":"https://example.com/webhooks/countly","requestData":"{\"uid\":\"{{uid}}\"}"}}],
-    "enabled":true
-  }&
-  mock_data={
-    "app_id":"6991c75b024cb89cdc04efd2",
-    "uid":"user_12345",
-    "event":"/cohort/enter"
-  }
-```
 
 ## Operational Considerations
 
@@ -344,6 +333,14 @@ This endpoint does not insert/update/delete hook documents.
 - [Hooks - Save](i-hook-save.md)
 - [Hooks - Read List](o-hook-list.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication and permission checks | Reads member account and access metadata. |
+| `countly.apps` | App validation for non-global-admin users | Reads app context during permission validation. |
+
+</details>

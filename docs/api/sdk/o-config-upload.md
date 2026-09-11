@@ -3,6 +3,8 @@ sidebar_label: "Config Upload"
 keywords:
   - "/o"
   - "o"
+last_update:
+  date: "2026-03-05"
 ---
 
 # SDK - Config Upload
@@ -19,12 +21,7 @@ Saves SDK config for an app.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. `api_key=YOUR_API_KEY`
-2. `auth_token=YOUR_AUTH_TOKEN`
-3. `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -39,6 +36,14 @@ Requires `sdk` `Update` permission.
 | `auth_token` | String | No | Auth token as query parameter or `countly-token` header. |
 | `app_id` | String | Yes | App id. |
 | `config` | String (JSON Object) or Object | Yes | SDK config payload. Accepts raw config or wrapped payload with `c` field. |
+
+## Examples
+
+### Upload SDK config
+
+```plaintext
+/o?method=config-upload&api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&config={"tracking":true,"crt":true,"bom":true,"bom_rqp":50}
+```
 
 ## Response
 
@@ -82,33 +87,24 @@ Requires `sdk` `Update` permission.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - If `config` is a string, endpoint parses it as JSON.
 - If payload has `c`, endpoint stores `config.c`; otherwise stores `config` directly.
 - Unknown keys are removed; only SDK valid option keys are saved.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly_out.sdk_configs` | SDK config storage | Upserts app config as `{ _id: app_id, config: ... }`. |
-
----
-
-## Examples
-
-### Upload SDK config
-
-```plaintext
-/o?method=config-upload&api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&config={"tracking":true,"crt":true,"bom":true,"bom_rqp":50}
-```
 
 ## Related Endpoints
 
 - [SDK - Config Read](o-sdk-config-read.md)
 - [SDK - SDK Config Read](o-sdk-config.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-03-05
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly_out.sdk_configs` | SDK config storage | Upserts app config as `{ _id: app_id, config: ... }`. |
+
+</details>

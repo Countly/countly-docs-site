@@ -4,6 +4,8 @@ keywords:
   - "/o/analytics/countries"
   - "countries"
   - "analytics"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /o/analytics/countries
@@ -20,9 +22,7 @@ Returns top-country aggregates in fixed output blocks: `30days`, `7days`, and `t
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -39,12 +39,15 @@ Returns top-country aggregates in fixed output blocks: `30days`, `7days`, and `t
 | `timezone` | String | No | Optional timezone override. |
 | `timestamp` | Number | No | Optional reference timestamp. |
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `api.total_users` | `true` | Unique-user correction | When disabled, total-user correction path is skipped. |
-| `api.metric_changes` | `true` | Correction history | When disabled, change-history adjustments are not applied. |
+### Example 1: Read country metrics
+
+```plaintext
+/o/analytics/countries?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2
+```
 
 ## Response
 
@@ -95,7 +98,7 @@ Returns top-country aggregates in fixed output blocks: `30days`, `7days`, and `t
 {"result":"App does not exist"}
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -106,11 +109,31 @@ Returns top-country aggregates in fixed output blocks: `30days`, `7days`, and `t
 
 - Read-only endpoint. Does not update country aggregates.
 
-## Audit & System Logs
+## Operational Considerations
+
+- Output is fixed to three blocks regardless of supplied `period`.
+- Country list is limited to top countries by internal ranking.
+
+## Related Endpoints
+
+- [Analytics - Read Dashboard](./o-analytics-dashboard.md)
+- [Analytics - Read Metric](./o-analytics-metric.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Configuration Impact**
+
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `api.total_users` | `true` | Unique-user correction | When disabled, total-user correction path is skipped. |
+| `api.metric_changes` | `true` | Correction history | When disabled, change-history adjustments are not applied. |
+
+**Audit & System Logs**
 
 - No `/systemlogs` action is emitted by this endpoint.
 
-## Database Collections
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -120,30 +143,4 @@ Returns top-country aggregates in fixed output blocks: `30days`, `7days`, and `t
 | `countly.app_users{appId}` | Total-user correction baseline | Read when total-user correction is enabled. |
 | `countly.metric_changes{appId}` | Correction history | Read when metric-change correction is enabled. |
 
----
-
-## Examples
-
-### Example 1: Read country metrics
-
-```plaintext
-/o/analytics/countries?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2
-```
-
-## Operational Considerations
-
-- Output is fixed to three blocks regardless of supplied `period`.
-- Country list is limited to top countries by internal ranking.
-
----
-
-## Related Endpoints
-
-- [Analytics - Read Dashboard](./o-analytics-dashboard.md)
-- [Analytics - Read Metric](./o-analytics-metric.md)
-
-## Last Updated
-
-2026-02-17
+</details>

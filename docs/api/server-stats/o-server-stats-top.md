@@ -4,6 +4,8 @@ keywords:
   - "/o/server-stats/top"
   - "top"
   - "server-stats"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /o/server-stats/top
@@ -20,11 +22,7 @@ Returns top 3 apps by current/previous hour datapoint volume for the current UTC
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. **API Key** (parameter): `api_key=YOUR_API_KEY`
-2. **Auth Token** (parameter): `auth_token=YOUR_AUTH_TOKEN`
-3. **Auth Token** (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -36,6 +34,14 @@ Authenticated dashboard user credentials are required (`api_key` or `auth_token`
 |---|---|---|---|
 | `api_key` | String | Yes (or use `auth_token`) | API key for authentication. |
 | `auth_token` | String | No | Auth token as query parameter or `countly-token` header. |
+
+## Examples
+
+### Read top apps by current/previous hour datapoints
+
+```plaintext
+/o/server-stats/top?api_key=YOUR_API_KEY
+```
 
 ## Response
 
@@ -84,30 +90,13 @@ Authenticated dashboard user credentials are required (`api_key` or `auth_token`
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Determines current UTC month/day/hour.
 - Reads month documents from server-stats datapoints collection.
 - For each app, sums `dp` for current hour and previous hour (if present).
 - Excludes `[CLY]_consolidated` from returned list.
 - Sorts descending by score and returns top 3 entries.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication validation | Reads member account and lock status during `authenticated-user validation` authentication. |
-| `countly.server_stats_data_points` | Stores monthly and hourly datapoint metrics per app | Reads current-month documents and computes per-app top scores. |
-
----
-
-## Examples
-
-### Read top apps by current/previous hour datapoints
-
-```plaintext
-/o/server-stats/top?api_key=YOUR_API_KEY
-```
 
 ## Limitations
 
@@ -120,6 +109,14 @@ Authenticated dashboard user credentials are required (`api_key` or `auth_token`
 - [Server Stats - Data Points Read](o-server-stats-data-points.md)
 - [Server Stats - Punch Card Read](o-server-stats-punch-card.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication validation | Reads member account and lock status during `authenticated-user validation` authentication. |
+| `countly.server_stats_data_points` | Stores monthly and hourly datapoint metrics per app | Reads current-month documents and computes per-app top scores. |
+
+</details>

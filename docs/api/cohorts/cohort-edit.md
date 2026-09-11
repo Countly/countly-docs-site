@@ -4,18 +4,21 @@ keywords:
   - "/i/cohorts/edit"
   - "edit"
   - "cohorts"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Update Cohort
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
 ```text
 /i/cohorts/edit
 ```
-
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
 
 ## Overview
 
@@ -24,9 +27,8 @@ If segmentation-related fields change, existing cohort data is reset and recalcu
 
 ## Authentication
 
-- API key parameter: `api_key`
-- Auth token parameter: `auth_token`
-- Auth token header: `countly-token`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - Required permission: `Create` on `cohorts`
@@ -49,61 +51,6 @@ If segmentation-related fields change, existing cohort data is reset and recalcu
 
 At least one updatable field should be provided with `cohort_id`.  
 Current handler also validates `visibility` as required, even when only metadata fields are edited.
-
-## Response
-
-### Success Response
-
-```json
-{
-  "result": "Success"
-}
-```
-
-### Response Fields
-
-| Field | Type | Description |
-|---|---|---|
-| `result` | String | Operation result string |
-
-### Error Responses
-
-| HTTP Status | Error Response | Description |
-|---|---|---|
-| `400` | `{"result":"Not enough args"}` | Required inputs missing |
-| `400` | `{"result":"Invalid visibility"}` | `visibility` is not `global`/`private` |
-| `400` | `{"result":"All steps must contain event"}` | Step missing `event` |
-| `400` | `{"result":"All steps must contain type"}` | Step missing `type` |
-| `400` | `{"result":"All steps must contain period"}` | Step missing `period` |
-| `400` | `{"result":"Cannot save data"}` | Update operation failed |
-| `404` | `{"result":"Cohort not found"}` | Cohort ID not found for app |
-
-Notes:
-
-- Auth/permission failures are handled by authentication and permission validation.
-
-## Behavior/Processing
-
-- Parses `steps`, `user_segmentation`, and `shared_email_edit` from JSON strings when passed as strings.
-- Normalizes `cohort_name` to stored field `name`.
-- If segmentation changed:
-  - clears cohort historical data from `cohortdata`
-  - unsets `chr.<cohort_id>` for all `app_users{app_id}` rows
-  - triggers recalculation/setup flow
-  - marks related reports dirty
-- If only metadata changed (for example name/description), recalculation is not forced.
-- Writes system log entry with before/update payload.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.cohorts` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
-| `countly.cohortdata` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
-| `countly.app_users{app_id}` | Per-app user profiles | Stores user-level properties and profile fields affected by this endpoint. |
-| `countly.systemlogs` | Audit trail | Contains system action records used by this endpoint for audit output or audit writes. |
-
----
 
 ## Examples
 
@@ -156,13 +103,55 @@ https://your-server.com/i/cohorts/edit
 &visibility=global
 ```
 
+## Response
+
+### Success Response
+
+```json
+{
+  "result": "Success"
+}
+```
+
+### Response Fields
+
+| Field | Type | Description |
+|---|---|---|
+| `result` | String | Operation result string |
+
+### Error Responses
+
+| HTTP Status | Error Response | Description |
+|---|---|---|
+| `400` | `{"result":"Not enough args"}` | Required inputs missing |
+| `400` | `{"result":"Invalid visibility"}` | `visibility` is not `global`/`private` |
+| `400` | `{"result":"All steps must contain event"}` | Step missing `event` |
+| `400` | `{"result":"All steps must contain type"}` | Step missing `type` |
+| `400` | `{"result":"All steps must contain period"}` | Step missing `period` |
+| `400` | `{"result":"Cannot save data"}` | Update operation failed |
+| `404` | `{"result":"Cohort not found"}` | Cohort ID not found for app |
+
+Notes:
+
+- Auth/permission failures are handled by authentication and permission validation.
+
+## Behavior
+
+- Parses `steps`, `user_segmentation`, and `shared_email_edit` from JSON strings when passed as strings.
+- Normalizes `cohort_name` to stored field `name`.
+- If segmentation changed:
+  - clears cohort historical data from `cohortdata`
+  - unsets `chr.<cohort_id>` for all `app_users{app_id}` rows
+  - triggers recalculation/setup flow
+  - marks related reports dirty
+- If only metadata changed (for example name/description), recalculation is not forced.
+- Writes system log entry with before/update payload.
+
 ## Limitations
 
 - `visibility` must be valid when provided.
 - JSON-string parameters must be valid JSON.
 - Segmentation changes reset historical cohort data for the cohort.
-
----
 
 ## Related Endpoints
 
@@ -171,21 +160,16 @@ https://your-server.com/i/cohorts/edit
 - [Cohorts - Read One](cohort-single-read.md)
 - [Cohorts - Recalculate](cohort-recalculate.md)
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Database Collections**
 
-This feature is part of **Countly Enterprise**.
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.cohorts` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
+| `countly.cohortdata` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
+| `countly.app_users{app_id}` | Per-app user profiles | Stores user-level properties and profile fields affected by this endpoint. |
+| `countly.systemlogs` | Audit trail | Contains system action records used by this endpoint for audit output or audit writes. |
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions.
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

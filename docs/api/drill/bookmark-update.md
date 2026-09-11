@@ -4,11 +4,15 @@ keywords:
   - "/i/drill/edit_bookmark"
   - "edit_bookmark"
   - "drill"
+last_update:
+  date: "2026-04-17"
 ---
+
 # Update bookmark
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -22,12 +26,7 @@ Updates an existing bookmark created by the current member. The stored query use
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -50,6 +49,22 @@ Requires `drill` `Read` permission.
 | `visualization` | String | No | Visualization hint. |
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
+
+## Examples
+
+```text
+/i/drill/edit_bookmark?
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  bookmark_id=67bd31c92e7f0b0012ab4567&
+  event_key=[CLY]_session&
+  name=US Sessions Updated&
+  desc=Updated bookmark description&
+  global=false&
+  query_obj={"up.cc":"US"}&
+  query_text=Country is US&
+  by_val=["up.p"]&
+  by_val_text=Platform
+```
 
 ## Response
 
@@ -97,7 +112,7 @@ Requires `drill` `Read` permission.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Validates required update fields.
 - Loads bookmark by ID and ensures it is owned by the current member. Unlike delete, global bookmarks are not editable unless the current member is also the creator.
@@ -107,41 +122,20 @@ Requires `drill` `Read` permission.
 - Rejects duplicate bookmarks when the recomputed `sign` already exists.
 - Updates bookmark and emits bookmark/systemlog events.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly_drill.drill_bookmarks` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
-| `countly.systemlogs` | Audit trail | Contains system action records used by this endpoint for audit output or audit writes. |
-
----
-
-## Examples
-
-```text
-/i/drill/edit_bookmark?
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  bookmark_id=67bd31c92e7f0b0012ab4567&
-  event_key=[CLY]_session&
-  name=US Sessions Updated&
-  desc=Updated bookmark description&
-  global=false&
-  query_obj={"up.cc":"US"}&
-  query_text=Country is US&
-  by_val=["up.p"]&
-  by_val_text=Platform
-```
-
----
-
 ## Related Endpoints
 
 - [Bookmarks - Read](bookmarks-read.md)
 - [Bookmark - Read](bookmark-read.md)
 - [Bookmark - Create](bookmark-create.md)
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Last Updated
+**Database Collections**
 
-2026-04-17
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly_drill.drill_bookmarks` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
+| `countly.systemlogs` | Audit trail | Contains system action records used by this endpoint for audit output or audit writes. |
+
+</details>

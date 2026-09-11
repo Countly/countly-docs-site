@@ -1,6 +1,8 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Error Logs - API Documentation
@@ -18,7 +20,3 @@ The Error Logs feature provides global-admin endpoints to read Countly server lo
 ## Configuration & Settings
 
 Error log endpoints read files from the server `log/` directory and discover additional `countly-*.log` files at runtime.
-
-## Last Updated
-
-2026-02-17

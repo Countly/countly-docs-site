@@ -4,9 +4,15 @@ keywords:
   - "/i/content/asset-upload"
   - "asset-upload"
   - "content"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Upload asset
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -14,19 +20,14 @@ keywords:
 /i/content/asset-upload
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Uploads an asset file with compression, thumbnail generation, and GridFS storage.
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required permission**: `Create` on the `content` feature
@@ -44,6 +45,32 @@ Uploads an asset file with compression, thumbnail generation, and GridFS storage
 | tags | String | No | JSON stringified array of tags |
 | width | Number | No | Stored as `metadata.dimensions.width` (only if `height` is also provided) |
 | height | Number | No | Stored as `metadata.dimensions.height` (only if `width` is also provided) |
+
+## Examples
+
+### Example 1: Upload JPEG
+
+```bash
+curl -X POST "https://your-server.com/i/content/asset-upload" \
+  -F "api_key=YOUR_API_KEY" \
+  -F "app_id=5be987d7b93798516eb5289a" \
+  -F "assets=@banner.jpg" \
+  -F "name=campaign_banner_v1" \
+  -F 'tags=["campaign","banner"]'
+```
+
+### Example 2: Upload PNG With Dimensions
+
+```bash
+curl -X POST "https://your-server.com/i/content/asset-upload" \
+  -F "api_key=YOUR_API_KEY" \
+  -F "app_id=5be987d7b93798516eb5289a" \
+  -F "assets=@logo.png" \
+  -F "name=company_logo" \
+  -F 'tags=["branding","logo"]' \
+  -F "width=1024" \
+  -F "height=512"
+```
 
 ## Response
 
@@ -74,7 +101,7 @@ Uploads an asset file with compression, thumbnail generation, and GridFS storage
 | 400 | `"The file named {name} could not be added because it already exists."` |
 | 400 | Processing/validation error message from upload flow |
 
-## Behavior/Processing
+## Behavior
 
 1. Validates request authentication and permissions.
 2. Parses optional metadata (`tags`, `width`, `height`).
@@ -82,43 +109,6 @@ Uploads an asset file with compression, thumbnail generation, and GridFS storage
 4. Compresses image data and generates thumbnail (or uses provided `thumbnail`).
 5. Saves file and metadata to GridFS.
 6. Returns uploaded `assetId`.
-
----
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly_fs.content_assets{app_id}.files` | Endpoint data source | ** - GridFS file metadata |
-| `countly_fs.content_assets{app_id}.chunks` | Endpoint data source | ** - GridFS binary chunks |
-
----
-
-## Examples
-
-### Example 1: Upload JPEG
-
-```bash
-curl -X POST "https://your-server.com/i/content/asset-upload" \
-  -F "api_key=YOUR_API_KEY" \
-  -F "app_id=5be987d7b93798516eb5289a" \
-  -F "assets=@banner.jpg" \
-  -F "name=campaign_banner_v1" \
-  -F 'tags=["campaign","banner"]'
-```
-
-### Example 2: Upload PNG With Dimensions
-
-```bash
-curl -X POST "https://your-server.com/i/content/asset-upload" \
-  -F "api_key=YOUR_API_KEY" \
-  -F "app_id=5be987d7b93798516eb5289a" \
-  -F "assets=@logo.png" \
-  -F "name=company_logo" \
-  -F 'tags=["branding","logo"]' \
-  -F "width=1024" \
-  -F "height=512"
-```
 
 ## Limitations
 
@@ -133,21 +123,14 @@ curl -X POST "https://your-server.com/i/content/asset-upload" \
 - [Assets - Update](assets-update.md): Update metadata
 - [Assets - Delete](assets-delete.md): Delete an asset
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Database Collections**
 
-This feature is part of **Countly Enterprise**.
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly_fs.content_assets{app_id}.files` | Endpoint data source | ** - GridFS file metadata |
+| `countly_fs.content_assets{app_id}.chunks` | Endpoint data source | ** - GridFS binary chunks |
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

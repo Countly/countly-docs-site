@@ -4,6 +4,8 @@ keywords:
   - "/o/system/memory"
   - "memory"
   - "system"
+last_update:
+  date: "2026-03-07"
 ---
 
 # System Utility - Memory Stats
@@ -20,12 +22,7 @@ Returns system memory usage derived from `free` command output.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. `api_key=YOUR_API_KEY`
-2. `auth_token=YOUR_AUTH_TOKEN`
-3. `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -37,6 +34,12 @@ Requires Global Admin access.
 |---|---|---|---|
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
+
+## Examples
+
+```plaintext
+/o/system/memory?api_key=YOUR_API_KEY
+```
 
 ## Response
 
@@ -80,21 +83,16 @@ Requires Global Admin access.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Executes `free` on the host and normalizes results into `overall` + `details`.
 - Returns a wrapped `result` response.
 
-## Database Collections
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 This endpoint does not read or write database collections.
 
-## Examples
-
-```plaintext
-/o/system/memory?api_key=YOUR_API_KEY
-```
-
-## Last Updated
-
-2026-03-07
+</details>

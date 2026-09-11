@@ -4,9 +4,15 @@ keywords:
   - "/i/content/save"
   - "save"
   - "content"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Update content block
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -14,19 +20,14 @@ keywords:
 /i/content/save
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Updates an existing content block when `content_id` is provided.
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required permission**: `Update` on the `content` feature
@@ -42,50 +43,6 @@ Updates an existing content block when `content_id` is provided.
 | type | String | Yes | Content block type |
 | blocks | String | Yes | JSON stringified array of block objects |
 | details | String | Yes | JSON stringified object with metadata (`created`, `creatorId`, `favorite`, `title`) |
-
-## Response
-
-### Success Response
-
-```json
-{
-  "status": "Success",
-  "contentId": "507f1f77bcf86cd799439011"
-}
-```
-
-### Response Fields
-
-| Field | Type | Description |
-|---|---|---|
-| status | String | Operation status |
-| contentId | String | Updated content block ID |
-
-### Error Responses
-
-| HTTP Status | Response |
-|---|---|
-| 400 | JSON parsing error or `"Invalid request"` |
-| 400 | Validation/processing error message (`e.message`) |
-| 500 | `"Error"` |
-
-## Behavior/Processing
-
-1. Uses  branch when `content_id` is present.
-2. Parses `blocks` and `details` from JSON strings.
-3. Updates the document by `_id` + `app`.
-4. Uses `upsert: true` in update operation.
-5. Returns `status` and `contentId`.
-
----
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.content_blocks` | Endpoint data source | ** - Content block definitions |
-
----
 
 ## Examples
 
@@ -121,6 +78,40 @@ Updates an existing content block when `content_id` is provided.
 }
 ```
 
+## Response
+
+### Success Response
+
+```json
+{
+  "status": "Success",
+  "contentId": "507f1f77bcf86cd799439011"
+}
+```
+
+### Response Fields
+
+| Field | Type | Description |
+|---|---|---|
+| status | String | Operation status |
+| contentId | String | Updated content block ID |
+
+### Error Responses
+
+| HTTP Status | Response |
+|---|---|
+| 400 | JSON parsing error or `"Invalid request"` |
+| 400 | Validation/processing error message (`e.message`) |
+| 500 | `"Error"` |
+
+## Behavior
+
+1. Uses  branch when `content_id` is present.
+2. Parses `blocks` and `details` from JSON strings.
+3. Updates the document by `_id` + `app`.
+4. Uses `upsert: true` in update operation.
+5. Returns `status` and `contentId`.
+
 ## Limitations
 
 - Entire `blocks` payload is replaced by provided value.
@@ -132,21 +123,13 @@ Updates an existing content block when `content_id` is provided.
 - [Content Blocks - Create](blocks-create.md): Create a content block
 - [Content Blocks - Delete](blocks-delete.md): Delete a content block
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Database Collections**
 
-This feature is part of **Countly Enterprise**.
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.content_blocks` | Endpoint data source | ** - Content block definitions |
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

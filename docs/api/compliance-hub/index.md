@@ -1,6 +1,8 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Compliance Hub - API Documentation
@@ -17,7 +19,15 @@ Compliance Hub provides consent analytics and consent-history exploration APIs u
 - [Compliance Hub - Consent Search Old](o-consent-searchold.md)
 - [Compliance Hub - App Users Consents](o-app-users-consents.md)
 
-## Database Collections
+## Operational Notes
+
+- `search` endpoint supports adapter selection and can use MongoDB or ClickHouse data paths.
+- `searchOld` is a legacy backup path kept for historical compatibility.
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Purpose |
 |---|---|
@@ -28,11 +38,4 @@ Compliance Hub provides consent analytics and consent-history exploration APIs u
 | `countly.members` | Used for endpoint authentication and Compliance Hub read permission validation. |
 | `countly.apps` | Used for app-scoped validation and context resolution on app-specific requests. |
 
-## Operational Notes
-
-- `search` endpoint supports adapter selection and can use MongoDB or ClickHouse data paths.
-- `searchOld` is a legacy backup path kept for historical compatibility.
-
-## Last Updated
-
-2026-02-17
+</details>

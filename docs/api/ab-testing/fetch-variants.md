@@ -3,18 +3,21 @@ sidebar_label: "Fetch Available Variants"
 keywords:
   - "/o/sdk"
   - "sdk"
+last_update:
+  date: "2026-04-18"
 ---
 
 # Fetch Available Variants
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
 ```
 /o/sdk?method=ab_fetch_variants
 ```
-
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
 
 ## Overview
 
@@ -24,7 +27,6 @@ Fetch available variant names and values for active experiments (documents with 
 
 **Authentication Methods**:
 - App Key (parameter): `app_key=YOUR_APP_KEY`
-
 
 ## Permissions
 
@@ -37,6 +39,27 @@ Fetch available variant names and values for active experiments (documents with 
 | `app_key` | String | Yes | Application key |
 | `device_id` | String | Yes | Device identifier used by the SDK request context; required by the live handler. |
 | `keys` | String | No | JSON array of parameter names to filter by (empty array returns all) |
+
+## Examples
+
+### Example 1: Fetch Variants for All Parameters
+
+**Request**:
+```bash
+curl "https://your-server.com/o/sdk?method=ab_fetch_variants" \
+  -d "app_key=YOUR_APP_KEY" \
+  -d "device_id=DEVICE_ID"
+```
+
+### Example 2: Fetch Variants for Specific Parameters
+
+**Request**:
+```bash
+curl "https://your-server.com/o/sdk?method=ab_fetch_variants" \
+  -d "app_key=YOUR_APP_KEY" \
+  -d "device_id=DEVICE_ID" \
+  -d 'keys=["button_text","header_text"]'
+```
 
 ## Response
 
@@ -74,7 +97,7 @@ Fetch available variant names and values for active experiments (documents with 
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Handles `/o/sdk?method=ab_fetch_variants` and reads experiments from `countly_out.ab_testing_experiments{appId}`.
 - Includes experiments whose `status` is missing or exactly `running`; draft and completed experiments are not returned.
@@ -83,33 +106,6 @@ Fetch available variant names and values for active experiments (documents with 
 - If `keys` is non-empty, an experiment is included only when that first parameter name is present in `keys`.
 - For included experiments, the response maps the grouping key to an array of `{name, value}` objects, one per variant. `value` is taken from each variant's first parameter.
 - On database errors, returns `Error while fetching ab-testing variants.`. Invalid `keys` JSON is not caught by this handler and can fail the request before a normal error payload is produced.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly_out.ab_testing_experiments{appId}` | Primary: | Experiment definitions and variants. |
-
-## Examples
-
-### Example 1: Fetch Variants for All Parameters
-
-**Request**:
-```bash
-curl "https://your-server.com/o/sdk?method=ab_fetch_variants" \
-  -d "app_key=YOUR_APP_KEY" \
-  -d "device_id=DEVICE_ID"
-```
-
-### Example 2: Fetch Variants for Specific Parameters
-
-**Request**:
-```bash
-curl "https://your-server.com/o/sdk?method=ab_fetch_variants" \
-  -d "app_key=YOUR_APP_KEY" \
-  -d "device_id=DEVICE_ID" \
-  -d 'keys=["button_text","header_text"]'
-```
 
 ## Limitations
 
@@ -122,21 +118,13 @@ curl "https://your-server.com/o/sdk?method=ab_fetch_variants" \
 - [Fetch Active Experiments](fetch-experiments.md)
 - [Enroll User in Variant](enroll-variant.md)
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Database Collections**
 
-This feature is part of **Countly Enterprise**.
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly_out.ab_testing_experiments{appId}` | Primary: | Experiment definitions and variants. |
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-04-18
+</details>

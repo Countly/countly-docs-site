@@ -1,6 +1,8 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Render - API Documentation
@@ -25,7 +27,3 @@ Render endpoint generates screenshot images for dashboard views and returns a pa
 
 - Endpoint creates a temporary login token before rendering.
 - Screenshots are saved under `/images/screenshots/` in server public assets.
-
-## Last Updated
-
-2026-02-17

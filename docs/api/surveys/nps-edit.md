@@ -5,9 +5,15 @@ keywords:
   - "edit"
   - "surveys"
   - "nps"
+last_update:
+  date: "2026-04-18"
 ---
 
 # Surveys - Edit NPS
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -15,19 +21,13 @@ keywords:
 /i/surveys/nps/edit
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Updates an existing NPS widget.
 
 ## Authentication
 
-**Authentication methods**:
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -45,6 +45,12 @@ Updates an existing NPS widget.
 | `appearance` | String (JSON Object) | No | Appearance config |
 | `status` | Boolean/String | No | Active status |
 | `followUpType` | String | No | Follow-up mode |
+
+## Examples
+
+```text
+/i/surveys/nps/edit?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&widget_id=67b9db56f67aab0012cd8899&name=NPS Q2
+```
 
 ## Response
 
@@ -78,7 +84,7 @@ Updates an existing NPS widget.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Parses and preprocesses widget properties such as `msg`, `appearance`, and `targeting`.
 - Updates `feedback_widgets` by `widget_id`. Appearance fields are stored under `appearance.<field>`.
@@ -87,39 +93,19 @@ Updates an existing NPS widget.
 - Returns `Success` after widget/cohort updates, or specific cohort/upload error messages when follow-up work fails.
 - Emits `surveys_widget_edited` and, when applicable, `cohort_edited` system log actions.
 
-## Database Collections
+## Related Endpoints
+
+- [Surveys - Create NPS](nps-create.md)
+- [Surveys - Update NPS Status](nps-status-update.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
 | `countly.feedback_widgets` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 | `countly.cohorts` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 
----
-
-## Examples
-
-```text
-/i/surveys/nps/edit?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&widget_id=67b9db56f67aab0012cd8899&name=NPS Q2
-```
-
-## Related Endpoints
-
-- [Surveys - Create NPS](nps-create.md)
-- [Surveys - Update NPS Status](nps-status-update.md)
-
-## Ⓔ Enterprise
-
-This feature is part of **Countly Enterprise**.
-
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions.
-
----
-
-## Last Updated
-
-2026-04-18
+</details>

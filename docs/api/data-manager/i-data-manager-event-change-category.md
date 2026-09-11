@@ -5,6 +5,8 @@ keywords:
   - "change-category"
   - "data-manager"
   - "event"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /i/data-manager/event/change-category
@@ -21,11 +23,7 @@ Assigns or changes category mapping for one or more events in the selected app's
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. **API Key** (parameter): `api_key=YOUR_API_KEY`
-2. **Auth Token** (parameter): `auth_token=YOUR_AUTH_TOKEN`
-3. **Auth Token** (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -48,6 +46,14 @@ Example:
   "events": ["Purchase Completed", "Checkout Started"],
   "category": "Revenue"
 }
+```
+
+## Examples
+
+### Assign Revenue category to two events
+
+```plaintext
+/i/data-manager/event/change-category?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&events=["Purchase Completed","Checkout Started"]&category=Revenue
 ```
 
 ## Response
@@ -90,7 +96,7 @@ Example:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Validates update access for `data_manager`.
 - Parses `events` JSON string and loads app event document.
@@ -100,29 +106,6 @@ Example:
 ### Impact on Other Data
 
 - Updates `map.{event}.category` entries in `countly.events` app document.
-
-## Audit & System Logs
-
-| Action | Trigger | Payload |
-|---|---|---|
-| `dm-event-edit` | Dispatched once per event after update attempt | `{ ev: event_key, category: category_value }` |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication and permission validation | Reads member record by `api_key` or `auth_token` to verify update access. |
-| `countly.apps` | App context validation | Reads app record for the requested `app_id` during access validation. |
-| `countly.events` | Stores event definitions, segments, and map metadata per app | Reads app event document and updates event-category mappings in `map`. |
-| `countly.systemlogs` | Stores audit trail for management actions | Receives one audit entry per event updated. |
-
-## Examples
-
-### Assign Revenue category to two events
-
-```plaintext
-/i/data-manager/event/change-category?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&events=["Purchase Completed","Checkout Started"]&category=Revenue
-```
 
 ## Limitations
 
@@ -134,6 +117,22 @@ Example:
 - [Data Manager - Events Read](o-data-manager-events.md)
 - [Data Manager - Categories Read](o-data-manager-category.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Audit & System Logs**
+
+| Action | Trigger | Payload |
+|---|---|---|
+| `dm-event-edit` | Dispatched once per event after update attempt | `{ ev: event_key, category: category_value }` |
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication and permission validation | Reads member record by `api_key` or `auth_token` to verify update access. |
+| `countly.apps` | App context validation | Reads app record for the requested `app_id` during access validation. |
+| `countly.events` | Stores event definitions, segments, and map metadata per app | Reads app event document and updates event-category mappings in `map`. |
+| `countly.systemlogs` | Stores audit trail for management actions | Receives one audit entry per event updated. |
+
+</details>

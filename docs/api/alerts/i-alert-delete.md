@@ -4,6 +4,8 @@ keywords:
   - "/i/alert/delete"
   - "delete"
   - "alert"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Alerts - Delete
@@ -20,11 +22,7 @@ Deletes an alert by ID. Non-global-admin users can delete only alerts they creat
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -38,6 +36,17 @@ Requires `alerts` `Update` permission.
 | `app_id` | String | Conditional | Required for non-global-admin users during update validation. |
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
+
+## Examples
+
+### Delete alert
+
+```text
+/i/alert/delete?
+  app_id=6991c75b024cb89cdc04efd2&
+  api_key=YOUR_API_KEY&
+  alertID=65f0cbf8bca6b8e8fbf7f901
+```
 
 ## Response
 
@@ -113,7 +122,7 @@ Requires `alerts` `Update` permission.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -126,27 +135,6 @@ Requires `alerts` `Update` permission.
 
 - Invalidates alerts cache so removed alert is not processed in future runs.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication and permission checks | Reads member account and access rights for update validation. |
-| `countly.apps` | App validation/context loading | Validates `app_id` for non-global-admin update access. |
-| `countly.alerts` | Alert rule persistence | Removes matching alert document by `_id` (+ `createdBy` filter for non-admin users). |
-
----
-
-## Examples
-
-### Delete alert
-
-```text
-/i/alert/delete?
-  app_id=6991c75b024cb89cdc04efd2&
-  api_key=YOUR_API_KEY&
-  alertID=65f0cbf8bca6b8e8fbf7f901
-```
-
 ## Limitations
 
 - For non-global-admin users, delete query includes `createdBy=current_user`, so IDs for alerts owned by other users are reported as not found.
@@ -156,6 +144,15 @@ Requires `alerts` `Update` permission.
 - [Alerts - Save](i-alert-save.md)
 - [Alerts - Update Status](i-alert-status.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication and permission checks | Reads member account and access rights for update validation. |
+| `countly.apps` | App validation/context loading | Validates `app_id` for non-global-admin update access. |
+| `countly.alerts` | Alert rule persistence | Removes matching alert document by `_id` (+ `createdBy` filter for non-admin users). |
+
+</details>

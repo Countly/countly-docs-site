@@ -4,6 +4,8 @@ keywords:
   - "/i/reports/create"
   - "create"
   - "reports"
+last_update:
+  date: "2026-03-07"
 ---
 
 # Reports - Report Create
@@ -20,12 +22,7 @@ Creates a scheduled report definition that can later be sent on schedule or on d
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. `api_key=YOUR_API_KEY`
-2. `auth_token=YOUR_AUTH_TOKEN`
-3. `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -50,6 +47,17 @@ Requires `reports` `Create` permission.
 | `args.hour` | Number/String | No | Hour value. Parsed to integer. |
 | `args.minute` | Number/String | No | Minute value. Parsed to integer. |
 | `args.sendPdf` | Boolean | No | Whether scheduled sends should include PDF attachment. |
+
+## Examples
+
+### Create a weekly report
+
+```plaintext
+/i/reports/create?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  args={"title":"Weekly Executive Report","apps":["6991c75b024cb89cdc04efd2"],"emails":["analytics@company.com"],"frequency":"weekly","day":1,"hour":9,"minute":0,"timezone":"Europe/London","metrics":{"analytics":true},"sendPdf":true}
+```
 
 ## Response
 
@@ -87,7 +95,7 @@ Requires `reports` `Create` permission.
 
 Standard authentication/authorization errors from create validation can also be returned.
 
-## Behavior/Processing
+## Behavior
 
 - Parses `args` JSON before routing logic.
 - Normalizes scheduling fields (`minute`, `hour`, `day`) to integers, default `0`.
@@ -104,24 +112,6 @@ Standard authentication/authorization errors from create validation can also be 
 - Creates one report document in `countly.reports`.
 - Adds one audit entry in `countly.systemlogs` on success.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.reports` | Report storage | Inserts new report definition document. |
-| `countly.systemlogs` | Audit trail | Receives `reports_create` action payload. |
-
-## Examples
-
-### Create a weekly report
-
-```plaintext
-/i/reports/create?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  args={"title":"Weekly Executive Report","apps":["6991c75b024cb89cdc04efd2"],"emails":["analytics@company.com"],"frequency":"weekly","day":1,"hour":9,"minute":0,"timezone":"Europe/London","metrics":{"analytics":true},"sendPdf":true}
-```
-
 ## Limitations
 
 - `args` must be valid JSON; malformed JSON can fail before clean business error handling.
@@ -133,6 +123,14 @@ Standard authentication/authorization errors from create validation can also be 
 - [Reports - Report Delete](i-reports-delete.md)
 - [Reports - Reports Read](o-reports-all.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-03-07
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.reports` | Report storage | Inserts new report definition document. |
+| `countly.systemlogs` | Audit trail | Receives `reports_create` action payload. |
+
+</details>

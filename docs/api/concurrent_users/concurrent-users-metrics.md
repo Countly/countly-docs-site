@@ -1,15 +1,18 @@
 ---
 sidebar_label: "Get Metrics"
+last_update:
+  date: "2026-02-16"
 ---
 
 # /o?method=concurrent
 
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
+
 ## Endpoint
 
 `/o?method=concurrent`
-
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
 
 ## Overview
 
@@ -17,10 +20,8 @@ Retrieve online user metrics in multiple time modes, including real-time counts,
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required permission**: `Read` on the Online Users feature (`concurrent_users`)
@@ -44,11 +45,35 @@ Retrieve online user metrics in multiple time modes, including real-time counts,
 - `4`: Last 30 days (per-day data)
 - `5`: All-time maximum values
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `concurrent_users.*` | Online Users feature defaults | Live-count and alert behavior for online-user endpoints. | Changes to Online Users settings can alter alert handling, thresholds, or returned live metrics. |
+### Example 1: Get current online counts (mode: 0)
+
+```bash
+curl "https://your-server.com/o?method=concurrent&app_id=YOUR_APP_ID&mode=0" \
+  -d "api_key=YOUR_API_KEY"
+```
+
+### Example 2: Get metrics breakdown by geography/device (mode: 1)
+
+```bash
+curl "https://your-server.com/o?method=concurrent&app_id=YOUR_APP_ID&mode=1" \
+  -d "api_key=YOUR_API_KEY"
+```
+
+### Example 3: Get hourly trend for last 24 hours (mode: 3)
+
+```bash
+curl "https://your-server.com/o?method=concurrent&r_apps=[\"YOUR_APP_ID\"]&mode=3&add_new=true" \
+  -d "api_key=YOUR_API_KEY"
+```
+
+### Example 4: Get all-time maximum values (mode: 5)
+
+```bash
+curl "https://your-server.com/o?method=concurrent&app_id=YOUR_APP_ID&mode=5" \
+  -d "api_key=YOUR_API_KEY"
+```
 
 ## Response
 
@@ -105,19 +130,11 @@ Retrieve online user metrics in multiple time modes, including real-time counts,
 | 400 | `{\"result\": \"Insufficient permissions\"}` | User lacks Read permission on feature |
 | 500 | `{\"result\": \"Concurrent users API error.\"}` | Server error in data aggregation or retrieval |
 
-## Behavior/Processing
+## Behavior
 
 - If `r_apps` is missing/invalid, falls back to `app_id`
 - Returns **400** if neither `r_apps` nor `app_id` provided
 - Invalid `mode` values default to `0`
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.concurrent_users_active` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
-| `countly.concurrent_users_max` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
-| `countly.app_users\{appId\}` | Per-app user profiles | Stores user-level properties and profile fields affected by this endpoint. |
 
 ## Limitations
 
@@ -128,56 +145,26 @@ Retrieve online user metrics in multiple time modes, including real-time counts,
 - Metrics are sampled every `sampling_interval` seconds (default: 30 seconds)
 - Alert condition window must be at least `alert_interval` minutes (default: 3 minutes)
 
-## Examples
-
-### Example 1: Get current online counts (mode: 0)
-
-```bash
-curl "https://your-server.com/o?method=concurrent&app_id=YOUR_APP_ID&mode=0" \
-  -d "api_key=YOUR_API_KEY"
-```
-
-### Example 2: Get metrics breakdown by geography/device (mode: 1)
-
-```bash
-curl "https://your-server.com/o?method=concurrent&app_id=YOUR_APP_ID&mode=1" \
-  -d "api_key=YOUR_API_KEY"
-```
-
-### Example 3: Get hourly trend for last 24 hours (mode: 3)
-
-```bash
-curl "https://your-server.com/o?method=concurrent&r_apps=[\"YOUR_APP_ID\"]&mode=3&add_new=true" \
-  -d "api_key=YOUR_API_KEY"
-```
-
-### Example 4: Get all-time maximum values (mode: 5)
-
-```bash
-curl "https://your-server.com/o?method=concurrent&app_id=YOUR_APP_ID&mode=5" \
-  -d "api_key=YOUR_API_KEY"
-```
-
 ## Related Endpoints
 
 - [Get Live Count](concurrent-users-live.md) - Current online users and all-time max (simple view)
 - [Get All Alerts](concurrent-users-alerts.md) - View configured online user alerts
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Configuration Impact**
 
-This feature is part of **Countly Enterprise**.
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `concurrent_users.*` | Online Users feature defaults | Live-count and alert behavior for online-user endpoints. | Changes to Online Users settings can alter alert handling, thresholds, or returned live metrics. |
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
+**Database Collections**
 
-Last Updated: 2026-02-14
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.concurrent_users_active` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
+| `countly.concurrent_users_max` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
+| `countly.app_users\{appId\}` | Per-app user profiles | Stores user-level properties and profile fields affected by this endpoint. |
 
----
-
-## Last Updated
-
-2026-02-16
+</details>

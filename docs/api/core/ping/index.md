@@ -1,6 +1,8 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Ping - API Documentation
@@ -17,7 +19,3 @@ Lightweight liveness endpoint that performs a minimal database probe.
 
 - Endpoint is accessible without API authentication parameters.
 - Returns `Success` on DB probe success.
-
-## Last Updated
-
-2026-02-17

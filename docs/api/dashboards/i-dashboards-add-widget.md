@@ -4,6 +4,8 @@ keywords:
   - "/i/dashboards/add-widget"
   - "add-widget"
   - "dashboards"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Dashboards - Add Widget
@@ -20,11 +22,7 @@ Adds a widget to an existing dashboard. The endpoint validates dashboard access,
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -65,6 +63,41 @@ Decoded example:
   "position": [0, 0],
   "size": [4, 3]
 }
+```
+
+## Examples
+
+### Add analytics widget
+
+```text
+/i/dashboards/add-widget?
+  dashboard_id=65e1f3d2a4f41a5f6f6d7701&
+  widget={
+    "widget_type":"analytics",
+    "feature":"core",
+    "apps":["6991c75b024cb89cdc04efd2"],
+    "data_type":"session",
+    "metrics":["t","u"],
+    "title":"Sessions",
+    "position":[0,0],
+    "size":[4,3]
+  }
+```
+
+### Add note widget
+
+```text
+/i/dashboards/add-widget?
+  dashboard_id=65e1f3d2a4f41a5f6f6d7701&
+  widget={
+    "widget_type":"note",
+    "feature":"core",
+    "apps":["6991c75b024cb89cdc04efd2"],
+    "title":"Release Note",
+    "contenthtml":"<p>Q1 targets updated</p>",
+    "position":[4,0],
+    "size":[4,2]
+  }
 ```
 
 ## Response
@@ -136,7 +169,7 @@ Decoded example:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -152,58 +185,6 @@ Decoded example:
 - Adds widget ID to `countly.dashboards.widgets` using `$addToSet`.
 - Emits dashboard widget creation events for downstream listeners.
 
-## Audit & System Logs
-
-| Action | Trigger | Payload |
-|---|---|---|
-| `widget_added` | After successful widget insert | Full inserted widget object |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication and dashboard-share access checks | Reads current member record and group/share context for edit/view validation. |
-| `countly.dashboards` | Parent dashboard lookup and update | Reads dashboard by `_id`; updates `widgets` array with new widget ID. |
-| `countly.widgets` | Widget persistence | Inserts new widget document. |
-| `countly.systemlogs` | Audit trail | Writes `widget_added` log entry via `/systemlogs` dispatch. |
-
----
-
-## Examples
-
-### Add analytics widget
-
-```text
-/i/dashboards/add-widget?
-  dashboard_id=65e1f3d2a4f41a5f6f6d7701&
-  widget={
-    "widget_type":"analytics",
-    "feature":"core",
-    "apps":["6991c75b024cb89cdc04efd2"],
-    "data_type":"session",
-    "metrics":["t","u"],
-    "title":"Sessions",
-    "position":[0,0],
-    "size":[4,3]
-  }
-```
-
-### Add note widget
-
-```text
-/i/dashboards/add-widget?
-  dashboard_id=65e1f3d2a4f41a5f6f6d7701&
-  widget={
-    "widget_type":"note",
-    "feature":"core",
-    "apps":["6991c75b024cb89cdc04efd2"],
-    "title":"Release Note",
-    "contenthtml":"<p>Q1 targets updated</p>",
-    "position":[4,0],
-    "size":[4,2]
-  }
-```
-
 ## Limitations
 
 - The endpoint only enforces minimal widget validation (`widget_type` and `apps`). Widget-type-specific validation is handled later by widget data loaders.
@@ -215,6 +196,22 @@ Decoded example:
 - [Dashboards - Remove Widget](i-dashboards-remove-widget.md)
 - [Dashboards - Read](o-dashboards.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Audit & System Logs**
+
+| Action | Trigger | Payload |
+|---|---|---|
+| `widget_added` | After successful widget insert | Full inserted widget object |
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication and dashboard-share access checks | Reads current member record and group/share context for edit/view validation. |
+| `countly.dashboards` | Parent dashboard lookup and update | Reads dashboard by `_id`; updates `widgets` array with new widget ID. |
+| `countly.widgets` | Widget persistence | Inserts new widget document. |
+| `countly.systemlogs` | Audit trail | Writes `widget_added` log entry via `/systemlogs` dispatch. |
+
+</details>

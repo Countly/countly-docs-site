@@ -4,6 +4,8 @@ keywords:
   - "/i/apps/delete"
   - "delete"
   - "apps"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /i/apps/delete
@@ -20,9 +22,7 @@ Delete an app and trigger full app-data cleanup across core and integrated featu
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -41,6 +41,20 @@ Delete an app and trigger full app-data cleanup across core and integrated featu
 | Field | Type | Required | Description |
 |---|---|---|---|
 | `app_id` | String | Yes | App ID to delete. |
+
+## Examples
+
+### Example 1: Delete app
+
+```plaintext
+/i/apps/delete?api_key=YOUR_API_KEY&args={"app_id":"64b0ac10c2c3ce0012dd1001"}
+```
+
+```json
+{
+  "result": "Success"
+}
+```
 
 ## Response
 
@@ -81,7 +95,7 @@ Delete an app and trigger full app-data cleanup across core and integrated featu
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -97,7 +111,26 @@ Delete an app and trigger full app-data cleanup across core and integrated featu
 - Removes aggregated and granular analytics data for the app.
 - Dispatches app-delete integration hooks for additional feature cleanup.
 
-## Database Collections
+## Operational Considerations
+
+- This endpoint is destructive and should be treated as irreversible.
+- Cleanup spans many collections and integrations; endpoint success means cleanup was initiated and core deletion path completed.
+- For large apps, full cleanup can take noticeable time across background operations.
+
+## Limitations
+
+- Locked apps cannot be deleted.
+- Route-level validation requires global admin access.
+
+## Related Endpoints
+
+- [Apps - App Reset](i-apps-reset.md)
+- [Apps - App Read All](o-apps-all.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -117,38 +150,4 @@ Delete an app and trigger full app-data cleanup across core and integrated featu
 | `countly_drill.drill_meta` | Drill metadata cleanup | Removes app drill metadata documents. |
 | `countly_fs` | App image cleanup | Deletes app image from app image storage. |
 
----
-## Examples
-
-### Example 1: Delete app
-
-```plaintext
-/i/apps/delete?api_key=YOUR_API_KEY&args={"app_id":"64b0ac10c2c3ce0012dd1001"}
-```
-
-```json
-{
-  "result": "Success"
-}
-```
-
-## Operational Considerations
-
-- This endpoint is destructive and should be treated as irreversible.
-- Cleanup spans many collections and integrations; endpoint success means cleanup was initiated and core deletion path completed.
-- For large apps, full cleanup can take noticeable time across background operations.
-
-## Limitations
-
-- Locked apps cannot be deleted.
-- Route-level validation requires global admin access.
-
----
-## Related Endpoints
-
-- [Apps - App Reset](i-apps-reset.md)
-- [Apps - App Read All](o-apps-all.md)
-
-## Last Updated
-
-2026-02-17
+</details>

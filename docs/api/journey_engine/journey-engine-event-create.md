@@ -4,9 +4,15 @@ keywords:
   - "/i/journey-engine/event"
   - "event"
   - "journey-engine"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Create Custom Event
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -14,19 +20,14 @@ keywords:
 /i/journey-engine/event
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Creates a custom event for journey flows and registers it in both event metadata and Drill metadata.
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required permission**: `Create` on the `journey_engine` feature
@@ -49,45 +50,6 @@ Creates a custom event for journey flows and registers it in both event metadata
 | `description` | String | No | Event description |
 | `segments` | Array | Yes | Segment definitions used for event metadata |
 | `segments[].name` | String | Yes | Segment key |
-
-## Response
-
-### Success Response
-
-```json
-"Success"
-```
-
-### Response Fields
-
-| Field | Type | Description |
-|---|---|---|
-| (root value) | String | Operation status |
-
-### Error Responses
-
-| HTTP Status | Response |
-|---|---|
-| 500 | `{ "result": "Error" }` |
-
-## Behavior/Processing
-
-1. Parses `event` from query string.
-2. Validates and normalizes event key.
-3. Writes event metadata into `events` collection.
-4. Writes Drill metadata into `drill_meta` collection.
-5. Logs creation in system logs.
-
----
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.events` | Endpoint data source | ** - Updates event map/list/segment metadata for the app |
-| `countly_drill.drill_meta` | Endpoint data source | ** - Creates Drill event metadata |
-
----
 
 ## Examples
 
@@ -113,28 +75,47 @@ Decoded `event` object:
 }
 ```
 
----
+## Response
+
+### Success Response
+
+```json
+"Success"
+```
+
+### Response Fields
+
+| Field | Type | Description |
+|---|---|---|
+| (root value) | String | Operation status |
+
+### Error Responses
+
+| HTTP Status | Response |
+|---|---|
+| 500 | `{ "result": "Error" }` |
+
+## Behavior
+
+1. Parses `event` from query string.
+2. Validates and normalizes event key.
+3. Writes event metadata into `events` collection.
+4. Writes Drill metadata into `drill_meta` collection.
+5. Logs creation in system logs.
 
 ## Related Endpoints
 
 - [Journey Engine - Stats Summary](journey-engine-stats-summary.md)
 - [Journey Engine - Stats Performance](journey-engine-stats-performance.md)
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Database Collections**
 
-This feature is part of **Countly Enterprise**.
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.events` | Endpoint data source | ** - Updates event map/list/segment metadata for the app |
+| `countly_drill.drill_meta` | Endpoint data source | ** - Creates Drill event metadata |
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

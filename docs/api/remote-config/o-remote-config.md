@@ -3,6 +3,8 @@ sidebar_label: "Dashboard Read"
 keywords:
   - "/o"
   - "o"
+last_update:
+  date: "2026-03-05"
 ---
 
 # Remote Config - Dashboard Read
@@ -19,12 +21,7 @@ Returns all remote config parameters and conditions for dashboard management vie
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. `api_key=YOUR_API_KEY`
-2. `auth_token=YOUR_AUTH_TOKEN`
-3. `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -38,6 +35,14 @@ Requires `remote_config` `Read` permission.
 | `api_key` | String | Yes (or use `auth_token`) | API key for authentication. |
 | `auth_token` | String | No | Auth token as query parameter or `countly-token` header. |
 | `app_id` | String | Yes | App id. |
+
+## Examples
+
+### Read dashboard config model
+
+```plaintext
+/o?method=remote-config&api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2
+```
 
 ## Response
 
@@ -90,39 +95,28 @@ Requires `remote_config` `Read` permission.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Reads all parameters and all conditions from app collections.
 - Computes `used_in_parameters` count for each condition at response time.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly_out.remoteconfig_parameters{appId}` | Parameter source | Reads all parameter documents. |
-| `countly_out.remoteconfig_conditions{appId}` | Condition source | Reads all condition documents and computes usage count. |
-
----
-
-## Examples
-
-### Read dashboard config model
-
-```plaintext
-/o?method=remote-config&api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2
-```
-
 ## Limitations
 
 - Returns full arrays; no pagination.
-
----
 
 ## Related Endpoints
 
 - [Remote Config - Parameter Create](parameter-add.md)
 - [Remote Config - SDK Read](o-sdk-rc.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-03-05
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly_out.remoteconfig_parameters{appId}` | Parameter source | Reads all parameter documents. |
+| `countly_out.remoteconfig_conditions{appId}` | Condition source | Reads all condition documents and computes usage count. |
+
+</details>

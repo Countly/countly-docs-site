@@ -4,9 +4,15 @@ keywords:
   - "/o/ab-testing/experiment"
   - "experiment"
   - "ab-testing"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Get Specific Experiments
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -14,19 +20,14 @@ keywords:
 /o/ab-testing/experiment
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Retrieve multiple experiment definitions by their ObjectIds.
 
 ## Authentication
 
-**Authentication Methods**:
-- **API Key** (parameter): `api_key=YOUR_API_KEY`
-- **Auth Token** (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- **Auth Token** (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - Read (ab_testing feature)
@@ -39,6 +40,26 @@ Retrieve multiple experiment definitions by their ObjectIds.
 | `auth_token` | String | Yes (or use `api_key`) | Auth token for authentication |
 | `app_id` | String | Yes | Application ID |
 | `experiments` | String (JSON) | Yes | JSON array of experiment IDs |
+
+## Examples
+
+### Example 1: Read two experiments
+
+**Request**:
+```bash
+curl "https://your-server.com/o/ab-testing/experiment?app_id=YOUR_APP_ID&experiments=[\"EXPERIMENT_ID_1\",\"EXPERIMENT_ID_2\"]&api_key=YOUR_API_KEY"
+```
+
+**Response**:
+```json
+[
+  {
+    "_id": "6991caa6024cb89cdc04eff5",
+    "name": "Pricing1",
+    "status": "running"
+  }
+]
+```
 
 ## Response
 
@@ -92,37 +113,11 @@ Retrieve multiple experiment definitions by their ObjectIds.
 - If parsing `experiments` fails, the handler continues with an empty ID list and returns `[]`.
 - If no matching IDs are found, returns `[]`.
 
-## Behavior/Processing
+## Behavior
 
 - Parses `experiments` as JSON and converts each ID to an ObjectID.
 - Fetches experiment documents from `countly_out.ab_testing_experiments{appId}`.
 - Returns an empty array if none are found.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly_out.ab_testing_experiments{appId}` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
-
-## Examples
-
-### Example 1: Read two experiments
-
-**Request**:
-```bash
-curl "https://your-server.com/o/ab-testing/experiment?app_id=YOUR_APP_ID&experiments=[\"EXPERIMENT_ID_1\",\"EXPERIMENT_ID_2\"]&api_key=YOUR_API_KEY"
-```
-
-**Response**:
-```json
-[
-  {
-    "_id": "6991caa6024cb89cdc04eff5",
-    "name": "Pricing1",
-    "status": "running"
-  }
-]
-```
 
 ## Limitations
 
@@ -134,21 +129,13 @@ curl "https://your-server.com/o/ab-testing/experiment?app_id=YOUR_APP_ID&experim
 - [List All Experiments](read.md)
 - [Get Experiment Details](experiment-detail.md)
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Database Collections**
 
-This feature is part of **Countly Enterprise**.
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly_out.ab_testing_experiments{appId}` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

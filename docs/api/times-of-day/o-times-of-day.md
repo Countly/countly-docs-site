@@ -3,6 +3,8 @@ sidebar_label: "Times Of Day Query"
 keywords:
   - "/o"
   - "o"
+last_update:
+  date: "2026-03-05"
 ---
 
 # Times Of Day - Query
@@ -19,12 +21,7 @@ Returns a 7x24 matrix (day-of-week x hour) for session or event activity.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. `api_key=YOUR_API_KEY`
-2. `auth_token=YOUR_AUTH_TOKEN`
-3. `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -44,11 +41,19 @@ Requires `times_of_day` `Read` permission.
 | `period` | String | No | Used with `fetchFromGranural` path. |
 | `periodOffset` | Number | No | Used with `fetchFromGranural` path. |
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `api.request_threshold` | Server config | Long-task threshold | Granular mode runs with half of this value as timeout threshold. |
+### Query session heatmap
+
+```plaintext
+/o?method=times-of-day&api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&tod_type=[CLY]_session
+```
+
+### Query event heatmap for selected months
+
+```plaintext
+/o?method=times-of-day&api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&tod_type=purchase&date_range=2025:01,2025:02
+```
 
 ## Response
 
@@ -82,33 +87,24 @@ Requires `times_of_day` `Read` permission.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Standard mode: reads monthly docs from `times_of_day` and aggregates to 7x24 matrix.
 - Granular mode (`fetchFromGranural`): uses calculated-data long task and maps day `7` to `0` (Sunday).
 
-## Database Collections
+<details>
+<summary>Implementation details</summary>
+
+**Configuration Impact**
+
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `api.request_threshold` | Server config | Long-task threshold | Granular mode runs with half of this value as timeout threshold. |
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
 | `countly.times_of_day` | Times of day source | Reads monthly activity docs for selected `tod_type` and app. |
 
----
-
-## Examples
-
-### Query session heatmap
-
-```plaintext
-/o?method=times-of-day&api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&tod_type=[CLY]_session
-```
-
-### Query event heatmap for selected months
-
-```plaintext
-/o?method=times-of-day&api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&tod_type=purchase&date_range=2025:01,2025:02
-```
-
-## Last Updated
-
-2026-03-05
+</details>

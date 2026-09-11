@@ -3,9 +3,15 @@ sidebar_label: "Get Report"
 keywords:
   - "/o"
   - "o"
+last_update:
+  date: "2026-04-18"
 ---
 
 # Get crash report
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -13,19 +19,14 @@ keywords:
 /o?method=crash_report
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Fetches one crash report record by `report_id`.
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required permission**: `Read` on the `crashes` feature
@@ -40,11 +41,13 @@ Fetches one crash report record by `report_id`.
 | `api_key` | String | Yes (or `auth_token`) | API key authentication |
 | `auth_token` | String | Yes (or `api_key`) | Auth token authentication |
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `crashes.*` | Crashes feature defaults | Crash-report lookup behavior and source selection used by this endpoint. | Changes to crashes settings can affect how report details are retrieved and what metadata is available in output. |
+### Example 1: Get report by ID
+
+```text
+/o?method=crash_report&app_id=5f9c8a3b4d1e2a001f3b4567&report_id=65c5df182c5f5300121a0019&api_key=YOUR_API_KEY
+```
 
 ## Response
 
@@ -82,7 +85,7 @@ Fetches one crash report record by `report_id`.
 | 400 | `{ "result": "Report <id> not found" }` |
 | 500 | `{ "result": "Error fetching crash report <id>" }` |
 
-## Behavior/Processing
+## Behavior
 
 - Requires `Read` permission on the `crashes` feature.
 - Requires `report_id`; missing values return `Missing parameter "report_id"`.
@@ -91,43 +94,25 @@ Fetches one crash report record by `report_id`.
 - If no report matches the ID, returns `Report <id> not found`.
 - Query failures are logged and returned as `Error fetching crash report <id>`.
 
-## Database Collections
+## Related Endpoints
+
+- [Run Symbolication](crash-symbolicate.md)
+- [List Jobs](crash-jobs-list.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Configuration Impact**
+
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `crashes.*` | Crashes feature defaults | Crash-report lookup behavior and source selection used by this endpoint. | Changes to crashes settings can affect how report details are retrieved and what metadata is available in output. |
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
 | `countly.crashdata_{appId}` / crash query backend | Crash report lookup source | Stores crash report documents queried by `report_id` through the crashes data layer. |
 | `countly_drill.drill_events` (backend-dependent) | Crash event enrichment source | Provides crash event fields when report data is resolved through drill-based crash query paths. |
 
----
-
-## Examples
-
-### Example 1: Get report by ID
-
-```text
-/o?method=crash_report&app_id=5f9c8a3b4d1e2a001f3b4567&report_id=65c5df182c5f5300121a0019&api_key=YOUR_API_KEY
-```
-
-## Related Endpoints
-
-- [Run Symbolication](crash-symbolicate.md)
-- [List Jobs](crash-jobs-list.md)
-
----
-
-## Ⓔ Enterprise
-
-This feature is part of **Countly Enterprise**.
-
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-04-18
+</details>

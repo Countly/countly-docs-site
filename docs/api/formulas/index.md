@@ -5,8 +5,9 @@ sidebar_label: "Overview"
 
 # Formulas - API Documentation
 
-> Ⓔ **Enterprise Only**  
-> This feature is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This feature is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Overview
 
@@ -32,15 +33,6 @@ The Formulas feature lets you define calculated metrics using Countly formula bu
 ### Write
 - [Formulas - Save](save.md)
 - [Formulas - Delete](delete.md)
-
-## Database Collections
-
-| Collection | Purpose |
-|---|---|
-| `countly.calculated_metrics` | Stores saved formulas and metadata. |
-| `countly.long_tasks` | Stores long-running formula/report tasks and subtask data. |
-| `countly.widgets` | Stores widget documents that can reference formulas. |
-| `countly.systemlogs` | Stores formula create/edit/delete audit logs. |
 
 ## Configuration & Settings
 
@@ -81,6 +73,18 @@ There are no formulas-specific plugin configuration keys in `plugins/formulas/ap
 - Dashboard
 - Report Manager
 
----
-
 _Last Updated: 2026-02-15_
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
+
+| Collection | Purpose |
+|---|---|
+| `countly.calculated_metrics` | Stores saved formulas and metadata. |
+| `countly.long_tasks` | Stores long-running formula/report tasks and subtask data. |
+| `countly.widgets` | Stores widget documents that can reference formulas. |
+| `countly.systemlogs` | Stores formula create/edit/delete audit logs. |
+
+</details>

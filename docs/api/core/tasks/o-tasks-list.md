@@ -4,6 +4,8 @@ keywords:
   - "/o/tasks/list"
   - "list"
   - "tasks"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /o/tasks/list
@@ -20,9 +22,7 @@ Returns paginated task list output in DataTables-compatible structure.
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -53,6 +53,33 @@ Returns paginated task list output in DataTables-compatible structure.
   - otherwise, global-or-creator visibility filter is applied
 - Subtasks are excluded (`subtask` must not exist).
 - `query` parsing failures fall back to `{}`.
+
+## Examples
+
+### Example 1: First page
+
+```plaintext
+/o/tasks/list?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  iDisplayStart=0&
+  iDisplayLength=10&
+  sEcho=1
+```
+
+### Example 2: Sorted search
+
+```plaintext
+/o/tasks/list?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  iDisplayStart=0&
+  iDisplayLength=20&
+  iSortCol_0=7&
+  sSortDir_0=desc&
+  sSearch=export&
+  sEcho=2
+```
 
 ## Response
 
@@ -94,7 +121,7 @@ Returns paginated task list output in DataTables-compatible structure.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -107,11 +134,25 @@ Returns paginated task list output in DataTables-compatible structure.
 
 - Read-only endpoint.
 
-## Audit & System Logs
+## Operational Considerations
+
+- This endpoint is intended for paginated UI/table usage.
+- Very broad filters can still be expensive due sorting/search over task history.
+
+## Related Endpoints
+
+- [Tasks - Read All Tasks](./o-tasks-all.md)
+- [Tasks - Count Tasks](./o-tasks-count.md)
+- [Tasks - Read Task](./o-tasks-task.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Audit & System Logs**
 
 - No `/systemlogs` action is emitted by this endpoint.
 
-## Database Collections
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -120,48 +161,4 @@ Returns paginated task list output in DataTables-compatible structure.
 | `countly.widgets` | Dashboard widget linkage enrichment | Optional read to map linked report tasks to dashboard context. |
 | `countly.dashboards` | Dashboard linkage enrichment | Optional read to map widget IDs to dashboard IDs. |
 
----
-
-## Examples
-
-### Example 1: First page
-
-```plaintext
-/o/tasks/list?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  iDisplayStart=0&
-  iDisplayLength=10&
-  sEcho=1
-```
-
-### Example 2: Sorted search
-
-```plaintext
-/o/tasks/list?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  iDisplayStart=0&
-  iDisplayLength=20&
-  iSortCol_0=7&
-  sSortDir_0=desc&
-  sSearch=export&
-  sEcho=2
-```
-
-## Operational Considerations
-
-- This endpoint is intended for paginated UI/table usage.
-- Very broad filters can still be expensive due sorting/search over task history.
-
----
-
-## Related Endpoints
-
-- [Tasks - Read All Tasks](./o-tasks-all.md)
-- [Tasks - Count Tasks](./o-tasks-count.md)
-- [Tasks - Read Task](./o-tasks-task.md)
-
-## Last Updated
-
-2026-02-17
+</details>

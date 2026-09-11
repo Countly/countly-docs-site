@@ -3,12 +3,15 @@ sidebar_label: "Lookup"
 keywords:
   - "/o"
   - "o"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Lookup IP Address
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -22,10 +25,8 @@ Looks up location data for an IP address using geoip-lite.
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required permission**: `Read` on the `geo` feature
@@ -38,6 +39,20 @@ Looks up location data for an IP address using geoip-lite.
 | `auth_token` | String | Yes (or `api_key`) | Auth token authentication |
 | `app_id` | String | Yes | Application context for permission validation |
 | `ip_address` | String | No | IP address to lookup; when omitted, request IP is used |
+
+## Examples
+
+### Example 1: Lookup a Specific IP
+
+```text
+https://your-server.com/o?method=lookup&api_key=YOUR_API_KEY&app_id=609bd78d90d7a416d4dfb984&ip_address=8.8.8.8
+```
+
+### Example 2: Lookup Request IP
+
+```text
+https://your-server.com/o?method=lookup&api_key=YOUR_API_KEY&app_id=609bd78d90d7a416d4dfb984
+```
 
 ## Response
 
@@ -70,51 +85,21 @@ Looks up location data for an IP address using geoip-lite.
 |---|---|
 | 400 | Validation/auth error from  (for example missing required params) |
 
-## Behavior/Processing
+## Behavior
 
 1. Resolves IP from `ip_address` or falls back to request IP.
 2. Performs lookup with `geoip-lite`.
 3. Returns result as `{ "location": ... }`.
 
----
-
-## Database Collections
-
-This endpoint does not read or write database collections.
-
----
-
-## Examples
-
-### Example 1: Lookup a Specific IP
-
-```text
-https://your-server.com/o?method=lookup&api_key=YOUR_API_KEY&app_id=609bd78d90d7a416d4dfb984&ip_address=8.8.8.8
-```
-
-### Example 2: Lookup Request IP
-
-```text
-https://your-server.com/o?method=lookup&api_key=YOUR_API_KEY&app_id=609bd78d90d7a416d4dfb984
-```
-
 ## Related Endpoints
 
 - [Geo - List Geo Locations](list.md)
 
-## Ⓔ Enterprise
+<details>
+<summary>Implementation details</summary>
 
-This feature is part of **Countly Enterprise**.
+**Database Collections**
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
+This endpoint does not read or write database collections.
 
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

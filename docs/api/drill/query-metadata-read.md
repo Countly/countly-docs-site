@@ -3,11 +3,15 @@ sidebar_label: "Query Metadata - Read"
 keywords:
   - "/o"
   - "o"
+last_update:
+  date: "2026-04-17"
 ---
+
 # Read segmentation metadata
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -23,11 +27,7 @@ The endpoint merges app-level user property metadata with event-level segmentati
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -44,11 +44,39 @@ Countly API supports three authentication methods:
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `api.*` | Server API defaults | Shared API execution controls (for example processing thresholds/limits). | Changes to API-level controls can affect runtime behavior, limits, or response timing for this endpoint. |
+### Read session metadata
+
+```text
+/o?method=segmentation_meta&
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  event=[CLY]_session
+```
+
+### Read custom event metadata
+
+```text
+/o?method=segmentation_meta&
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  event=purchase
+```
+
+### Read feedback widget metadata
+
+```text
+/o?method=segmentation_meta&
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  event=[CLY]_star_rating
+```
+
+### Read crash metadata
+
+```text
+/o?method=segmentation_meta&
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  event=[CLY]_crash
+```
 
 ## Response
 
@@ -183,7 +211,7 @@ For journey/content internal events, the response can include `journey_map` and 
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Merges app-level meta (`_meta_up`) and event-level meta (`_meta_<hash>`).
 - Omits masked user-property values when Data Manager masking is enabled.
@@ -191,7 +219,20 @@ For journey/content internal events, the response can include `journey_map` and 
 - Enriches output with cohorts and optional plugin maps (journeys/content/feedback/geos).
 - Returns preset field types when `record_meta` is disabled.
 
-## Database Collections
+## Related Endpoints
+
+- [Query Segmentation - Read](query-segmentation-read.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Configuration Impact**
+
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `api.*` | Server API defaults | Shared API execution controls (for example processing thresholds/limits). | Changes to API-level controls can affect runtime behavior, limits, or response timing for this endpoint. |
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -201,50 +242,4 @@ For journey/content internal events, the response can include `journey_map` and 
 | `countly.content_blocks` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 | `countly.journey_definition` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 
----
-
-## Examples
-
-### Read session metadata
-
-```text
-/o?method=segmentation_meta&
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  event=[CLY]_session
-```
-
-### Read custom event metadata
-
-```text
-/o?method=segmentation_meta&
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  event=purchase
-```
-
-### Read feedback widget metadata
-
-```text
-/o?method=segmentation_meta&
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  event=[CLY]_star_rating
-```
-
-### Read crash metadata
-
-```text
-/o?method=segmentation_meta&
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  event=[CLY]_crash
-```
-
----
-
-## Related Endpoints
-
-- [Query Segmentation - Read](query-segmentation-read.md)
-
----
-
-## Last Updated
-
-2026-04-17
+</details>

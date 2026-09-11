@@ -1,31 +1,21 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Slipping Away Users
 
-Identify and track users who are becoming inactive or at risk of churning. The Slipping Away Users feature analyzes user activity patterns to detect users who haven't engaged with your app recently, providing metrics across multiple time periods.
-
----
+Identify and track users who are becoming inactive or at risk of churning. The Slipping Away Users feature analyzes user activity patterns to detect users who have not engaged with your app recently, providing metrics across multiple time periods.
 
 ## Overview
 
 The Slipping Away Users feature provides:
-- **Inactivity Detection**: Identify users who haven't been active recently
+- **Inactivity Detection**: Identify users who have not been active recently
 - **Multi-Period Analysis**: Track slipping users across 5 time periods (7, 14, 30, 60, 90 days)
 - **Cohort Integration**: Filter slipping users by cohort membership
 - **Percentage Metrics**: Calculate slipping user percentages relative to total users
-
----
-
-
-## Database Collections
-
-| Collection | Purpose |
-|---|---|
-| `countly.app_users{appId}` | User profiles analyzed for churn risk based on last activity timestamp (`lac`). |
-
 
 ## Configuration & Settings
 
@@ -38,8 +28,6 @@ Slipping Away detection settings:
 |----------|---------|
 | [/o/slipping](./o-slipping.md) | Get slipping away users metrics by period |
 
----
-
 ## Time Periods
 
 Default periods for tracking slipping away users:
@@ -51,8 +39,6 @@ Default periods for tracking slipping away users:
 | `p3` | 30 | Users inactive for 30+ days |
 | `p4` | 60 | Users inactive for 60+ days |
 | `p5` | 90 | Users inactive for 90+ days |
-
----
 
 ## Use Cases
 
@@ -71,8 +57,13 @@ Default periods for tracking slipping away users:
 - Measure campaign effectiveness
 - Identify seasonal patterns
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Last Updated
+**Database Collections**
 
-2026-02-17
+| Collection | Purpose |
+|---|---|
+| `countly.app_users{appId}` | User profiles analyzed for churn risk based on last activity timestamp (`lac`). |
+
+</details>

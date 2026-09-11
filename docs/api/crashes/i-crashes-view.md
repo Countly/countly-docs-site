@@ -4,6 +4,8 @@ keywords:
   - "/i/crashes/view"
   - "view"
   - "crashes"
+last_update:
+  date: "2026-03-07"
 ---
 
 # Crashes - Mark Viewed
@@ -20,12 +22,7 @@ Marks crash groups as viewed by clearing `is_new` on selected groups and adjusti
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. `api_key=YOUR_API_KEY`
-2. `auth_token=YOUR_AUTH_TOKEN`
-3. `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -43,6 +40,12 @@ Requires `crashes` `Update` permission.
 | `args.crash_id` | String | No | Single crash group ID. |
 
 Provide `args.crashes` or `args.crash_id`.
+
+## Examples
+
+```plaintext
+/i/crashes/view?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&args={"crash_id":"crash_group_1"}
+```
 
 ## Response
 
@@ -72,29 +75,24 @@ Provide `args.crashes` or `args.crash_id`.
 
 Standard auth/permission errors from update validation can also be returned.
 
-## Behavior/Processing
+## Behavior
 
 - Resolves crash IDs from `args.crashes` or `[args.crash_id]`.
 - For groups with `is_new=true`, sets `is_new=false`.
 - Decrements `meta.isnew` according to number of groups changed.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.app_crashgroups{appId}` | Crash status and metadata | Reads selected groups, updates `is_new` flags, updates `meta` counters. |
-
-## Examples
-
-```plaintext
-/i/crashes/view?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&args={"crash_id":"crash_group_1"}
-```
 
 ## Related Endpoints
 
 - [Crashes - Resolve Crash Groups](./i-crashes-resolve.md)
 - [Crashes - Hide Crash Groups](./i-crashes-hide.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-03-07
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.app_crashgroups{appId}` | Crash status and metadata | Reads selected groups, updates `is_new` flags, updates `meta` counters. |
+
+</details>

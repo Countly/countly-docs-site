@@ -1,6 +1,8 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Event Groups - API Documentation
@@ -37,7 +39,3 @@ These groups are created from source events and can be reordered, enabled/disabl
 
 - Update and delete parse JSON payload parameters directly (`args`, `event_order`, `update_status`, `status`) without explicit parse-error handling in endpoint code.
 - There are no dedicated `/o/event_groups/...` routes; reads use method-based `/o?method=get_event_groups` and `/o?method=get_event_group`.
-
-## Last Updated
-
-2026-02-17

@@ -3,6 +3,8 @@ sidebar_label: "Bulk Ingestion"
 keywords:
   - "/i/bulk"
   - "bulk"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /i/bulk
@@ -53,76 +55,6 @@ Processes multiple ingestion payloads in one request. Each valid item is handled
 - Invalid request items (missing `device_id`, missing usable `app_key`, or falsy item) are skipped silently.
 - Valid items are processed sequentially.
 
-## Configuration Impact
-
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `api.prevent_duplicate_requests` | `false` | Duplicate detection | When enabled, duplicate payloads can be ignored during ingestion processing. |
-
-## Response
-
-### Success Response
-
-```json
-{
-  "result": "Success"
-}
-```
-
-### Response Fields
-
-| Field | Type | Description |
-|---|---|---|
-| `result` | String | `"Success"` when the bulk request is accepted and processed. |
-
-### Error Responses
-
-**Status Code**: `400 Bad Request`
-```json
-{
-  "result": "Missing parameter \"requests\""
-}
-```
-
-**Status Code**: `400 Bad Request`
-```json
-{
-  "result": "Invalid parameter \"requests\""
-}
-```
-
-## Behavior/Processing
-
-### Behavior Modes
-
-| Mode | Trigger | Processing Path | Response Shape |
-|---|---|---|---|
-| Validation error mode | `requests` is missing or not an array | Returns immediate input-validation error. | Wrapped string error |
-| Bulk processing mode | `requests` is a valid array | Iterates items sequentially, applies top-level `app_key` fallback, processes each valid item through `/i` ingestion flow. | Wrapped string `{ "result": "Success" }` |
-| Item-skip mode | A request item is invalid (`missing app_key/device_id` or falsy item) | Skips invalid item without failing whole batch. | Final response remains `{ "result": "Success" }` |
-
-### Impact on Other Data
-
-- This endpoint itself is a dispatcher. Data impact depends on each request item payload.
-- Processed items can update user/session/event analytics data through the standard ingestion pipeline.
-
-## Audit & System Logs
-
-- No `/systemlogs` action is emitted by this endpoint itself.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.apps` | App-key validation source | Reads app configuration for each processed request item during ingestion validation. |
-| `countly.app_users{appId}` | App user profile/session updates from processed ingestion items | Read and update user profile/session state. |
-| `countly.users{appId}` | Aggregated session metrics | Updated when session/event data is processed. |
-| `countly.device_details{appId}` | Aggregated device metrics | Updated from item metrics payloads. |
-| `countly.events_data` | Aggregated event metrics | Updated for custom and internal event processing. |
-| `countly_drill.drill_events` | Drill/raw event storage pipeline | Written/queued depending on event processing path. |
-
----
-
 ## Examples
 
 ### Example 1: One app key for all items
@@ -158,6 +90,53 @@ Processes multiple ingestion payloads in one request. Each valid item is handled
 ]
 ```
 
+## Response
+
+### Success Response
+
+```json
+{
+  "result": "Success"
+}
+```
+
+### Response Fields
+
+| Field | Type | Description |
+|---|---|---|
+| `result` | String | `"Success"` when the bulk request is accepted and processed. |
+
+### Error Responses
+
+**Status Code**: `400 Bad Request`
+```json
+{
+  "result": "Missing parameter \"requests\""
+}
+```
+
+**Status Code**: `400 Bad Request`
+```json
+{
+  "result": "Invalid parameter \"requests\""
+}
+```
+
+## Behavior
+
+### Behavior Modes
+
+| Mode | Trigger | Processing Path | Response Shape |
+|---|---|---|---|
+| Validation error mode | `requests` is missing or not an array | Returns immediate input-validation error. | Wrapped string error |
+| Bulk processing mode | `requests` is a valid array | Iterates items sequentially, applies top-level `app_key` fallback, processes each valid item through `/i` ingestion flow. | Wrapped string `{ "result": "Success" }` |
+| Item-skip mode | A request item is invalid (`missing app_key/device_id` or falsy item) | Skips invalid item without failing whole batch. | Final response remains `{ "result": "Success" }` |
+
+### Impact on Other Data
+
+- This endpoint itself is a dispatcher. Data impact depends on each request item payload.
+- Processed items can update user/session/event analytics data through the standard ingestion pipeline.
+
 ## Operational Considerations
 
 - Processing is sequential per request item.
@@ -170,12 +149,32 @@ Processes multiple ingestion payloads in one request. Each valid item is handled
 - No per-item result payload is returned.
 - This endpoint does not provide rollback if some items are skipped or ignored.
 
----
-
 ## Related Endpoints
 
 - [Data Ingestion - Main Data Ingestion](./ingestion.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Configuration Impact**
+
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `api.prevent_duplicate_requests` | `false` | Duplicate detection | When enabled, duplicate payloads can be ignored during ingestion processing. |
+
+**Audit & System Logs**
+
+- No `/systemlogs` action is emitted by this endpoint itself.
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.apps` | App-key validation source | Reads app configuration for each processed request item during ingestion validation. |
+| `countly.app_users{appId}` | App user profile/session updates from processed ingestion items | Read and update user profile/session state. |
+| `countly.users{appId}` | Aggregated session metrics | Updated when session/event data is processed. |
+| `countly.device_details{appId}` | Aggregated device metrics | Updated from item metrics payloads. |
+| `countly.events_data` | Aggregated event metrics | Updated for custom and internal event processing. |
+| `countly_drill.drill_events` | Drill/raw event storage pipeline | Written/queued depending on event processing path. |
+
+</details>

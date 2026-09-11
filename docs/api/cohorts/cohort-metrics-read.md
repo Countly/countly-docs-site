@@ -1,15 +1,18 @@
 ---
 sidebar_label: "Read Metrics"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Get Cohort Analytics and Metrics
 
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
+
 ## Endpoint
 
 `/o?method=get_cohort_metrics`
-
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
 
 ## Overview
 
@@ -17,10 +20,8 @@ Retrieves aggregated value counts for requested user property metrics within a c
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required permission**: `Read` on the `cohorts` feature
@@ -34,6 +35,19 @@ Retrieves aggregated value counts for requested user property metrics within a c
 | app_id | String | Yes | Application identifier |
 | cohort_id | String | Yes | ID of the cohort to get metrics for |
 | metrics | JSON Array String | Yes | Metric fields array, for example `["up.cc","up.p"]` |
+
+## Examples
+
+### Example 1: Read cohort metrics
+
+**Request**:
+```bash
+curl -X GET "https://your-server.com/o?method=get_cohort_metrics" \
+  -d "api_key=YOUR_API_KEY" \
+  -d "app_id=YOUR_APP_ID" \
+  -d "cohort_id=COHORT_ID" \
+  -d 'metrics=["up.cc","up.p"]'
+```
 
 ## Response
 
@@ -67,9 +81,7 @@ Retrieves aggregated value counts for requested user property metrics within a c
 
 No explicit `returnMessage(...)` path in this branch. Missing/invalid `metrics` input can fail during JSON parse before callback.
 
----
-
-## Behavior/Processing
+## Behavior
 
 - Validates read permission for `cohorts` feature.
 - Parses `metrics` JSON array from request.
@@ -78,34 +90,10 @@ No explicit `returnMessage(...)` path in this branch. Missing/invalid `metrics` 
   - `in_cohort`: matched user count
   - `metrics`: top 3 values per requested metric with counts
 
----
-
-## Examples
-
-### Example 1: Read cohort metrics
-
-**Request**:
-```bash
-curl -X GET "https://your-server.com/o?method=get_cohort_metrics" \
-  -d "api_key=YOUR_API_KEY" \
-  -d "app_id=YOUR_APP_ID" \
-  -d "cohort_id=COHORT_ID" \
-  -d 'metrics=["up.cc","up.p"]'
-```
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.app_users{app_id}` | Per-app user profiles | Stores user-level properties and profile fields affected by this endpoint. |
-| `countly.cohorts` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
-
 ## Related Endpoints
 
 - [Get single cohort](cohort-single-read.md) - GET /o?method=get_cohort
 - [Update metrics](cohort-detail-metrics.md) - POST /i/cohorts/detail_metrics
-
----
 
 ## Use Cases
 
@@ -116,22 +104,14 @@ curl -X GET "https://your-server.com/o?method=get_cohort_metrics" \
 5. **Anomaly detection**: Identify unusual patterns in cohort metrics
 6. **Benchmarking**: Compare metrics against cohort targets
 
+<details>
+<summary>Implementation details</summary>
 
----
+**Database Collections**
 
-## Ⓔ Enterprise
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.app_users{app_id}` | Per-app user profiles | Stores user-level properties and profile fields affected by this endpoint. |
+| `countly.cohorts` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 
-This feature is part of **Countly Enterprise**.
-
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

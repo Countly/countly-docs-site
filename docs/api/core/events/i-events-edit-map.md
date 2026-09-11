@@ -4,6 +4,8 @@ keywords:
   - "/i/events/edit_map"
   - "edit_map"
   - "events"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /i/events/edit_map
@@ -20,9 +22,7 @@ Update event metadata map, event order, overview widgets, and omitted segment ru
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -62,11 +62,19 @@ Update event metadata map, event order, overview widgets, and omitted segment ru
 |---|---|---|---|
 | ``eventKey`` | Array of Strings | No | Segment keys to omit for the event. Omitted values are removed from aggregate segment data. |
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `api.event_limit` | `500` (fallback in code) | Input sanitization scope | Controls maximum event keys loaded from drill metadata while validating overview entries. |
+### Example 1: Rename event and keep visible
+
+```plaintext
+/i/events/edit_map?api_key=YOUR_API_KEY&app_id=64b0ac10c2c3ce0012dd1001&event_map={"Purchase":{"name":"Completed Purchase","is_visible":true}}
+```
+
+### Example 2: Update overview and omit segment values
+
+```plaintext
+/i/events/edit_map?api_key=YOUR_API_KEY&app_id=64b0ac10c2c3ce0012dd1001&event_overview=[{"eventKey":"Purchase","eventProperty":"count"}]&omitted_segments={"Purchase":["test-segment","legacy-segment"]}
+```
 
 ## Response
 
@@ -114,7 +122,7 @@ Update event metadata map, event order, overview widgets, and omitted segment ru
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -130,36 +138,6 @@ Update event metadata map, event order, overview widgets, and omitted segment ru
 - Updates/removes segment metadata entries in `countly_drill.drill_meta` when Drill is enabled.
 - Removes hidden events from overview configuration automatically.
 
-## Audit & System Logs
-
-| Action | Trigger | Payload |
-|---|---|---|
-| `events_updated` | After successful metadata update path | `{ update, before }` containing updated metadata and previous snapshot values. |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication and permission validation | Reads member identity and app-level update permissions. |
-| `countly.events` | Primary event metadata update target | Reads and updates `order`, `overview`, `map`, `omitted_segments`, and segment structures. |
-| `countly.events_data` | Segment aggregate cleanup | Removes and unsets omitted segment values from event aggregate documents. |
-| `countly_drill.drill_meta` | Drill metadata validation and cleanup | Reads event keys for overview sanitization and updates/removes omitted segment metadata. |
-
----
-## Examples
-
-### Example 1: Rename event and keep visible
-
-```plaintext
-/i/events/edit_map?api_key=YOUR_API_KEY&app_id=64b0ac10c2c3ce0012dd1001&event_map={"Purchase":{"name":"Completed Purchase","is_visible":true}}
-```
-
-### Example 2: Update overview and omit segment values
-
-```plaintext
-/i/events/edit_map?api_key=YOUR_API_KEY&app_id=64b0ac10c2c3ce0012dd1001&event_overview=[{"eventKey":"Purchase","eventProperty":"count"}]&omitted_segments={"Purchase":["test-segment","legacy-segment"]}
-```
-
 ## Operational Considerations
 
 - Segment omission can trigger heavy aggregate/drill cleanup work for large datasets.
@@ -171,13 +149,34 @@ Update event metadata map, event order, overview widgets, and omitted segment ru
 - Overview list is capped at 12 entries.
 - Only `dur`, `sum`, and `count` are accepted `eventProperty` values in overview entries.
 
----
 ## Related Endpoints
 
 - [Events - Event Visibility Update](i-events-change-visibility.md)
 - [Events - Event Segment Whitelist](i-events-whitelist-segments.md)
 - [Events - Event Delete](i-events-delete.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Configuration Impact**
+
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `api.event_limit` | `500` (fallback in code) | Input sanitization scope | Controls maximum event keys loaded from drill metadata while validating overview entries. |
+
+**Audit & System Logs**
+
+| Action | Trigger | Payload |
+|---|---|---|
+| `events_updated` | After successful metadata update path | `{ update, before }` containing updated metadata and previous snapshot values. |
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication and permission validation | Reads member identity and app-level update permissions. |
+| `countly.events` | Primary event metadata update target | Reads and updates `order`, `overview`, `map`, `omitted_segments`, and segment structures. |
+| `countly.events_data` | Segment aggregate cleanup | Removes and unsets omitted segment values from event aggregate documents. |
+| `countly_drill.drill_meta` | Drill metadata validation and cleanup | Reads event keys for overview sanitization and updates/removes omitted segment metadata. |
+
+</details>

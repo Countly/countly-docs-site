@@ -4,6 +4,8 @@ keywords:
   - "/o/dashboards/widget-layout"
   - "widget-layout"
   - "dashboards"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Dashboards - Read Widget Layout
@@ -20,11 +22,7 @@ Returns layout metadata (`position`, `size`) for all widgets linked to a dashboa
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -37,6 +35,15 @@ This endpoint requires authenticated user context but does not enforce dashboard
 | `dashboard_id` | String | Yes | Dashboard ID used to fetch widget references. |
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
+
+## Examples
+
+### Read widget layout for one dashboard
+
+```text
+/o/dashboards/widget-layout?
+  dashboard_id=65e1f3d2a4f41a5f6f6d7701
+```
 
 ## Response
 
@@ -65,7 +72,7 @@ This endpoint requires authenticated user context but does not enforce dashboard
 
 This handler does not return explicit structured error payloads for dashboard lookup failures.
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -78,25 +85,6 @@ This handler does not return explicit structured error payloads for dashboard lo
 
 - Read-only endpoint; no writes.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication | Reads current member record via `authenticated-user validation` before dashboard query. |
-| `countly.dashboards` | Dashboard widget reference lookup | Reads dashboard `widgets` array. |
-| `countly.widgets` | Layout metadata lookup | Reads `_id`, `position`, and `size` for referenced widgets. |
-
----
-
-## Examples
-
-### Read widget layout for one dashboard
-
-```text
-/o/dashboards/widget-layout?
-  dashboard_id=65e1f3d2a4f41a5f6f6d7701
-```
-
 ## Limitations
 
 - The handler does not enforce dashboard view permissions.
@@ -107,6 +95,15 @@ This handler does not return explicit structured error payloads for dashboard lo
 - [Dashboards - Read Widget](o-dashboards-widget.md)
 - [Dashboards - Read](o-dashboards.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication | Reads current member record via `authenticated-user validation` before dashboard query. |
+| `countly.dashboards` | Dashboard widget reference lookup | Reads dashboard `widgets` array. |
+| `countly.widgets` | Layout metadata lookup | Reads `_id`, `position`, and `size` for referenced widgets. |
+
+</details>

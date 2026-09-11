@@ -4,6 +4,8 @@ keywords:
   - "/o/feedback/widget"
   - "widget"
   - "feedback"
+last_update:
+  date: "2026-03-07"
 ---
 
 # Star Rating - Get Widget Details
@@ -32,6 +34,15 @@ This endpoint does not enforce role-based feature permission checks.
 |---|---|---|---|
 | `widget_id` | String | Yes | Widget ObjectID. |
 | `nfd` | Boolean/String | No | If truthy, increments widget show counter. |
+
+## Examples
+
+### Read widget details
+
+```plaintext
+/o/feedback/widget?
+  widget_id=67a3d2f5c1a23b0f4d6c0201
+```
 
 ## Response
 
@@ -81,31 +92,23 @@ This endpoint does not enforce role-based feature permission checks.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Converts `widget_id` to ObjectID and loads widget from `feedback_widgets`.
 - When `nfd` is set, increments `timesShown` counter asynchronously.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.feedback_widgets` | Widget source | Reads widget by ID and optionally increments `timesShown`. |
-
-## Examples
-
-### Read widget details
-
-```plaintext
-/o/feedback/widget?
-  widget_id=67a3d2f5c1a23b0f4d6c0201
-```
 
 ## Related Endpoints
 
 - [Star Rating - List All Widgets](o-feedback-widgets.md)
 - [Star Rating - Get Multiple Widgets](o-feedback-multiple-widgets-by-id.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-03-07
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.feedback_widgets` | Widget source | Reads widget by ID and optionally increments `timesShown`. |
+
+</details>

@@ -4,6 +4,8 @@ keywords:
   - "/i/crashes/add_comment"
   - "add_comment"
   - "crashes"
+last_update:
+  date: "2026-03-07"
 ---
 
 # Crashes - Add Comment
@@ -20,12 +22,7 @@ Adds a comment to a crash group.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. `api_key=YOUR_API_KEY`
-2. `auth_token=YOUR_AUTH_TOKEN`
-3. `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -43,6 +40,12 @@ Requires `crashes` `Create` permission.
 | `args.crash_id` | String | Yes | Crash group ID. |
 | `args.text` | String | No | Comment text. Default empty string. |
 | `args.time` | Number | No | Comment timestamp in ms. Default current time. |
+
+## Examples
+
+```plaintext
+/i/crashes/add_comment?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&args={"app_id":"6991c75b024cb89cdc04efd2","crash_id":"crash_group_1","text":"Investigating root cause"}
+```
 
 ## Response
 
@@ -72,31 +75,26 @@ Requires `crashes` `Create` permission.
 
 Standard auth/permission errors from create validation can also be returned.
 
-## Behavior/Processing
+## Behavior
 
 - Builds comment object with `_id`, `author`, `author_id`, `time`, `text`.
 - Comment `_id` is SHA1 hash of app/crash/comment payload.
 - Pushes comment into crash group `comments` array.
 - Emits `crash_added_comment` system log action.
 
-## Database Collections
+## Related Endpoints
+
+- [Crashes - Edit Comment](./i-crashes-edit-comment.md)
+- [Crashes - Delete Comment](./i-crashes-delete-comment.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
 | `countly.app_crashgroups{appId}` | Crash comments | Pushes new entry into `comments` array. |
 | `countly.systemlogs` | Audit trail | Receives `crash_added_comment` action. |
 
-## Examples
-
-```plaintext
-/i/crashes/add_comment?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&args={"app_id":"6991c75b024cb89cdc04efd2","crash_id":"crash_group_1","text":"Investigating root cause"}
-```
-
-## Related Endpoints
-
-- [Crashes - Edit Comment](./i-crashes-edit-comment.md)
-- [Crashes - Delete Comment](./i-crashes-delete-comment.md)
-
-## Last Updated
-
-2026-03-07
+</details>

@@ -3,6 +3,8 @@ sidebar_label: "Run Query"
 keywords:
   - "/o"
   - "o"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /o
@@ -19,9 +21,7 @@ Method-based analytics endpoint. The `method` parameter selects which analytics 
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -64,15 +64,40 @@ Supported core methods include:
 
 If method is not handled by core or a plugin extension, the endpoint returns `Invalid method`.
 
-## Configuration Impact
+## Examples
 
-| Setting | Default | Affects | User-visible impact |
-|---|---|---|---|
-| `api.country_data` | `true` | `method=countries` | When `false`, response is `{}` instead of country data. |
-| `api.city_data` | `true` | `method=cities` | When `false`, response is `{}` instead of city data. |
-| `api.event_limit` | Configured | `method=get_events` | Limits number of events returned in merged event list output. |
-| `api.event_segmentation_limit` | Configured | `method=get_events` | Returned in `limits` metadata. |
-| `api.event_segmentation_value_limit` | Configured | `method=get_events` | Returned in `limits` metadata. |
+### Example 1: Get period object
+
+```plaintext
+/o?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  method=get_period_obj&
+  period=7days
+```
+
+### Example 2: Get total users
+
+```plaintext
+/o?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  method=total_users&
+  metric=users&
+  period=30days
+```
+
+### Example 3: Get events overview for selected events
+
+```plaintext
+/o?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  method=events&
+  events=["Playback Started","Playback Resumed"]&
+  overview=true&
+  period=30days
+```
 
 ## Response
 
@@ -147,7 +172,7 @@ If method is not handled by core or a plugin extension, the endpoint returns `In
 {"result":"User does not have right"}
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -162,11 +187,40 @@ If method is not handled by core or a plugin extension, the endpoint returns `In
 
 - Read-only endpoint for core methods documented here.
 
-## Audit & System Logs
+## Operational Considerations
+
+- Method behavior and response shape vary significantly; always set explicit `method` and method-specific parameters.
+- Heavy event methods (`events`, `get_events`, `top_events`) can return large payloads on high-cardinality datasets.
+
+## Limitations
+
+- Unknown methods return `Invalid method`.
+- Some method outputs depend on feature/config toggles (`country_data`, `city_data`).
+
+## Related Endpoints
+
+- [Analytics - Read Dashboard](./o-analytics-dashboard.md)
+- [Analytics - Read Events](./o-analytics-events.md)
+- [Analytics - Read Metric](./o-analytics-metric.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Configuration Impact**
+
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `api.country_data` | `true` | `method=countries` | When `false`, response is `{}` instead of country data. |
+| `api.city_data` | `true` | `method=cities` | When `false`, response is `{}` instead of city data. |
+| `api.event_limit` | Configured | `method=get_events` | Limits number of events returned in merged event list output. |
+| `api.event_segmentation_limit` | Configured | `method=get_events` | Returned in `limits` metadata. |
+| `api.event_segmentation_value_limit` | Configured | `method=get_events` | Returned in `limits` metadata. |
+
+**Audit & System Logs**
 
 - No `/systemlogs` action is emitted by these read methods.
 
-## Database Collections
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -182,61 +236,4 @@ If method is not handled by core or a plugin extension, the endpoint returns `In
 | `countly.top_events` | Top events method | Read in `top_events`. |
 | `countly_drill.drill_meta` | Event metadata enrichment (`get_events`) | Read to merge drill event names and segment definitions. |
 
----
-
-## Examples
-
-### Example 1: Get period object
-
-```plaintext
-/o?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  method=get_period_obj&
-  period=7days
-```
-
-### Example 2: Get total users
-
-```plaintext
-/o?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  method=total_users&
-  metric=users&
-  period=30days
-```
-
-### Example 3: Get events overview for selected events
-
-```plaintext
-/o?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  method=events&
-  events=["Playback Started","Playback Resumed"]&
-  overview=true&
-  period=30days
-```
-
-## Operational Considerations
-
-- Method behavior and response shape vary significantly; always set explicit `method` and method-specific parameters.
-- Heavy event methods (`events`, `get_events`, `top_events`) can return large payloads on high-cardinality datasets.
-
-## Limitations
-
-- Unknown methods return `Invalid method`.
-- Some method outputs depend on feature/config toggles (`country_data`, `city_data`).
-
----
-
-## Related Endpoints
-
-- [Analytics - Read Dashboard](./o-analytics-dashboard.md)
-- [Analytics - Read Events](./o-analytics-events.md)
-- [Analytics - Read Metric](./o-analytics-metric.md)
-
-## Last Updated
-
-2026-02-17
+</details>

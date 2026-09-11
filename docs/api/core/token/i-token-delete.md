@@ -4,6 +4,8 @@ keywords:
   - "/i/token/delete"
   - "delete"
   - "token"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Token - Token Delete
@@ -20,9 +22,7 @@ Deletes one token owned by the authenticated user.
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -35,6 +35,14 @@ Deletes one token owned by the authenticated user.
 | `api_key` | String | Yes (or use `auth_token`) | Dashboard API key. |
 | `auth_token` | String | Yes (or use `api_key`) | Dashboard auth token. |
 | `tokenid` | String | Yes | Token ID to revoke. |
+
+## Examples
+
+### Example 1: Delete token
+
+```plaintext
+/i/token/delete?api_key=YOUR_API_KEY&tokenid=884803f9e9eda51f5dbbb45ba91fa7e2b1dbbf4b
+```
 
 ## Response
 
@@ -83,7 +91,7 @@ Deletes one token owned by the authenticated user.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -91,25 +99,6 @@ Deletes one token owned by the authenticated user.
 |---|---|---|---|
 | Delete success | Valid `tokenid` and ownership match | Removes token by `_id` and `owner`. | Wrapped DB remove result object. |
 | Missing token id | `tokenid` omitted | Rejects before DB call. | Wrapped error string. |
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Auth validation | Resolves authenticated member. |
-| `countly.auth_tokens` | Token revocation target | Removes token row matching `_id` and `owner`. |
-
----
-
-## Examples
-
-### Example 1: Delete token
-
-```plaintext
-/i/token/delete?api_key=YOUR_API_KEY&tokenid=884803f9e9eda51f5dbbb45ba91fa7e2b1dbbf4b
-```
-
----
 
 ## Limitations
 
@@ -120,6 +109,14 @@ Deletes one token owned by the authenticated user.
 - [Token Create](i-token-create.md)
 - [Token List](o-token-list.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Auth validation | Resolves authenticated member. |
+| `countly.auth_tokens` | Token revocation target | Removes token row matching `_id` and `owner`. |
+
+</details>

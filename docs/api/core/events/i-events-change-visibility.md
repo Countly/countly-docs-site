@@ -4,6 +4,8 @@ keywords:
   - "/i/events/change_visibility"
   - "change_visibility"
   - "events"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /i/events/change_visibility
@@ -20,9 +22,7 @@ Show or hide events in event metadata without deleting event definitions.
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -37,6 +37,20 @@ Show or hide events in event metadata without deleting event definitions.
 | `app_id` | String | Yes | Target app ID. |
 | `events` | JSON String (Array) | Yes | Event key list to update visibility for. |
 | `set_visibility` | String | Yes | Visibility mode: `hide` or `show`. Any value other than `hide` is treated as show-mode. |
+
+## Examples
+
+### Example 1: Hide selected events
+
+```plaintext
+/i/events/change_visibility?api_key=YOUR_API_KEY&app_id=64b0ac10c2c3ce0012dd1001&events=["Old Event","Legacy Event"]&set_visibility=hide
+```
+
+### Example 2: Show selected events
+
+```plaintext
+/i/events/change_visibility?api_key=YOUR_API_KEY&app_id=64b0ac10c2c3ce0012dd1001&events=["Purchase"]&set_visibility=show
+```
 
 ## Response
 
@@ -70,7 +84,7 @@ Show or hide events in event metadata without deleting event definitions.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -84,44 +98,29 @@ Show or hide events in event metadata without deleting event definitions.
 - Updates event metadata map and overview in `countly.events`.
 - Does not delete event datasets or event aggregate collections.
 
-## Audit & System Logs
+## Limitations
+
+- Invalid or unparsable `events` payload is treated as empty list, and request can still return success.
+
+## Related Endpoints
+
+- [Events - Event Mapping Update](i-events-edit-map.md)
+- [Events - Event Delete](i-events-delete.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Audit & System Logs**
 
 | Action | Trigger | Payload |
 |---|---|---|
 | `events_updated` | After successful metadata update | `{ update, before }` with updated map/overview and previous map snapshot. |
 
-## Database Collections
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
 | `countly.members` | Authentication and permission validation | Reads member identity and app-level update permissions. |
 | `countly.events` | Event metadata update target | Reads and updates `map` and `overview` fields for selected event keys. |
 
----
-## Examples
-
-### Example 1: Hide selected events
-
-```plaintext
-/i/events/change_visibility?api_key=YOUR_API_KEY&app_id=64b0ac10c2c3ce0012dd1001&events=["Old Event","Legacy Event"]&set_visibility=hide
-```
-
-### Example 2: Show selected events
-
-```plaintext
-/i/events/change_visibility?api_key=YOUR_API_KEY&app_id=64b0ac10c2c3ce0012dd1001&events=["Purchase"]&set_visibility=show
-```
-
-## Limitations
-
-- Invalid or unparsable `events` payload is treated as empty list, and request can still return success.
-
----
-## Related Endpoints
-
-- [Events - Event Mapping Update](i-events-edit-map.md)
-- [Events - Event Delete](i-events-delete.md)
-
-## Last Updated
-
-2026-02-17
+</details>

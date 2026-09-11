@@ -4,6 +4,8 @@ keywords:
   - "/i/crashes/unshare"
   - "unshare"
   - "crashes"
+last_update:
+  date: "2026-03-07"
 ---
 
 # Crashes - Unshare Crash Group
@@ -20,12 +22,7 @@ Disables public sharing for a crash group by removing share mapping and setting 
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. `api_key=YOUR_API_KEY`
-2. `auth_token=YOUR_AUTH_TOKEN`
-3. `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -40,6 +37,12 @@ Requires `crashes` `Update` permission.
 | `app_id` | String | Yes | Target app ID. |
 | `args` | JSON String (Object) | Yes | Action payload. |
 | `args.crash_id` | String | Yes | Crash group ID to unshare. |
+
+## Examples
+
+```plaintext
+/i/crashes/unshare?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&args={"crash_id":"crash_group_1"}
+```
 
 ## Response
 
@@ -69,14 +72,21 @@ Requires `crashes` `Update` permission.
 
 Standard auth/permission errors from update validation can also be returned.
 
-## Behavior/Processing
+## Behavior
 
 - Computes share record ID as SHA1 hash of `app_id + crash_id`.
 - Removes matching record from `crash_share`.
 - Sets `is_public=false` on crash group document.
 - Emits system log action `crash_unshared`.
 
-## Database Collections
+## Related Endpoints
+
+- [Crashes - Share Crash Group](./i-crashes-share.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -84,16 +94,4 @@ Standard auth/permission errors from update validation can also be returned.
 | `countly.app_crashgroups{appId}` | Crash group visibility | Updates `is_public=false` for the crash group. |
 | `countly.systemlogs` | Audit trail | Receives `crash_unshared` action. |
 
-## Examples
-
-```plaintext
-/i/crashes/unshare?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&args={"crash_id":"crash_group_1"}
-```
-
-## Related Endpoints
-
-- [Crashes - Share Crash Group](./i-crashes-share.md)
-
-## Last Updated
-
-2026-03-07
+</details>

@@ -1,12 +1,15 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-15"
 ---
 
 # Config Transfer
 
-> Ⓔ **Enterprise Only**  
-> This feature is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This feature is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Overview
 
@@ -18,14 +21,10 @@ The feature works through a two-step process:
 
 The system automatically handles dependency resolution, ID mapping, and ownership assignment during the process.
 
----
-
 ## API Endpoints
 
 - [Export Configuration](config-transfer-export.md) - Export configuration data from an application (`/o/export`)
 - [Import Configuration](config-transfer-import.md) - Import exported configuration into an application (`/i/import`)
-
----
 
 ## Workflow Overview
 
@@ -56,8 +55,6 @@ The system automatically handles dependency resolution, ID mapping, and ownershi
 10. User now has replicated configuration in Target App
 ```
 
----
-
 ## Supported Features
 
 Config Transfer can export/import any feature that implements the export and import dispatch handlers. Common supported features include:
@@ -71,8 +68,6 @@ Config Transfer can export/import any feature that implements the export and imp
 - And others depending on plugin support
 
 Contact your system administrator for a complete list of supported features in your environment.
-
----
 
 ## Key Concepts
 
@@ -104,8 +99,6 @@ Config Transfer maintains a mapping of original IDs to new IDs during import:
 - All references to old IDs are updated to new IDs
 - Cross-references between items remain valid
 
----
-
 ## Permissions
 
 Config Transfer uses a central permission system:
@@ -115,9 +108,15 @@ Config Transfer uses a central permission system:
 
 Both require the `config_transfer` feature permission in the target application.
 
----
+## Related Documentation
 
-## Database Collections
+- [Dashboards - API Documentation](../dashboards/index.md) - Dashboard creation and management
+- [Cohorts - API Documentation](../cohorts/index.md) - Cohort creation and management
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 Config Transfer does not directly manage data collections. Instead:
 
@@ -127,26 +126,4 @@ Config Transfer does not directly manage data collections. Instead:
 - Import dispatches to feature plugins to insert data
 - Enables loose coupling and extensibility
 
----
-
-## Related Documentation
-
-- [Dashboards - API Documentation](../dashboards/index.md) - Dashboard creation and management
-- [Cohorts - API Documentation](../cohorts/index.md) - Cohort creation and management
-
----
-
-## Ⓔ Enterprise
-
-This feature is part of **Countly Enterprise**.
-
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-_Last Updated: 2026-02-15_
+</details>

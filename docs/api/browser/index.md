@@ -1,6 +1,8 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Browser - API Documentation
@@ -13,12 +15,13 @@ The Browser feature provides browser-level web analytics breakdowns, including b
 
 - [Browser - Read](o-browser.md)
 
-## Database Collections
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Purpose |
 |---|---|
 | `countly.browser` | Stores browser and browser-version metric series used by browser analytics queries. |
 
-## Last Updated
-
-2026-02-17
+</details>

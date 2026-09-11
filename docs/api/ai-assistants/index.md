@@ -1,12 +1,15 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-15"
 ---
 
 # AI Assistants
 
-> Ⓔ **Enterprise Only**  
-> This feature is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This feature is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Feature Metadata
 
@@ -61,14 +64,6 @@ Conversations are scoped per app and member, with thread history persisted in Mo
 | `event: error` | Stream-time error payload |
 | `event: cancel` | Cancellation notification |
 
-## Database Collections
-
-| Collection | Purpose |
-|---|---|
-| `countly.ai_assistants_threads` | Stores thread metadata and message history |
-| `countly.apps` | Validates app existence for thread-bound operations |
-| `countly_drill.drill_meta` | Metadata source used by assistant agents/tools |
-
 ## Configuration & Settings
 
 ### AI Assistants feature config (`ai-assistants`)
@@ -119,17 +114,15 @@ Conversations are scoped per app and member, with thread history persisted in Mo
 - [Cohorts - API Documentation](../cohorts/index.md)
 - [Funnels - API Documentation](../funnels/index.md)
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Database Collections**
 
-This feature is part of **Countly Enterprise**.
+| Collection | Purpose |
+|---|---|
+| `countly.ai_assistants_threads` | Stores thread metadata and message history |
+| `countly.apps` | Validates app existence for thread-bound operations |
+| `countly_drill.drill_meta` | Metadata source used by assistant agents/tools |
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions.
-
-**Last Updated**: 2026-02-15
+</details>

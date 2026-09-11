@@ -5,9 +5,15 @@ keywords:
   - "widget"
   - "surveys"
   - "nps"
+last_update:
+  date: "2026-04-18"
 ---
 
 # Surveys - NPS Widget
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -15,19 +21,13 @@ keywords:
 /o/surveys/nps/widget
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Returns one NPS widget (`widget_id`) or multiple NPS widgets (`widget_ids`).
 
 ## Authentication
 
-**Authentication methods**:
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -46,6 +46,12 @@ Returns one NPS widget (`widget_id`) or multiple NPS widgets (`widget_ids`).
 | `platform` | String | No | Shown context |
 | `app_version` | String | No | Shown context |
 | `journeyId` | String | No | Optional source tagging |
+
+## Examples
+
+```text
+/o/surveys/nps/widget?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&widget_id=67b9db56f67aab0012cd8899
+```
 
 ## Response
 
@@ -89,7 +95,7 @@ Returns one NPS widget (`widget_id`) or multiple NPS widgets (`widget_ids`).
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Requires either `widget_id` or comma-separated `widget_ids`.
 - Reads only active widgets (`status=true`) from `feedback_widgets`.
@@ -97,39 +103,19 @@ Returns one NPS widget (`widget_id`) or multiple NPS widgets (`widget_ids`).
 - Returned fields are limited to app/type/name/message/score/appearance/link/final text/version/consent fields used by SDK clients.
 - If `shown` is present with a single widget, increments widget `shown`, records a custom metric in the Survey/NPS aggregate collection, and stores metric metadata for the widget/platform/app version/source key.
 
-## Database Collections
+## Related Endpoints
+
+- [Surveys - NPS Widgets](nps-widgets.md)
+- [Surveys - NPS Overview Metrics](nps-overview.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
 | `countly.feedback_widgets` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 | `countly.apps` | App configuration and metadata | Stores app-level feature settings and metadata used or modified by this endpoint. |
 
----
-
-## Examples
-
-```text
-/o/surveys/nps/widget?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&widget_id=67b9db56f67aab0012cd8899
-```
-
-## Related Endpoints
-
-- [Surveys - NPS Widgets](nps-widgets.md)
-- [Surveys - NPS Overview Metrics](nps-overview.md)
-
-## Ⓔ Enterprise
-
-This feature is part of **Countly Enterprise**.
-
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions.
-
----
-
-## Last Updated
-
-2026-04-18
+</details>

@@ -4,6 +4,8 @@ keywords:
   - "/i/cms/clear"
   - "clear"
   - "cms"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /i/cms/clear
@@ -20,9 +22,7 @@ Clear CMS cache entries from `countly.cms_cache`.
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -36,6 +36,20 @@ Clear CMS cache entries from `countly.cms_cache`.
 | `auth_token` | String | Yes (or use `api_key`) | Dashboard auth token. |
 | `app_id` | String | Yes | App ID used by write-permission validation. |
 | `_id` | String | No | Cache ID prefix filter. When omitted, all CMS cache entries are deleted. |
+
+## Examples
+
+### Example 1: Clear all CMS cache entries
+
+```plaintext
+/i/cms/clear?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2
+```
+
+### Example 2: Clear one CMS namespace
+
+```plaintext
+/i/cms/clear?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&_id=server-guides
+```
 
 ## Response
 
@@ -76,7 +90,7 @@ Clear CMS cache entries from `countly.cms_cache`.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -89,38 +103,23 @@ Clear CMS cache entries from `countly.cms_cache`.
 
 - Removes cache entries and related `_meta` entries from `countly.cms_cache`.
 
-## Database Collections
+## Limitations
+
+- This endpoint removes cached entries only; it does not fetch fresh CMS data by itself.
+
+## Related Endpoints
+
+- [CMS - Entries Save](i-cms-save-entries.md)
+- [CMS - Entries Read](o-cms-entries.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
 | `countly.members` | Authentication and permission validation | Reads member identity and app write permissions. |
 | `countly.cms_cache` | Cache invalidation target | Deletes cache entries globally or by prefix. |
 
----
-## Examples
-
-### Example 1: Clear all CMS cache entries
-
-```plaintext
-/i/cms/clear?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2
-```
-
-### Example 2: Clear one CMS namespace
-
-```plaintext
-/i/cms/clear?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&_id=server-guides
-```
-
-## Limitations
-
-- This endpoint removes cached entries only; it does not fetch fresh CMS data by itself.
-
----
-## Related Endpoints
-
-- [CMS - Entries Save](i-cms-save-entries.md)
-- [CMS - Entries Read](o-cms-entries.md)
-
-## Last Updated
-
-2026-02-17
+</details>

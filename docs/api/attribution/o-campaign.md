@@ -3,9 +3,15 @@ sidebar_label: "Campaign Read"
 keywords:
   - "/o/campaign"
   - "campaign"
+last_update:
+  date: "2026-04-01"
 ---
 
 # /o/campaign
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -13,18 +19,13 @@ keywords:
 /o/campaign
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Reads attribution campaigns and campaign performance data. The response shape changes based on whether the request asks for one campaign, a campaign name list, time-series data for selected campaign IDs, or a table-style campaign list.
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -48,6 +49,32 @@ Reads attribution campaigns and campaign performance data. The response shape ch
 | `iSortCol_0` | Number | No | Table sort column index. |
 | `sSortDir_0` | String | No | Table sort direction: `asc` or `desc`. |
 | `period` | String or Array | No | Period for attached campaign metric data. |
+
+## Examples
+
+### Example 1: Read one campaign with metric data
+
+```plaintext
+/o/campaign?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&camp_id=campaign-summer-2026&period=30days
+```
+
+### Example 2: List campaign names
+
+```plaintext
+/o/campaign?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&list=true
+```
+
+### Example 3: Fetch data for several campaigns
+
+```plaintext
+/o/campaign?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&data=["campaign-summer-2026","[CLY]_organic"]&period=30days
+```
+
+### Example 4: Read campaign table rows
+
+```plaintext
+/o/campaign?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&getTable=true&iDisplayStart=0&iDisplayLength=20&sSearch=summer
+```
 
 ## Response
 
@@ -97,7 +124,7 @@ List mode (`list=true`):
 
 Returned for missing campaign reads in `camp_id` mode.
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -108,47 +135,20 @@ Returned for missing campaign reads in `camp_id` mode.
 | Multi-data mode | `data` is provided | Array of `{ _id, data }` objects for the requested campaign IDs. |
 | Table mode | `getTable` is truthy | Data-table style campaign list with search, sort, and pagination behavior. |
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.campaigns` | Campaign source data | Reads campaign definitions and table/list rows. |
-| `countly.campaigndata` | Campaign metric source | Reads period-based click/install/revenue/session metrics. |
-
----
-
-## Examples
-
-### Example 1: Read one campaign with metric data
-
-```plaintext
-/o/campaign?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&camp_id=campaign-summer-2026&period=30days
-```
-
-### Example 2: List campaign names
-
-```plaintext
-/o/campaign?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&list=true
-```
-
-### Example 3: Fetch data for several campaigns
-
-```plaintext
-/o/campaign?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&data=["campaign-summer-2026","[CLY]_organic"]&period=30days
-```
-
-### Example 4: Read campaign table rows
-
-```plaintext
-/o/campaign?api_key=YOUR_API_KEY&app_id=6991c75b024cb89cdc04efd2&getTable=true&iDisplayStart=0&iDisplayLength=20&sSearch=summer
-```
-
 ## Related Endpoints
 
 - [Campaign Create](i-campaign-create.md)
 - [Campaign Update](i-campaign-update.md)
 - [Campaign Hide](i-campaign-hide.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-04-01
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.campaigns` | Campaign source data | Reads campaign definitions and table/list rows. |
+| `countly.campaigndata` | Campaign metric source | Reads period-based click/install/revenue/session metrics. |
+
+</details>

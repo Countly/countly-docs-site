@@ -3,6 +3,8 @@ sidebar_label: "Global Config Read"
 keywords:
   - "/o/configs"
   - "configs"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /o/configs
@@ -19,11 +21,7 @@ Returns the current global configuration set visible to the dashboard, excluding
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. **API Key** (parameter): `api_key=YOUR_API_KEY`
-2. **Auth Token** (parameter): `auth_token=YOUR_AUTH_TOKEN`
-3. **Auth Token** (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -36,6 +34,14 @@ Countly API supports three authentication methods:
 | `api_key` | String | Yes (or use `auth_token`) | API key for authentication. |
 | `auth_token` | String | No | Auth token as query parameter or `countly-token` header. |
 | `app_id` | String | Yes | Target app ID required by app-admin validation. |
+
+## Examples
+
+### Read global configuration for an app-admin context
+
+```plaintext
+/o/configs?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID
+```
 
 ## Response
 
@@ -122,28 +128,12 @@ Countly API supports three authentication methods:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Validates app-admin access.
 - Loads current global configuration set from server runtime.
 - Returns full configuration payload as a JSON object.
 - Removes `services` from the response before returning data.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | App-admin validation | Reads authenticated user and app-admin permissions. |
-| `countly.apps` | App scope validation | Validates provided `app_id` during app-admin checks. |
-| `countly.plugins` | Stores global feature/config namespace data | Reads `_id: "plugins"` document to build effective response payload. |
-
-## Examples
-
-### Read global configuration for an app-admin context
-
-```plaintext
-/o/configs?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID
-```
 
 ## Limitations
 
@@ -155,6 +145,15 @@ Countly API supports three authentication methods:
 - [Features - Global Config Update](i-configs.md)
 - [Features - User Config Update](i-userconfigs.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | App-admin validation | Reads authenticated user and app-admin permissions. |
+| `countly.apps` | App scope validation | Validates provided `app_id` during app-admin checks. |
+| `countly.plugins` | Stores global feature/config namespace data | Reads `_id: "plugins"` document to build effective response payload. |
+
+</details>

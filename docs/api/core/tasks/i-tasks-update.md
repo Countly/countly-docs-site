@@ -4,6 +4,8 @@ keywords:
   - "/i/tasks/update"
   - "update"
   - "tasks"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /i/tasks/update
@@ -20,9 +22,7 @@ Requests a rerun of an existing task by ID.
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -36,6 +36,17 @@ Requests a rerun of an existing task by ID.
 | `auth_token` | String | Yes (or use `api_key`) | Dashboard auth token. |
 | `app_id` | String | Yes | App ID used for write-permission validation. |
 | `task_id` | String | Yes | Task ID to rerun. |
+
+## Examples
+
+### Example 1: Rerun task
+
+```plaintext
+/i/tasks/update?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  task_id=17f0f6c3a2c42cbced96d4a01f88f9a7f45bc7a5
+```
 
 ## Response
 
@@ -80,7 +91,7 @@ No runnable auth context:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -94,31 +105,6 @@ No runnable auth context:
 
 - Updates task state and may produce new task result output.
 
-## Audit & System Logs
-
-- No direct `/systemlogs` action is emitted by this endpoint.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Replay permission context resolution | Reads member/global-admin API key fallback when rerunning stored requests. |
-| `countly.long_tasks` | Task status and request replay source | Reads task definition and updates run status. |
-| `countly_fs.task_results` | Task output storage | May be updated when rerun completes with new result data. |
-
----
-
-## Examples
-
-### Example 1: Rerun task
-
-```plaintext
-/i/tasks/update?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  task_id=17f0f6c3a2c42cbced96d4a01f88f9a7f45bc7a5
-```
-
 ## Operational Considerations
 
 - Rerun starts asynchronous processing; `result` message is immediate and not final completion status.
@@ -127,14 +113,25 @@ No runnable auth context:
 
 - Endpoint does not return final task output; check task endpoints for completion state and data.
 
----
-
 ## Related Endpoints
 
 - [Tasks - Check Task Status](./o-tasks-check.md)
 - [Tasks - Read Task](./o-tasks-task.md)
 - [Tasks - Delete Task](./i-tasks-delete.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Audit & System Logs**
+
+- No direct `/systemlogs` action is emitted by this endpoint.
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Replay permission context resolution | Reads member/global-admin API key fallback when rerunning stored requests. |
+| `countly.long_tasks` | Task status and request replay source | Reads task definition and updates run status. |
+| `countly_fs.task_results` | Task output storage | May be updated when rerun completes with new result data. |
+
+</details>

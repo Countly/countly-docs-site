@@ -3,6 +3,8 @@ sidebar_label: "Log Read"
 keywords:
   - "/o/errorlogs"
   - "errorlogs"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Error Logs - Log Read
@@ -19,12 +21,7 @@ Returns one selected Countly log file, either as text response or as downloadabl
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. **API Key** (parameter): `api_key=YOUR_API_KEY`
-2. **Auth Token** (parameter): `auth_token=YOUR_AUTH_TOKEN`
-3. **Auth Token** (header): `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -39,6 +36,20 @@ Countly API supports three authentication methods:
 | `log` | String | No | Log key to read (for example `api`, `dashboard`, or discovered `countly-*.log` key). If omitted or invalid, endpoint returns all logs map. |
 | `bytes` | Number | No | If greater than `0`, returns only the last N bytes (aligned to first full line in the read chunk). |
 | `download` | Boolean/String | No | When truthy, returns raw text as attachment instead of JSON string response. |
+
+## Examples
+
+### Read API log as text
+
+```plaintext
+/o/errorlogs?api_key=YOUR_API_KEY&log=api
+```
+
+### Download last 5000 bytes of dashboard log
+
+```plaintext
+/o/errorlogs?api_key=YOUR_API_KEY&log=dashboard&bytes=5000&download=true
+```
 
 ## Response
 
@@ -116,7 +127,7 @@ Content-Disposition: attachment; filename=countly-api.log
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -125,24 +136,6 @@ Content-Disposition: attachment; filename=countly-api.log
 | Text mode | `download` not provided/false | Reads full/tail file content and returns via JSON output helper. | Raw root string log text. |
 | Download mode | `download=true` | Reads full/tail file content and returns raw body with attachment headers. | Raw text attachment payload. |
 | Fallback mode | `log` missing or unknown key | Falls back to all-log map behavior from `/o/errorlogs`. | Raw root object (`log_key -> log_text`). |
-
-## Database Collections
-
-This endpoint does not read or write database collections.
-
-## Examples
-
-### Read API log as text
-
-```plaintext
-/o/errorlogs?api_key=YOUR_API_KEY&log=api
-```
-
-### Download last 5000 bytes of dashboard log
-
-```plaintext
-/o/errorlogs?api_key=YOUR_API_KEY&log=dashboard&bytes=5000&download=true
-```
 
 ## Limitations
 
@@ -154,6 +147,11 @@ This endpoint does not read or write database collections.
 - [Error Logs - Logs Read](o-errorlogs.md)
 - [Error Logs - Log Clear](i-errorlogs.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+This endpoint does not read or write database collections.
+
+</details>

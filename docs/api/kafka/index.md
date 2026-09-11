@@ -1,19 +1,13 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Kafka
 
 The **Kafka** feature integrates with Apache Kafka for real-time data streaming and event processing.
-
-
-## Database Collections
-
-| Collection | Purpose |
-|---|---|
-| `kafka_configs` | Kafka broker connection configurations |
-
 
 ## Configuration & Settings
 
@@ -26,6 +20,13 @@ Kafka integration settings:
 
 This feature does not expose user-facing API endpoints. It operates internally as part of Countly's core functionality.
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Purpose |
+|---|---|
+| `kafka_configs` | Kafka broker connection configurations |
+
+</details>

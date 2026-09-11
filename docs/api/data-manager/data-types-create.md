@@ -4,11 +4,15 @@ keywords:
   - "/i/data-manager/data-type"
   - "data-type"
   - "data-manager"
+last_update:
+  date: "2026-02-16"
 ---
+
 # Update property or segment data types
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -22,12 +26,7 @@ Runs Data Manager type migration operations for event segments and user properti
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -66,6 +65,24 @@ Decoded example:
 }
 ```
 
+## Examples
+
+### Update a custom user property type
+
+```text
+/i/data-manager/data-type?
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  ops={"custom|plan":{"event":"custom","segment":"plan","newDataType":"s","prevDataType":"n"}}
+```
+
+### Update an event segment type
+
+```text
+/i/data-manager/data-type?
+  app_id=64f5c0d8f4f7ac0012ab3456&
+  ops={"purchase|price":{"event":"purchase","segment":"price","newDataType":"n","prevDataType":"s"}}
+```
+
 ## Response
 
 ### Success Response
@@ -88,14 +105,31 @@ Decoded example:
 500
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Parses `ops` and forces user-property mode (`ops.isUserProperty = true`).
 - Runs `migrateDataType(...)` for each operation.
 - Updates type metadata in `countly_drill.drill_meta` and app overrides in `countly.apps`.
 - Triggers type migration through drill processing and invalidates Data Manager cache.
 
-## Audit & System Logs
+## Operational Considerations
+
+- Type migration can touch large historical datasets and may run for a long time on high-volume apps.
+- Plan migrations during low-traffic windows to reduce contention with write-heavy workloads.
+
+## Limitations
+
+- On runtime exceptions, this endpoint can return HTTP `200` with raw JSON body `500`.
+
+## Related Endpoints
+
+- [Segment Properties - Update](segment-properties-update.md)
+- [User Properties - Read](user-properties-read.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Audit & System Logs**
 
 | Action | Trigger | Payload |
 |---|---|---|
@@ -103,7 +137,7 @@ Decoded example:
 | `dm-dt-up` | Built-in user property type migration (`event=up`) | `{ query, id: "up.segment_key" }` |
 | `dm-dt-event-sg` | Event segment type migration (`event_key + segment_key`) | `{ query }` |
 
-## Database Collections
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -111,46 +145,4 @@ Decoded example:
 | `countly.apps` | App-level type override cache | Updates `ovveridden_types.events.*` / `ovveridden_types.prop.*` entries used by downstream reads. |
 | `countly.systemlogs` | Audit trail | Writes migration actions (`dm-dt-custom`, `dm-dt-up`, `dm-dt-event-sg`) with migrated target details. |
 
----
-
-## Examples
-
-### Update a custom user property type
-
-```text
-/i/data-manager/data-type?
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  ops={"custom|plan":{"event":"custom","segment":"plan","newDataType":"s","prevDataType":"n"}}
-```
-
-### Update an event segment type
-
-```text
-/i/data-manager/data-type?
-  app_id=64f5c0d8f4f7ac0012ab3456&
-  ops={"purchase|price":{"event":"purchase","segment":"price","newDataType":"n","prevDataType":"s"}}
-```
-
-## Operational Considerations
-
-- Type migration can touch large historical datasets and may run for a long time on high-volume apps.
-- Plan migrations during low-traffic windows to reduce contention with write-heavy workloads.
-
----
-
-## Limitations
-
-- On runtime exceptions, this endpoint can return HTTP `200` with raw JSON body `500`.
-
----
-
-## Related Endpoints
-
-- [Segment Properties - Update](segment-properties-update.md)
-- [User Properties - Read](user-properties-read.md)
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

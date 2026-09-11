@@ -1,6 +1,8 @@
 ---
 sidebar_position: 1
 sidebar_label: "Overview"
+last_update:
+  date: "2026-03-05"
 ---
 
 # Two Factor Auth
@@ -15,13 +17,6 @@ Two Factor Auth adds TOTP-based second-factor authentication for dashboard users
 |---|---|---|
 | `two-factor-auth.globally_enabled` | `false` | When enabled, users cannot disable their own 2FA. |
 
-## Database Collections
-
-| Collection | Purpose |
-|---|---|
-| `countly.members` | Stores per-user 2FA status and encrypted secret token. |
-| `countly.systemlogs` | Stores 2FA enable/disable audit actions. |
-
 ## Endpoints
 
 - [Two Factor Auth - Enable](i-two-factor-auth-enable.md) - `/i/two-factor-auth?method=enable`
@@ -29,6 +24,14 @@ Two Factor Auth adds TOTP-based second-factor authentication for dashboard users
 - [Two Factor Auth - Admin Check](i-two-factor-auth-admin-check.md) - `/i/two-factor-auth?method=admin_check`
 - [Two Factor Auth - Admin Disable](i-two-factor-auth-admin-disable.md) - `/i/two-factor-auth?method=admin_disable`
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-03-05
+**Database Collections**
+
+| Collection | Purpose |
+|---|---|
+| `countly.members` | Stores per-user 2FA status and encrypted secret token. |
+| `countly.systemlogs` | Stores 2FA enable/disable audit actions. |
+
+</details>

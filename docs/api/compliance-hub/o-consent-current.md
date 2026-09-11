@@ -4,6 +4,8 @@ keywords:
   - "/o/consent/current"
   - "current"
   - "consent"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Compliance Hub - Consent Current
@@ -20,11 +22,7 @@ Returns the current consent object for one app user matched by query.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -47,6 +45,17 @@ Decoded example:
 {
   "did": "device_123"
 }
+```
+
+## Examples
+
+### Read current consent by device ID
+
+```text
+/o/consent/current?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  query={"did":"device_123"}
 ```
 
 ## Response
@@ -99,7 +108,7 @@ No consent found:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -112,7 +121,15 @@ No consent found:
 
 - Read-only endpoint.
 
-## Database Collections
+## Related Endpoints
+
+- [Compliance Hub - Consent Search](o-consent-search.md)
+- [Compliance Hub - App Users Consents](o-app-users-consents.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -120,24 +137,4 @@ No consent found:
 | `countly.apps` | App validation/context loading | Validates `app_id` and app context for lookup scope. |
 | `countly.app_users{appId}` | Current consent lookup | Reads one app user document and extracts `consent` field. |
 
----
-
-## Examples
-
-### Read current consent by device ID
-
-```text
-/o/consent/current?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  query={"did":"device_123"}
-```
-
-## Related Endpoints
-
-- [Compliance Hub - Consent Search](o-consent-search.md)
-- [Compliance Hub - App Users Consents](o-app-users-consents.md)
-
-## Last Updated
-
-2026-02-17
+</details>

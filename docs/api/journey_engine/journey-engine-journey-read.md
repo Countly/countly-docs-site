@@ -4,9 +4,15 @@ keywords:
   - "/o/journey-engine/journey"
   - "journey"
   - "journey-engine"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Journey Engine - Journey Read
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -14,19 +20,14 @@ keywords:
 /o/journey-engine/journey
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Retrieve one journey definition by ID, including version graph data and computed journey counters.
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required permission**: `Read` on the `journey_engine` feature
@@ -39,6 +40,31 @@ Retrieve one journey definition by ID, including version graph data and computed
 | `auth_token` | String | Yes (or use `api_key`) | Auth token authentication method. |
 | `app_id` | String | Yes | Application ID used to scope the journey definition query. |
 | `id` | String | Yes | Journey definition ID. Must be a valid MongoDB ObjectID string. |
+
+## Examples
+
+### Example 1: Read Journey Definition
+
+```plaintext
+/o/journey-engine/journey?app_id=64afe321d5f9b2f77cb2c8ed&id=67164f4a1f1bd90d6354430a
+```
+
+```json
+{
+  "_id": "67164f4a1f1bd90d6354430a",
+  "name": "Onboarding Journey",
+  "status": "draft",
+  "usersEntered": 1200,
+  "flowsCompleted": 450,
+  "versions": [
+    {
+      "_id": "67164f4a1f1bd90d6354430b",
+      "version": 1,
+      "status": "active"
+    }
+  ]
+}
+```
 
 ## Response
 
@@ -73,7 +99,6 @@ Retrieve one journey definition by ID, including version graph data and computed
   ]
 }
 ```
-
 
 ### Response Fields
 
@@ -127,7 +152,7 @@ Retrieve one journey definition by ID, including version graph data and computed
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 1. Validates read permission.
 2. Requires both `id` and `app_id`; missing values return `400`.
@@ -137,34 +162,16 @@ Retrieve one journey definition by ID, including version graph data and computed
 6. Resolves `createdBy` and `appKey` via lookups to `countly.members` and `countly.apps`.
 7. Recomputes `usersEntered` and `flowsCompleted` from `countly.journey_instances` counts before returning.
 
-## Examples
+## Limitations
 
-### Example 1: Read Journey Definition
+- `id` must be a valid MongoDB ObjectID string. Invalid formats can trigger `500 Failed to get journey definition`.
+- This endpoint excludes soft-deleted journey definitions and soft-deleted journey versions.
+- `usersEntered` and `flowsCompleted` are recomputed from `journey_instances` on each request, so response latency depends on instance collection size.
 
-```plaintext
-/o/journey-engine/journey?app_id=64afe321d5f9b2f77cb2c8ed&id=67164f4a1f1bd90d6354430a
-```
+<details>
+<summary>Implementation details</summary>
 
-```json
-{
-  "_id": "67164f4a1f1bd90d6354430a",
-  "name": "Onboarding Journey",
-  "status": "draft",
-  "usersEntered": 1200,
-  "flowsCompleted": 450,
-  "versions": [
-    {
-      "_id": "67164f4a1f1bd90d6354430b",
-      "version": 1,
-      "status": "active"
-    }
-  ]
-}
-```
-
----
-
-## Database Collections
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -174,27 +181,4 @@ Retrieve one journey definition by ID, including version graph data and computed
 | `countly.apps` | Resolves app key for `appKey`. | `_id`, `key` |
 | `countly.journey_instances` | Recomputes `usersEntered` and `flowsCompleted` counters at read time. | `journeyDefinitionId`, `status` |
 
----
-
-## Limitations
-
-- `id` must be a valid MongoDB ObjectID string. Invalid formats can trigger `500 Failed to get journey definition`.
-- This endpoint excludes soft-deleted journey definitions and soft-deleted journey versions.
-- `usersEntered` and `flowsCompleted` are recomputed from `journey_instances` on each request, so response latency depends on instance collection size.
-
-## Ⓔ Enterprise
-
-This feature is part of **Countly Enterprise**.
-
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

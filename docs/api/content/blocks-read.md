@@ -3,9 +3,15 @@ sidebar_label: "Content Blocks - Read"
 keywords:
   - "/o/content"
   - "content"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Retrieve content blocks
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -14,19 +20,14 @@ keywords:
 /o/content/by-id
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Retrieves content blocks. Use `/o/content` to list blocks for an app, and `/o/content/by-id` to fetch one block.
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required permission**: `Read` on the `content` feature
@@ -39,6 +40,20 @@ Retrieves content blocks. Use `/o/content` to list blocks for an app, and `/o/co
 | auth_token | String | Yes (or api_key) | Auth token for authentication |
 | app_id | String | Yes | Application identifier |
 | _id | String | Yes for `/o/content/by-id` | Content block ObjectID |
+
+## Examples
+
+### Example 1: List Content Blocks
+
+```text
+/o/content?api_key=YOUR_API_KEY&app_id=5be987d7b93798516eb5289a
+```
+
+### Example 2: Get Content Block by ID
+
+```text
+/o/content/by-id?api_key=YOUR_API_KEY&app_id=5be987d7b93798516eb5289a&_id=5d4472152de8f07336f3b352
+```
 
 ## Response
 
@@ -108,36 +123,11 @@ Single-item response (`/o/content/by-id`):
 | 404 | `"Content not found"` (`/o/content/by-id`) |
 | 500 | `"Error"` |
 
-## Behavior/Processing
+## Behavior
 
 1. `/o/content` lists blocks, sorted by `details.created` descending.
 2. `/o/content` enriches each block with creator full name from `countly.members`.
 3. `/o/content/by-id` returns a single block by `_id` and `app`.
-
----
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.content_blocks` | Endpoint data source | ** - Content block definitions |
-| `countly.members` | Endpoint data source | ** - Creator profile lookup for list endpoint |
-
----
-
-## Examples
-
-### Example 1: List Content Blocks
-
-```text
-/o/content?api_key=YOUR_API_KEY&app_id=5be987d7b93798516eb5289a
-```
-
-### Example 2: Get Content Block by ID
-
-```text
-/o/content/by-id?api_key=YOUR_API_KEY&app_id=5be987d7b93798516eb5289a&_id=5d4472152de8f07336f3b352
-```
 
 ## Related Endpoints
 
@@ -145,21 +135,14 @@ Single-item response (`/o/content/by-id`):
 - [Content Blocks - Update](blocks-update.md): Update content blocks
 - [Content Blocks - Delete](blocks-delete.md): Delete content blocks
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Database Collections**
 
-This feature is part of **Countly Enterprise**.
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.content_blocks` | Endpoint data source | ** - Content block definitions |
+| `countly.members` | Endpoint data source | ** - Creator profile lookup for list endpoint |
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

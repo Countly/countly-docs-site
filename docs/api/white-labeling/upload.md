@@ -4,9 +4,15 @@ keywords:
   - "/i/whitelabeling/upload"
   - "upload"
   - "whitelabeling"
+last_update:
+  date: "2026-02-16"
 ---
 
 # White Labeling - Upload Assets
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -14,19 +20,13 @@ keywords:
 /i/whitelabeling/upload
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Uploads branding images used by White Labeling settings (pre-login logo, sidebar logo, favicon).
 
 ## Authentication
 
-**Authentication methods**:
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -43,6 +43,18 @@ Multipart form-data with one file field:
 | `prelogo` | File | Conditional | Pre-login logo (`png`, `gif`, `jpeg`) |
 | `stopleftlogo` | File | Conditional | Sidebar logo (`png`, `gif`, `jpeg`) |
 | `favicon` | File | Conditional | Favicon (`png`, `gif`, `x-icon`) |
+
+## Examples
+
+```bash
+curl -X POST "https://your-server.com/i/whitelabeling/upload?api_key=YOUR_API_KEY" \
+  -F "prelogo=@./brand-login.png"
+```
+
+```bash
+curl -X POST "https://your-server.com/i/whitelabeling/upload?api_key=YOUR_API_KEY" \
+  -F "favicon=@./favicon.ico"
+```
 
 ## Response
 
@@ -83,32 +95,11 @@ Multipart form-data with one file field:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Accepts only the first matching file in this order: `prelogo`, `stopleftlogo`, `favicon`.
 - Enforces max file size of 1.5 MB.
 - Converts uploaded file to base64 data URI and stores in GridFS bucket `white-labeling`.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly_fs.white-labeling.files` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
-| `countly_fs.white-labeling.chunks` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
-
----
-
-## Examples
-
-```bash
-curl -X POST "https://your-server.com/i/whitelabeling/upload?api_key=YOUR_API_KEY" \
-  -F "prelogo=@./brand-login.png"
-```
-
-```bash
-curl -X POST "https://your-server.com/i/whitelabeling/upload?api_key=YOUR_API_KEY" \
-  -F "favicon=@./favicon.ico"
-```
 
 ## Limitations
 
@@ -119,19 +110,14 @@ curl -X POST "https://your-server.com/i/whitelabeling/upload?api_key=YOUR_API_KE
 
 - [White Labeling - Overview](index.md)
 
-## Ⓔ Enterprise
+<details>
+<summary>Implementation details</summary>
 
-This feature is part of **Countly Enterprise**.
+**Database Collections**
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly_fs.white-labeling.files` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
+| `countly_fs.white-labeling.chunks` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions.
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

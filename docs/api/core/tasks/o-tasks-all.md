@@ -4,6 +4,8 @@ keywords:
   - "/o/tasks/all"
   - "all"
   - "tasks"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /o/tasks/all
@@ -20,9 +22,7 @@ Returns task records visible to current user, with optional query and period fil
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -45,6 +45,25 @@ Returns task records visible to current user, with optional query and period fil
 - Visibility filter is always enforced: global tasks or tasks created by current member.
 - Subtasks are excluded (`subtask` must not exist).
 - `query` parsing failures fall back to `{}`.
+
+## Examples
+
+### Example 1: Read tasks for one app
+
+```plaintext
+/o/tasks/all?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2
+```
+
+### Example 2: Read tasks for multiple apps
+
+```plaintext
+/o/tasks/all?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  app_ids=6991c75b024cb89cdc04efd2,6991c75b024cb89cdc04efaa
+```
 
 ## Response
 
@@ -88,7 +107,7 @@ Returns task records visible to current user, with optional query and period fil
 {"result":"User does not have right"}
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -102,43 +121,9 @@ Returns task records visible to current user, with optional query and period fil
 
 - Read-only endpoint.
 
-## Audit & System Logs
-
-- No `/systemlogs` action is emitted by this endpoint.
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication and visibility scoping | Reads caller identity used by read validation and creator visibility filtering. |
-| `countly.long_tasks` | Task metadata source | Reads visible task records matching request filters. |
-
----
-
-## Examples
-
-### Example 1: Read tasks for one app
-
-```plaintext
-/o/tasks/all?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2
-```
-
-### Example 2: Read tasks for multiple apps
-
-```plaintext
-/o/tasks/all?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  app_ids=6991c75b024cb89cdc04efd2,6991c75b024cb89cdc04efaa
-```
-
 ## Operational Considerations
 
 - This endpoint can return large arrays; prefer paginated listing for UI tables.
-
----
 
 ## Related Endpoints
 
@@ -146,6 +131,18 @@ Returns task records visible to current user, with optional query and period fil
 - [Tasks - Count Tasks](./o-tasks-count.md)
 - [Tasks - Read Task](./o-tasks-task.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Audit & System Logs**
+
+- No `/systemlogs` action is emitted by this endpoint.
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication and visibility scoping | Reads caller identity used by read validation and creator visibility filtering. |
+| `countly.long_tasks` | Task metadata source | Reads visible task records matching request filters. |
+
+</details>

@@ -4,9 +4,15 @@ keywords:
   - "/i/groups/create"
   - "create"
   - "groups"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Create Group
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -14,19 +20,14 @@ keywords:
 /i/groups/create
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Creates a new group definition and optionally assigns users.
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required access**: global admin
@@ -50,6 +51,41 @@ Creates a new group definition and optionally assigns users.
 | `admin_of` | Array | No | Backward-compatible app admin mapping input |
 | `user_of` | Array | No | Backward-compatible app user mapping input |
 | `permission` | Object | No | Group permission object |
+
+## Examples
+
+### Example 1: Create Group
+
+Endpoint form:
+
+```text
+https://your-server.com/i/groups/create?api_key=YOUR_API_KEY&args={"name":"Marketing Team","groupID":"marketing-team","global_admin":false,"permission":{"_":{"u":[],"a":[]},"c":{},"r":{},"u":{},"d":{}}}
+```
+
+Decoded `args` object:
+
+```json
+{
+  "name": "Marketing Team",
+  "groupID": "marketing-team",
+  "global_admin": false,
+  "permission": {
+    "_": { "u": [], "a": [] },
+    "c": {},
+    "r": {},
+    "u": {},
+    "d": {}
+  }
+}
+```
+
+### Example 2: Create Group with Initial Users
+
+Endpoint form:
+
+```text
+https://your-server.com/i/groups/create?api_key=YOUR_API_KEY&args={"name":"Support Team","groupID":"support-team","global_admin":false,"users":["507f191e810c19729de860ea","507f191e810c19729de860eb"]}
+```
 
 ## Response
 
@@ -94,60 +130,12 @@ Creates a new group definition and optionally assigns users.
 | 400 | `{ "result": "Missing parameter \"api_key\" or \"auth_token\"" }` |
 | 400 | Error object from create path |
 
-## Behavior/Processing
+## Behavior
 
 1. Validates required fields in `args`.
 2. Validates unique `groupID`.
 3. Creates group in `countly.groups`.
 4. If `users` is provided, updates matched users and synchronizes group membership fields.
-
----
-
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.groups` | Endpoint data source | ** - Stores created group record |
-| `countly.members` | Endpoint data source | ** - Updated when `users` are passed in create request |
-
----
-
-## Examples
-
-### Example 1: Create Group
-
-Endpoint form:
-
-```text
-https://your-server.com/i/groups/create?api_key=YOUR_API_KEY&args={"name":"Marketing Team","groupID":"marketing-team","global_admin":false,"permission":{"_":{"u":[],"a":[]},"c":{},"r":{},"u":{},"d":{}}}
-```
-
-Decoded `args` object:
-
-```json
-{
-  "name": "Marketing Team",
-  "groupID": "marketing-team",
-  "global_admin": false,
-  "permission": {
-    "_": { "u": [], "a": [] },
-    "c": {},
-    "r": {},
-    "u": {},
-    "d": {}
-  }
-}
-```
-
-### Example 2: Create Group with Initial Users
-
-Endpoint form:
-
-```text
-https://your-server.com/i/groups/create?api_key=YOUR_API_KEY&args={"name":"Support Team","groupID":"support-team","global_admin":false,"users":["507f191e810c19729de860ea","507f191e810c19729de860eb"]}
-```
-
----
 
 ## Related Endpoints
 
@@ -155,21 +143,14 @@ https://your-server.com/i/groups/create?api_key=YOUR_API_KEY&args={"name":"Suppo
 - [Groups - Delete Group](delete.md)
 - [Groups - Assign User to Groups](save-user-groups.md)
 
----
+<details>
+<summary>Implementation details</summary>
 
-## Ⓔ Enterprise
+**Database Collections**
 
-This feature is part of **Countly Enterprise**.
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.groups` | Endpoint data source | ** - Stores created group record |
+| `countly.members` | Endpoint data source | ** - Updated when `users` are passed in create request |
 
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

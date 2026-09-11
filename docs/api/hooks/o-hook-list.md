@@ -4,6 +4,8 @@ keywords:
   - "/o/hook/list"
   - "list"
   - "hook"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Hooks - Read List
@@ -20,11 +22,7 @@ Returns hook rules visible to the authenticated user, enriched with creator disp
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -43,6 +41,20 @@ Requires `hooks` `Read` permission.
 
 - `id` must be a valid MongoDB ObjectID string when provided.
 - Global admins can call without `app_id`; non-global-admin users must provide `app_id` and have read access.
+
+## Examples
+
+### Read all visible hooks
+
+```text
+/o/hook/list?app_id=6991c75b024cb89cdc04efd2&api_key=YOUR_API_KEY
+```
+
+### Read one hook by ID
+
+```text
+/o/hook/list?app_id=6991c75b024cb89cdc04efd2&api_key=YOUR_API_KEY&id=65f0cbf8bca6b8e8fbf7f901
+```
 
 ## Response
 
@@ -170,7 +182,7 @@ Degraded success branch used when internal list/member lookup query fails:
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -184,30 +196,6 @@ Degraded success branch used when internal list/member lookup query fails:
 
 This endpoint is read-only and does not modify hook documents.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Auth validation and creator name lookup | Reads user auth/permissions and creator profile names. |
-| `countly.apps` | App access validation for non-global-admin calls | Reads app by `app_id` during read validation. |
-| `countly.hooks` | Hook rule retrieval | Reads hook documents and returns matched list. |
-
----
-
-## Examples
-
-### Read all visible hooks
-
-```text
-/o/hook/list?app_id=6991c75b024cb89cdc04efd2&api_key=YOUR_API_KEY
-```
-
-### Read one hook by ID
-
-```text
-/o/hook/list?app_id=6991c75b024cb89cdc04efd2&api_key=YOUR_API_KEY&id=65f0cbf8bca6b8e8fbf7f901
-```
-
 ## Limitations
 
 - On internal hook/member query callback errors, endpoint returns `[]` instead of a structured error payload.
@@ -219,6 +207,15 @@ This endpoint is read-only and does not modify hook documents.
 - [Hooks - Update Status](i-hook-status.md)
 - [Hooks - Delete](i-hook-delete.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Auth validation and creator name lookup | Reads user auth/permissions and creator profile names. |
+| `countly.apps` | App access validation for non-global-admin calls | Reads app by `app_id` during read validation. |
+| `countly.hooks` | Hook rule retrieval | Reads hook documents and returns matched list. |
+
+</details>

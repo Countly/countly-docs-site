@@ -5,6 +5,8 @@ keywords:
   - "/o/push/message/67a3d2f5c1a23b0f4d6c0101"
   - "message"
   - "push"
+last_update:
+  date: "2026-04-09"
 ---
 
 # Push - Message Get
@@ -21,12 +23,7 @@ Returns one push message object by ID.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. `api_key=YOUR_API_KEY`
-2. `auth_token=YOUR_AUTH_TOKEN`
-3. `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -40,6 +37,16 @@ Requires `push` `Read` permission.
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
 | `app_id` | String | Yes | App ID used by permission validation. |
 | `{_id}` | String (ObjectID) | Yes | Message ID path parameter. |
+
+## Examples
+
+### Read one message
+
+```plaintext
+/o/push/message/67a3d2f5c1a23b0f4d6c0101?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2
+```
 
 ## Response
 
@@ -94,34 +101,25 @@ Requires `push` `Read` permission.
 
 Standard authentication/authorization errors from read validation can also be returned.
 
-## Behavior/Processing
+## Behavior
 
 - Validates the message ID as ObjectID.
 - Reads the message by ID and joins recent `message_schedules` records.
 - Recomputes the returned `status` from the message plus latest schedule.
 - Returns raw message JSON payload via raw response body.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.messages` | Push message storage | Reads one message document by ID. |
-
-## Examples
-
-### Read one message
-
-```plaintext
-/o/push/message/67a3d2f5c1a23b0f4d6c0101?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2
-```
-
 ## Related Endpoints
 
 - [Push - Message List](message-all.md)
 - [Push - Message Update](message-update.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-04-09
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.messages` | Push message storage | Reads one message document by ID. |
+
+</details>

@@ -4,6 +4,8 @@ keywords:
   - "/i/event_groups/create"
   - "create"
   - "event_groups"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /i/event_groups/create
@@ -20,9 +22,7 @@ Create a grouped event definition in `countly.event_groups`.
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -46,6 +46,20 @@ Create a grouped event definition in `countly.event_groups`.
 | `display_map` | Object | Yes | Display metadata object for the group. |
 | `status` | Boolean | Yes | Group active state. |
 | `description` | String | No | Optional description text. |
+
+## Examples
+
+### Example 1: Create enabled group
+
+```plaintext
+/i/event_groups/create?api_key=YOUR_API_KEY&args={"app_id":"6991c75b024cb89cdc04efd2","name":"Playback Group","source_events":["Playback Started","Playback Resumed"],"display_map":{},"status":true}
+```
+
+### Example 2: Create disabled group with description
+
+```plaintext
+/i/event_groups/create?api_key=YOUR_API_KEY&args={"app_id":"6991c75b024cb89cdc04efd2","name":"Campaign Group","source_events":["Campaign Viewed","Campaign Clicked"],"display_map":{},"status":false,"description":"Campaign funnel events"}
+```
 
 ## Response
 
@@ -100,7 +114,7 @@ Create a grouped event definition in `countly.event_groups`.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -113,40 +127,25 @@ Create a grouped event definition in `countly.event_groups`.
 - This endpoint writes only to event group definitions.  
 - It does not update `events.overview` during creation.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.members` | Authentication and permission validation | Reads member identity and app-level create permissions. |
-| `countly.event_groups` | Group definition storage | Inserts new group record with generated `_id`, source events, and metadata. |
-
-## Examples
-
-### Example 1: Create enabled group
-
-```plaintext
-/i/event_groups/create?api_key=YOUR_API_KEY&args={"app_id":"6991c75b024cb89cdc04efd2","name":"Playback Group","source_events":["Playback Started","Playback Resumed"],"display_map":{},"status":true}
-```
-
-### Example 2: Create disabled group with description
-
-```plaintext
-/i/event_groups/create?api_key=YOUR_API_KEY&args={"app_id":"6991c75b024cb89cdc04efd2","name":"Campaign Group","source_events":["Campaign Viewed","Campaign Clicked"],"display_map":{},"status":false,"description":"Campaign funnel events"}
-```
-
 ## Limitations
 
 - `args` must be valid JSON.
 - JSON parse failures for `args` are not handled by a dedicated endpoint error branch.
 - Group ID generation includes timestamp input, so repeated create calls produce different IDs even with the same payload.
 
----
-
 ## Related Endpoints
 
 - [Event Groups - Group Update](i-event-groups-update.md)
 - [Event Groups - Group Delete](i-event-groups-delete.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.members` | Authentication and permission validation | Reads member identity and app-level create permissions. |
+| `countly.event_groups` | Group definition storage | Inserts new group record with generated `_id`, source events, and metadata. |
+
+</details>

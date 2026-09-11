@@ -4,9 +4,15 @@ keywords:
   - "/i/groups/delete"
   - "delete"
   - "groups"
+last_update:
+  date: "2026-02-16"
 ---
 
 # Delete Group
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -14,19 +20,14 @@ keywords:
 /i/groups/delete
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Deletes a group and removes its membership references from users.
 
 ## Authentication
 
-- **Authentication methods**:
-  - API Key (parameter): `api_key=YOUR_API_KEY`
-  - Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-  - Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
 ## Permissions
 
 - **Required access**: global admin
@@ -44,6 +45,24 @@ Deletes a group and removes its membership references from users.
 | Field | Type | Required | Description |
 |---|---|---|---|
 | `_id` | String | Yes | Group ID |
+
+## Examples
+
+### Example: Delete Group
+
+Endpoint form:
+
+```text
+https://your-server.com/i/groups/delete?api_key=YOUR_API_KEY&args={"_id":"507f1f77bcf86cd799439011"}
+```
+
+Decoded `args` object:
+
+```json
+{
+  "_id": "507f1f77bcf86cd799439011"
+}
+```
 
 ## Response
 
@@ -69,64 +88,26 @@ Deletes a group and removes its membership references from users.
 | 400 | `{ "result": "Missing parameter \"api_key\" or \"auth_token\"" }` |
 | 400 | Error object from delete path |
 
-## Behavior/Processing
+## Behavior
 
 1. Validates `_id`.
 2. Deletes group from `countly.groups`.
 3. Removes group ID from `countly.members.group_id`.
 4. Rebuilds permissions for affected users.
 
----
+## Related Endpoints
 
-## Database Collections
+- [Groups - List Groups](list.md)
+- [Groups - Get Group Details](details.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
 | `countly.groups` | Endpoint data source | ** - Deleted group record |
 | `countly.members` | Endpoint data source | ** - Membership and permission rebuild target |
 
----
-
-## Examples
-
-### Example: Delete Group
-
-Endpoint form:
-
-```text
-https://your-server.com/i/groups/delete?api_key=YOUR_API_KEY&args={"_id":"507f1f77bcf86cd799439011"}
-```
-
-Decoded `args` object:
-
-```json
-{
-  "_id": "507f1f77bcf86cd799439011"
-}
-```
-
----
-
-## Related Endpoints
-
-- [Groups - List Groups](list.md)
-- [Groups - Get Group Details](details.md)
-
----
-
-## Ⓔ Enterprise
-
-This feature is part of **Countly Enterprise**.
-
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions
-
----
-
-## Last Updated
-
-2026-02-16
+</details>

@@ -5,6 +5,8 @@ keywords:
   - "list"
   - "populator"
   - "environment"
+last_update:
+  date: "2026-02-17"
 ---
 
 # Populator - Environment List
@@ -21,11 +23,7 @@ Returns all saved environments for the selected app.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. API key query parameter: `api_key=YOUR_API_KEY`
-2. Auth token query parameter: `auth_token=YOUR_AUTH_TOKEN`
-3. Auth token header: `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -38,6 +36,16 @@ Requires `Read` permission for the Populator feature.
 | `app_id` | String | Yes | App ID whose environments are returned. |
 | `api_key` | String | Conditional | Required when `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required when `api_key` is not provided. |
+
+## Examples
+
+### List all environments for one app
+
+```text
+https://your-server.com/o/populator/environment/list?
+  app_id=6991c75b024cb89cdc04efd2&
+  api_key=YOUR_API_KEY
+```
 
 ## Response
 
@@ -98,7 +106,7 @@ Requires `Read` permission for the Populator feature.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -106,32 +114,10 @@ Requires `Read` permission for the Populator feature.
 |---|---|---|---|
 | Environment list | Valid auth and app access | Reads all environments where `appId` equals request `app_id`. | Raw root array: `[ ... ]` |
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.populator_environments` | Environment metadata | Reads all matching documents for `appId`. |
-| `countly.members` | Authentication and authorization | Reads member context for permission checks. |
-| `countly.apps` | App rights validation | Reads app access context from `app_id`. |
-
----
-
-## Examples
-
-### List all environments for one app
-
-```text
-https://your-server.com/o/populator/environment/list?
-  app_id=6991c75b024cb89cdc04efd2&
-  api_key=YOUR_API_KEY
-```
-
 ## Limitations
 
 - Response is not paginated; large numbers of environments are returned in one array.
 - Ordering depends on MongoDB natural order because no explicit sort is applied.
-
----
 
 ## Related Endpoints
 
@@ -139,6 +125,15 @@ https://your-server.com/o/populator/environment/list?
 - [Populator - Environment Read](o-populator-environment-get.md)
 - [Populator - Environment Remove](o-populator-environment-remove.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-02-17
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.populator_environments` | Environment metadata | Reads all matching documents for `appId`. |
+| `countly.members` | Authentication and authorization | Reads member context for permission checks. |
+| `countly.apps` | App rights validation | Reads app access context from `app_id`. |
+
+</details>

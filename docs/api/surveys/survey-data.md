@@ -5,9 +5,15 @@ keywords:
   - "data"
   - "surveys"
   - "survey"
+last_update:
+  date: "2026-04-18"
 ---
 
 # Surveys - Survey Data
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
 
 ## Endpoint
 
@@ -15,19 +21,13 @@ keywords:
 /o/surveys/survey/data
 ```
 
-> Ⓔ **Enterprise Only**  
-> This API is available exclusively in [Countly Enterprise](https://count.ly/enterprise).
-
 ## Overview
 
 Returns Survey response table data and Survey-specific method branches.
 
 ## Authentication
 
-**Authentication methods**:
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -49,6 +49,16 @@ Returns Survey response table data and Survey-specific method branches.
 | `sSearch` | String | No | Search filter |
 | `iDisplayStart` | Number | No | Offset |
 | `iDisplayLength` | Number | No | Page size |
+
+## Examples
+
+```text
+/o/surveys/survey/data?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&widget_id=67b9db56f67aab0012cd8899&iDisplayStart=0&iDisplayLength=20
+```
+
+```text
+/o/surveys/survey/data?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&widget_id=67b9db56f67aab0012cd8899&method=results&period=30days
+```
 
 ## Response
 
@@ -95,7 +105,7 @@ Returns Survey response table data and Survey-specific method branches.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 - Uses Drill data for `[CLY]_survey`; returns `Drill disabled` or `Drill missing` if Drill is unavailable for table-backed modes.
 - Applies common filters from query parameters: `widget_id`, `uid`, `platform`, `platform_version`, `version`, `source`, `period`, and `device_id`.
@@ -107,43 +117,19 @@ Returns Survey response table data and Survey-specific method branches.
 - Without a special `method`, returns DataTables rows from Drill. With `widget_id`, answers are translated using widget question choices; without `widget_id`, it returns all answered survey rows.
 - `filter_questions` can be a JSON object mapping question IDs to exact values or `null`; `null` means answer exists.
 
-## Database Collections
+## Related Endpoints
+
+- [Surveys - Survey Overview Metrics](survey-overview.md)
+- [Surveys - Survey Question Map](question-map.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
 | `countly.feedback_widgets` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
 | `countly_drill.drill_events` | Drill event records | Stores granular event rows queried or updated by this endpoint. |
 
----
-
-## Examples
-
-```text
-/o/surveys/survey/data?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&widget_id=67b9db56f67aab0012cd8899&iDisplayStart=0&iDisplayLength=20
-```
-
-```text
-/o/surveys/survey/data?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&widget_id=67b9db56f67aab0012cd8899&method=results&period=30days
-```
-
-## Related Endpoints
-
-- [Surveys - Survey Overview Metrics](survey-overview.md)
-- [Surveys - Survey Question Map](question-map.md)
-
-## Ⓔ Enterprise
-
-This feature is part of **Countly Enterprise**.
-
-**Get Access:**
-- [Learn about Enterprise](https://count.ly/enterprise)
-- [Contact Sales](https://count.ly/demo)
-- [Compare Versions](https://countly.com/pricing)
-
-**Already a Customer?** Use [support portal](https://support.countly.com/hc/en-us/requests/new) if you have any questions.
-
----
-
-## Last Updated
-
-2026-04-18
+</details>

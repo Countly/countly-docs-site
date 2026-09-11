@@ -4,6 +4,8 @@ keywords:
   - "/i/reports/update"
   - "update"
   - "reports"
+last_update:
+  date: "2026-03-07"
 ---
 
 # Reports - Report Update
@@ -20,12 +22,7 @@ Updates an existing report definition.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. `api_key=YOUR_API_KEY`
-2. `auth_token=YOUR_AUTH_TOKEN`
-3. `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -46,6 +43,17 @@ Requires `reports` `Update` permission.
 | `args.hour` | Number/String | No | Parsed to integer when provided. |
 | `args.minute` | Number/String | No | Parsed to integer when provided. |
 | `args.timezone` | String | No | Defaults to `Etc/GMT` if omitted. |
+
+## Examples
+
+### Update schedule and recipients
+
+```plaintext
+/i/reports/update?
+  api_key=YOUR_API_KEY&
+  app_id=6991c75b024cb89cdc04efd2&
+  args={"_id":"6262742dbf7392a8bfd8c1f6","apps":["6991c75b024cb89cdc04efd2"],"frequency":"monthly","day":1,"hour":8,"minute":30,"emails":["ops@company.com"]}
+```
 
 ## Response
 
@@ -83,7 +91,7 @@ Requires `reports` `Update` permission.
 
 Standard authentication/authorization errors from update validation can also be returned.
 
-## Behavior/Processing
+## Behavior
 
 - Parses `args` JSON before route execution.
 - Removes `_id` from update payload and uses it only in query.
@@ -98,24 +106,6 @@ Standard authentication/authorization errors from update validation can also be 
 - Updates one report document in `countly.reports`.
 - Adds one audit entry in `countly.systemlogs` on success.
 
-## Database Collections
-
-| Collection | Used for | Data touched by this endpoint |
-|---|---|---|
-| `countly.reports` | Report storage | Reads existing report and updates target document. |
-| `countly.systemlogs` | Audit trail | Receives `reports_edited` action with before/update payload. |
-
-## Examples
-
-### Update schedule and recipients
-
-```plaintext
-/i/reports/update?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  args={"_id":"6262742dbf7392a8bfd8c1f6","apps":["6991c75b024cb89cdc04efd2"],"frequency":"monthly","day":1,"hour":8,"minute":30,"emails":["ops@company.com"]}
-```
-
 ## Limitations
 
 - Although this is an update endpoint, code expects `args.apps` for permission checks; omitting `apps` can break update execution.
@@ -126,6 +116,14 @@ Standard authentication/authorization errors from update validation can also be 
 - [Reports - Report Create](i-reports-create.md)
 - [Reports - Report Delete](i-reports-delete.md)
 
-## Last Updated
+<details>
+<summary>Implementation details</summary>
 
-2026-03-07
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.reports` | Report storage | Reads existing report and updates target document. |
+| `countly.systemlogs` | Audit trail | Receives `reports_edited` action with before/update payload. |
+
+</details>

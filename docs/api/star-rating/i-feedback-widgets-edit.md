@@ -5,6 +5,8 @@ keywords:
   - "edit"
   - "feedback"
   - "widgets"
+last_update:
+  date: "2026-03-07"
 ---
 
 # Star Rating - Edit Widget
@@ -21,12 +23,7 @@ Updates an existing star-rating widget definition.
 
 ## Authentication
 
-Countly API supports three authentication methods:
-
-1. `api_key=YOUR_API_KEY`
-2. `auth_token=YOUR_AUTH_TOKEN`
-3. `countly-token: YOUR_AUTH_TOKEN`
-
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
 
 ## Permissions
 
@@ -47,6 +44,20 @@ Requires `star_rating` `Update` permission.
 | `ratings_texts` | Array/String | No | JSON array string for rating labels. |
 
 Additional optional widget fields are validated using the server-side widget schema.
+
+## Examples
+
+### Edit widget status and text
+
+```plaintext
+/i/feedback/widgets/edit?
+  api_key=YOUR_API_KEY&
+  widget_id=67a3d2f5c1a23b0f4d6c0201&
+  app_id=6991c75b024cb89cdc04efd2&
+  status=true&
+  popup_header_text=How was your experience?&
+  target_pages=["/","/pricing"]
+```
 
 ## Response
 
@@ -108,7 +119,7 @@ Additional optional widget fields are validated using the server-side widget sch
 
 Standard authentication/authorization errors from update validation can also be returned.
 
-## Behavior/Processing
+## Behavior
 
 - Converts `widget_id` to ObjectID and validates full widget payload.
 - Applies widget field preprocessors before validation (`target_pages`, `targeting`, `links`, `ratings_texts`, `status`, `hide_sticker`).
@@ -124,7 +135,15 @@ Standard authentication/authorization errors from update validation can also be 
 - Updates one widget in `countly.feedback_widgets`.
 - May update/create/delete related cohort documents in `countly.cohorts`.
 
-## Database Collections
+## Related Endpoints
+
+- [Star Rating - Toggle Widget Status](i-feedback-widgets-status.md)
+- [Star Rating - List All Widgets](o-feedback-widgets.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
@@ -132,25 +151,4 @@ Standard authentication/authorization errors from update validation can also be 
 | `countly.cohorts` | Targeting cohorts | May update/create/delete cohort records (when cohorts plugin enabled). |
 | `countly.systemlogs` | Audit trail | Receives `cohort_edited` in cohort-update branch. |
 
-## Examples
-
-### Edit widget status and text
-
-```plaintext
-/i/feedback/widgets/edit?
-  api_key=YOUR_API_KEY&
-  widget_id=67a3d2f5c1a23b0f4d6c0201&
-  app_id=6991c75b024cb89cdc04efd2&
-  status=true&
-  popup_header_text=How was your experience?&
-  target_pages=["/","/pricing"]
-```
-
-## Related Endpoints
-
-- [Star Rating - Toggle Widget Status](i-feedback-widgets-status.md)
-- [Star Rating - List All Widgets](o-feedback-widgets.md)
-
-## Last Updated
-
-2026-03-07
+</details>

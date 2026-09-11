@@ -4,6 +4,8 @@ keywords:
   - "/i/app_users/update"
   - "update"
   - "app_users"
+last_update:
+  date: "2026-02-17"
 ---
 
 # /i/app_users/update
@@ -20,9 +22,7 @@ Update app user documents by query using MongoDB update modifiers.
 
 ## Authentication
 
-- API Key (parameter): `api_key=YOUR_API_KEY`
-- Auth Token (parameter): `auth_token=YOUR_AUTH_TOKEN`
-- Auth Token (header): `countly-token: YOUR_AUTH_TOKEN`
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
 
 ## Permissions
 
@@ -48,6 +48,20 @@ Update app user documents by query using MongoDB update modifiers.
 | `$inc` | Object | No | Increments numeric fields. |
 | `$push` / `$pull` | Object | No | Updates array fields. |
 | `other Mongo modifiers` | Object | No | Allowed when key starts with `$`. |
+
+## Examples
+
+### Example 1: Update one user property
+
+```plaintext
+/i/app_users/update?api_key=YOUR_API_KEY&app_id=64b0ac10c2c3ce0012dd1001&query={"uid":"1"}&update={"$set":{"name":"Jane"}}
+```
+
+```json
+{
+  "result": "User Updated"
+}
+```
 
 ## Response
 
@@ -137,7 +151,7 @@ Update app user documents by query using MongoDB update modifiers.
 }
 ```
 
-## Behavior/Processing
+## Behavior
 
 ### Behavior Modes
 
@@ -151,39 +165,24 @@ Update app user documents by query using MongoDB update modifiers.
 
 - Triggers plugin listeners for app-user updates, so plugin-specific user data may be updated as part of the same operation.
 
-## Database Collections
+## Limitations
+
+- Non-modifier update objects are rejected (`update` keys must start with `$`).
+- Multi-user updates require explicit `force`.
+
+## Related Endpoints
+
+- [App Users - Create](i-app-users-create.md)
+- [App Users - Delete](i-app-users-delete.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
 | `countly.members` | Authentication and permission validation | Reads member identity and app-level write permissions. |
 | `countly.app_users{appId}` | User query and update target | Counts matched users and applies MongoDB modifier updates to matching documents. |
 
----
-## Examples
-
-### Example 1: Update one user property
-
-```plaintext
-/i/app_users/update?api_key=YOUR_API_KEY&app_id=64b0ac10c2c3ce0012dd1001&query={"uid":"1"}&update={"$set":{"name":"Jane"}}
-```
-
-```json
-{
-  "result": "User Updated"
-}
-```
-
-## Limitations
-
-- Non-modifier update objects are rejected (`update` keys must start with `$`).
-- Multi-user updates require explicit `force`.
-
----
-## Related Endpoints
-
-- [App Users - Create](i-app-users-create.md)
-- [App Users - Delete](i-app-users-delete.md)
-
-## Last Updated
-
-2026-02-17
+</details>

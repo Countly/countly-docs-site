@@ -43,6 +43,7 @@ const config = {
           path: path.join(__dirname, 'docs'),
           routeBasePath: '/',
           sidebarPath: require.resolve('./sidebars.js'),
+          showLastUpdateTime: true,
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
