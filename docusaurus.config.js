@@ -13,10 +13,10 @@ const config = {
   favicon: 'img/favicon.svg',
 
   // Set the production url of your site here
-  url: 'https://countly.github.io',
+  url: 'https://api.count.ly',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/countly-docs-site/',
+  baseUrl: '/',
 
   // GitHub pages deployment config.
   organizationName: 'Countly', // Usually your GitHub org/user name.
