@@ -10,6 +10,10 @@ name: API endpoint test
 #   COUNTLY_ALLOW_MUTATION  "true" also tests endpoints that change data. Only on a throwaway server.
 
 on:
+  # TEMPORARY: one full test run from the PR #2 branch. Remove before merging.
+  push:
+    branches:
+      - docs/api-drift-check
   pull_request:
     paths:
       - "docs/api/**"
