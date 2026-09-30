@@ -13,10 +13,6 @@ name: API docs drift check
 #   SLACK_DOCS_CHANNEL       channel ID the bot posts to (same setup as countly-backup-documentation)
 
 on:
-  # TEMPORARY test trigger for PR #2. Remove before merging.
-  pull_request:
-    paths:
-      - ".github/workflows/docs-drift.yml"
   schedule:
     - cron: "0 5 * * *"
   workflow_dispatch:
@@ -35,7 +31,7 @@ concurrency:
 
 env:
   DRIFT_BRANCH: docs-drift/auto
-  MAX_ITEMS: ${{ inputs.max_items || (github.event_name == 'pull_request' && '3') || '20' }}
+  MAX_ITEMS: ${{ inputs.max_items || '20' }}
 
 jobs:
   drift:
@@ -182,8 +178,6 @@ jobs:
         uses: peter-evans/create-pull-request@v7
         with:
           branch: ${{ env.DRIFT_BRANCH }}
-          # TEMPORARY for the PR #2 test run: target the PR branch, not main. Remove before merging.
-          base: ${{ github.head_ref || github.ref_name }}
           delete-branch: true
           add-paths: |
             docs/api/**
