@@ -11,6 +11,10 @@ name: API docs drift check
 #   COUNTLY_*                optional test server, same secrets as docs-api-test.yml
 
 on:
+  # TEMPORARY test trigger for PR #2. Remove before merging.
+  push:
+    branches:
+      - docs/api-drift-check
   schedule:
     - cron: "0 5 * * *"
   workflow_dispatch:
@@ -29,7 +33,7 @@ concurrency:
 
 env:
   DRIFT_BRANCH: docs-drift/auto
-  MAX_ITEMS: ${{ inputs.max_items || '20' }}
+  MAX_ITEMS: ${{ inputs.max_items || (github.event_name == 'push' && '3') || '20' }}
 
 jobs:
   drift:
