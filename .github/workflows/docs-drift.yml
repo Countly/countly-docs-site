@@ -9,7 +9,8 @@ name: API docs drift check
 #   PLATFORM_READ_TOKEN      fine-grained token with read-only Contents access to Countly/countly-platform
 #   CLAUDE_CODE_OAUTH_TOKEN  from `claude setup-token`, run by someone on a Claude subscription
 #   COUNTLY_*                optional test server, same secrets as docs-api-test.yml
-#   SLACK_WEBHOOK_URL        optional Slack incoming webhook; posts a note when a PR is opened
+#   SLACK_BOT_TOKEN          optional; with SLACK_DOCS_CHANNEL, posts a Slack note when a PR is opened
+#   SLACK_DOCS_CHANNEL       channel ID the bot posts to (same setup as countly-backup-documentation)
 
 on:
   # TEMPORARY test trigger for PR #2. Remove before merging.
@@ -196,13 +197,14 @@ jobs:
       - name: Tell the team on Slack
         if: steps.cpr.outputs.pull-request-operation == 'created'
         env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL: ${{ secrets.SLACK_DOCS_CHANNEL }}
           GH_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ steps.cpr.outputs.pull-request-number }}
           PR_URL: ${{ steps.cpr.outputs.pull-request-url }}
         run: |
-          if [ -z "$SLACK_WEBHOOK_URL" ]; then
-            echo "No SLACK_WEBHOOK_URL secret, so no Slack message was sent."
+          if [ -z "$SLACK_BOT_TOKEN" ] || [ -z "$SLACK_CHANNEL" ]; then
+            echo "SLACK_BOT_TOKEN or SLACK_DOCS_CHANNEL is not set, so no Slack message was sent."
             exit 0
           fi
           files=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER/files" --paginate --jq '.[] | select(.filename | startswith("docs/api/")) | .status')
@@ -211,4 +213,8 @@ jobs:
           changed=$(echo "$files" | grep -c '^modified$' || true)
           left=$(node -e 'const r=require("./drift-report/drift.json"); console.log(r.missing.length + r.removed.length)')
           text=$(printf '📘 *API docs update ready for review*\n%s pages added, %s removed, %s changed · %s items still to go\n<%s|Review the pull request>' "$added" "$removed" "$changed" "$left" "$PR_URL")
-          jq -n --arg text "$text" '{text: $text}' | curl -sSf -X POST -H 'Content-Type: application/json' --data @- "$SLACK_WEBHOOK_URL"
+          # Slack answers 200 even on failure, so check its "ok" field.
+          jq -n --arg channel "$SLACK_CHANNEL" --arg text "$text" '{channel: $channel, text: $text}' \
+            | curl -sS -X POST https://slack.com/api/chat.postMessage \
+                -H "Authorization: Bearer $SLACK_BOT_TOKEN" -H 'Content-Type: application/json; charset=utf-8' --data @- \
+            | jq -e '.ok' > /dev/null || { echo "::warning::Slack message was not sent. Check that the bot is in the channel."; }
