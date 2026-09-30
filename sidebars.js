@@ -109,7 +109,6 @@ const sidebars = {
       dir('ClickHouse', 'clickhouse'),
       dir('Kafka', 'kafka'),
       dir('Data Manager Ⓔ', 'data-manager'),
-      dir('Data Migration', 'data_migration'),
       dir('Config Transfer Ⓔ', 'config-transfer'),
       dir('DBViewer', 'dbviewer'),
       dir('Hooks', 'hooks'),

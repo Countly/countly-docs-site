@@ -33,7 +33,6 @@ Conversations are scoped per app and member, with thread history persisted in Mo
 |---|---|
 | [AI Assistants - Load Thread](load-thread.md) | `/o/ai-assistants/load-thread` |
 | [AI Assistants - Create Thread](create-thread.md) | `/i/ai-assistants/create-thread` |
-| [AI Assistants - Rate Message](rate-message.md) | `/i/ai-assistants/rate-message` |
 | [AI Assistants - Send Message](send-message.md) | `/i/ai-assistants/send-message` |
 
 ## Returned Data Fields
@@ -47,12 +46,6 @@ Conversations are scoped per app and member, with thread history persisted in Mo
 | `memberId` | String | Owner member ID |
 | `createdOn` | String | Thread creation time |
 | `messages` | Array | Most recent messages (last 20 on load) |
-
-### Rate Endpoint (`rate-message`)
-
-| Field | Type | Description |
-|---|---|---|
-| `ok` | Number | Success flag (`1`) |
 
 ### Streaming Endpoint (`send-message`)
 
@@ -94,12 +87,6 @@ Conversations are scoped per app and member, with thread history persisted in Mo
 1. Send prompt using `send-message`.
 2. Read token chunks in SSE stream.
 3. Consume `done` event with final assistant message object.
-
-### 3. Collect Feedback
-
-1. Capture assistant `messageId` from thread/stream.
-2. Call `rate-message` with rating value.
-3. Use feedback for quality monitoring workflows.
 
 ## Limitations
 
