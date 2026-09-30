@@ -4,7 +4,7 @@ keywords:
   - "/o"
   - "o"
 last_update:
-  date: "2026-02-16"
+  date: "2026-09-30"
 ---
 
 # User Profiles - History
@@ -40,8 +40,8 @@ Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as 
 | `app_id` | String | Yes | App ID |
 | `method` | String | Yes | Must be `user_details` |
 | `calculate` | String | Yes | Must be `history` |
-| `uid` | String | No | User ID |
-| `did` | String | No | Device ID alternative |
+| `uid` | String | Yes (or `did`) | User ID |
+| `did` | String | Yes (or `uid`) | Device ID alternative |
 | `period` | String | No | Requested period |
 | `periodOffset` | Number | No | Offset in minutes |
 

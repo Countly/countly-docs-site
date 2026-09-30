@@ -5,7 +5,7 @@ keywords:
   - "widget"
   - "feedback"
 last_update:
-  date: "2026-03-07"
+  date: "2026-09-30"
 ---
 
 # Star Rating - Get Widget Details
@@ -24,6 +24,8 @@ Returns one widget document by `widget_id`.
 
 This endpoint accepts requests without API authentication parameters.
 
+If you do send `api_key` or `auth_token`, also send `app_id`. The server then checks the user's rights for that app, and without `app_id` it answers `401` with `No app_id provided`.
+
 ## Permissions
 
 This endpoint does not enforce role-based feature permission checks.
@@ -33,6 +35,7 @@ This endpoint does not enforce role-based feature permission checks.
 | Parameter | Type | Required | Description |
 |---|---|---|---|
 | `widget_id` | String | Yes | Widget ObjectID. |
+| `app_id` | String | Only with `api_key` or `auth_token` | ID of the app the widget belongs to. |
 | `nfd` | Boolean/String | No | If truthy, increments widget show counter. |
 
 ## Examples
@@ -68,15 +71,15 @@ This endpoint does not enforce role-based feature permission checks.
 
 ### Error Responses
 
-- `400`
+- `401`: `api_key` or `auth_token` was sent without `app_id`.
 
 ```json
 {
-  "result": "Missing parameter \"widget_id\""
+  "result": "No app_id provided"
 }
 ```
 
-- `404`
+- `404`: no widget has this `widget_id`, or `widget_id` is missing.
 
 ```json
 {
