@@ -97,9 +97,10 @@ jobs:
             For each removed endpoint:
             - Search countly-platform/ to confirm the endpoint really is gone.
             - If it is gone, delete the page with `git rm`, and remove links to it from other
-              pages in docs/api/ (search for its file name). Delete a feature folder only when
-              its whole plugin is gone from countly-platform/plugins/, and then also remove its
-              entry from sidebars.js.
+              pages in docs/api/ (search for its file name).
+            - If the feature's whole plugin is gone from countly-platform/plugins/, delete the
+              entire docs/api/<feature>/ folder and its entry in sidebars.js in one go, instead
+              of page by page. The whole folder counts as one endpoint towards the limit.
             - If it still exists and the page's Endpoint block is simply wrong, fix the page.
 
             For each undocumented endpoint:
