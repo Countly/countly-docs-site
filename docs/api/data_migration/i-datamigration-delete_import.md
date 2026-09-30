@@ -89,7 +89,6 @@ Requires `data_migration` `Delete` permission.
 ## Related Endpoints
 
 - [Data Migration - Get My Imports](o-datamigration-getmyimports.md)
-- [Data Migration - Delete All Migration Files](i-datamigration-delete_all.md)
 
 <details>
 <summary>Implementation details</summary>

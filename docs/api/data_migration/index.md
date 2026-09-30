@@ -20,7 +20,6 @@ The Data Migration feature exports app data from one Countly environment and imp
 - [Data Migration - Report Import Status](i-datamigration-report_import.md)
 - [Data Migration - Delete Export](i-datamigration-delete_export.md)
 - [Data Migration - Delete Import](i-datamigration-delete_import.md)
-- [Data Migration - Delete All Migration Files](i-datamigration-delete_all.md)
 - [Data Migration - Get My Exports](o-datamigration-getmyexports.md)
 - [Data Migration - Get My Imports](o-datamigration-getmyimports.md)
 - [Data Migration - Get Status](o-datamigration-getstatus.md)
@@ -41,7 +40,7 @@ The Data Migration feature exports app data from one Countly environment and imp
 2. Validate remote target (`o/datamigration/validateconnection`) if exporting to another server.
 3. Send export (`i/datamigration/sendexport`) or transfer archive manually.
 4. Start import (`i/datamigration/import`) and track status (`o/datamigration/getstatus`).
-5. Clean up local artifacts when done (`i/datamigration/delete_export`, `i/datamigration/delete_import`, `i/datamigration/delete_all`).
+5. Clean up local artifacts when done (`i/datamigration/delete_export` and `i/datamigration/delete_import`).
 
 <details>
 <summary>Implementation details</summary>

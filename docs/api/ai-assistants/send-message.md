@@ -164,7 +164,6 @@ data: {"_id":"65a7c1e6f1c2a40001abc123","role":"assistant","createdOn":"2026-02-
 
 - [AI Assistants - Load Thread](load-thread.md)
 - [AI Assistants - Create Thread](create-thread.md)
-- [AI Assistants - Rate Message](rate-message.md)
 
 <details>
 <summary>Implementation details</summary>
