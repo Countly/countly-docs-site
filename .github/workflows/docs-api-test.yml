@@ -1,0 +1,78 @@
+name: API endpoint test
+
+# Calls documented endpoints on a live Countly server with tests/validate-api-docs.mjs.
+#   Pull requests: tests only the pages the PR adds or changes, and fails if one fails.
+#   Weekly / manual: tests every page, and lists the failing ones for review or removal.
+#
+# Secrets (the workflow skips itself until COUNTLY_BASE_URL is set):
+#   COUNTLY_BASE_URL, COUNTLY_APP_ID, COUNTLY_APP_KEY, COUNTLY_API_KEY, COUNTLY_AUTH_TOKEN
+# Variable (optional):
+#   COUNTLY_ALLOW_MUTATION  "true" also tests endpoints that change data. Only on a throwaway server.
+
+on:
+  pull_request:
+    paths:
+      - "docs/api/**"
+  schedule:
+    - cron: "0 4 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  COUNTLY_BASE_URL: ${{ secrets.COUNTLY_BASE_URL }}
+  COUNTLY_APP_ID: ${{ secrets.COUNTLY_APP_ID }}
+  COUNTLY_APP_KEY: ${{ secrets.COUNTLY_APP_KEY }}
+  COUNTLY_API_KEY: ${{ secrets.COUNTLY_API_KEY }}
+  COUNTLY_AUTH_TOKEN: ${{ secrets.COUNTLY_AUTH_TOKEN }}
+  COUNTLY_ALLOW_MUTATION: ${{ vars.COUNTLY_ALLOW_MUTATION || 'false' }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Choose pages to test
+        id: scope
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          if [ -z "$COUNTLY_BASE_URL" ]; then
+            echo "Skipped: no test server configured (COUNTLY_BASE_URL secret is not set)." >> "$GITHUB_STEP_SUMMARY"
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            # Plain file names only, since the list is written to GITHUB_ENV.
+            pages=$(git diff --name-only --diff-filter=AM "$BASE_SHA" HEAD -- 'docs/api/*.md' 'docs/api/**/*.md' | grep -E '^[A-Za-z0-9_./-]+$' | paste -sd, -)
+            if [ -z "$pages" ]; then
+              echo "No endpoint pages added or changed." >> "$GITHUB_STEP_SUMMARY"
+              echo "run=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            echo "COUNTLY_DOC_FILTER=$pages" >> "$GITHUB_ENV"
+          fi
+          echo "run=true" >> "$GITHUB_OUTPUT"
+
+      - name: Call the endpoints
+        if: steps.scope.outputs.run == 'true'
+        run: node tests/validate-api-docs.mjs
+
+      - name: Summarize
+        if: steps.scope.outputs.run == 'true'
+        run: node tests/summarize-report.mjs >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Keep the full report
+        if: always() && steps.scope.outputs.run == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-test-report
+          path: tests/reports/latest.json

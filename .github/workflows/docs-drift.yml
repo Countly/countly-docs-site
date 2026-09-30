@@ -1,0 +1,214 @@
+name: API docs drift check
+
+# Daily: compare the classic API endpoints in countly-platform (main) with docs/api/,
+# have Claude draft pages for undocumented endpoints and remove pages for deleted ones,
+# test the drafted pages against a live server, and open one pull request for review.
+# Nothing is published until that PR is merged.
+#
+# Secrets:
+#   PLATFORM_READ_TOKEN      fine-grained token with read-only Contents access to Countly/countly-platform
+#   CLAUDE_CODE_OAUTH_TOKEN  from `claude setup-token`, run by someone on a Claude subscription
+#   COUNTLY_*                optional test server, same secrets as docs-api-test.yml
+#   SLACK_BOT_TOKEN          optional; with SLACK_DOCS_CHANNEL, posts a Slack note when a PR is opened
+#   SLACK_DOCS_CHANNEL       channel ID the bot posts to (same setup as countly-backup-documentation)
+
+on:
+  schedule:
+    - cron: "0 5 * * *"
+  workflow_dispatch:
+    inputs:
+      max_items:
+        description: "Most endpoints to handle in one run"
+        default: "20"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: docs-drift
+  cancel-in-progress: false
+
+env:
+  DRIFT_BRANCH: docs-drift/auto
+  MAX_ITEMS: ${{ inputs.max_items || '20' }}
+
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check out countly-platform
+        uses: actions/checkout@v4
+        with:
+          repository: Countly/countly-platform
+          ref: main
+          token: ${{ secrets.PLATFORM_READ_TOKEN }}
+          path: countly-platform
+          # Full history without file contents, so the PR can cite where each change came from.
+          fetch-depth: 0
+          filter: blob:none
+          sparse-checkout: |
+            api
+            plugins
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Compare code with docs
+        id: check
+        run: |
+          node scripts/check-doc-drift.mjs countly-platform
+          cat drift-report/drift.md >> "$GITHUB_STEP_SUMMARY"
+          echo "gaps=$(node -e 'const r=require("./drift-report/drift.json"); console.log(r.missing.length + r.removed.length)')" >> "$GITHUB_OUTPUT"
+
+      # One drift PR at a time: while one is open for review, new runs only report.
+      - name: Look for an open drift PR
+        id: open_pr
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          count=$(gh pr list --head "$DRIFT_BRANCH" --state open --json number --jq length)
+          echo "count=$count" >> "$GITHUB_OUTPUT"
+          if [ "$count" != "0" ]; then
+            echo "A drift PR is still open, so no new drafts were made this run." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Draft doc changes with Claude
+        if: steps.check.outputs.gaps != '0' && steps.open_pr.outputs.count == '0'
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          # The workflow's own token, so the Claude GitHub App does not need to be installed.
+          github_token: ${{ github.token }}
+          claude_args: >-
+            --model claude-sonnet-5-5
+            --max-turns 200
+            --allowedTools "Read,Write,Edit,Glob,Grep,Bash(node scripts/check-doc-drift.mjs:*),Bash(node scripts/find-merge-pr.mjs:*),Bash(git -C countly-platform log:*),Bash(git rm:*)"
+          prompt: |
+            You maintain the Countly API reference in docs/api/ (a Docusaurus site). The file
+            drift-report/drift.md lists where the docs and the code in countly-platform/ disagree.
+            countly-platform/ is read-only source code: never edit it.
+
+            Handle at most ${{ env.MAX_ITEMS }} endpoints this run: first everything under
+            "Pages for removed endpoints", then entries from "Undocumented endpoints" in order.
+
+            For each removed endpoint:
+            - Search countly-platform/ to confirm the endpoint really is gone.
+            - If it is gone, delete the page with `git rm`, and remove links to it from other
+              pages in docs/api/ (search for its file name).
+            - If the feature's whole plugin is gone from countly-platform/plugins/, delete the
+              entire docs/api/<feature>/ folder and its entry in sidebars.js in one go, instead
+              of page by page. The whole folder counts as one endpoint towards the limit.
+            - If it still exists and the page's Endpoint block is simply wrong, fix the page.
+
+            For each undocumented endpoint:
+            - Open the code at the listed file and line and read the handler.
+            - If it is not something a customer would call (an internal event hook, dashboard
+              view tracking, a debug or sample route), add it to docs-drift-ignore.txt under a
+              comment giving the reason, and write no page.
+            - Otherwise write a page in the matching docs/api/<feature>/ folder. First read two
+              existing pages in that folder and copy their structure exactly: frontmatter
+              (sidebar_label, keywords, last_update with today's date), section order and
+              headings (Endpoint, Overview, Authentication, Permissions, Request Parameters,
+              Response, Examples, and whatever else they use), table formats, and the
+              Enterprise note if the folder's pages have one. Link the new page from the
+              folder's index.md.
+            - If the feature has no folder yet, create one with an index.md modelled on another
+              feature's index.md, and add a dir(...) entry to the right group in sidebars.js.
+            - Document only what the code shows: parameters it reads, checks it makes, the
+              permission it validates, and the response it returns. Do not invent fields or
+              behaviour. Where the code leaves something unclear, write the page anyway and add
+              an HTML comment `<!-- REVIEW: what is unclear -->` at that spot.
+
+            Only change files under docs/api/, sidebars.js and docs-drift-ignore.txt.
+
+            Find the source for every change you make, so reviewers can check it:
+            - A whole plugin removed: `git -C countly-platform log -1 --format=%h -- plugins/<name>`
+              gives the commit that deleted it.
+            - One endpoint removed or added: search the file that defines (or defined) its
+              route, always with a path and a date, for example
+              `git -C countly-platform log -S"/o/dashboards/test" --since=2026-03-01 --format="%h %ad %s" --date=short -- plugins/dashboards/api/api.js`.
+              Removed: the newest match is the removal. Added: the oldest match is when it
+              appeared. No match since 2026-03-01 means it existed before the docs were written.
+            - Then run `node scripts/find-merge-pr.mjs <commit>`, and copy its "Commit:" and
+              "Pull request:" lines into the PR description as they are. Never write a commit
+              hash or PR number that did not come from those commands. If you can't find one,
+              say so.
+
+            When finished, run `node scripts/check-doc-drift.mjs countly-platform` and confirm
+            every endpoint you handled is gone from the new report. Then write
+            drift-report/pr-body.md: a short summary, one bullet per endpoint saying what you
+            did (page added, page removed, page fixed, or ignored and why) followed by its
+            source (the commit and pull request lines, or why none was found), and a list of
+            every REVIEW comment you left, with its file.
+
+      # A PR opened by this workflow does not trigger docs-api-test.yml, so the drafted
+      # pages are tested here and the result goes into the PR description.
+      - name: Test drafted pages
+        if: steps.check.outputs.gaps != '0' && steps.open_pr.outputs.count == '0'
+        env:
+          COUNTLY_BASE_URL: ${{ secrets.COUNTLY_BASE_URL }}
+          COUNTLY_APP_ID: ${{ secrets.COUNTLY_APP_ID }}
+          COUNTLY_APP_KEY: ${{ secrets.COUNTLY_APP_KEY }}
+          COUNTLY_API_KEY: ${{ secrets.COUNTLY_API_KEY }}
+          COUNTLY_AUTH_TOKEN: ${{ secrets.COUNTLY_AUTH_TOKEN }}
+          COUNTLY_ALLOW_MUTATION: ${{ vars.COUNTLY_ALLOW_MUTATION || 'false' }}
+        run: |
+          touch drift-report/pr-body.md
+          pages=$(git status --porcelain -uall -- docs/api | awk '$1 != "D" {print $NF}' | grep -E '^docs/api/[A-Za-z0-9_./-]+\.md$' | paste -sd, -)
+          {
+            echo ""
+            echo "---"
+            if [ -z "$COUNTLY_BASE_URL" ]; then
+              echo "Endpoint test: not run, because no test server is configured. Test these pages before merging."
+            elif [ -z "$pages" ]; then
+              echo "Endpoint test: no pages were added or changed."
+            else
+              COUNTLY_DOC_FILTER="$pages" node tests/validate-api-docs.mjs > drift-report/api-test.log 2>&1 || true
+              node tests/summarize-report.mjs || echo "**Some drafted pages failed the endpoint test. Fix or drop them before merging.**"
+            fi
+          } >> drift-report/pr-body.md
+
+      - name: Open pull request
+        id: cpr
+        if: steps.check.outputs.gaps != '0' && steps.open_pr.outputs.count == '0'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: ${{ env.DRIFT_BRANCH }}
+          delete-branch: true
+          add-paths: |
+            docs/api/**
+            sidebars.js
+            docs-drift-ignore.txt
+          commit-message: "docs: sync API reference with countly-platform"
+          title: "docs: sync API reference with countly-platform"
+          body-path: drift-report/pr-body.md
+          labels: docs-drift
+
+      - name: Tell the team on Slack
+        if: steps.cpr.outputs.pull-request-operation == 'created'
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL: ${{ secrets.SLACK_DOCS_CHANNEL }}
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ steps.cpr.outputs.pull-request-number }}
+          PR_URL: ${{ steps.cpr.outputs.pull-request-url }}
+        run: |
+          if [ -z "$SLACK_BOT_TOKEN" ] || [ -z "$SLACK_CHANNEL" ]; then
+            echo "SLACK_BOT_TOKEN or SLACK_DOCS_CHANNEL is not set, so no Slack message was sent."
+            exit 0
+          fi
+          files=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER/files" --paginate --jq '.[] | select(.filename | startswith("docs/api/")) | .status')
+          added=$(echo "$files" | grep -c '^added$' || true)
+          removed=$(echo "$files" | grep -c '^removed$' || true)
+          changed=$(echo "$files" | grep -c '^modified$' || true)
+          left=$(node -e 'const r=require("./drift-report/drift.json"); console.log(r.missing.length + r.removed.length)')
+          text=$(printf '📘 *API docs update ready for review*\n%s pages added, %s removed, %s changed · %s items still to go\n<%s|Review the pull request>' "$added" "$removed" "$changed" "$left" "$PR_URL")
+          # Slack answers 200 even on failure, so check its "ok" field.
+          jq -n --arg channel "$SLACK_CHANNEL" --arg text "$text" '{channel: $channel, text: $text}' \
+            | curl -sS -X POST https://slack.com/api/chat.postMessage \
+                -H "Authorization: Bearer $SLACK_BOT_TOKEN" -H 'Content-Type: application/json; charset=utf-8' --data @- \
+            | jq -e '.ok' > /dev/null || { echo "::warning::Slack message was not sent. Check that the bot is in the channel."; }

@@ -1,0 +1,17 @@
+# Endpoints the daily docs drift check (scripts/check-doc-drift.mjs) should skip.
+# One endpoint per line, written exactly as it appears in drift-report/drift.md.
+# Add an endpoint here when it is internal or deliberately undocumented, with a reason.
+
+# vue-example is a sample plugin for developers, not a product feature.
+/i/vue_example/delete
+/i/vue_example/save
+/i/vue_example/status
+/o?method=get-random-numbers
+/o?method=large-col
+/o?method=vue-records
+
+# Journey Engine event hooks, dispatched internally when a user moves through a funnel.
+/i/funnel/completed
+/i/funnel/excluded
+/i/funnel/step_abandoned
+/i/funnel/step_reached

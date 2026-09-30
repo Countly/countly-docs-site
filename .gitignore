@@ -27,3 +27,7 @@ Thumbs.db
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Docs drift check
+countly-platform
+drift-report/
