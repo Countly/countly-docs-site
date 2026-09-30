@@ -412,13 +412,11 @@ async function validateDoc(doc) {
   }
 
   if (isMutatingDoc(doc) && !CONFIG.allowMutation) {
-    result.live.status = "failed";
     result.live.reason = "Mutating endpoint skipped by configuration";
     return result;
   }
 
   if (!isSafeToCall(doc) && !CONFIG.allowMutation) {
-    result.live.status = "failed";
     result.live.reason = "Endpoint not in safe live-call allowlist";
     return result;
   }
@@ -438,7 +436,7 @@ async function validateDoc(doc) {
       result.live.reason = built.reason;
     }
     else {
-      result.live.status = "failed";
+      // No value could be resolved for a required parameter (e.g. a resource ID): not a doc failure.
       result.live.reason = built.reason;
     }
     return result;
@@ -451,6 +449,10 @@ async function validateDoc(doc) {
     result.live.response = response;
     if (response.ok) {
       result.live.status = "passed";
+    }
+    else if (isPermissionDenied(response)) {
+      // The route exists and checked rights; the test user just lacks them.
+      result.live.reason = `HTTP ${response.status} (needs more permissions than the test user has)`;
     }
     else {
       result.live.status = "failed";
@@ -4646,6 +4648,11 @@ async function buildRequest(doc) {
       discardBody
     }
   };
+}
+
+function isPermissionDenied(response) {
+  const resultText = typeof response?.json?.result === "string" ? response.json.result.toLowerCase() : "";
+  return response.status === 401 && /does not have (access )?right/.test(resultText);
 }
 
 function classifyFailureReason(doc, response, pluginName, enabledPlugins) {

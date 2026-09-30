@@ -15,6 +15,20 @@ if (report.stoppedEarly) {
   console.log("");
   console.log(`Stopped early: ${cell(report.stopReason)}`);
 }
+const skipReasons = new Map();
+for (const r of report.results.filter((r) => r.live.status === "skipped")) {
+  // "Missing resolver for required parameter: widget_id" -> "Missing resolver for required parameter"
+  const reason = (r.live.reason || "No reason given").split(":")[0];
+  skipReasons.set(reason, (skipReasons.get(reason) || 0) + 1);
+}
+if (skipReasons.size) {
+  console.log("");
+  console.log("| Skipped because | Pages |");
+  console.log("|---|---|");
+  for (const [reason, count] of [...skipReasons].sort((a, b) => b[1] - a[1])) {
+    console.log(`| ${cell(reason)} | ${count} |`);
+  }
+}
 if (failures.length) {
   console.log("");
   console.log("Failing endpoints need a look: the page may describe an endpoint that changed or no longer exists, or the server may have a bug.");
