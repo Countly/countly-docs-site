@@ -1,0 +1,49 @@
+// Prints the countly-platform pull request that brought a commit into main, so drift PRs can
+// cite where an endpoint was added or removed.
+//
+//   node scripts/find-merge-pr.mjs <commit> [path-to-countly-platform]
+//
+// Walks main's first-parent history from the commit's date and takes the first commit that
+// contains it: a "Merge pull request #N" commit, or a squash merge titled "... (#N)".
+import {execFileSync} from "node:child_process";
+import path from "node:path";
+
+const [sha, platformArg = "countly-platform"] = process.argv.slice(2);
+if (!sha) {
+  console.error("Usage: node scripts/find-merge-pr.mjs <commit> [path-to-countly-platform]");
+  process.exit(2);
+}
+const PLATFORM = path.resolve(platformArg);
+const REPO_URL = "https://github.com/Countly/countly-platform";
+const git = (...args) => execFileSync("git", ["-C", PLATFORM, ...args], {encoding: "utf8"}).trim();
+const succeeds = (...args) => {
+  try {
+    execFileSync("git", ["-C", PLATFORM, ...args], {stdio: "ignore"});
+    return true;
+  }
+  catch {
+    return false;
+  }
+};
+
+const main = succeeds("rev-parse", "--verify", "origin/main^{commit}") ? "origin/main" : "main";
+if (!succeeds("rev-parse", "--verify", `${sha}^{commit}`)) {
+  console.log(`Pull request: none found. ${sha} is not a commit in ${PLATFORM}.`);
+  process.exit(1);
+}
+const commit = git("rev-parse", "--verify", `${sha}^{commit}`);
+const [commitDate, commitSubject, commitAuthor] = git("log", "-1", "--format=%cI%x09%s%x09%an", commit).split("\t");
+console.log(`Commit: ${REPO_URL}/commit/${commit.slice(0, 10)} (${commitDate.slice(0, 10)}, ${commitAuthor}): ${commitSubject}`);
+
+for (const candidate of git("rev-list", "--first-parent", "--reverse", `--since=${commitDate}`, main).split("\n").filter(Boolean)) {
+  if (!succeeds("merge-base", "--is-ancestor", commit, candidate)) {
+    continue;
+  }
+  const [date, subject] = git("log", "-1", "--format=%cI%x09%s", candidate).split("\t");
+  const number = subject.match(/^Merge pull request #(\d+)/)?.[1] || subject.match(/\(#(\d+)\)\s*$/)?.[1];
+  console.log(number
+    ? `Pull request: ${REPO_URL}/pull/${number} (merged ${date.slice(0, 10)})`
+    : `Pull request: none found. It reached main directly in ${REPO_URL}/commit/${candidate.slice(0, 10)} (${date.slice(0, 10)}).`);
+  process.exit(0);
+}
+console.log("Pull request: none found. The commit is not on main.");

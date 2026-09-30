@@ -48,6 +48,9 @@ jobs:
           ref: main
           token: ${{ secrets.PLATFORM_READ_TOKEN }}
           path: countly-platform
+          # Full history without file contents, so the PR can cite where each change came from.
+          fetch-depth: 0
+          filter: blob:none
           sparse-checkout: |
             api
             plugins
@@ -85,7 +88,7 @@ jobs:
           claude_args: >-
             --model claude-sonnet-5-5
             --max-turns 200
-            --allowedTools "Read,Write,Edit,Glob,Grep,Bash(node scripts/check-doc-drift.mjs:*),Bash(git rm:*)"
+            --allowedTools "Read,Write,Edit,Glob,Grep,Bash(node scripts/check-doc-drift.mjs:*),Bash(node scripts/find-merge-pr.mjs:*),Bash(git -C countly-platform log:*),Bash(git rm:*)"
           prompt: |
             You maintain the Countly API reference in docs/api/ (a Docusaurus site). The file
             drift-report/drift.md lists where the docs and the code in countly-platform/ disagree.
@@ -124,11 +127,25 @@ jobs:
 
             Only change files under docs/api/, sidebars.js and docs-drift-ignore.txt.
 
+            Find the source for every change you make, so reviewers can check it:
+            - A whole plugin removed: `git -C countly-platform log -1 --format=%h -- plugins/<name>`
+              gives the commit that deleted it.
+            - One endpoint removed or added: search the file that defines (or defined) its
+              route, always with a path and a date, for example
+              `git -C countly-platform log -S"/o/dashboards/test" --since=2026-03-01 --format="%h %ad %s" --date=short -- plugins/dashboards/api/api.js`.
+              Removed: the newest match is the removal. Added: the oldest match is when it
+              appeared. No match since 2026-03-01 means it existed before the docs were written.
+            - Then run `node scripts/find-merge-pr.mjs <commit>`, and copy its "Commit:" and
+              "Pull request:" lines into the PR description as they are. Never write a commit
+              hash or PR number that did not come from those commands. If you can't find one,
+              say so.
+
             When finished, run `node scripts/check-doc-drift.mjs countly-platform` and confirm
             every endpoint you handled is gone from the new report. Then write
             drift-report/pr-body.md: a short summary, one bullet per endpoint saying what you
-            did (page added, page removed, page fixed, or ignored and why), and a list of every
-            REVIEW comment you left, with its file.
+            did (page added, page removed, page fixed, or ignored and why) followed by its
+            source (the commit and pull request lines, or why none was found), and a list of
+            every REVIEW comment you left, with its file.
 
       # A PR opened by this workflow does not trigger docs-api-test.yml, so the drafted
       # pages are tested here and the result goes into the PR description.
