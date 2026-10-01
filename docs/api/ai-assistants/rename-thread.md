@@ -1,14 +1,14 @@
 ---
-sidebar_label: "Rate Message"
+sidebar_label: "Rename Thread"
 keywords:
-  - "/i/ai-assistants/rate-message"
-  - "rate-message"
+  - "/i/ai-assistants/rename-thread"
+  - "rename-thread"
   - "ai-assistants"
 last_update:
-  date: "2026-02-16"
+  date: "2026-10-01"
 ---
 
-# AI Assistants - Rate Message
+# AI Assistants - Rename Thread
 
 :::note Enterprise
 This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
@@ -17,12 +17,12 @@ This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To g
 ## Endpoint
 
 ```text
-/i/ai-assistants/rate-message
+/i/ai-assistants/rename-thread
 ```
 
 ## Overview
 
-Rates one assistant message in a thread and records feedback telemetry.
+Sets the title of one of the authenticated member's own threads.
 
 ## Authentication
 
@@ -31,7 +31,7 @@ Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as 
 ## Permissions
 
 - Requires an authenticated Countly user.
-- Thread rating is owner-restricted.
+- The thread must belong to the authenticated member.
 
 ## Request Parameters
 
@@ -39,17 +39,18 @@ Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as 
 |---|---|---|---|
 | `api_key` | String | Yes (or `auth_token`) | API key authentication |
 | `auth_token` | String | Yes (or `api_key`) | Auth token authentication |
-| `app_id` | String | Yes | App ID (required by validation) |
-| `threadId` | String | Yes | Thread ID |
-| `messageId` | String | Yes | Message ID in thread |
-| `rating` | String | Yes | Rating value (typically `thumbs_up` or `thumbs_down`) |
+| `threadId` | String | Yes | ID of the thread to rename |
+| `title` | String | Yes | New title. Maximum length 80 characters. Surrounding whitespace is trimmed and runs of whitespace are collapsed. |
 
 ## Examples
 
-### Example: Rate a message
+### Example: Rename a thread
 
 ```bash
-curl "https://your-server.com/i/ai-assistants/rate-message?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&threadId=THREAD_ID&messageId=MESSAGE_ID&rating=thumbs_up"
+curl "https://your-server.com/i/ai-assistants/rename-thread" \
+  -d "api_key=YOUR_API_KEY" \
+  -d "threadId=THREAD_ID" \
+  -d "title=Retention questions"
 ```
 
 ## Response
@@ -58,7 +59,7 @@ curl "https://your-server.com/i/ai-assistants/rate-message?api_key=YOUR_API_KEY&
 
 ```json
 {
-  "ok": 1
+  "result": "ok"
 }
 ```
 
@@ -66,7 +67,7 @@ curl "https://your-server.com/i/ai-assistants/rate-message?api_key=YOUR_API_KEY&
 
 | Field | Type | Description |
 |---|---|---|
-| `ok` | Number | Request processed successfully |
+| `result` | String | `ok` when the thread was renamed |
 
 ### Error Responses
 
@@ -77,61 +78,47 @@ curl "https://your-server.com/i/ai-assistants/rate-message?api_key=YOUR_API_KEY&
 }
 ```
 
-- **HTTP 400** - Missing auth parameters:
+- **HTTP 400** - Title is empty after normalization:
 ```json
 {
-  "result": "Missing parameter \"api_key\" or \"auth_token\""
+  "result": "Invalid parameters: title is empty"
 }
 ```
 
-- **HTTP 401** - User/auth validation failed:
-```json
-{
-  "result": "User does not exist"
-}
-```
-
-- **HTTP 403** - Not authorized for thread:
+- **HTTP 403** - Thread belongs to another member:
 ```json
 {
   "result": "Not authorized"
 }
 ```
 
-- **HTTP 404** - Thread not found:
+- **HTTP 404** - Thread does not exist:
 ```json
 {
   "result": "Thread not found"
 }
 ```
 
-- **HTTP 404** - App not found:
+- **HTTP 500** - Rename failed:
 ```json
 {
-  "result": "App not found"
-}
-```
-
-- **HTTP 500** - Rating failed:
-```json
-{
-  "result": "Couldn't rate the message"
+  "result": "Thread couldn't be renamed"
 }
 ```
 
 ## Behavior
 
-1. Validates user authentication and required parameters.
-2. Loads thread and verifies ownership.
-3. Validates associated app exists.
-4. Writes message rating to thread.
-5. Emits feedback tracking event.
-6. Returns `{ "ok": 1 }`.
+1. Validates user authentication.
+2. Validates `threadId` and `title` (`title` max length 80).
+3. Normalizes the title: trims it, collapses whitespace and cuts it to 80 characters.
+4. Loads the thread and compares its owner with the authenticated member.
+5. Saves the new title. Automatic title generation only fills empty titles, so it does not overwrite a title set here.
+<!-- REVIEW: it is unclear whether a title longer than 80 characters is rejected by the `max-length` validation (400) or cut to 80 characters by normalization. -->
 
 ## Related Endpoints
 
 - [AI Assistants - Load Thread](load-thread.md)
-- [AI Assistants - Send Message](send-message.md)
+- [AI Assistants - Delete Thread](delete-thread.md)
 
 <details>
 <summary>Implementation details</summary>
@@ -141,6 +128,5 @@ curl "https://your-server.com/i/ai-assistants/rate-message?api_key=YOUR_API_KEY&
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
 | `countly.ai_assistants_threads` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
-| `countly.apps` | App configuration and metadata | Stores app-level feature settings and metadata used or modified by this endpoint. |
 
 </details>

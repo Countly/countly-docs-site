@@ -15,3 +15,16 @@
 /i/funnel/excluded
 /i/funnel/step_abandoned
 /i/funnel/step_reached
+
+# Legacy alias: /i?method=populator_template duplicates the documented /i/populator/templates/* endpoints.
+/i?method=populator_template
+
+# Deprecated (marked "API deprecated" in the code); only stores a dashboard drag position.
+/i/ab-testing/update-experiment-position
+
+# Empty handler: the cognito plugin registers /i/cognito but the function does nothing.
+/i/cognito
+
+# Dashboard view tracking: records that a member opened a page, not a customer API.
+/i/calculated_metrics/track-view
+/i/cohorts/track-view

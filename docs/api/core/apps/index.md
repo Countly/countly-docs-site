@@ -32,6 +32,7 @@ Core application management APIs for creating apps, updating app metadata/config
 
 ### Update
 - [Apps - App Update](i-apps-update.md) - `/i/apps/update`
+- [Apps - App Update Plugins](i-apps-update-plugins.md) - `/i/apps/update/plugins`
 
 ### Delete
 - [Apps - App Delete](i-apps-delete.md) - `/i/apps/delete`

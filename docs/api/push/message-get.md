@@ -1,12 +1,11 @@
 ---
 sidebar_label: "Message Get"
 keywords:
-  - "/o/push/message/{_id}"
-  - "/o/push/message/67a3d2f5c1a23b0f4d6c0101"
+  - "/o/push/message/GET"
   - "message"
   - "push"
 last_update:
-  date: "2026-04-09"
+  date: "2026-10-01"
 ---
 
 # Push - Message Get
@@ -14,7 +13,7 @@ last_update:
 ## Endpoint
 
 ```plaintext
-/o/push/message/{_id}
+/o/push/message/GET
 ```
 
 ## Overview
@@ -36,15 +35,16 @@ Requires `push` `Read` permission.
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
 | `app_id` | String | Yes | App ID used by permission validation. |
-| `{_id}` | String (ObjectID) | Yes | Message ID path parameter. |
+| `_id` | String (ObjectID) | Yes | Message ID query parameter. |
 
 ## Examples
 
 ### Read one message
 
 ```plaintext
-/o/push/message/67a3d2f5c1a23b0f4d6c0101?
+/o/push/message/GET?
   api_key=YOUR_API_KEY&
+  _id=67a3d2f5c1a23b0f4d6c0101&
   app_id=6991c75b024cb89cdc04efd2
 ```
 
