@@ -17,7 +17,7 @@ This feature is part of [Countly Enterprise](https://count.ly/enterprise). To ge
 |---|---|
 | Feature | AI Assistants |
 | Type | In-product AI conversation and guidance |
-| Public endpoint count | 4 |
+| Public endpoint count | 6 |
 | Last updated | 2026-02-15 |
 
 ## Overview
@@ -33,7 +33,9 @@ Conversations are scoped per app and member, with thread history persisted in Mo
 |---|---|
 | [AI Assistants - Load Thread](load-thread.md) | `/o/ai-assistants/load-thread` |
 | [AI Assistants - Create Thread](create-thread.md) | `/i/ai-assistants/create-thread` |
-| [AI Assistants - Rate Message](rate-message.md) | `/i/ai-assistants/rate-message` |
+| [AI Assistants - Rename Thread](rename-thread.md) | `/i/ai-assistants/rename-thread` |
+| [AI Assistants - Delete Thread](delete-thread.md) | `/i/ai-assistants/delete-thread` |
+| [AI Assistants - Feedback](feedback.md) | `/i/ai-assistants/feedback` |
 | [AI Assistants - Send Message](send-message.md) | `/i/ai-assistants/send-message` |
 
 ## Returned Data Fields
@@ -48,11 +50,12 @@ Conversations are scoped per app and member, with thread history persisted in Mo
 | `createdOn` | String | Thread creation time |
 | `messages` | Array | Most recent messages (last 20 on load) |
 
-### Rate Endpoint (`rate-message`)
+### Feedback Endpoint (`feedback`)
 
 | Field | Type | Description |
 |---|---|---|
 | `ok` | Number | Success flag (`1`) |
+| `tracked` | Boolean | Whether the feedback was recorded |
 
 ### Streaming Endpoint (`send-message`)
 
@@ -97,8 +100,8 @@ Conversations are scoped per app and member, with thread history persisted in Mo
 
 ### 3. Collect Feedback
 
-1. Capture assistant `messageId` from thread/stream.
-2. Call `rate-message` with rating value.
+1. Capture the assistant message ID (`promptId`) from the stream.
+2. Call `feedback` with `threadId`, `promptId` and a `thumbs_up` or `thumbs_down` rating.
 3. Use feedback for quality monitoring workflows.
 
 ## Limitations
