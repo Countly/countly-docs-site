@@ -44,6 +44,14 @@ const config = {
           routeBasePath: '/',
           sidebarPath: require.resolve('./sidebars.js'),
           showLastUpdateTime: true,
+          // 26.01 (docs/) is the default and keeps the unversioned URLs.
+          // Older releases live in versioned_docs/ and are served under /25.03/ and /24.05/.
+          lastVersion: 'current',
+          versions: {
+            current: {label: '26.01', path: ''},
+            '25.03': {label: '25.03', path: '25.03', banner: 'none'},
+            '24.05': {label: '24.05', path: '24.05', banner: 'none'},
+          },
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
@@ -80,6 +88,10 @@ const config = {
             sidebarId: 'apiSidebar',
             position: 'left',
             label: 'API Documentation',
+          },
+          {
+            type: 'docsVersionDropdown',
+            position: 'right',
           },
           {
             type: 'search',

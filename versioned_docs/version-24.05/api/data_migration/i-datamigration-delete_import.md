@@ -1,0 +1,101 @@
+---
+sidebar_label: "Delete Import"
+keywords:
+  - "/i/datamigration/delete_import"
+  - "delete_import"
+  - "datamigration"
+last_update:
+  date: "2026-02-17"
+---
+
+# Data Migration - Delete Import
+
+## Endpoint
+
+```text
+/i/datamigration/delete_import
+```
+
+## Overview
+
+Deletes local import artifacts for one import/export ID.
+
+## Authentication
+
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
+## Permissions
+
+Requires `data_migration` `Delete` permission.
+
+## Request Parameters
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `exportid` | String | Yes | Import/export identifier used by import workspace files. |
+| `args` | JSON String (Object) | No | Optional JSON-stringified helper args. |
+| `api_key` | String | Conditional | Required if `auth_token` is not provided. |
+| `auth_token` | String | Conditional | Required if `api_key` is not provided. |
+
+## Examples
+
+### Delete one import package
+
+```text
+/i/datamigration/delete_import?
+  exportid=f9b35d90be5f2240eafced7c6bfdf130856cd0a7
+```
+
+## Response
+
+### Success Response
+
+```json
+{
+  "result": "ok"
+}
+```
+
+### Response Fields
+
+| Field | Type | Description |
+|---|---|---|
+| `result` | String | Operation status key. |
+
+### Error Responses
+
+- `404`
+
+```json
+{
+  "result": "data-migration.exportid-missing"
+}
+```
+
+## Behavior
+
+### Behavior Modes
+
+| Mode | Trigger | Processing Path | Response Shape |
+|---|---|---|---|
+| Delete success | `exportid` provided and cleanup succeeds | Removes import archive/folder and related import metadata files/logs. | Wrapped `{ "result": "ok" }` |
+| Missing ID | `exportid` absent/empty | Stops and returns missing-id key. | Wrapped error key |
+
+### Impact on Other Data
+
+- Deletes files in plugin import workspace.
+- Deletes import log file and import metadata JSON when present.
+
+## Related Endpoints
+
+- [Data Migration - Get My Imports](o-datamigration-getmyimports.md)
+- [Data Migration - Delete All Migration Files](i-datamigration-delete_all.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
+
+This endpoint does not read or write database collections directly.
+
+</details>
