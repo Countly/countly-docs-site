@@ -1,0 +1,294 @@
+name: API docs drift check (older versions)
+
+# Weekly: the same check as docs-drift.yml, for the older releases that still get patch
+# releases. For each version, compare the newest release tag of countly-server plus
+# countly-enterprise-plugins with that version's pages in versioned_docs/, have Claude
+# draft or remove pages, test them against that version's server, and open one PR per version.
+#
+# Secrets:
+#   PLATFORM_READ_TOKEN      read-only Contents access; must also cover the private Countly/countly-enterprise-plugins
+#   CLAUDE_CODE_OAUTH_TOKEN  same as docs-drift.yml
+#   COUNTLY_*_2503 / _2405   optional test servers, same secrets as docs-api-test.yml
+#   SLACK_BOT_TOKEN, SLACK_DOCS_CHANNEL  optional, same as docs-drift.yml
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Docs version to check"
+        type: choice
+        options: ["all", "25.03", "24.05"]
+        default: "all"
+      max_items:
+        description: "Most endpoints to handle in one run, per version"
+        default: "20"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      # One at a time, so two Claude runs never share the subscription's rate limit.
+      max-parallel: 1
+      matrix:
+        include:
+          - version: "25.03"
+            suffix: _2503
+          - version: "24.05"
+            suffix: _2405
+    name: drift (${{ matrix.version }})
+    concurrency:
+      group: docs-drift-${{ matrix.version }}
+      cancel-in-progress: false
+    env:
+      VERSION: ${{ matrix.version }}
+      DOCS_DIR: versioned_docs/version-${{ matrix.version }}/api
+      SIDEBAR: versioned_sidebars/version-${{ matrix.version }}-sidebars.json
+      IGNORE_FILE: docs-drift-ignore.txt
+      DRIFT_BRANCH: docs-drift/${{ matrix.version }}
+      MAX_ITEMS: ${{ inputs.max_items || '20' }}
+      SELECTED: ${{ inputs.version || 'all' }}
+    steps:
+      - name: Is this version selected?
+        id: selected
+        run: echo "run=$([ "$SELECTED" = all ] || [ "$SELECTED" = "$VERSION" ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@v4
+        if: steps.selected.outputs.run == 'true'
+
+      # Tag names mix "25.03.54", "v25.03.10" and "25.03.53-LTS"; sort on the number alone.
+      - name: Find the newest release tags
+        if: steps.selected.outputs.run == 'true'
+        id: tags
+        env:
+          TOKEN: ${{ secrets.PLATFORM_READ_TOKEN }}
+        run: |
+          latest() {
+            git ls-remote --tags --refs "$1" | sed 's#.*refs/tags/##' \
+              | grep -E "^v?${VERSION//./\\.}\.[0-9]+(-LTS)?$" \
+              | awk '{v=$0; sub(/^v/, "", v); sub(/-LTS$/, "", v); print v "\t" $0}' | sort -V | tail -1 | cut -f2
+          }
+          server=$(latest https://github.com/Countly/countly-server.git)
+          enterprise=$(latest "https://x-access-token:${TOKEN}@github.com/Countly/countly-enterprise-plugins.git")
+          if [ -z "$server" ] || [ -z "$enterprise" ]; then
+            echo "::error::No $VERSION release tag found (countly-server: '${server}', countly-enterprise-plugins: '${enterprise}')."
+            exit 1
+          fi
+          echo "server=$server" >> "$GITHUB_OUTPUT"
+          echo "enterprise=$enterprise" >> "$GITHUB_OUTPUT"
+          echo "Checking docs $VERSION against countly-server $server and countly-enterprise-plugins $enterprise." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Check out countly-server
+        if: steps.selected.outputs.run == 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: Countly/countly-server
+          ref: ${{ steps.tags.outputs.server }}
+          path: countly-server
+          # Full history without file contents, so the PR can cite where each change came from.
+          fetch-depth: 0
+          filter: blob:none
+          sparse-checkout: |
+            api
+            plugins
+
+      - name: Check out countly-enterprise-plugins
+        if: steps.selected.outputs.run == 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: Countly/countly-enterprise-plugins
+          ref: ${{ steps.tags.outputs.enterprise }}
+          token: ${{ secrets.PLATFORM_READ_TOKEN }}
+          path: countly-enterprise-plugins
+          fetch-depth: 0
+          filter: blob:none
+          sparse-checkout: |
+            plugins
+
+      # A real install puts the enterprise plugins next to the open-source ones.
+      - name: Combine the code
+        if: steps.selected.outputs.run == 'true'
+        run: |
+          mkdir -p countly-code
+          cp -R countly-server/api countly-server/plugins countly-code/
+          cp -R countly-enterprise-plugins/plugins/. countly-code/plugins/
+
+      - uses: actions/setup-node@v4
+        if: steps.selected.outputs.run == 'true'
+        with:
+          node-version: 20
+
+      - name: Compare code with docs
+        if: steps.selected.outputs.run == 'true'
+        id: check
+        run: |
+          node scripts/check-doc-drift.mjs countly-code "$DOCS_DIR" "$IGNORE_FILE" drift-report
+          cat drift-report/drift.md >> "$GITHUB_STEP_SUMMARY"
+          echo "gaps=$(node -e 'const r=require("./drift-report/drift.json"); console.log(r.missing.length + r.removed.length)')" >> "$GITHUB_OUTPUT"
+
+      - name: Look for an open drift PR
+        if: steps.selected.outputs.run == 'true'
+        id: open_pr
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          count=$(gh pr list --head "$DRIFT_BRANCH" --state open --json number --jq length)
+          echo "count=$count" >> "$GITHUB_OUTPUT"
+          if [ "$count" != "0" ]; then
+            echo "A $VERSION drift PR is still open, so no new drafts were made this run." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Draft doc changes with Claude
+        id: draft
+        if: steps.selected.outputs.run == 'true' && steps.check.outputs.gaps != '0' && steps.open_pr.outputs.count == '0'
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          github_token: ${{ github.token }}
+          claude_args: >-
+            --model claude-sonnet-5-5
+            --max-turns 200
+            --allowedTools "Read,Write,Edit,Glob,Grep,Bash(node scripts/check-doc-drift.mjs:*),Bash(node scripts/find-merge-pr.mjs:*),Bash(git -C countly-server log:*),Bash(git -C countly-enterprise-plugins log:*),Bash(git rm:*)"
+          prompt: |
+            You maintain version ${{ env.VERSION }} of the Countly API reference, in
+            ${{ env.DOCS_DIR }}/ (a versioned Docusaurus site). Its sidebar is
+            ${{ env.SIDEBAR }}. drift-report/drift.md lists where those pages and the
+            ${{ env.VERSION }} code disagree.
+
+            The code is release ${{ steps.tags.outputs.server }} of countly-server/ (core and
+            open-source plugins) plus release ${{ steps.tags.outputs.enterprise }} of
+            countly-enterprise-plugins/ (Enterprise plugins). countly-code/ is both combined, which
+            is what the drift report was built from. All three are read-only: never edit them.
+
+            Never touch docs/ (that is the latest version, 26.01), sidebars.js, or another
+            version's folder. A page or feature that exists in docs/ but not in ${{ env.VERSION }}
+            is expected: ${{ env.VERSION }} is an older release.
+
+            Handle at most ${{ env.MAX_ITEMS }} endpoints this run: first everything under
+            "Pages for removed endpoints", then entries from "Undocumented endpoints" in order.
+
+            For each removed endpoint:
+            - Search countly-code/ to confirm the endpoint really is gone. Routes can be built
+              from constants or looked up from objects (e.g. push's `apis = {o: {...}}` table),
+              so search for the last path segment too before deciding.
+            - If it is gone, delete the page with `git rm`, and remove links to it from other
+              pages in ${{ env.DOCS_DIR }}/ (search for its file name). Drop a list line whole;
+              drop a "Related Endpoints" heading left with nothing under it.
+            - If the feature's whole plugin is gone from countly-code/plugins/, delete the entire
+              ${{ env.DOCS_DIR }}/<feature>/ folder and its `"dirName": "api/<feature>"` entry in
+              ${{ env.SIDEBAR }} in one go. The whole folder counts as one endpoint.
+            - If it still exists and the page's Endpoint block is simply wrong, fix the page.
+
+            For each undocumented endpoint:
+            - Open the code at the listed file and line and read the handler.
+            - If it is not something a customer would call (an internal event hook, dashboard
+              view tracking, a debug or sample route), add it to docs-drift-ignore.txt under a
+              comment giving the reason and the version, and write no page.
+            - Otherwise, if docs/ already has a page for it, copy that page into the matching
+              folder in ${{ env.DOCS_DIR }}/ and then correct it against the ${{ env.VERSION }} code
+              (parameters, checks, permission, response). If not, write a page modelled on two
+              existing pages in that folder: frontmatter (sidebar_label, keywords, last_update
+              with today's date), section order and headings, table formats, and the Enterprise
+              note if the folder's pages have one. Link the new page from the folder's index.md.
+            - If the feature has no folder yet in this version, create one with an index.md
+              (copy it from docs/ if one exists there) and add an autogenerated category for it to
+              ${{ env.SIDEBAR }}, in the same group as in docs.
+            - Document only what the code shows. Where the code leaves something unclear, write
+              the page anyway and add `<!-- REVIEW: what is unclear -->` at that spot.
+
+            Only change files under ${{ env.DOCS_DIR }}/, ${{ env.SIDEBAR }} and docs-drift-ignore.txt.
+
+            Find the source for every change you make, so reviewers can check it. Use the repo
+            the code lives in: countly-server for api/ and the open-source plugins,
+            countly-enterprise-plugins for the Enterprise ones.
+            - A whole plugin removed: `git -C <repo> log -1 --format=%h -- plugins/<name>`.
+            - One endpoint removed or added: search the file that defines (or defined) its route,
+              always with a path and a date, for example
+              `git -C countly-server log -S"/o/dashboards/test" --since=2026-03-01 --format="%h %ad %s" --date=short -- plugins/dashboards/api/api.js`.
+              Removed: the newest match is the removal. Added: the oldest match is when it
+              appeared. No match since 2026-03-01 means it existed before the docs were written.
+            - Then run `node scripts/find-merge-pr.mjs <commit> <repo> <tag>`, where <tag> is
+              ${{ steps.tags.outputs.server }} for countly-server and ${{ steps.tags.outputs.enterprise }}
+              for countly-enterprise-plugins. Copy its "Commit:" and "Pull request:" lines into
+              the PR description as they are. Never write a hash or PR number that did not come
+              from those commands. If you can't find one, say so.
+
+            When finished, run
+            `node scripts/check-doc-drift.mjs countly-code ${{ env.DOCS_DIR }} docs-drift-ignore.txt drift-report`
+            and confirm every endpoint you handled is gone from the new report. Then write
+            drift-report/pr-body.md: one line saying which version and which release tags were
+            checked, one bullet per endpoint saying what you did followed by its source, and a
+            list of every REVIEW comment you left, with its file.
+
+      - name: Test drafted pages
+        if: steps.draft.outcome == 'success'
+        env:
+          COUNTLY_DOCS_ROOT: ${{ env.DOCS_DIR }}
+          COUNTLY_BASE_URL: ${{ secrets[format('COUNTLY_BASE_URL{0}', matrix.suffix)] }}
+          COUNTLY_APP_ID: ${{ secrets[format('COUNTLY_APP_ID{0}', matrix.suffix)] }}
+          COUNTLY_APP_KEY: ${{ secrets[format('COUNTLY_APP_KEY{0}', matrix.suffix)] }}
+          COUNTLY_API_KEY: ${{ secrets[format('COUNTLY_API_KEY{0}', matrix.suffix)] }}
+          COUNTLY_AUTH_TOKEN: ${{ secrets[format('COUNTLY_AUTH_TOKEN{0}', matrix.suffix)] }}
+          COUNTLY_ALLOW_MUTATION: ${{ vars.COUNTLY_ALLOW_MUTATION || 'false' }}
+        run: |
+          touch drift-report/pr-body.md
+          pages=$(git status --porcelain -uall -- "$DOCS_DIR" | awk '$1 != "D" {print $NF}' | grep -E '^[A-Za-z0-9_./-]+\.md$' | paste -sd, -)
+          {
+            echo ""
+            echo "---"
+            if [ -z "$COUNTLY_BASE_URL" ]; then
+              echo "Endpoint test: not run, because no $VERSION test server is configured (COUNTLY_BASE_URL${{ matrix.suffix }}). Test these pages before merging."
+            elif [ -z "$pages" ]; then
+              echo "Endpoint test: no pages were added or changed."
+            else
+              COUNTLY_DOC_FILTER="$pages" node tests/validate-api-docs.mjs > drift-report/api-test.log 2>&1 || true
+              node tests/summarize-report.mjs || echo "**Some drafted pages failed the endpoint test. Fix or drop them before merging.**"
+            fi
+          } >> drift-report/pr-body.md
+
+      - name: Open pull request
+        id: cpr
+        if: steps.draft.outcome == 'success'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: ${{ env.DRIFT_BRANCH }}
+          delete-branch: true
+          add-paths: |
+            ${{ env.DOCS_DIR }}/**
+            ${{ env.SIDEBAR }}
+            docs-drift-ignore.txt
+          commit-message: "docs(${{ env.VERSION }}): sync API reference with ${{ steps.tags.outputs.server }}"
+          title: "docs(${{ env.VERSION }}): sync API reference with ${{ steps.tags.outputs.server }}"
+          body-path: drift-report/pr-body.md
+          labels: docs-drift
+
+      - name: Tell the team on Slack
+        if: steps.cpr.outputs.pull-request-operation == 'created'
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL: ${{ secrets.SLACK_DOCS_CHANNEL }}
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ steps.cpr.outputs.pull-request-number }}
+          PR_URL: ${{ steps.cpr.outputs.pull-request-url }}
+        run: |
+          if [ -z "$SLACK_BOT_TOKEN" ] || [ -z "$SLACK_CHANNEL" ]; then
+            echo "SLACK_BOT_TOKEN or SLACK_DOCS_CHANNEL is not set, so no Slack message was sent."
+            exit 0
+          fi
+          files=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER/files" --paginate --jq '.[] | select(.filename | startswith("versioned_docs/")) | .status')
+          added=$(echo "$files" | grep -c '^added$' || true)
+          removed=$(echo "$files" | grep -c '^removed$' || true)
+          changed=$(echo "$files" | grep -c '^modified$' || true)
+          left=$(node -e 'const r=require("./drift-report/drift.json"); console.log(r.missing.length + r.removed.length)')
+          text=$(printf '📘 *API docs %s update ready for review*\n%s pages added, %s removed, %s changed · %s items still to go\n<%s|Review the pull request>' "$VERSION" "$added" "$removed" "$changed" "$left" "$PR_URL")
+          # Slack answers 200 even on failure, so check its "ok" field.
+          jq -n --arg channel "$SLACK_CHANNEL" --arg text "$text" '{channel: $channel, text: $text}' \
+            | curl -sS -X POST https://slack.com/api/chat.postMessage \
+                -H "Authorization: Bearer $SLACK_BOT_TOKEN" -H 'Content-Type: application/json; charset=utf-8' --data @- \
+            | jq -e '.ok' > /dev/null || { echo "::warning::Slack message was not sent. Check that the bot is in the channel."; }
