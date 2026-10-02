@@ -112,7 +112,6 @@ Standard authentication/authorization errors from read validation can also be re
 
 - [Reports - Reports Read](o-reports-all.md)
 - [Reports - Preview HTML](i-reports-preview.md)
-- [Reports - Generate PDF](i-reports-pdf.md)
 
 <details>
 <summary>Implementation details</summary>

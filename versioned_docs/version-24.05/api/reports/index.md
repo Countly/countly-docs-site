@@ -19,7 +19,6 @@ Reports feature manages scheduled report definitions and manual report actions (
 - [Reports - Delete](i-reports-delete.md) - `/i/reports/delete`
 - [Reports - Send](i-reports-send.md) - `/i/reports/send`
 - [Reports - Preview](i-reports-preview.md) - `/i/reports/preview`
-- [Reports - PDF](i-reports-pdf.md) - `/i/reports/pdf`
 - [Reports - Status](i-reports-status.md) - `/i/reports/status`
 
 <details>

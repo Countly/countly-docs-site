@@ -228,7 +228,6 @@ Report sends data for:
 - [Get All Reports](./o-reports-all.md) - List all reports
 - [Create Report](./i-reports-create.md) - Create scheduled report
 - [Report Preview](./i-reports-preview.md) - HTML preview
-- [Report PDF](./i-reports-pdf.md) - PDF download
 
 ## Error Handling
 

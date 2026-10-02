@@ -123,7 +123,6 @@ Standard authentication/authorization errors from read validation can also be re
 ## Related Endpoints
 
 - [Reports - Report Send](i-reports-send.md)
-- [Reports - Generate PDF](i-reports-pdf.md)
 
 <details>
 <summary>Implementation details</summary>

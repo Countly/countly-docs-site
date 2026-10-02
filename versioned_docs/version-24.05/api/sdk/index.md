@@ -21,10 +21,7 @@ SDK feature manages runtime SDK configuration, enforcement overrides, and SDK me
 
 - [SDK - SDK Config Read](o-sdk-config.md) - `/o/sdk?method=sc`
 - [SDK - Config Read](o-sdk-config-read.md) - `/o?method=sdk-config`
-- [SDK - Config Upload](o-config-upload.md) - `/o?method=config-upload`
-- [SDK - Enforcement Read](o-sdk-enforcement.md) - `/o?method=sdk-enforcement`
 - [SDK - Config Parameter Update](i-sdk-config-parameter.md) - `/i/sdk-config/update-parameter`
-- [SDK - Enforcement Update](i-sdk-config-enforcement.md) - `/i/sdk-config/update-enforcement`
 - [SDK - SDK Metrics Read](o-sdk-metrics.md) - `/o?method=sdks`
 
 <details>

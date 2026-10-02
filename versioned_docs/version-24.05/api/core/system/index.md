@@ -15,11 +15,6 @@ System endpoints expose operational runtime information for Countly, including v
 
 - [System Version Read](./o-system-version.md) - `/o/system/version`
 - [Enabled Features List](./o-system-plugins.md) - `/o/system/plugins`
-- [Aggregator Status Read](./o-system-aggregator.md) - `/o/system/aggregator`
-- [Kafka Status Read](./o-system-kafka.md) - `/o/system/kafka`
-- [Kafka Events List](./o-system-kafka-events.md) - `/o/system/kafka/events`
-- [Kafka Events Meta Read](./o-system-kafka-events-meta.md) - `/o/system/kafka/events/meta`
-- [Observability Read](./o-system-observability.md) - `/o/system/observability`
 
 ## Configuration & Settings
 

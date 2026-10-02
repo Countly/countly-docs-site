@@ -86,7 +86,6 @@ Authentication and authorization failures are returned by the common auth layer.
 ## Related Endpoints
 
 - [System Version Read](./o-system-version.md)
-- [Observability Read](./o-system-observability.md)
 
 <details>
 <summary>Implementation details</summary>

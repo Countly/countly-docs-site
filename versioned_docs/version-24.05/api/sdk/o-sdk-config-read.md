@@ -87,7 +87,6 @@ Requires `sdk` `Read` permission.
 
 ## Related Endpoints
 
-- [SDK - Config Upload](o-config-upload.md)
 - [SDK - SDK Config Read](o-sdk-config.md)
 
 <details>

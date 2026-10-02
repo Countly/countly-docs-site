@@ -100,7 +100,6 @@ Features marked with **Ⓔ** require an Enterprise license.
 | [AB Testing](./ab-testing/index.md) **Ⓔ** | Experiment variants and results |
 | [Content](./content/index.md) **Ⓔ** | In-app content management |
 | [Journey Engine](./journey_engine/index.md) **Ⓔ** | Automated user journeys |
-| [AI Assistants](./ai-assistants/index.md) **Ⓔ** | AI-powered insights |
 
 ### Crashes &amp; Errors
 
@@ -128,10 +127,7 @@ Features marked with **Ⓔ** require an Enterprise license.
 
 | Plugin | Description |
 |--------|-------------|
-| [ClickHouse](./clickhouse/index.md) | ClickHouse analytics backend |
-| [Kafka](./kafka/index.md) | Kafka event streaming |
 | [Data Manager](./data-manager/index.md) **Ⓔ** | Event schema and transformation rules |
-| [Data Migration](./data_migration/index.md) | Import / export server data |
 | [Config Transfer](./config-transfer/index.md) **Ⓔ** | Transfer settings between servers |
 | [DBViewer](./dbviewer/index.md) | Direct database collection browser |
 

@@ -16,7 +16,6 @@ Compliance Hub provides consent analytics and consent-history exploration APIs u
 - [Compliance Hub - Consents Read](o-consents-fetch.md)
 - [Compliance Hub - Consent Current](o-consent-current.md)
 - [Compliance Hub - Consent Search](o-consent-search.md)
-- [Compliance Hub - Consent Search Old](o-consent-searchold.md)
 - [Compliance Hub - App Users Consents](o-app-users-consents.md)
 
 ## Operational Notes
