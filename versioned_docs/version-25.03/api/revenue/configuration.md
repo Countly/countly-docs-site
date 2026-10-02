@@ -36,10 +36,6 @@ When an incoming SDK event matches configured `iap_events` and has `sum`:
 - Ensure purchase events always include valid `sum` values.
 - Normalize currency before sending events when multi-currency sources are used.
 
-## Related Endpoints
-
-- [Revenue - Analytics](analytics.md)
-
 <details>
 <summary>Implementation details</summary>
 

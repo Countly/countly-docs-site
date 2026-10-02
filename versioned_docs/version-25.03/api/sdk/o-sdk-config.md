@@ -99,11 +99,6 @@ No dashboard permission check is applied. Access is validated through app/device
 - If enforcement has a key set to `false`, that key is removed from response `c`.
 - Sets `v=2`, `t=Date.now()` on every response.
 
-## Related Endpoints
-
-- [SDK - Config Upload](o-config-upload.md)
-- [SDK - Enforcement Read](o-sdk-enforcement.md)
-
 <details>
 <summary>Implementation details</summary>
 

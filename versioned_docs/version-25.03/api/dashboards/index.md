@@ -24,7 +24,6 @@ The Dashboards feature provides customizable analytics boards composed of reusab
 - [Dashboards - Read Widget](o-dashboards-widget.md)
 - [Dashboards - Read Widget Data](o-dashboard-data.md)
 - [Dashboards - Read Widget Layout](o-dashboards-widget-layout.md)
-- [Dashboards - Test Widgets](o-dashboards-test.md)
 
 ## Configuration & Settings
 

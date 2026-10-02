@@ -86,7 +86,6 @@ Requires `sdk` `Update` permission.
 
 ## Related Endpoints
 
-- [SDK - Config Upload](o-config-upload.md)
 - [SDK - Config Read](o-sdk-config-read.md)
 
 <details>

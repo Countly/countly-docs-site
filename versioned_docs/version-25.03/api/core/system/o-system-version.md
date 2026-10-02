@@ -80,7 +80,6 @@ Authentication and authorization failures are returned by the common auth layer.
 ## Related Endpoints
 
 - [Enabled Features List](./o-system-plugins.md)
-- [Observability Read](./o-system-observability.md)
 
 <details>
 <summary>Implementation details</summary>

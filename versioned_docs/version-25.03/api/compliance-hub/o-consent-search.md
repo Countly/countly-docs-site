@@ -187,7 +187,6 @@ ClickHouse path (`db_override=clickhouse`):
 ## Related Endpoints
 
 - [Compliance Hub - Consent Current](o-consent-current.md)
-- [Compliance Hub - Consent Search Old](o-consent-searchold.md)
 
 <details>
 <summary>Implementation details</summary>

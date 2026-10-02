@@ -51,9 +51,6 @@ Revenue is tracked through:
 
 ## API Endpoints
 
-### Read Endpoints
-- [Revenue - Analytics](analytics.md) - GET /o/revenue
-
 ### Dashboard Integration
 - Revenue widgets automatically calculate and display metrics
 
