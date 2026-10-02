@@ -1,0 +1,153 @@
+---
+sidebar_label: "List Jobs"
+keywords:
+  - "/o"
+  - "o"
+last_update:
+  date: "2026-04-18"
+---
+
+# List symbolication jobs
+
+:::note Enterprise
+This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
+
+## Endpoint
+
+```
+/o?method=crash_jobs
+```
+
+## Overview
+
+Lists symbolication jobs with optional platform/status filtering and DataTable pagination.
+
+## Authentication
+
+Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../index.md#authentication).
+
+## Permissions
+
+- **Required permission**: `Read` on the `crashes` feature
+
+## Request Parameters
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `method` | String | Yes | Must be `crash_jobs` |
+| `app_id` | String | Yes | Application identifier |
+| `platform` | String | No | Filter by job platform |
+| `status` | String | No | Filter by status (`started`, `in process`, `success`, `errored`) |
+| `iDisplayStart` | Number | No | Pagination offset (DataTable) |
+| `iDisplayLength` | Number | No | Page size (DataTable) |
+| `sSearch` | String | No | Search term |
+| `outputFormat` | String | No | `full` (default) or `rows` |
+| `api_key` | String | Yes (or `auth_token`) | API key authentication |
+| `auth_token` | String | Yes (or `api_key`) | Auth token authentication |
+
+## Examples
+
+### Example 1: List all jobs
+
+```text
+/o?method=crash_jobs&app_id=5f9c8a3b4d1e2a001f3b4567&api_key=YOUR_API_KEY
+```
+
+### Example 2: Filter by status and platform
+
+```text
+/o?method=crash_jobs&app_id=5f9c8a3b4d1e2a001f3b4567&platform=JavaScript&status=success&api_key=YOUR_API_KEY
+```
+
+## Response
+
+### Success Response
+
+Default (`outputFormat=rows`):
+
+```json
+[
+  {
+    "_id": "65c5de2a2c5f5300121a0011",
+    "ts": 1739624770000,
+    "platform": "JavaScript",
+    "build": "1.4.2",
+    "status": "success",
+    "log": ["Started", "Stack trace updated"]
+  }
+]
+```
+
+`outputFormat=full`:
+
+```json
+{
+  "sEcho": "1",
+  "iTotalRecords": 2,
+  "iTotalDisplayRecords": 2,
+  "aaData": [
+    {
+      "_id": "65c5de2a2c5f5300121a0011",
+      "ts": 1739624770000,
+      "platform": "JavaScript",
+      "build": "1.4.2",
+      "status": "success",
+      "log": ["Started", "Stack trace updated"]
+    }
+  ]
+}
+```
+
+### Response Fields
+
+| Field | Type | Description |
+|---|---|---|
+| `(root value)` | Array or Object | Array by default (`outputFormat=rows`), or DataTable object for `outputFormat=full`. |
+| `[].platform` | String | Symbolication path/platform label (rows output). |
+| `[].build` | String | Build value used for the job (rows output). |
+| `[].status` | String | Job status (rows output). |
+| `[].log` | Array | Job log entries (rows output). |
+| `sEcho` | String | DataTable echo value (`outputFormat=full`). |
+| `iTotalRecords` | Number | Total matching records before search (`outputFormat=full`). |
+| `iTotalDisplayRecords` | Number | Total records after search/filter (`outputFormat=full`). |
+| `aaData` | Array | Job rows (`outputFormat=full`). |
+
+### Error Responses
+
+| HTTP Status | Response |
+|---|---|
+| 200 | `false` when aggregation fails |
+| 401 | `{ "result": "User does not exist" }` or auth validation message |
+
+## Behavior
+
+- Requires `Read` permission on the `crashes` feature.
+- Queries `symbolication_jobs` with an initial match on `app_id`.
+- Adds exact-match filters for `platform` and `status` when those query parameters are provided.
+- Uses the shared DataTable helper with column order `ts`, `platform`, `build`, `status`, and `log`.
+- Search applies to `platform`, `build`, `status`, and `log`; default sorting is by `created_at` descending.
+- The handler excludes `app_id` from returned rows and defaults to `outputFormat=rows` unless a DataTable output format is requested.
+- Aggregation errors return `false`.
+
+## Related Endpoints
+
+- [Run Symbolication](crash-symbolicate.md)
+- [Symbolication Result Callback](crash-symbolicate-result.md)
+
+<details>
+<summary>Implementation details</summary>
+
+**Configuration Impact**
+
+| Setting | Default | Affects | User-visible impact |
+|---|---|---|---|
+| `crashes.*` | Crashes feature defaults | Crash-job query behavior and filtering options used by this endpoint. | Changes to crashes settings can alter which job rows are returned or how they are grouped/filtered. |
+
+**Database Collections**
+
+| Collection | Used for | Data touched by this endpoint |
+|---|---|---|
+| `countly.symbolication_jobs` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
+
+</details>
