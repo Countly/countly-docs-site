@@ -6645,6 +6645,12 @@ async function resolveEndpointSpecificValue(doc, paramName) {
 }
 
 async function performRequest(request) {
+  // Every request carries the test server's credentials, and the URL is built
+  // from a page's endpoint, so a page must never point it at another host.
+  if (new URL(request.url).origin !== BASE_URL.origin) {
+    throw new Error(`Refusing a request outside ${BASE_URL.origin}: ${new URL(request.url).origin}`);
+  }
+
   if (CONFIG.interRequestDelayMs > 0) {
     await sleep(CONFIG.interRequestDelayMs);
   }
