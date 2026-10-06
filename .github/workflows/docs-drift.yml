@@ -37,14 +37,19 @@ jobs:
   drift:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      # Neither checkout keeps its token: the Claude step reads files, and the
+      # pull request step passes its own.
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
 
       - name: Check out countly-platform
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           repository: Countly/countly-platform
           ref: main
           token: ${{ secrets.PLATFORM_READ_TOKEN }}
+          persist-credentials: false
           path: countly-platform
           # Full history without file contents, so the PR can cite where each change came from.
           fetch-depth: 0
@@ -53,7 +58,7 @@ jobs:
             api
             plugins
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 20
 
@@ -78,7 +83,7 @@ jobs:
 
       - name: Draft doc changes with Claude
         if: steps.check.outputs.gaps != '0' && steps.open_pr.outputs.count == '0'
-        uses: anthropics/claude-code-action@v1
+        uses: anthropics/claude-code-action@ed670b4cf9de2a5a570d130d2f6197b9e543cd64 # v1.0.240
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           # The workflow's own token, so the Claude GitHub App does not need to be installed.
@@ -86,7 +91,8 @@ jobs:
           claude_args: >-
             --model claude-sonnet-5-5
             --max-turns 200
-            --allowedTools "Read,Write,Edit,Glob,Grep,Bash(node scripts/check-doc-drift.mjs:*),Bash(node scripts/find-merge-pr.mjs:*),Bash(git -C countly-platform log:*),Bash(git rm:*)"
+            --allowedTools "Read(./**),Glob,Grep,Write(docs/api/**),Edit(docs/api/**),Edit(sidebars.js),Edit(docs-drift-ignore.txt),Write(drift-report/pr-body.md),Bash(node scripts/check-doc-drift.mjs:*),Bash(node scripts/find-merge-pr.mjs:*),Bash(node scripts/platform-log.mjs:*),Bash(git rm:*)"
+            --disallowedTools "Read(//proc/**),Read(//sys/**),Read(/${{ runner.temp }}/**),Read(~/.claude/**),Read(~/.config/**),Read(~/.npmrc)"
           prompt: |
             You maintain the Countly API reference in docs/api/ (a Docusaurus site). The file
             drift-report/drift.md lists where the docs and the code in countly-platform/ disagree.
@@ -126,11 +132,11 @@ jobs:
             Only change files under docs/api/, sidebars.js and docs-drift-ignore.txt.
 
             Find the source for every change you make, so reviewers can check it:
-            - A whole plugin removed: `git -C countly-platform log -1 --format=%h -- plugins/<name>`
+            - A whole plugin removed: `node scripts/platform-log.mjs -1 --format=%h -- plugins/<name>`
               gives the commit that deleted it.
             - One endpoint removed or added: search the file that defines (or defined) its
               route, always with a path and a date, for example
-              `git -C countly-platform log -S"/o/dashboards/test" --since=2026-03-01 --format="%h %ad %s" --date=short -- plugins/dashboards/api/api.js`.
+              `node scripts/platform-log.mjs -S"/o/dashboards/test" --since=2026-03-01 --format="%h %ad %s" --date=short -- plugins/dashboards/api/api.js`.
               Removed: the newest match is the removal. Added: the oldest match is when it
               appeared. No match since 2026-03-01 means it existed before the docs were written.
             - Then run `node scripts/find-merge-pr.mjs <commit>`, and copy its "Commit:" and
@@ -144,6 +150,19 @@ jobs:
             did (page added, page removed, page fixed, or ignored and why) followed by its
             source (the commit and pull request lines, or why none was found), and a list of
             every REVIEW comment you left, with its file.
+
+      # The tool list above already limits the drafting step; this is the check
+      # behind it, and it runs before anything executes repository code with
+      # the test server's secrets.
+      - name: Check only the docs changed
+        if: steps.check.outputs.gaps != '0' && steps.open_pr.outputs.count == '0'
+        run: |
+          bad=$(git status --porcelain -uall | awk '{print $NF}' \
+            | grep -v -E '^(docs/api/|drift-report/|countly-platform/)' \
+            | grep -v -E '^(sidebars\.js|docs-drift-ignore\.txt)$' || true)
+          if [ -n "$bad" ]; then
+            echo "::error::The drafting step changed files outside the docs:"; echo "$bad"; exit 1
+          fi
 
       # A PR opened by this workflow does not trigger docs-api-test.yml, so the drafted
       # pages are tested here and the result goes into the PR description.
@@ -175,7 +194,7 @@ jobs:
       - name: Open pull request
         id: cpr
         if: steps.check.outputs.gaps != '0' && steps.open_pr.outputs.count == '0'
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@22a9089034f40e5a961c8808d113e2c98fb63676 # v7.0.11
         with:
           branch: ${{ env.DRIFT_BRANCH }}
           delete-branch: true
