@@ -59,8 +59,12 @@ jobs:
         id: selected
         run: echo "run=$([ "$SELECTED" = all ] || [ "$SELECTED" = "$VERSION" ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
 
-      - uses: actions/checkout@v4
+      # No checkout keeps its token: the Claude step reads files, and the
+      # pull request step passes its own.
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         if: steps.selected.outputs.run == 'true'
+        with:
+          persist-credentials: false
 
       # Tag names mix "25.03.54", "v25.03.10" and "25.03.53-LTS"; sort on the number alone.
       - name: Find the newest release tags
@@ -86,10 +90,11 @@ jobs:
 
       - name: Check out countly-server
         if: steps.selected.outputs.run == 'true'
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           repository: Countly/countly-server
           ref: ${{ steps.tags.outputs.server }}
+          persist-credentials: false
           path: countly-server
           # Full history without file contents, so the PR can cite where each change came from.
           fetch-depth: 0
@@ -100,11 +105,12 @@ jobs:
 
       - name: Check out countly-enterprise-plugins
         if: steps.selected.outputs.run == 'true'
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           repository: Countly/countly-enterprise-plugins
           ref: ${{ steps.tags.outputs.enterprise }}
           token: ${{ secrets.PLATFORM_READ_TOKEN }}
+          persist-credentials: false
           path: countly-enterprise-plugins
           fetch-depth: 0
           filter: blob:none
@@ -119,7 +125,7 @@ jobs:
           cp -R countly-server/api countly-server/plugins countly-code/
           cp -R countly-enterprise-plugins/plugins/. countly-code/plugins/
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         if: steps.selected.outputs.run == 'true'
         with:
           node-version: 20
@@ -147,14 +153,15 @@ jobs:
       - name: Draft doc changes with Claude
         id: draft
         if: steps.selected.outputs.run == 'true' && steps.check.outputs.gaps != '0' && steps.open_pr.outputs.count == '0'
-        uses: anthropics/claude-code-action@v1
+        uses: anthropics/claude-code-action@ed670b4cf9de2a5a570d130d2f6197b9e543cd64 # v1.0.240
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ github.token }}
           claude_args: >-
             --model claude-sonnet-5-5
             --max-turns 200
-            --allowedTools "Read,Write,Edit,Glob,Grep,Bash(node scripts/check-doc-drift.mjs:*),Bash(node scripts/find-merge-pr.mjs:*),Bash(git -C countly-server log:*),Bash(git -C countly-enterprise-plugins log:*),Bash(git rm:*)"
+            --allowedTools "Read(./**),Glob,Grep,Write(${{ env.DOCS_DIR }}/**),Edit(${{ env.DOCS_DIR }}/**),Edit(${{ env.SIDEBAR }}),Edit(docs-drift-ignore.txt),Write(drift-report/pr-body.md),Bash(node scripts/check-doc-drift.mjs:*),Bash(node scripts/find-merge-pr.mjs:*),Bash(node scripts/platform-log.mjs:*),Bash(git rm:*)"
+            --disallowedTools "Read(//proc/**),Read(//sys/**),Read(/${{ runner.temp }}/**),Read(~/.claude/**),Read(~/.config/**),Read(~/.npmrc)"
           prompt: |
             You maintain version ${{ env.VERSION }} of the Countly API reference, in
             ${{ env.DOCS_DIR }}/ (a versioned Docusaurus site). Its sidebar is
@@ -207,10 +214,10 @@ jobs:
             Find the source for every change you make, so reviewers can check it. Use the repo
             the code lives in: countly-server for api/ and the open-source plugins,
             countly-enterprise-plugins for the Enterprise ones.
-            - A whole plugin removed: `git -C <repo> log -1 --format=%h -- plugins/<name>`.
+            - A whole plugin removed: `node scripts/platform-log.mjs --repo=<repo> -1 --format=%h -- plugins/<name>`.
             - One endpoint removed or added: search the file that defines (or defined) its route,
               always with a path and a date, for example
-              `git -C countly-server log -S"/o/dashboards/test" --since=2026-03-01 --format="%h %ad %s" --date=short -- plugins/dashboards/api/api.js`.
+              `node scripts/platform-log.mjs --repo=countly-server -S"/o/dashboards/test" --since=2026-03-01 --format="%h %ad %s" --date=short -- plugins/dashboards/api/api.js`.
               Removed: the newest match is the removal. Added: the oldest match is when it
               appeared. No match since 2026-03-01 means it existed before the docs were written.
             - Then run `node scripts/find-merge-pr.mjs <commit> <repo> <tag>`, where <tag> is
@@ -225,6 +232,19 @@ jobs:
             drift-report/pr-body.md: one line saying which version and which release tags were
             checked, one bullet per endpoint saying what you did followed by its source, and a
             list of every REVIEW comment you left, with its file.
+
+      # The tool list above already limits the drafting step; this is the check
+      # behind it, and it runs before anything executes repository code with
+      # the test server's secrets.
+      - name: Check only the docs changed
+        if: steps.draft.outcome == 'success'
+        run: |
+          bad=$(git status --porcelain -uall | awk '{print $NF}' \
+            | grep -v -E "^(${DOCS_DIR}/|drift-report/|countly-server/|countly-enterprise-plugins/|countly-code/)" \
+            | grep -v -x -F -e "$SIDEBAR" -e "$IGNORE_FILE" || true)
+          if [ -n "$bad" ]; then
+            echo "::error::The drafting step changed files outside the docs:"; echo "$bad"; exit 1
+          fi
 
       - name: Test drafted pages
         if: steps.draft.outcome == 'success'
@@ -255,7 +275,7 @@ jobs:
       - name: Open pull request
         id: cpr
         if: steps.draft.outcome == 'success'
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@22a9089034f40e5a961c8808d113e2c98fb63676 # v7.0.11
         with:
           branch: ${{ env.DRIFT_BRANCH }}
           delete-branch: true

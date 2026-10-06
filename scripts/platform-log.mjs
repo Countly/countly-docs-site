@@ -3,7 +3,8 @@
  * platform-log.mjs -- `git log` over the countly-platform checkout, for the
  * docs-drift reviewer.
  *
- * Usage: node scripts/platform-log.mjs [log options] [-- paths]
+ * Usage: node scripts/platform-log.mjs [--repo=<checkout>] [log options] [-- paths]
+ *   --repo  countly-platform (default), countly-server or countly-enterprise-plugins
  *
  * The reviewer may search history but must not be able to write files or run
  * anything, and plain `git log` can do both (--output, --ext-diff). So only the
@@ -12,14 +13,21 @@
  */
 import {execFileSync} from "node:child_process";
 
-const PLATFORM = "countly-platform";
+const REPOS = new Set(["countly-platform", "countly-server", "countly-enterprise-plugins"]);
 const VALUE_OPTIONS = /^(-S|-G|--since=|--until=|--after=|--before=|--format=|--pretty=|--date=|--diff-filter=|--grep=|--author=|-n)/;
 const FLAG_OPTIONS = new Set([
   "--oneline", "--reverse", "--name-only", "--name-status", "--stat", "--follow",
   "--first-parent", "--merges", "--no-merges", "-p", "-i", "--regexp-ignore-case",
 ]);
 
+let repo = "countly-platform";
 const args = process.argv.slice(2);
+if (args[0]?.startsWith("--repo=")) {
+  repo = args.shift().slice("--repo=".length);
+  if (!REPOS.has(repo)) {
+    fail(`repo not allowed: ${repo}`);
+  }
+}
 let afterSeparator = false;
 for (const arg of args) {
   if (afterSeparator) {
@@ -39,7 +47,7 @@ for (const arg of args) {
   }
 }
 
-process.stdout.write(execFileSync("git", ["-C", PLATFORM, "log", ...args], {encoding: "utf8", maxBuffer: 1 << 26}));
+process.stdout.write(execFileSync("git", ["-C", repo, "log", ...args], {encoding: "utf8", maxBuffer: 1 << 26}));
 
 function fail(message) {
   console.error(`platform-log: ${message}`);
