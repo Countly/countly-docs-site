@@ -1,9 +1,12 @@
 // Compares the classic API endpoints (/i/..., /o/...) defined in countly-platform with the
 // endpoint pages in docs/api/. /v2 routes are out of scope.
 //
-//   node scripts/check-doc-drift.mjs [path-to-countly-platform]   (default: ./countly-platform)
+//   node scripts/check-doc-drift.mjs [path-to-code] [docs-dir] [ignore-file] [out-dir]
 //
-// Writes drift-report/drift.json and drift-report/drift.md:
+// Defaults: ./countly-platform, docs/api, docs-drift-ignore.txt, drift-report. For an older
+// version, pass its code checkout and versioned_docs/version-<x>/api.
+//
+// Writes <out-dir>/drift.json and <out-dir>/drift.md:
 //   missing  endpoints the code handles that no page documents
 //   removed  pages whose endpoint no longer appears anywhere in the code
 // Endpoints listed in docs-drift-ignore.txt are left out of both lists.
@@ -13,8 +16,9 @@ import {parseDoc, walk} from "./lib/parse-docs.mjs";
 
 const ROOT = process.cwd();
 const PLATFORM = path.resolve(process.argv[2] || "countly-platform");
-const OUT_DIR = path.join(ROOT, "drift-report");
-const IGNORE_FILE = path.join(ROOT, "docs-drift-ignore.txt");
+const DOCS_DIR = path.resolve(process.argv[3] || "docs/api");
+const IGNORE_FILE = path.resolve(process.argv[4] || "docs-drift-ignore.txt");
+const OUT_DIR = path.resolve(process.argv[5] || "drift-report");
 const CORE_ROUTER = "api/utils/requestProcessor.js";
 
 const QUOTED = "['\"`]([^'\"`]+)['\"`]";
@@ -204,6 +208,15 @@ function extractRoutes(file, hookPaths, sharedConstants) {
       }
     }
 
+    // e.g. plugins.register('/o/push', ob => apiCall(apis.o, ob)): sub-endpoints come from the
+    // keys of the `apis` object (push in 24.05/25.03).
+    const table = registered && line.match(/\bapiCall\(\s*(\w+)\.(\w+)/);
+    if (table && routes.length) {
+      for (const sub of routeTable(text, table[1], table[2])) {
+        routes[routes.length - 1].variants.push({path: `${routes[routes.length - 1].path}${sub}`, method: null, line: lineNo});
+      }
+    }
+
     depth += delta;
     while (stack.length && depth <= stack[stack.length - 1].depth) {
       stack.pop();
@@ -223,6 +236,48 @@ function extractRoutes(file, hookPaths, sharedConstants) {
     }
   }
   return endpoints;
+}
+
+// Sub-paths of a route table like `apis = {o: {dashboard: [...], message: {all: [...], GET: [...]}}}`.
+// routeTable(text, "apis", "o") -> ["/dashboard", "/message/all", "/message"]. An upper-case key
+// (GET, POST) is an HTTP verb on its parent path, which takes an id the docs show as /{_id}.
+function routeTable(text, name, key) {
+  const start = text.match(new RegExp(`\\b${name}\\s*=\\s*\\{`));
+  if (!start) {
+    return [];
+  }
+  const code = text.slice(start.index + start[0].length - 1).replace(/\/\*[\s\S]*?\*\/|\/\/[^\n]*/g, "");
+  const found = [];
+  const keys = [];
+  let i = 1;
+  while (i < code.length && keys.length >= 0) {
+    const entry = code.slice(i).match(/^\s*(?:['"]?([\w-]+)['"]?\s*:\s*([{[])|(\}))/);
+    if (!entry) {
+      i++;
+      continue;
+    }
+    i += entry[0].length;
+    if (entry[3]) {
+      if (!keys.length) {
+        break;
+      }
+      keys.pop();
+    }
+    else if (entry[2] === "{") {
+      keys.push(entry[1]);
+    }
+    else {
+      const leaf = /^[A-Z]+$/.test(entry[1]) ? keys : [...keys, entry[1]];
+      if (leaf[0] === key && leaf.length > 1) {
+        found.push(`/${leaf.slice(1).join("/")}`);
+      }
+      // Skip the array: [validator, handler, 'param'].
+      for (let level = 1; i < code.length && level; i++) {
+        level += code[i] === "[" ? 1 : code[i] === "]" ? -1 : 0;
+      }
+    }
+  }
+  return found;
 }
 
 // "/i/app_users/deleteExport/:filename?method=x&app_id=..." -> {path: "/i/app_users/deleteExport", method: "x"}
@@ -288,7 +343,7 @@ function main() {
     }
   }
 
-  const docs = walk(path.join(ROOT, "docs", "api"))
+  const docs = walk(DOCS_DIR)
     .filter((f) => f.endsWith(".md"))
     .map(parseDoc)
     .filter((d) => !d.isOverview && d.endpoint)
@@ -347,7 +402,7 @@ function main() {
   const md = [
     "# API docs drift report",
     "",
-    `Classic API endpoints found in countly-platform: ${code.size}. Endpoints documented in docs/api: ${docs.length}.`,
+    `Classic API endpoints found in ${path.basename(PLATFORM)}: ${code.size}. Endpoints documented in ${path.relative(ROOT, DOCS_DIR)}: ${docs.length}.`,
     "",
     `## Undocumented endpoints (${missing.length})`,
     "",

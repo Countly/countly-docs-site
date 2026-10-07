@@ -1,0 +1,14 @@
+# Features added after an older docs version was released. An older version's pages
+# (versioned_docs/version-<x>/) must not mention them; scripts/check-version-features.mjs
+# fails if one does. Add a line whenever a release adds a parameter, field or backend
+# that older pages could pick up by copying from docs/api.
+#
+# <added in>  <term, matched case-insensitively as a whole word>
+26.01  clickhouse
+26.01  db_override
+26.01  dbOverride
+26.01  comparisonMode
+26.01  paginationMode
+26.01  nextCursor
+26.01  hasNextPage
+26.01  QueryRunner

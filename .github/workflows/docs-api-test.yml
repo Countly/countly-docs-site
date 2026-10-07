@@ -1,11 +1,15 @@
 name: API endpoint test
 
 # Calls documented endpoints on a live Countly server with tests/validate-api-docs.mjs.
+# Each docs version is tested against a server running that version.
 #   Pull requests: tests only the pages the PR adds or changes, and fails if one fails.
 #   Weekly / manual: tests every page, and lists the failing ones for review or removal.
 #
-# Secrets (the workflow skips itself until COUNTLY_BASE_URL is set):
-#   COUNTLY_BASE_URL, COUNTLY_APP_ID, COUNTLY_APP_KEY, COUNTLY_API_KEY, COUNTLY_AUTH_TOKEN
+# Secrets, per version (a version is skipped until its BASE_URL secret is set):
+#   26.01 (docs/api):                        COUNTLY_BASE_URL, COUNTLY_APP_ID, COUNTLY_APP_KEY, COUNTLY_API_KEY, COUNTLY_AUTH_TOKEN
+#   25.03 (versioned_docs/version-25.03):    the same names ending in _2503, e.g. COUNTLY_BASE_URL_2503
+#   24.05 (versioned_docs/version-24.05):    the same names ending in _2405
+# The suffixes keep an old version from silently falling back to the 26.01 server.
 # Variable (optional):
 #   COUNTLY_ALLOW_MUTATION  "true" also tests endpoints that change data. Only on a throwaway server.
 
@@ -13,6 +17,7 @@ on:
   pull_request:
     paths:
       - "docs/api/**"
+      - "versioned_docs/**"
   schedule:
     - cron: "0 4 * * 1"
   workflow_dispatch:
@@ -20,23 +25,37 @@ on:
 permissions:
   contents: read
 
-env:
-  COUNTLY_BASE_URL: ${{ secrets.COUNTLY_BASE_URL }}
-  COUNTLY_APP_ID: ${{ secrets.COUNTLY_APP_ID }}
-  COUNTLY_APP_KEY: ${{ secrets.COUNTLY_APP_KEY }}
-  COUNTLY_API_KEY: ${{ secrets.COUNTLY_API_KEY }}
-  COUNTLY_AUTH_TOKEN: ${{ secrets.COUNTLY_AUTH_TOKEN }}
-  COUNTLY_ALLOW_MUTATION: ${{ vars.COUNTLY_ALLOW_MUTATION || 'false' }}
-
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - version: "26.01"
+            docs: docs/api
+            suffix: ""
+          - version: "25.03"
+            docs: versioned_docs/version-25.03/api
+            suffix: _2503
+          - version: "24.05"
+            docs: versioned_docs/version-24.05/api
+            suffix: _2405
+    name: test (${{ matrix.version }})
+    env:
+      COUNTLY_DOCS_ROOT: ${{ matrix.docs }}
+      COUNTLY_BASE_URL: ${{ secrets[format('COUNTLY_BASE_URL{0}', matrix.suffix)] }}
+      COUNTLY_APP_ID: ${{ secrets[format('COUNTLY_APP_ID{0}', matrix.suffix)] }}
+      COUNTLY_APP_KEY: ${{ secrets[format('COUNTLY_APP_KEY{0}', matrix.suffix)] }}
+      COUNTLY_API_KEY: ${{ secrets[format('COUNTLY_API_KEY{0}', matrix.suffix)] }}
+      COUNTLY_AUTH_TOKEN: ${{ secrets[format('COUNTLY_AUTH_TOKEN{0}', matrix.suffix)] }}
+      COUNTLY_ALLOW_MUTATION: ${{ vars.COUNTLY_ALLOW_MUTATION || 'false' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 20
 
@@ -46,15 +65,15 @@ jobs:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
         run: |
           if [ -z "$COUNTLY_BASE_URL" ]; then
-            echo "Skipped: no test server configured (COUNTLY_BASE_URL secret is not set)." >> "$GITHUB_STEP_SUMMARY"
+            echo "Skipped ${{ matrix.version }}: no test server configured (COUNTLY_BASE_URL${{ matrix.suffix }} secret is not set)." >> "$GITHUB_STEP_SUMMARY"
             echo "run=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             # Plain file names only, since the list is written to GITHUB_ENV.
-            pages=$(git diff --name-only --diff-filter=AM "$BASE_SHA" HEAD -- 'docs/api/*.md' 'docs/api/**/*.md' | grep -E '^[A-Za-z0-9_./-]+$' | paste -sd, -)
+            pages=$(git diff --name-only --diff-filter=AM "$BASE_SHA" HEAD -- "$COUNTLY_DOCS_ROOT/*.md" "$COUNTLY_DOCS_ROOT/**/*.md" | { grep -E '^[A-Za-z0-9_./-]+$' || true; } | paste -sd, -)
             if [ -z "$pages" ]; then
-              echo "No endpoint pages added or changed." >> "$GITHUB_STEP_SUMMARY"
+              echo "No ${{ matrix.version }} endpoint pages added or changed." >> "$GITHUB_STEP_SUMMARY"
               echo "run=false" >> "$GITHUB_OUTPUT"
               exit 0
             fi
@@ -68,11 +87,13 @@ jobs:
 
       - name: Summarize
         if: steps.scope.outputs.run == 'true'
-        run: node tests/summarize-report.mjs >> "$GITHUB_STEP_SUMMARY"
+        run: |
+          echo "### Docs version ${{ matrix.version }}" >> "$GITHUB_STEP_SUMMARY"
+          node tests/summarize-report.mjs >> "$GITHUB_STEP_SUMMARY"
 
       - name: Keep the full report
         if: always() && steps.scope.outputs.run == 'true'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: api-test-report
+          name: api-test-report-${{ matrix.version }}
           path: tests/reports/latest.json
