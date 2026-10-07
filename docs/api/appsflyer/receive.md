@@ -179,8 +179,6 @@ Deferred attribution storage example:
 
 When attribution succeeds, the event is recorded as `appsflyer_<event name>` and the fields are written to the user's custom properties (with `first_<field>` copies where missing).
 
-<!-- REVIEW: on the immediate path, if the internal `/i` request fails, the callback only logs the error and no response is sent to the caller. -->
-
 ## Limitations
 
 - `app_key` is mandatory.

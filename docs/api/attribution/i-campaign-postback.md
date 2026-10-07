@@ -103,11 +103,6 @@ This succeeds only if an app user already has a matching `aid.idfa` value. Ident
 4. Finds the app user by advertising identifier (`aid.<name>`), by `advertising_id` (Android), or by `idfa` (iOS). A matching stored click is read for extra segments and removed.
 5. Records `aclk` and `ins` (click and install) metrics for the campaign, stores the attribution data on the user under `cmp`, sends the data to each configured campaign postback, and returns `Success`.
 
-<!-- REVIEW: when the app has a redirect URL configured, the code forwards the request but never sends a response to the caller. -->
-<!-- REVIEW: an `aid_*` parameter that appears only inside `click_url` (not in the request itself) makes the code read `params.qstring[name].length` on an undefined value and throw. -->
-<!-- REVIEW: the `advertising_id` path never sets `params.app_user`; since campaigns always have a `postbacks` array, reading `params.app_user.did` throws after the user update. -->
-<!-- REVIEW: when none of `aid_*`, `advertising_id` or `idfa` is supplied, no branch handles the request and no response is sent. -->
-
 ## Related Endpoints
 
 - [Campaign Click](i-campaign-click.md)
