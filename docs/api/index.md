@@ -109,6 +109,7 @@ Features marked with **Ⓔ** require an Enterprise license.
 | [Crashes](./crashes/index.md) | Crash reporting and grouping |
 | [Crash Symbolication](./crash_symbolication/index.md) **Ⓔ** | Symbol file upload and stack trace resolution |
 | [Crashes Jira](./crashes-jira/index.md) **Ⓔ** | Jira integration for crash groups |
+| [Error Logs](./errorlogs/index.md) | Server error log viewer |
 
 ### Security &amp; Authentication
 

@@ -2,7 +2,7 @@
 sidebar_position: 1
 sidebar_label: "Overview"
 last_update:
-  date: "2026-02-15"
+  date: "2026-10-07"
 ---
 
 # AI Assistants
@@ -17,27 +17,22 @@ This feature is part of [Countly Enterprise](https://count.ly/enterprise). To ge
 |---|---|
 | Feature | AI Assistants |
 | Type | In-product AI conversation and guidance |
-| Public endpoint count | 7 |
-| Last updated | 2026-02-15 |
+| Public endpoint count | 4 |
+| Last updated | 2026-10-07 |
 
 ## Overview
 
 AI Assistants provides conversational help inside Countly features.  
-It supports thread management, streaming assistant responses, and message feedback.
+It supports conversation threads, streaming assistant responses, and answer feedback.
 
-Conversations are scoped per app and member. Threads and their messages are kept in Mastra memory, stored in ClickHouse.
-
-Thread endpoints accept `demo=true` for the demo chat. Demo threads are kept apart from real ones and are deleted after 14 days without activity (fixed, not a setting).
+Each thread belongs to the member who created it and is tied to an app. Threads and their messages are stored in the server's ClickHouse database.
 
 ## Quick Links
 
 | Endpoint | Path |
 |---|---|
 | [AI Assistants - Load Thread](load-thread.md) | `/o/ai-assistants/load-thread` |
-| [AI Assistants - List Threads](list-threads.md) | `/o/ai-assistants/list-threads` |
 | [AI Assistants - Create Thread](create-thread.md) | `/i/ai-assistants/create-thread` |
-| [AI Assistants - Rename Thread](rename-thread.md) | `/i/ai-assistants/rename-thread` |
-| [AI Assistants - Delete Thread](delete-thread.md) | `/i/ai-assistants/delete-thread` |
 | [AI Assistants - Feedback](feedback.md) | `/i/ai-assistants/feedback` |
 | [AI Assistants - Send Message](send-message.md) | `/i/ai-assistants/send-message` |
 
@@ -45,23 +40,19 @@ Thread endpoints accept `demo=true` for the demo chat. Demo threads are kept apa
 
 ### Thread Endpoints (`load-thread`, `create-thread`)
 
-| Field | Type | Description |
-|---|---|---|
-| `thread` | Object | Thread object (`_id`, `memberId`, `appId`, `demo`, `messages`) |
-| `capabilities` | Object | Server capabilities (`demo: true` when demo mode is supported) |
-
-### List Endpoint (`list-threads`)
+Both endpoints return a `thread` object. Its shape depends on whether the thread was just created or already existed.
 
 | Field | Type | Description |
 |---|---|---|
-| `threads` | Array | Member's threads with messages for the app (`id`, `title`, `pending`, `updatedAt`), newest first, up to 30 |
+| `thread` (new thread) | Object | `id`, `title`, `resourceId` (member ID), `createdAt`, `updatedAt`, `metadata.appId` |
+| `thread` (existing thread) | Object | `_id`, `memberId`, `appId`, `messages` |
 
 ### Feedback Endpoint (`feedback`)
 
 | Field | Type | Description |
 |---|---|---|
 | `ok` | Number | Success flag (`1`) |
-| `tracked` | Boolean | Whether the feedback was recorded |
+| `tracked` | Boolean | `true` when the feedback was forwarded to Countly; `false` when it was not forwarded |
 
 ### Streaming Endpoint (`send-message`)
 
@@ -70,7 +61,7 @@ Thread endpoints accept `demo=true` for the demo chat. Demo threads are kept apa
 | `event: user` | Echo of the user message |
 | `event: start` | Stream started with assistant message metadata (`_id`, `role`, `createdOn`) |
 | `event: message` (`data: {"type":"token","content":"..."}`) | Incremental generated text |
-| `event: provisional`, `event: verifying`, `event: progress` (`label`), `event: intent` (`handoff_reasoning`) | Status updates during the run |
+| `event: provisional`, `event: verifying`, `event: progress` (`label`) | Status updates during the run |
 | `event: done` | Final complete assistant message payload |
 | `event: error` | Stream-time error payload |
 | `event: cancel` | Cancellation notification |
@@ -80,46 +71,44 @@ Thread endpoints accept `demo=true` for the demo chat. Demo threads are kept apa
 ### AI Assistants feature config (`ai-assistants`)
 
 - `useGateway`: Route requests through the Countly AI gateway (default `true`; when `false`, `send-message` returns HTTP 503)
-- `gatewayUrl`: Gateway URL
-- `gatewayApiKey`: Gateway API key (provisioned from the license)
+- `gatewayUrl`: Gateway URL. Leave empty to use the default Countly AI gateway. The `AI_GATEWAY_URL` environment variable, when set, takes precedence.
+- `gatewayApiKey`: Gateway API key. On servers with a license, the key is provisioned from the license automatically when a message is sent.
 - `model`: Model ID (default `google/gemini-3.1-flash-lite`)
-- `drillAgentEnabled`: Enable Drill agent
+- `drillAgentEnabled`: Enable Drill agent (also enables Drill insights)
 - `cohortAgentEnabled`: Enable Cohort agent
 - `funnelAgentEnabled`: Enable Funnel agent
 - `journeyAgentEnabled`: Enable Journey agent
 
 ### Security config (`security`)
 
-- Optional proxy settings:
-  - `proxy_hostname`, `proxy_port`, `proxy_username`, `proxy_password`
-- Optional outbound custom headers:
-  - `api_additional_headers`
+- `api_additional_headers`: Custom headers (one `Name: Value` pair per line) added to the `send-message` SSE response headers. Lines without a colon or with an invalid header name are skipped.
 
 ## Workflows
 
 ### 1. Start or Resume a Conversation
 
-1. Call `load-thread` with `app_id` to load/create a member thread.
-2. If needed, call `create-thread` to start a fresh thread, or `list-threads` to show earlier conversations.
+1. Call `load-thread` with `app_id` (and a stored `threadId`, if you have one) to load the thread or get a new one.
+2. Call `create-thread` to start a fresh thread.
 3. Use `send-message` for assistant responses over SSE.
 
 ### 2. Stream a Response
 
-1. Send prompt using `send-message`.
-2. Read token chunks in SSE stream.
-3. Consume `done` event with final assistant message object.
+1. Send the prompt using `send-message`.
+2. Read token chunks in the SSE stream.
+3. Consume the `done` event with the final assistant message object.
 
-### 3. Collect Feedback
+### 3. Send Feedback
 
-1. Capture the assistant message ID (`promptId`) from the stream.
+1. Take the assistant message `_id` from the stream's `start` or `done` event. This is the `promptId`.
 2. Call `feedback` with `threadId`, `promptId` and a `thumbs_up` or `thumbs_down` rating.
-3. Use feedback for quality monitoring workflows.
+
+Feedback is not stored on your Countly server. It is forwarded to Countly to help improve the product, including the optional comment text. If the server has no public domain configured, feedback is not forwarded and the response contains `tracked: false`.
 
 ## Limitations
 
-- `send-message` requires `useGateway` enabled and an active license.
-- Agents use the last 20 messages of a thread as context.
-- `list-threads` returns up to 30 threads.
+- `send-message` requires `useGateway` enabled and a gateway API key (provisioned from an active license).
+- Thread storage requires ClickHouse connection settings (`clickhouse.url`, `clickhouse.username`, `clickhouse.password`) in `api/config.js`.
+- Agents use recent messages of the thread as context.
 - Agent availability depends on enabled feature toggles.
 
 ## Related Features
@@ -135,8 +124,9 @@ Thread endpoints accept `demo=true` for the demo chat. Demo threads are kept apa
 
 | Collection | Purpose |
 |---|---|
-| Mastra memory store (ClickHouse) | Stores threads and message history |
+| ClickHouse thread and message store | Stores threads and message history |
 | `countly.apps` | Read to check that the thread's app exists |
+| `countly.plugins` | Stores the provisioned gateway API key; the license is read from it |
 | `countly_drill.drill_meta` | Metadata source used by assistant agents/tools |
 
 </details>

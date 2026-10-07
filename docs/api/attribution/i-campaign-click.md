@@ -39,8 +39,9 @@ Tracking link for a campaign. Records a click for the campaign and redirects the
 | `campaign_id` | String | Yes | Campaign ID, as the last path segment of the URL. |
 | `segments` | JSON String (Object) | No | Extra values to record with the click. Keys starting with `aid_` are treated as advertising identifiers; other keys become click segments. Invalid JSON is ignored. |
 | `ip_address` | String | No | IP address to use for country and city lookup instead of the request's own IP. |
-| `ignore` | Any | No | When present, the click is not recorded; the visitor is redirected to the campaign link directly. |
-| `test` | Any | No | When present, the response is JSON with the resulting link instead of a redirect. |
+| `ignore` | Any | No | When present, the click is not recorded; the visitor is redirected to the campaign's default link directly. |
+| `test` | Any | No | When present, the response is JSON with the resulting link instead of a redirect. The click is still recorded, with a new campaign-user ID instead of the one from the cookie. |
+| `timestamp` | Number | No | Unix timestamp of the click, used as the click time and for the metric date. Defaults to the current time. |
 
 The platform, browser, language, referer and location of the click are taken from the request's `User-Agent`, `Accept-Language` and `Referer` headers and IP address.
 
@@ -52,7 +53,7 @@ The platform, browser, language, referer and location of the click are taken fro
 /i/campaign/click/campaign-summer-2026
 ```
 
-### Example 2: Preview the destination link
+### Example 2: Get the destination link as JSON
 
 ```plaintext
 /i/campaign/click/campaign-summer-2026?test=1
@@ -105,10 +106,12 @@ App not Found
 - Looks up the campaign by ID. Campaigns without an app are treated as not found.
 - Picks the destination from the campaign's per-platform links, falling back to its default link.
 - For App Store links, adds `cid` (campaign name) when missing. For Google Play or `market:` links, adds or extends `referrer` with `countly_cid` and `countly_cuid`.
-- For other links, adds `cly_id` and `cly_uid` when the Attribution `pass_campaign` setting is on, and adds the `segments` values as query parameters when `pass_query` is on.
-- Stores a click fingerprint (app, IP, platform) and upserts the campaign user, then records an `aclk` (click) metric for the campaign.
+- For other links, adds `cly_id` and `cly_uid` when the Attribution `pass_campaign` setting is on.
+- When the Attribution `pass_query` setting is on, adds the `segments` values as query parameters to the link, whatever its type.
+- Stores a click fingerprint (app, IP, platform) and upserts the campaign user, then records an `aclk` (click) metric for the campaign. The first click of a campaign user also counts as a unique click (`clk`).
+- With `test`, the click is recorded in the same way; only the response differs.
 - Adds one click data point to server stats.
-<!-- REVIEW: for the `ignore` branch the platform is not yet detected when the link is chosen, so the per-platform link lookup uses an empty platform key and the default link is used. -->
+- With `ignore`, the campaign's default link is always used, unmodified.
 
 ## Related Endpoints
 

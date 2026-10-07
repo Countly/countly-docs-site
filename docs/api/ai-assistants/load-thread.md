@@ -5,7 +5,7 @@ keywords:
   - "load-thread"
   - "ai-assistants"
 last_update:
-  date: "2026-02-16"
+  date: "2026-10-07"
 ---
 
 # AI Assistants - Load Thread
@@ -22,7 +22,7 @@ This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To g
 
 ## Overview
 
-Loads a thread by `threadId` (when provided). Otherwise, or when the given thread no longer exists, it resumes the member's most recent conversation for the app, or returns a new (or reusable empty) thread.
+Loads a thread by `threadId`, including its messages. When `threadId` is not provided, or no thread with that ID exists, a new thread is created for the authenticated member and `app_id` and returned instead.
 
 ## Authentication
 
@@ -31,8 +31,7 @@ Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as 
 ## Permissions
 
 - Requires an authenticated Countly user.
-- The member must be able to read the app in `app_id` (otherwise HTTP 403).
-- Access to a specific thread is owner-restricted.
+- An existing thread can only be loaded by the member who owns it.
 
 ## Request Parameters
 
@@ -40,13 +39,12 @@ Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as 
 |---|---|---|---|
 | `api_key` | String | Yes (or `auth_token`) | API key authentication |
 | `auth_token` | String | Yes (or `api_key`) | Auth token authentication |
-| `app_id` | String | Yes | App ID used for find/create flow |
-| `threadId` | String | No | Existing thread ID to load directly |
-| `demo` | String | No | `true` to work with demo threads (used by the demo chat). Demo and real threads are kept apart; demo conversations are deleted after 14 days without activity. |
+| `app_id` | String | Yes | App ID stored on the thread when a new one is created |
+| `threadId` | String | No | Existing thread ID to load |
 
 ## Examples
 
-### Example 1: Find or create thread for app/member
+### Example 1: Get a new thread
 
 ```bash
 curl "https://your-server.com/o/ai-assistants/load-thread?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID"
@@ -62,22 +60,45 @@ curl "https://your-server.com/o/ai-assistants/load-thread?api_key=YOUR_API_KEY&a
 
 ### Success Response
 
+Existing thread loaded by `threadId`:
+
 ```json
 {
   "thread": {
-    "_id": "65a7c1e6f1c2a40001abc123",
+    "_id": "3f6c2a9e-8d41-4b7a-9c35-1e2f4a6b8d90",
     "memberId": "64b0a2a0f1c2a40001def456",
     "appId": "64afe321d5f9b2f77cb2c8ed",
-    "demo": false,
-    "messages": []
-  },
-  "capabilities": {
-    "demo": true
+    "messages": [
+      {
+        "id": "8b1d0c3e-2f4a-4c6d-9e1f-0a2b3c4d5e6f",
+        "role": "user",
+        "parts": [{ "type": "text", "text": "Show top events for last 7 days" }]
+      }
+    ]
+  }
+}
+```
+
+New thread (no `threadId`, or no thread with that ID exists):
+
+```json
+{
+  "thread": {
+    "id": "3f6c2a9e-8d41-4b7a-9c35-1e2f4a6b8d90",
+    "title": "",
+    "resourceId": "64b0a2a0f1c2a40001def456",
+    "createdAt": "2026-10-07T10:30:00.000Z",
+    "updatedAt": "2026-10-07T10:30:00.000Z",
+    "metadata": {
+      "appId": "64afe321d5f9b2f77cb2c8ed"
+    }
   }
 }
 ```
 
 ### Response Fields
+
+Existing thread:
 
 | Field | Type | Description |
 |---|---|---|
@@ -85,11 +106,19 @@ curl "https://your-server.com/o/ai-assistants/load-thread?api_key=YOUR_API_KEY&a
 | `thread._id` | String | Thread ID |
 | `thread.memberId` | String | Thread owner member ID |
 | `thread.appId` | String | App ID tied to the thread |
-| `thread.demo` | Boolean | Whether this is a demo thread |
-| `thread.messages` | Array | All messages in the thread, in AI SDK UI message format |
-| `capabilities` | Object | Server capabilities. `capabilities.demo` is `true` when the server supports demo mode. |
+| `thread.messages` | Array | All messages in the thread, in AI SDK UI message format (`id`, `role`, `parts`, ...) |
 
-<!-- REVIEW: when a brand-new thread is created, `thread` is the raw Mastra thread object (fields such as `id`, `resourceId`, `metadata`, `createdAt`) rather than the `_id`/`memberId`/`appId`/`demo`/`messages` shape returned for existing threads. Confirm whether to document both shapes. -->
+New thread:
+
+| Field | Type | Description |
+|---|---|---|
+| `thread` | Object | The new thread |
+| `thread.id` | String | Thread ID. Pass it as `threadId` to the other endpoints. |
+| `thread.title` | String | Thread title (empty) |
+| `thread.resourceId` | String | Thread owner member ID |
+| `thread.createdAt` | String | Creation time (ISO 8601) |
+| `thread.updatedAt` | String | Last update time (ISO 8601) |
+| `thread.metadata.appId` | String | App ID tied to the thread |
 
 ### Error Responses
 
@@ -114,7 +143,7 @@ curl "https://your-server.com/o/ai-assistants/load-thread?api_key=YOUR_API_KEY&a
 }
 ```
 
-- **HTTP 403** - Member cannot read the app, or thread belongs to another member:
+- **HTTP 403** - Thread belongs to another member:
 ```json
 {
   "result": "Not authorized"
@@ -131,10 +160,9 @@ curl "https://your-server.com/o/ai-assistants/load-thread?api_key=YOUR_API_KEY&a
 ## Behavior
 
 1. Validates user authentication.
-2. Validates parameters (`app_id` required) and checks that the member can read the app.
-3. If `threadId` is provided and the thread exists (and its demo flag matches `demo`), checks ownership and returns it.
-4. If `threadId` is missing, unknown or of the other kind (demo/real), returns the member's most recent thread with messages for the app; if none exists, reuses an empty thread or creates a new one.
-5. Adds `capabilities` to the response.
+2. Validates parameters (`app_id` required).
+3. If `threadId` is provided and the thread exists, checks that the authenticated member owns it and returns it with its messages.
+4. If `threadId` is missing or no thread with that ID exists, creates a new thread for the member and `app_id` and returns it.
 
 ## Related Endpoints
 
@@ -148,6 +176,6 @@ curl "https://your-server.com/o/ai-assistants/load-thread?api_key=YOUR_API_KEY&a
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
-| Mastra memory store (ClickHouse, `ClickhouseStore`) | Thread storage | Threads and their messages are kept in Mastra memory, stored in ClickHouse. |
+| ClickHouse thread and message store | Thread storage | Reads the thread and its messages, or inserts a new thread. |
 
 </details>

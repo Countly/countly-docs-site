@@ -36,7 +36,6 @@ If no matching user exists, the payload is stored for deferred attribution.
 
 - No admin/API-key permission is required.
 - Request is accepted only when the app is valid and not paused.
-- App lock rejection applies to populator requests.
 
 ## Request Parameters
 
@@ -159,23 +158,14 @@ Deferred attribution storage example:
 }
 ```
 
-- **HTTP 403** - App locked (populator flow):
-
-```json
-{
-  "result": "App is locked"
-}
-```
-
 ## Behavior
 
 1. Validates `app_key` and resolves the app.
 2. Rejects paused apps.
-3. Rejects locked apps only for populator traffic.
-4. Validates that `appsflyer_id` and an event name are present.
-5. Tries to find a user by `custom.appsflyer_id`.
-6. If a matching user with a device ID is found, attributes immediately and returns `status: attributed`.
-7. Otherwise (no user, or a user without a device ID), stores the payload in `countly.appsflyer` and returns insert details.
+3. Validates that `appsflyer_id` and an event name are present.
+4. Tries to find a user by `custom.appsflyer_id`.
+5. If a matching user with a device ID is found, attributes immediately and returns `status: attributed`.
+6. Otherwise (no user, or a user without a device ID), stores the payload in `countly.appsflyer` and returns insert details.
 
 When attribution succeeds, the event is recorded as `appsflyer_<event name>` and the fields are written to the user's custom properties (with `first_<field>` copies where missing).
 
@@ -184,7 +174,6 @@ When attribution succeeds, the event is recorded as `appsflyer_<event name>` and
 - `app_key` is mandatory.
 - `appsflyer_id` and one of `event_name`, `event_type` or `event` are mandatory.
 - Paused apps reject ingestion.
-- Locked app rejection is specific to populator requests.
 
 ## Related Endpoints
 
@@ -197,7 +186,7 @@ When attribution succeeds, the event is recorded as `appsflyer_<event name>` and
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
-| `countly.apps` | App configuration and metadata | Resolves the app by `app_key` and checks paused/locked state. |
+| `countly.apps` | App configuration and metadata | Resolves the app by `app_key` and checks whether it is paused. |
 | `countly.app_users{appId}` | Per-app user profiles | Looks up users by `custom.appsflyer_id`. |
 | `countly.appsflyer` | Deferred attribution payloads | Stores unmatched payloads. |
 

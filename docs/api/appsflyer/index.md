@@ -64,7 +64,7 @@ When user properties arrive with `custom.appsflyer_id`, stored AppsFlyer records
 
 | Collection | Purpose |
 |---|---|
-| `countly.apps` | Resolves app by `app_key` and checks app state (exists/paused/locked) |
+| `countly.apps` | Resolves app by `app_key` and checks app state (exists/paused) |
 | `countly.appsflyer` | Stores unmatched payloads for deferred attribution |
 | `countly.app_users{appId}` | User matching via `custom.appsflyer_id` |
 

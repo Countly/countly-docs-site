@@ -5,7 +5,7 @@ keywords:
   - "feedback"
   - "ai-assistants"
 last_update:
-  date: "2026-10-01"
+  date: "2026-10-07"
 ---
 
 # AI Assistants - Feedback
@@ -22,7 +22,9 @@ This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To g
 
 ## Overview
 
-Records a thumbs up or thumbs down on an assistant answer, with an optional category and comment.
+Sends a thumbs up or thumbs down on an assistant answer, with an optional category and comment.
+
+Feedback is not stored on your Countly server. It is forwarded to Countly to help improve the product. The forwarded data includes `threadId`, `promptId`, `rating`, the optional `category` and `comment` text, your server's domain and its Countly version. It does not include the member's identity. If the server has no public domain configured (the API `domain` setting is empty or `localhost`), the feedback is not forwarded and the response contains `tracked: false`.
 
 ## Authentication
 
@@ -40,7 +42,7 @@ Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as 
 | `api_key` | String | Yes (or `auth_token`) | API key authentication |
 | `auth_token` | String | Yes (or `api_key`) | Auth token authentication |
 | `threadId` | String | Yes | ID of the thread the answer belongs to |
-| `promptId` | String | Yes | ID of the assistant message being rated, as returned by [Send Message](send-message.md) |
+| `promptId` | String | Yes | Assistant message `_id` from the `start` or `done` event of the [Send Message](send-message.md) stream |
 | `rating` | String | Yes | `thumbs_up` or `thumbs_down` |
 | `category` | String | No | Feedback category |
 | `comment` | String | No | Free-text comment |
@@ -74,7 +76,7 @@ curl "https://your-server.com/i/ai-assistants/feedback" \
 | Field | Type | Description |
 |---|---|---|
 | `ok` | Number | Success flag (`1`) |
-| `tracked` | Boolean | `true` when the feedback was recorded; `false` when feedback telemetry is disabled and the request was accepted without recording anything |
+| `tracked` | Boolean | `true` when the feedback was forwarded to Countly; `false` when the server has no public domain configured and the feedback was not forwarded |
 
 ### Error Responses
 
@@ -106,7 +108,7 @@ curl "https://your-server.com/i/ai-assistants/feedback" \
 }
 ```
 
-- **HTTP 500** - Recording failed:
+- **HTTP 500** - Feedback could not be sent:
 ```json
 {
   "result": "Couldn't record feedback"
@@ -117,10 +119,9 @@ curl "https://your-server.com/i/ai-assistants/feedback" \
 
 1. Validates user authentication.
 2. Validates `threadId`, `promptId` and `rating`.
-3. Loads the thread and compares its owner with the authenticated member.
-4. Records the feedback as a `[CLY]_llm_interaction_feedback` event tied to the assistant turn through `promptId`, with `thread_id`, `rating` and the optional `category` and `comment`.
-5. If feedback telemetry is not available (for example on localhost or without a configured domain), returns `tracked: false` and records nothing.
-<!-- REVIEW: the code does not check that `promptId` belongs to the given thread. -->
+3. Loads the thread and checks that the authenticated member owns it.
+4. If the server has a public domain configured, forwards the rating, `threadId`, `promptId` and the optional `category` and `comment` to Countly and returns `tracked: true`. Nothing is stored on your server.
+5. Otherwise accepts the request without forwarding anything and returns `tracked: false`.
 
 ## Related Endpoints
 
@@ -134,6 +135,6 @@ curl "https://your-server.com/i/ai-assistants/feedback" \
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
-| Mastra memory store (ClickHouse, `ClickhouseStore`) | Thread storage | Reads the thread to check ownership. |
+| ClickHouse thread store | Thread storage | Reads the thread to check ownership. |
 
 </details>

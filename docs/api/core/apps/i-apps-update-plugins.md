@@ -44,8 +44,7 @@ Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as 
 |---|---|---|---|
 | `[pluginName]` | Object | Yes (at least one) | New configuration for that plugin. Use one key per plugin to update. |
 
-<!-- REVIEW: if `args` is not valid JSON, the parse error is swallowed and the raw string is kept; `Object.keys` then yields character indices, so keys such as `plugins.0`, `plugins.1` are stored (requestProcessor.js `/i/apps` parse). -->
-<!-- REVIEW: `args` is not validated by the handler; a request without `args` appears to fail on `Object.keys` instead of returning a validation error. The required status above is inferred. -->
+Always send `args`, and make sure it is a valid JSON object (not an array or a plain string), URL-encoded when passed in the query string. Include only the plugins or settings sections you want to change.
 
 ## Examples
 
@@ -78,7 +77,7 @@ Example 1 (key is stored as sent and echoed back):
 }
 ```
 
-Example 2 (the push plugin stores the config itself and its hook returns nothing, so `plugins` is empty and `result` is an empty string):
+Example 2 (the push plugin stores the config itself and returns no value, so `plugins` is empty and `result` is an empty string):
 
 ```json
 {
@@ -102,7 +101,7 @@ If no keys were supplied in `args`:
 |---|---|---|
 | `_id` | String | App ID. |
 | `plugins` | Object | Applied configuration for each updated plugin. |
-| `result` | String | Present only when some plugin hooks returned a non-object value; contains those values joined by newlines. It is an empty string when a hook returned nothing (for example push). |
+| `result` | String | Present only when a plugin that handles its own config returned a non-object value; contains those values joined by newlines. It is an empty string when the plugin returned no value (for example push). |
 
 ### Error Responses
 
@@ -134,10 +133,12 @@ If no keys were supplied in `args`:
 }
 ```
 
+Standard authentication/authorization errors from app admin validation can also be returned.
+
 ## Behavior
 
 - Loads the app by `app_id`; returns `404` if it does not exist.
-- For every key in `args` that is an installed plugin, the update is first offered to that plugin through its `/i/apps/update/plugins/<name>` hook, which can validate or transform the config.
+- For every key in `args` that is an installed plugin, the update is first offered to that plugin, which can validate or transform the config.
 - If a plugin handles the update, it stores the config itself and the generic `app_config_updated` log is not written (the plugin may write its own, for example push writes `plugin_push_config_updated`). Push only acts on its known keys (such as `rate`); unknown keys are ignored.
 - If no plugin handles the update, or the key is not an installed plugin, the value is stored in the app document under `plugins.<name>` and an `app_config_updated` system log entry is written with the config before and after.
 

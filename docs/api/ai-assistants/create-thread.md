@@ -5,7 +5,7 @@ keywords:
   - "create-thread"
   - "ai-assistants"
 last_update:
-  date: "2026-02-16"
+  date: "2026-10-07"
 ---
 
 # AI Assistants - Create Thread
@@ -22,7 +22,7 @@ This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To g
 
 ## Overview
 
-Starts a fresh thread for the authenticated member and app. Existing threads are kept. If the member already has an empty thread for the app, that thread is reused instead of creating another one.
+Creates a new, empty thread for the authenticated member and app. Existing threads are kept.
 
 ## Authentication
 
@@ -31,7 +31,6 @@ Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as 
 ## Permissions
 
 - Requires an authenticated Countly user.
-- The member must be able to read the app in `app_id` (otherwise HTTP 403).
 
 ## Request Parameters
 
@@ -39,9 +38,7 @@ Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as 
 |---|---|---|---|
 | `api_key` | String | Yes (or `auth_token`) | API key authentication |
 | `auth_token` | String | Yes (or `api_key`) | Auth token authentication |
-| `app_id` | String | Yes | App ID for thread scope |
-| `excludeThreadId` | String | No | Thread the client is leaving; it is never reused as the "fresh" thread |
-| `demo` | String | No | `true` to create a demo thread (used by the demo chat). Demo conversations are deleted after 14 days without activity. |
+| `app_id` | String | Yes | App ID stored on the new thread |
 
 ## Examples
 
@@ -58,14 +55,14 @@ curl "https://your-server.com/i/ai-assistants/create-thread?api_key=YOUR_API_KEY
 ```json
 {
   "thread": {
-    "_id": "65a7c1e6f1c2a40001abc123",
-    "memberId": "64b0a2a0f1c2a40001def456",
-    "appId": "64afe321d5f9b2f77cb2c8ed",
-    "demo": false,
-    "messages": []
-  },
-  "capabilities": {
-    "demo": true
+    "id": "3f6c2a9e-8d41-4b7a-9c35-1e2f4a6b8d90",
+    "title": "",
+    "resourceId": "64b0a2a0f1c2a40001def456",
+    "createdAt": "2026-10-07T10:30:00.000Z",
+    "updatedAt": "2026-10-07T10:30:00.000Z",
+    "metadata": {
+      "appId": "64afe321d5f9b2f77cb2c8ed"
+    }
   }
 }
 ```
@@ -74,15 +71,13 @@ curl "https://your-server.com/i/ai-assistants/create-thread?api_key=YOUR_API_KEY
 
 | Field | Type | Description |
 |---|---|---|
-| `thread` | Object | The new or reused empty thread |
-| `thread._id` | String | Thread ID |
-| `thread.memberId` | String | Thread owner member ID |
-| `thread.appId` | String | App ID tied to the thread |
-| `thread.demo` | Boolean | Whether this is a demo thread |
-| `thread.messages` | Array | Thread messages (empty) |
-| `capabilities` | Object | Server capabilities. `capabilities.demo` is `true` when the server supports demo mode. |
-
-<!-- REVIEW: when a brand-new thread is created, `thread` is the raw Mastra thread object (fields such as `id`, `resourceId`, `metadata`, `createdAt`) rather than the `_id`/`memberId`/`appId`/`demo`/`messages` shape returned for existing threads. Confirm whether to document both shapes. -->
+| `thread` | Object | The new thread |
+| `thread.id` | String | Thread ID. Pass it as `threadId` to the other endpoints. |
+| `thread.title` | String | Thread title (empty) |
+| `thread.resourceId` | String | Thread owner member ID |
+| `thread.createdAt` | String | Creation time (ISO 8601) |
+| `thread.updatedAt` | String | Last update time (ISO 8601) |
+| `thread.metadata.appId` | String | App ID tied to the thread |
 
 ### Error Responses
 
@@ -107,13 +102,6 @@ curl "https://your-server.com/i/ai-assistants/create-thread?api_key=YOUR_API_KEY
 }
 ```
 
-- **HTTP 403** - Member cannot read the app:
-```json
-{
-  "result": "Not authorized"
-}
-```
-
 - **HTTP 500** - Creation failed:
 ```json
 {
@@ -124,9 +112,8 @@ curl "https://your-server.com/i/ai-assistants/create-thread?api_key=YOUR_API_KEY
 ## Behavior
 
 1. Validates user authentication.
-2. Validates required input (`app_id`) and checks that the member can read the app.
-3. Looks for an existing empty thread of the same kind (demo/real) for the member and app, skipping `excludeThreadId` and threads touched in the last minute.
-4. Returns that thread, or creates and returns a new one, with `capabilities`.
+2. Validates required input (`app_id`).
+3. Creates a new thread owned by the authenticated member, with `app_id` stored on the thread, and returns it.
 
 ## Related Endpoints
 
@@ -140,6 +127,6 @@ curl "https://your-server.com/i/ai-assistants/create-thread?api_key=YOUR_API_KEY
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
-| Mastra memory store (ClickHouse, `ClickhouseStore`) | Thread storage | Threads and their messages are kept in Mastra memory, stored in ClickHouse. |
+| ClickHouse thread store | Thread storage | Inserts the new thread. |
 
 </details>

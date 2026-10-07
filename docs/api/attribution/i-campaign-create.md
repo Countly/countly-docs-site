@@ -90,7 +90,7 @@ Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as 
 
 ## Behavior
 
-- Returns `Not enough args` when `app_id` is missing (including for global admins) or `args` fails validation.
+- Returns `Not enough args` when `args` fails validation, for example when `name` is missing or empty.
 - Parses `args` from JSON.
 - Generates `_id` automatically when missing.
 - Normalizes defaults for `cost`, `costtype`, `links`, `type`, `typedata`, and `postbacks`.

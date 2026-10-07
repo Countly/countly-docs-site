@@ -37,14 +37,15 @@ Receives an install postback for a campaign, matches it to an app user, records 
 | Parameter | Type | Required | Description |
 |---|---|---|---|
 | `cly_id` | String | Yes | Campaign ID. |
-| `aid_<name>` | String | No | Advertising identifier (for example `aid_idfa`). Used to find the app user whose `aid.<name>` matches. |
+| `aid_<name>` | String | Conditional | Advertising identifier (for example `aid_idfa`). Used to find the app user whose `aid.<name>` matches. Required if `idfa` is not provided. |
 | `click_url` | String | No | Link the user clicked. Stored as the referrer. For Countly tracking links (path starting with `/at/`), its query parameters are also read. |
 | `click_timestamp` | String | No | Time of the click; used as the event timestamp and stored as `last_click`. |
-| `advertising_id` | String | No | Legacy Android attribution. Used when no `aid_` parameter is given. |
-| `idfa` | String | No | Legacy iOS attribution. Used when no `aid_` parameter and no `advertising_id` are given. Must be the MD5 hash of the device ID; it is compared as-is to the user's `md5_did`. |
+| `idfa` | String | Conditional | Legacy iOS attribution. Used when no `aid_` parameter is given. Must be the lowercase hexadecimal MD5 hash of the user's Countly device ID. Required if no `aid_` parameter is provided. |
 | `device_id` | String | No | Device ID. Not stored as a segment. |
 | `adid` | String | No | Ignored. Not stored as a segment. |
 | Other parameters | String | No | Any other non-empty parameter is stored on the user's attribution record and recorded as a segment. |
+
+At least one identifier is required: an `aid_<name>` parameter or `idfa`.
 
 ## Examples
 
@@ -100,7 +101,7 @@ This succeeds only if an app user already has a matching `aid.idfa` value. Ident
 1. Finds the campaign by `cly_id`, then its app.
 2. If the app has a redirect URL configured, the request is forwarded there (as `POST` with the body when the request was a `POST`, otherwise `GET`) and nothing else happens in Countly.
 3. Collects `aid_` identifiers and other parameters from the request, and from `click_url` when it is a Countly tracking link.
-4. Finds the app user by advertising identifier (`aid.<name>`), by `advertising_id` (Android), or by `idfa` (iOS). A matching stored click is read for extra segments and removed.
+4. Finds the app user by advertising identifier (`aid.<name>`), or, when no `aid_` parameter is given, by `idfa` (iOS). For `aid_` matches, a matching stored click is read for extra segments and removed.
 5. Records `aclk` and `ins` (click and install) metrics for the campaign, stores the attribution data on the user under `cmp`, sends the data to each configured campaign postback, and returns `Success`.
 
 ## Related Endpoints

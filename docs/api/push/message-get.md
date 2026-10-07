@@ -34,7 +34,7 @@ Requires `push` `Read` permission.
 |---|---|---|---|
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
-| `app_id` | String | Yes | App ID used by permission validation. |
+| `app_id` | String | Yes | App ID used by permission validation. The message lookup is limited to this app. |
 | `_id` | String (ObjectID) | Yes | Message ID query parameter. |
 
 ## Examples
@@ -70,12 +70,13 @@ Requires `push` `Read` permission.
 
 | Field | Type | Description |
 |---|---|---|
-| `(root)` | Object | Message in the legacy v1 shape: the stored campaign converted back by `convertFromNewMessage` and `personalizationToLegacy`, with `contents[]` rebuilt from the referenced `content_messages` record. |
+| `(root)` | Object | Stored push message document, with `status` recomputed and a `schedules` array attached. |
 | `_id` | String | Message ID. |
 | `status` | String | Current push message status. |
 | `platforms` | Array | Target platforms. |
 | `contents` | Array | Localized/title/body payload content entries. |
 | `triggers` | Array | Message trigger definitions. |
+| `schedules` | Array | Up to 20 most recent schedule records for this message, newest `scheduledTo` first. |
 
 ### Error Responses
 
@@ -85,6 +86,16 @@ Requires `push` `Read` permission.
 {
   "errors": [
     "Missing _id argument"
+  ]
+}
+```
+
+- `400` (`_id` is not a valid ObjectID)
+
+```json
+{
+  "errors": [
+    "Incorrect ObjectID for _id"
   ]
 }
 ```
@@ -104,9 +115,9 @@ Standard authentication/authorization errors from read validation can also be re
 ## Behavior
 
 - Validates the message ID as ObjectID.
-- Reads the message by ID and joins recent `message_schedules` records.
-- Recomputes the returned `status` from the message plus latest schedule.
-- Converts the campaign to the legacy v1 message shape and returns it.
+- Reads the message by ID (limited to `app_id`) and attaches its 20 most recent schedule records as `schedules`.
+- Recomputes the returned `status`: for an active message with a date trigger (`plain`, `rec` or `multi`) that has at least one schedule, the latest schedule's status is returned; otherwise the message's own status is returned.
+- Returns the message object.
 
 ## Related Endpoints
 
@@ -120,8 +131,7 @@ Standard authentication/authorization errors from read validation can also be re
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
-| `countly.campaign_definitions` | Push message storage | Reads one push campaign by ID (scoped to `app_id`). |
-| `countly.message_schedules` | Schedules | Joins the latest 20 schedules. |
-| `countly.content_messages` | Message content | Joins the referenced content to rebuild `contents[]`. |
+| `countly.messages` | Push message storage | Reads one message document by ID (scoped to `app_id`). |
+| `countly.message_schedules` | Schedules | Joins the latest 20 schedules by `messageId`. |
 
 </details>
