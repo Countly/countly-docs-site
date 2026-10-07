@@ -9,7 +9,6 @@ last_update:
 
 # AppsFlyer - Receive Callback
 
-<!-- REVIEW: the code does not say whether AppsFlyer is an Enterprise-only feature. The note below is copied from the Adjust pages; confirm it applies. -->
 :::note Enterprise
 This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
 :::
