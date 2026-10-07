@@ -1,0 +1,39 @@
+---
+sidebar_position: 1
+sidebar_label: "Overview"
+last_update:
+  date: "2026-04-01"
+---
+
+# Attribution - API Documentation
+
+:::note Enterprise
+This feature is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
+:::
+
+## Overview
+
+Attribution APIs manage campaigns and return campaign performance data such as clicks, installs, revenue, sessions, and total cost.
+
+## Endpoint Index
+
+- [Campaign Read](o-campaign.md) - `/o/campaign`
+- [Campaign Create](i-campaign-create.md) - `/i/campaign/create`
+- [Campaign Update](i-campaign-update.md) - `/i/campaign/update`
+- [Campaign Delete](i-campaign-delete.md) - `/i/campaign/delete`
+- [Campaign Hide](i-campaign-hide.md) - `/i/campaign/hide`
+- [Campaign Show](i-campaign-show.md) - `/i/campaign/show`
+
+<details>
+<summary>Implementation details</summary>
+
+**Database Collections**
+
+| Collection | Purpose |
+|---|---|
+| `countly.campaigns` | Campaign definitions and summary counters. |
+| `countly.campaigndata` | Time-series campaign metrics used by campaign reporting. |
+| `countly.attribution` | Click-tracking records keyed by campaign/user fingerprint. |
+| `countly.campaign_users{appId}` | Per-app campaign user tracking documents. |
+
+</details>

@@ -1,20 +1,22 @@
-// Prints the countly-platform pull request that brought a commit into main, so drift PRs can
-// cite where an endpoint was added or removed.
+// Prints the pull request that brought a commit into main (or into another branch or release
+// tag), so drift PRs can cite where an endpoint was added or removed.
 //
-//   node scripts/find-merge-pr.mjs <commit> [path-to-countly-platform]
+//   node scripts/find-merge-pr.mjs <commit> [path-to-repo] [branch-or-tag]
 //
-// Walks main's first-parent history from the commit's date and takes the first commit that
+// Defaults: ./countly-platform and main. For an older version, pass the countly-server or
+// countly-enterprise-plugins checkout and its release tag, e.g. 25.03.54.
+//
+// Walks the branch's first-parent history from the commit's date and takes the first commit that
 // contains it: a "Merge pull request #N" commit, or a squash merge titled "... (#N)".
 import {execFileSync} from "node:child_process";
 import path from "node:path";
 
-const [sha, platformArg = "countly-platform"] = process.argv.slice(2);
+const [sha, platformArg = "countly-platform", refArg = "main"] = process.argv.slice(2);
 if (!sha) {
-  console.error("Usage: node scripts/find-merge-pr.mjs <commit> [path-to-countly-platform]");
+  console.error("Usage: node scripts/find-merge-pr.mjs <commit> [path-to-repo] [branch-or-tag]");
   process.exit(2);
 }
 const PLATFORM = path.resolve(platformArg);
-const REPO_URL = "https://github.com/Countly/countly-platform";
 const git = (...args) => execFileSync("git", ["-C", PLATFORM, ...args], {encoding: "utf8"}).trim();
 const succeeds = (...args) => {
   try {
@@ -26,7 +28,10 @@ const succeeds = (...args) => {
   }
 };
 
-const main = succeeds("rev-parse", "--verify", "origin/main^{commit}") ? "origin/main" : "main";
+// https://github.com/Countly/<repo>, from the checkout's origin (https or ssh form).
+const origin = succeeds("remote", "get-url", "origin") ? git("remote", "get-url", "origin") : "";
+const REPO_URL = `https://github.com/${origin.match(/github\.com[:/](.+?)(\.git)?$/)?.[1] || "Countly/countly-platform"}`;
+const main = succeeds("rev-parse", "--verify", `origin/${refArg}^{commit}`) ? `origin/${refArg}` : refArg;
 if (!succeeds("rev-parse", "--verify", `${sha}^{commit}`)) {
   console.log(`Pull request: none found. ${sha} is not a commit in ${PLATFORM}.`);
   process.exit(1);
@@ -43,7 +48,7 @@ for (const candidate of git("rev-list", "--first-parent", "--reverse", `--since=
   const number = subject.match(/^Merge pull request #(\d+)/)?.[1] || subject.match(/\(#(\d+)\)\s*$/)?.[1];
   console.log(number
     ? `Pull request: ${REPO_URL}/pull/${number} (merged ${date.slice(0, 10)})`
-    : `Pull request: none found. It reached main directly in ${REPO_URL}/commit/${candidate.slice(0, 10)} (${date.slice(0, 10)}).`);
+    : `Pull request: none found. It reached ${refArg} directly in ${REPO_URL}/commit/${candidate.slice(0, 10)} (${date.slice(0, 10)}).`);
   process.exit(0);
 }
-console.log("Pull request: none found. The commit is not on main.");
+console.log(`Pull request: none found. The commit is not on ${refArg}.`);

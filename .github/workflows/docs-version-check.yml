@@ -1,0 +1,31 @@
+name: Docs version check
+
+# Fails a pull request if an older docs version (versioned_docs/) mentions a feature added
+# after that version was released, such as ClickHouse on a 25.03 page.
+# The features are listed in version-features.txt. Uses no secrets.
+
+on:
+  pull_request:
+    paths:
+      - "versioned_docs/**"
+      - "version-features.txt"
+      - "versions.json"
+      - "scripts/check-version-features.mjs"
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 20
+
+      - name: Check older versions for newer features
+        run: node scripts/check-version-features.mjs

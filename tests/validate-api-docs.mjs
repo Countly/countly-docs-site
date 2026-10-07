@@ -5,7 +5,9 @@ import {spawnSync} from "node:child_process";
 import {parseDoc, walk} from "../scripts/lib/parse-docs.mjs";
 
 const ROOT = process.cwd();
-const DOCS_ROOT = path.join(ROOT, "docs", "api");
+// COUNTLY_DOCS_ROOT picks the version to test, e.g. versioned_docs/version-25.03/api. Default: docs/api (latest).
+const DOCS_ROOT = path.resolve(ROOT, process.env.COUNTLY_DOCS_ROOT || "docs/api");
+const DOCS_PREFIX = path.relative(ROOT, DOCS_ROOT).replaceAll(path.sep, "/");
 const TESTS_ROOT = path.join(ROOT, "tests");
 const REPORTS_ROOT = path.join(TESTS_ROOT, "reports");
 const ENV_PATH = path.join(TESTS_ROOT, ".env");
@@ -498,7 +500,7 @@ function matchesDocFilters(doc) {
     const matchedDocFilter = CONFIG.docFilter.some((filter) =>
       doc.relativePath.includes(filter)
       || doc.relativePath.startsWith(filter)
-      || doc.relativePath.startsWith(`docs/api/${filter}/`)
+      || doc.relativePath.startsWith(`${DOCS_PREFIX}/${filter}/`)
     );
     if (!matchedDocFilter) {
       return false;
@@ -554,7 +556,7 @@ function isSafeToCall(doc) {
 }
 
 function getConfigurationSkipReason(doc) {
-  if (doc.relativePath.startsWith("docs/api/crashes-jira/")) {
+  if (doc.relativePath.startsWith(`${DOCS_PREFIX}/crashes-jira/`)) {
     return "Plugin enabled but JIRA integration is not configured on target instance";
   }
 
