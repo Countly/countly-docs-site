@@ -13,7 +13,7 @@ This feature is part of [Countly Enterprise](https://count.ly/enterprise). To ge
 
 ## Overview
 
-Performance Monitoring collects network and device traces from SDKs and lets you manage the issue settings of each trace. The endpoints below change the alert threshold and the status of a trace.
+Performance Monitoring collects network and device traces from SDKs and lets you manage the issue settings of each trace. The endpoints below change the issue threshold (in seconds) and the issue status of a trace.
 
 ## Quick Links
 

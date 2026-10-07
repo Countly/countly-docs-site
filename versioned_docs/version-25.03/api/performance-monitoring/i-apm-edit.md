@@ -22,7 +22,7 @@ This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To g
 
 ## Overview
 
-Sets the `threshold` of a network or device trace.
+Sets the issue threshold, in seconds, of a network or device trace.
 
 ## Authentication
 
@@ -37,9 +37,9 @@ Requires `performance_monitoring` `Update` permission.
 | Parameter | Type | Required | Description |
 |---|---|---|---|
 | `app_id` | String | Yes | Application ID. |
-| `id` | String | Yes | Encrypted trace ID, as returned in the `id` field of the trace lists in `/o/apm` responses. |
+| `id` | String | Yes | Trace ID, as returned in the `id` field of traces by the Performance Monitoring read endpoints (for example `/o/apm/network`, `/o/apm/device` and `/o/apm/issues`). |
 | `type` | String | Yes | Trace type: `network` or `device`. |
-| `threshold` | Number | Yes | New threshold. Must be a number greater than or equal to `0`. |
+| `threshold` | Number | Yes | New threshold in seconds. Must be a number greater than or equal to `0`; use a whole number of seconds. Trace samples slower than the threshold are reported as issues. New traces start with a threshold of `2`. |
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
 
@@ -53,7 +53,7 @@ Requires `performance_monitoring` `Update` permission.
   api_key=YOUR_API_KEY&
   type=network&
   id=TRACE_ID&
-  threshold=500
+  threshold=3
 ```
 
 ## Response
@@ -98,20 +98,10 @@ Requires `performance_monitoring` `Update` permission.
 }
 ```
 
-- `400`
-
-```json
-{
-  "result": "Issue not updated"
-}
-```
-
-<!-- REVIEW: the code does not say what unit the threshold uses for each trace type, and an unknown trace id is not rejected explicitly; confirm both with the developers -->
-
 ## Behavior
 
-- Decrypts `id` to the trace name and updates the trace property document `<app_id>_<type>_<name>_props`, setting `threshold`.
-- Writes an `apm_edited` system log entry with the document before the change and the update.
+- Updates the `threshold` stored for the trace identified by `id` and `type`.
+- Writes an `apm_edited` system log entry with the trace settings before the change and the update.
 
 ## Related Endpoints
 
@@ -124,6 +114,6 @@ Requires `performance_monitoring` `Update` permission.
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
-| `countly.apm` | Trace properties | Sets `threshold` on the trace property document. |
+| `countly.apm` | Trace properties | Sets `threshold` on the trace property document `<app_id>_<type>_<name>_props`. |
 
 </details>

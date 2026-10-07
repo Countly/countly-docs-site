@@ -27,7 +27,7 @@ Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as 
 
 ## Permissions
 
-- App admin permission for the target app (route-level app-admin validation).
+- Global admin, or admin of the target app.
 
 ## Request Parameters
 
@@ -42,7 +42,7 @@ Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as 
 
 | Field | Type | Required | Description |
 |---|---|---|---|
-| `[pluginName]` | Object | Yes (at least one) | New configuration for that plugin. Use one key per plugin to update. |
+| `[pluginName]` | Object | No | New configuration for that plugin or settings section. Use one key per plugin to update. If `args` is an empty object, nothing is changed. |
 
 Always send `args`, and make sure it is a valid JSON object (not an array or a plain string), URL-encoded when passed in the query string. Include only the plugins or settings sections you want to change.
 
@@ -108,14 +108,14 @@ If no keys were supplied in `args`:
 **Status Code**: `400 Bad Request`
 ```json
 {
-  "result": "Error: Validation error details"
+  "result": "Error: Length of app_id is lower than min length value"
 }
 ```
 
 **Status Code**: `400 Bad Request` (a plugin rejected its configuration)
 ```json
 {
-  "errors": "Error details"
+  "errors": "Wrong credentials type"
 }
 ```
 
@@ -138,9 +138,9 @@ Standard authentication/authorization errors from app admin validation can also 
 ## Behavior
 
 - Loads the app by `app_id`; returns `404` if it does not exist.
-- For every key in `args` that is an installed plugin, the update is first offered to that plugin, which can validate or transform the config.
+- For every key in `args` that is an enabled plugin, the update is first offered to that plugin, which can validate or transform the config.
 - If a plugin handles the update, it stores the config itself and the generic `app_config_updated` log is not written (the plugin may write its own, for example push writes `plugin_push_config_updated`). Push only acts on its known keys (such as `rate`); unknown keys are ignored.
-- If no plugin handles the update, or the key is not an installed plugin, the value is stored in the app document under `plugins.<name>` and an `app_config_updated` system log entry is written with the config before and after.
+- If no plugin handles the update, or the key is not an enabled plugin, the value is stored in the app document under `plugins.<name>` and an `app_config_updated` system log entry is written with the config before and after.
 
 ## Related Endpoints
 

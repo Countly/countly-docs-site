@@ -37,7 +37,7 @@ Requires `performance_monitoring` `Update` permission.
 | Parameter | Type | Required | Description |
 |---|---|---|---|
 | `app_id` | String | Yes | Application ID. |
-| `id` | String | Yes | Encrypted trace ID, as returned in the `id` field of the trace lists in `/o/apm` responses. |
+| `id` | String | Yes | Trace ID, as returned in the `id` field of traces by the Performance Monitoring read endpoints (for example `/o/apm/network`, `/o/apm/device` and `/o/apm/issues`). |
 | `type` | String | Yes | Trace type: `network` or `device`. |
 | `status` | String | Yes | `open` or `mute`. |
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
@@ -98,20 +98,10 @@ Requires `performance_monitoring` `Update` permission.
 }
 ```
 
-- `400`
-
-```json
-{
-  "result": "Issue not updated"
-}
-```
-
-<!-- REVIEW: an unknown trace id is not rejected explicitly in the code; confirm the response with the developers -->
-
 ## Behavior
 
-- Decrypts `id` to the trace name and updates the trace property document `<app_id>_<type>_<name>_props`, setting `status`.
-- Writes an `apm_edited` system log entry with the document before the change and the update.
+- Updates the `status` stored for the trace identified by `id` and `type`.
+- Writes an `apm_edited` system log entry with the trace settings before the change and the update.
 
 ## Related Endpoints
 
@@ -124,6 +114,6 @@ Requires `performance_monitoring` `Update` permission.
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
-| `countly.apm` | Trace properties | Sets `status` on the trace property document. |
+| `countly.apm` | Trace properties | Sets `status` on the trace property document `<app_id>_<type>_<name>_props`. |
 
 </details>
