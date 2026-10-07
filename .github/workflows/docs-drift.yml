@@ -112,7 +112,7 @@ jobs:
           claude_args: >-
             --model claude-sonnet-5-5
             --max-turns 200
-            --allowedTools "Read(./**),Glob,Grep,Write(docs/api/**),Edit(docs/api/**),Edit(sidebars.js),Edit(docs-drift-ignore.txt),Write(drift-report/pr-body.md),Write(drift-report/review-notes.md),Edit(drift-report/review-notes.md),Bash(node scripts/check-doc-drift.mjs:*),Bash(node scripts/find-merge-pr.mjs:*),Bash(node scripts/platform-log.mjs:*),Bash(git rm:*)"
+            --allowedTools "Read(./**),Glob,Grep,Write(docs/api/**),Edit(docs/api/**),Edit(sidebars.js),Edit(docs-drift-ignore.txt),Write(drift-report/pr-body.md),Edit(drift-report/pr-body.md),Write(drift-report/review-notes.md),Edit(drift-report/review-notes.md),Bash(node scripts/check-doc-drift.mjs:*),Bash(node scripts/find-merge-pr.mjs:*),Bash(node scripts/platform-log.mjs:*),Bash(git rm:*)"
             --disallowedTools "Read(//proc/**),Read(//sys/**),Read(/${{ runner.temp }}/**),Read(~/.claude/**),Read(~/.config/**),Read(~/.npmrc)"
           prompt: |
             You maintain the Countly API reference in docs/api/ (a Docusaurus site). The file
@@ -207,6 +207,10 @@ jobs:
             | grep -v -E '^(sidebars\.js|docs-drift-ignore\.txt)$' || true)
           if [ -n "$bad" ]; then
             echo "::error::The drafting step changed files outside the docs:"; echo "$bad"; exit 1
+          fi
+          # The PR description comes from this file, so stop here if Claude didn't write it.
+          if [ ! -s drift-report/pr-body.md ]; then
+            echo "::error::drift-report/pr-body.md is missing or empty, so the PR would have no description."; exit 1
           fi
           # Pages are public: open questions belong in drift-report/review-notes.md.
           if git status --porcelain -uall | awk '$1 != "D" {print $NF}' | grep '\.md$' | xargs -r grep -l '<!-- *REVIEW'; then
