@@ -28,14 +28,14 @@ Performance Monitoring tracks network and device traces reported by the SDKs. Th
 
 | Endpoint | Path |
 |---|---|
-| [Performance Monitoring - Edit](edit.md) | `/i/apm/edit` |
-| [Performance Monitoring - Change Status](change-status.md) | `/i/apm/change-status` |
+| [Performance Monitoring - Edit](i-apm-edit.md) | `/i/apm/edit` |
+| [Performance Monitoring - Change Status](i-apm-change-status.md) | `/i/apm/change-status` |
 
 ## Configuration & Usage
 
 ### Trace identifiers
 
-Both endpoints take the trace `id` as returned by the Performance Monitoring read endpoints (`/o/apm/*`), together with the trace `type` (`network` or `device`).
+Both endpoints take the trace `id` as returned in the `id` field of the traces listed by the Performance Monitoring read endpoints (`/o/apm/...`), together with the trace `type` (`network` or `device`).
 
 ## Limitations & Troubleshooting
 

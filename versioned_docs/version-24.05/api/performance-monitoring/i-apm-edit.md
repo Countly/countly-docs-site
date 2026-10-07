@@ -23,7 +23,7 @@ This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To g
 
 ## Overview
 
-Sets the threshold of an existing network or device trace.
+Sets the issue threshold, in seconds, of an existing network or device trace.
 
 ## Authentication
 
@@ -31,7 +31,7 @@ Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as 
 
 ## Permissions
 
-- Performance Monitoring: `Update` permission (or global admin equivalent).
+- Requires `Update` permission for the Performance Monitoring feature (`performance_monitoring`) in the target app, or app admin access to that app. Global admins always have access.
 
 ## Request Parameters
 
@@ -39,19 +39,17 @@ Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as 
 |---|---|---|---|
 | `api_key` | String | Yes (or `auth_token`) | API key authentication |
 | `auth_token` | String | Yes (or `api_key`) | Auth token authentication |
-| `app_id` | String | Yes | Application ID |
-| `id` | String | Yes | Trace ID, as returned by the Performance Monitoring read endpoints |
-| `type` | String | Yes | Trace type: `network` or `device` |
-| `threshold` | Number | Yes | New threshold value; must be a number greater than or equal to 0 |
-
-<!-- REVIEW: the code does not check that the trace exists or that app_id is valid before updating; confirm the behavior for an unknown trace with the developers -->
+| `app_id` | String | Yes | ID of the app the trace belongs to. The app must exist. |
+| `id` | String | Yes | Trace ID, as returned in the `id` field of the traces listed by the Performance Monitoring read endpoints (`/o/apm/...`) |
+| `type` | String | Yes | Trace type: `network` or `device`. Must match the type of the trace. |
+| `threshold` | Number | Yes | New threshold in seconds. Must be a number greater than or equal to `0`; use a whole number of seconds. Trace samples slower than the threshold are reported as issues. New traces start with a threshold of `2`. |
 
 ## Examples
 
 ### Example: Set a threshold
 
 ```bash
-curl "https://your-server.com/i/apm/edit?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&id=TRACE_ID&type=network&threshold=500"
+curl "https://your-server.com/i/apm/edit?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&id=TRACE_ID&type=network&threshold=3"
 ```
 
 ## Response
@@ -79,7 +77,7 @@ curl "https://your-server.com/i/apm/edit?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID
 }
 ```
 
-- **HTTP 400** - Missing or unusable trace ID:
+- **HTTP 400** - Missing or invalid trace ID:
 ```json
 {
   "result": "APM id not provided"
@@ -114,16 +112,37 @@ curl "https://your-server.com/i/apm/edit?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID
 }
 ```
 
+- **HTTP 401** - Missing `app_id` (users who are not global admins):
+```json
+{
+  "result": "No app_id provided"
+}
+```
+
+- **HTTP 401** - User lacks permission for this app:
+```json
+{
+  "result": "User does not have right"
+}
+```
+
+- **HTTP 401** - App not found:
+```json
+{
+  "result": "App does not exist"
+}
+```
+
 ## Behavior
 
-1. Validates the user's update permission for Performance Monitoring.
+1. Validates the user's update permission for Performance Monitoring in the app.
 2. Checks `type`, decodes `id` and checks `threshold`.
-3. Sets `threshold` on the trace's properties document in `countly.apm`.
-4. Writes an `apm_edited` system log entry.
+3. Sets `threshold` on the trace's properties document.
+4. Writes an `apm_edited` system log entry with the previous trace properties and the change.
 
 ## Related Endpoints
 
-- [Performance Monitoring - Change Status](change-status.md)
+- [Performance Monitoring - Change Status](i-apm-change-status.md)
 
 <details>
 <summary>Implementation details</summary>

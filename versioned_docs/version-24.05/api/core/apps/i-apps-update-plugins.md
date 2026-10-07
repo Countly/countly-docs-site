@@ -27,7 +27,7 @@ Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as 
 
 ## Permissions
 
-- App admin permission for the target app (route-level app-admin validation).
+- Global admins, or users with admin access to the target app.
 
 ## Request Parameters
 
@@ -45,8 +45,6 @@ Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as 
 | `[pluginName]` | Object | Yes (at least one) | New configuration for that plugin. Use one key per plugin to update. |
 
 Always send `args`, and make sure it is a valid JSON object (not an array or a plain string), URL-encoded when passed in the query string. Include only the plugins or settings sections you want to change.
-
-<!-- REVIEW: the code does not validate that `args` is present before reading its keys; confirm the response when `args` is missing with the developers -->
 
 ## Examples
 
@@ -102,19 +100,33 @@ If no keys were supplied in `args`:
 | Field | Type | Description |
 |---|---|---|
 | `_id` | String | App ID. |
-| `plugins` | Object | Applied configuration for each updated plugin. |
+| `plugins` | Object | For each updated key: the value as stored, or, for a plugin that handles its own config, the object that plugin returned. |
 | `result` | String | Present only when a plugin that handles its own config returned a non-object value; contains those values joined by newlines. It is an empty string when the plugin returned no value (for example push). |
 
 ### Error Responses
 
-**Status Code**: `400 Bad Request`
+**Status Code**: `400 Bad Request` (`app_id` shorter than 24 characters)
 ```json
 {
-  "result": "Error: Validation error details"
+  "result": "Error: Length of app_id is lower than min length value"
 }
 ```
 
-**Status Code**: `400 Bad Request` (a plugin rejected its configuration)
+**Status Code**: `400 Bad Request` (`app_id` longer than 24 characters)
+```json
+{
+  "result": "Error: Length of app_id is greater than max length value"
+}
+```
+
+**Status Code**: `400 Bad Request` (`app_id` missing)
+```json
+{
+  "result": "No app id provided"
+}
+```
+
+**Status Code**: `400 Bad Request` (a plugin rejected its configuration; the plugin's validation messages, comma-separated)
 ```json
 {
   "errors": "Error details"
@@ -135,13 +147,32 @@ If no keys were supplied in `args`:
 }
 ```
 
-Standard authentication/authorization errors from app admin validation can also be returned.
+**Status Code**: `400 Bad Request`
+```json
+{
+  "result": "Missing parameter \"api_key\" or \"auth_token\""
+}
+```
+
+**Status Code**: `401 Unauthorized`
+```json
+{
+  "result": "User does not exist"
+}
+```
+
+**Status Code**: `401 Unauthorized` (user is not an admin of the app)
+```json
+{
+  "result": "User does not have right"
+}
+```
 
 ## Behavior
 
 - Loads the app by `app_id`; returns `404` if it does not exist.
 - For every key in `args` that is an installed plugin, the update is first offered to that plugin, which can validate or transform the config.
-- If a plugin handles the update, it stores the config itself and the generic `app_config_updated` log is not written (the plugin may write its own, for example push writes `plugin_push_config_updated`). Push only acts on its known keys (such as `rate`); unknown keys are ignored.
+- If a plugin handles the update, it stores the config itself and the generic `app_config_updated` log is not written (the plugin may write its own; for example, push writes `plugin_push_config_updated` when its config changes). Push only acts on its known keys (such as `rate`); unknown keys are ignored.
 - If no plugin handles the update, or the key is not an installed plugin, the value is stored in the app document under `plugins.<name>` and an `app_config_updated` system log entry is written with the config before and after.
 
 ## Related Endpoints

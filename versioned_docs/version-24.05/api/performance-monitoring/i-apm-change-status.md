@@ -31,7 +31,7 @@ Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as 
 
 ## Permissions
 
-- Performance Monitoring: `Update` permission (or global admin equivalent).
+- Requires `Update` permission for the Performance Monitoring feature (`performance_monitoring`) in the target app, or app admin access to that app. Global admins always have access.
 
 ## Request Parameters
 
@@ -39,12 +39,10 @@ Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as 
 |---|---|---|---|
 | `api_key` | String | Yes (or `auth_token`) | API key authentication |
 | `auth_token` | String | Yes (or `api_key`) | Auth token authentication |
-| `app_id` | String | Yes | Application ID |
-| `id` | String | Yes | Trace ID, as returned by the Performance Monitoring read endpoints |
-| `type` | String | Yes | Trace type: `network` or `device` |
+| `app_id` | String | Yes | ID of the app the trace belongs to. The app must exist. |
+| `id` | String | Yes | Trace ID, as returned in the `id` field of the traces listed by the Performance Monitoring read endpoints (`/o/apm/...`) |
+| `type` | String | Yes | Trace type: `network` or `device`. Must match the type of the trace. |
 | `status` | String | Yes | `open` or `mute` |
-
-<!-- REVIEW: the code does not check that the trace exists or that app_id is valid before updating; confirm the behavior for an unknown trace with the developers -->
 
 ## Examples
 
@@ -79,7 +77,7 @@ curl "https://your-server.com/i/apm/change-status?api_key=YOUR_API_KEY&app_id=YO
 }
 ```
 
-- **HTTP 400** - Missing or unusable trace ID:
+- **HTTP 400** - Missing or invalid trace ID:
 ```json
 {
   "result": "APM id not provided"
@@ -114,16 +112,37 @@ curl "https://your-server.com/i/apm/change-status?api_key=YOUR_API_KEY&app_id=YO
 }
 ```
 
+- **HTTP 401** - Missing `app_id` (users who are not global admins):
+```json
+{
+  "result": "No app_id provided"
+}
+```
+
+- **HTTP 401** - User lacks permission for this app:
+```json
+{
+  "result": "User does not have right"
+}
+```
+
+- **HTTP 401** - App not found:
+```json
+{
+  "result": "App does not exist"
+}
+```
+
 ## Behavior
 
-1. Validates the user's update permission for Performance Monitoring.
-2. Checks `type`, decodes `id` and maps `status` to the stored issue status.
-3. Sets `status` on the trace's properties document in `countly.apm`.
-4. Writes an `apm_edited` system log entry.
+1. Validates the user's update permission for Performance Monitoring in the app.
+2. Checks `type`, decodes `id` and checks that `status` is `open` or `mute`.
+3. Sets `status` on the trace's properties document.
+4. Writes an `apm_edited` system log entry with the previous trace properties and the change.
 
 ## Related Endpoints
 
-- [Performance Monitoring - Edit](edit.md)
+- [Performance Monitoring - Edit](i-apm-edit.md)
 
 <details>
 <summary>Implementation details</summary>
