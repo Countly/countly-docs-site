@@ -57,7 +57,6 @@ The feature uses config stored in the `plugins` document:
 
 ### Utilities
 - [Create Custom Event](journey-engine-event-create.md) - `/i/journey-engine/event`
-- [Init Engine (Internal)](journey-engine-init.md) - `/i/journey-engine/init`
 - [Debug Journey (Admin)](journey-engine-debug.md) - `/o/journey-engine/debug`
 
 ## Permissions & Access

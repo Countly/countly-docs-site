@@ -51,7 +51,6 @@ const pluginCategories = [
       { label: 'ClickHouse', link: '/api/clickhouse' },
       { label: 'Kafka', link: '/api/kafka' },
       { label: 'Data Manager', link: '/api/data-manager' },
-      { label: 'Data Migration', link: '/api/data_migration' },
       { label: 'Config Transfer', link: '/api/config-transfer' },
       { label: 'DBViewer', link: '/api/dbviewer' },
     ],
