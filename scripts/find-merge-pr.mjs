@@ -37,8 +37,9 @@ if (!succeeds("rev-parse", "--verify", `${sha}^{commit}`)) {
   process.exit(1);
 }
 const commit = git("rev-parse", "--verify", `${sha}^{commit}`);
-const [commitDate, commitSubject, commitAuthor] = git("log", "-1", "--format=%cI%x09%s%x09%an", commit).split("\t");
-console.log(`Commit: ${REPO_URL}/commit/${commit.slice(0, 10)} (${commitDate.slice(0, 10)}, ${commitAuthor}): ${commitSubject}`);
+// Link and date only: drift PRs are public, and commit titles and authors come from private repos.
+const commitDate = git("log", "-1", "--format=%cI", commit);
+console.log(`Commit: ${REPO_URL}/commit/${commit.slice(0, 10)} (${commitDate.slice(0, 10)})`);
 
 for (const candidate of git("rev-list", "--first-parent", "--reverse", `--since=${commitDate}`, main).split("\n").filter(Boolean)) {
   if (!succeeds("merge-base", "--is-ancestor", commit, candidate)) {

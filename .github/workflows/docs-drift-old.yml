@@ -226,6 +226,12 @@ jobs:
               the PR description as they are. Never write a hash or PR number that did not come
               from those commands. If you can't find one, say so.
 
+            This repository is public. In the PR description and in REVIEW comments, cite a
+            change only by the lines find-merge-pr.mjs prints (links and dates). Never write
+            author names, commit titles or messages, server hostnames, or details of server
+            bugs, crashes or security fixes; for those, write a neutral REVIEW comment such as
+            "confirm the error handling with the developers".
+
             When finished, run
             `node scripts/check-doc-drift.mjs countly-code ${{ env.DOCS_DIR }} docs-drift-ignore.txt drift-report`
             and confirm every endpoint you handled is gone from the new report. Then write
