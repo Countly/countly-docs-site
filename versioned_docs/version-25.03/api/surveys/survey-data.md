@@ -41,7 +41,7 @@ Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as 
 | `auth_token` | String | Yes (or `api_key`) | Auth token authentication |
 | `app_id` | String | Yes | App ID |
 | `widget_id` | String | No | Widget ID (required for some methods) |
-| `method` | String | No | `meta`, `results`, `question`, `export`, `exportold` |
+| `method` | String | No | `meta`, `results`, `question`, `export` |
 | `period` | String | No | Period filter |
 | `periodOffset` | Number | No | Offset in minutes |
 | `platform` | String | No | Platform filter |
@@ -113,7 +113,7 @@ Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as 
 - `method=meta` returns Survey metadata aggregates from `surveyQueries.fetchSurveyMeta`.
 - `method=results` requires `widget_id`, loads the widget, and returns merged per-question totals and answer buckets.
 - `method=question` requires `widget_id` and `question_id`, validates the question exists on the widget, and returns a DataTables answer table for that question.
-- `method=export` and `method=exportold` return export query descriptor payloads instead of response rows. `export` includes a ClickHouse query descriptor.
+- `method=export` returns an export query descriptor (MongoDB Drill collection and aggregation pipeline) instead of response rows.
 - Without a special `method`, returns DataTables rows from Drill. With `widget_id`, answers are translated using widget question choices; without `widget_id`, it returns all answered survey rows.
 - `filter_questions` can be a JSON object mapping question IDs to exact values or `null`; `null` means answer exists.
 

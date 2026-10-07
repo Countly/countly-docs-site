@@ -37,14 +37,14 @@ This feature calculates active user metrics by analyzing session data from the D
 
 This feature requires:
 
-- **Drill feature**: Must be enabled; active user metrics are derived from ClickHouse `countly_drill.drill_events` (default)
+- **Drill feature**: Must be enabled; active user metrics are derived from MongoDB `countly_drill.drill_events`
 - **Session Tracking**: App must track session events to generate active user data
 
 If Drill feature is disabled, active_users returns empty results with a `drillDisabled: true` flag.
 
 ## Configuration Settings
 
-The Active Users feature does not expose feature-specific settings via `plugins.getConfig("active_users")`. In default deployments (ClickHouse enabled), queries run through QueryRunner on the ClickHouse Drill adapter (see [Active Users - Read](active-users-metrics.md)).
+The Active Users feature does not expose feature-specific settings via `plugins.getConfig("active_users")`. Metrics are calculated with a MongoDB aggregation on `countly_drill.drill_events` (see [Active Users - Read](active-users-metrics.md)).
 
 ## Data Storage
 
@@ -52,11 +52,11 @@ The Active Users feature uses these data stores:
 
 | Store | Purpose | Key Fields |
 |------------|---------|------------|
-| `countly_drill.drill_events` (ClickHouse, default) | Source data for active user calculations; session events are filtered by event name | `a` (app_id), `e` (event name), `uid` (user ID), `ts` (timestamp) |
+| `countly_drill.drill_events` | Source data for active user calculations; filtered to `[CLY]_session` events | `a` (app_id), `e` (event name), `uid` (user ID), `ts` (timestamp) |
 | `countly.active_users` | MongoDB cache for calculated active user metrics per app | `appid`, date keys (e.g., `2024.2.11`), `d` (DAU), `w` (WAU), `m` (MAU), `ts` (cache timestamp) |
 | `countly.apps` | Application configuration lookup (timezone and app metadata) | `_id` (app_id), timezone settings |
 
-Active user aggregations read from ClickHouse `countly_drill.drill_events` through QueryRunner. If `clickhouse.database` is overridden, the table path becomes `<clickhouse.database>.drill_events`.
+Active user aggregations run as a MongoDB aggregation pipeline on `countly_drill.drill_events`.
 
 ## Authentication
 
@@ -170,7 +170,7 @@ for (const appId of apps) {
 ```
 1. Session Event Recorded
    ↓
-2. Stored in ClickHouse `countly_drill.drill_events`
+2. Stored in MongoDB `countly_drill.drill_events`
    ↓
 3. User requests /o/active_users endpoint
    ↓
@@ -241,7 +241,7 @@ Cache entries are recalculated when:
 2. **Use App-Specific Clear**: Use `app_id` instead of `all_apps=true` when possible
 3. **Avoid Peak Calculation Times**: Schedule manual cache clears during low-traffic periods
 4. **Monitor Server Resources**: Long periods and stale ranges increase aggregation cost
-5. **Monitor Query Logs**: Use ClickHouse logs to detect slow aggregations
+5. **Monitor Query Logs**: Use MongoDB slow query logs to detect slow aggregations
 
 ## Troubleshooting
 
@@ -251,9 +251,9 @@ Cache entries are recalculated when:
 
 **Solutions**:
 - Verify Drill feature is enabled: check admin console
-- Confirm app has recorded session events in ClickHouse `countly_drill.drill_events`
+- Confirm app has recorded session events in MongoDB `countly_drill.drill_events`
 - Verify session events exist:
-  `SELECT count() FROM countly_drill.drill_events WHERE e IN ('[CLY]_session', '[CLY]_session_begin');`
+  `db.getSiblingDB("countly_drill").drill_events.countDocuments({a: "YOUR_APP_ID", e: "[CLY]_session"})`
 - Check app timezone is set: wrong timezone shifts date calculations
 - Wait for background calculation: if `calculating: true`, retry after recalculation completes
 
@@ -264,8 +264,8 @@ Cache entries are recalculated when:
 **Solutions**:
 - Enable Drill feature in admin console
 - Restart Countly services to reload features
-- Verify Drill/QueryRunner services are initialized (check logs)
-- Confirm ClickHouse `countly_drill.drill_events` table exists
+- Verify the Drill database connection is initialized (check logs)
+- Confirm the `countly_drill.drill_events` collection exists
 
 ### Cache Clear Fails with "Db error"
 
@@ -284,10 +284,10 @@ Cache entries are recalculated when:
 
 **Solutions**:
 - Check server CPU/disk usage
-- Verify ClickHouse `countly_drill.drill_events` is healthy and queryable
+- Verify MongoDB `countly_drill.drill_events` is healthy and queryable
 - Consider reducing query period (e.g., 30days instead of 90days)
-- Check for long-running ClickHouse queries:
-  `SELECT * FROM system.processes;`
+- Check for long-running MongoDB operations:
+  `db.currentOp({active: true})`
 - Monitor background job queue; may be backed up
 
 ### WAU/MAU Values Not Changing
@@ -299,7 +299,7 @@ Cache entries are recalculated when:
 - Check date calculations: WAU includes rolling 7-day window
 - Confirm app timezone matches expected timezone
 - Clear cache to force full recalculation
-- Verify distinct `uid` values in ClickHouse `countly_drill.drill_events`
+- Verify distinct `uid` values in MongoDB `countly_drill.drill_events`
 
 ### Timezone-Related Discrepancies
 
@@ -316,8 +316,8 @@ Cache entries are recalculated when:
 
 The Active Users feature integrates with:
 
-- **Drill feature**: Requires drill enabled; sources data from ClickHouse `countly_drill.drill_events`
-- **Session Feature**: Uses `[CLY]_session` / `[CLY]_session_begin` events for calculations
+- **Drill feature**: Requires drill enabled; sources data from MongoDB `countly_drill.drill_events`
+- **Session Feature**: Uses `[CLY]_session` events for calculations
 - **Dashboard Feature**: Widgets can display active user metrics
 - **Reports Feature**: Hourly job refreshes active users data for report dashboards with active user widgets
 
@@ -325,7 +325,7 @@ The Active Users feature integrates with:
 
 - **Asynchronous Refresh**: Requests can return current/default data with `calculating: true` while recomputation runs.
 - **Windowed Aggregation**: Queries scan additional lookback windows to compute WAU (7-day) and MAU (30-day).
-- **Adapter Execution**: Aggregation runs through QueryRunner using ClickHouse `countly_drill.drill_events`.
+- **MongoDB Aggregation**: Aggregation runs directly on MongoDB `countly_drill.drill_events`.
 - **Monthly Period Behavior**: For `period=month`, daily values are aggregated into monthly averages (`YYYY.M` keys).
 - **Hourly Warm-up Job**: Scheduled job fetches data for report widgets, which helps keep caches warm.
 

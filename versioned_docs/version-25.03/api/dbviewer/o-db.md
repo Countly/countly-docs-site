@@ -17,10 +17,10 @@ last_update:
 
 ## Overview
 
-Returns the list of databases and collections/tables available to the current user in DB Viewer.
+Returns the list of databases and collections available to the current user in DB Viewer.
 
-- Global admins get all available MongoDB databases plus ClickHouse databases (if ClickHouse plugin is enabled).
-- Non-admin users get only collections/tables they can access for their assigned apps.
+- Global admins get all available MongoDB databases.
+- Non-admin users get only collections they can access for their assigned apps.
 
 ## Authentication
 
@@ -36,7 +36,7 @@ Requires DB Viewer access (`dbviewer` read right for app-scoped users).
 |---|---|---|---|
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
-| `app_id` | String | No | Restricts output to collections/tables accessible for that app (when user has access). |
+| `app_id` | String | No | Restricts output to collections accessible for that app (when user has access). |
 
 ## Examples
 
@@ -72,13 +72,6 @@ Requires DB Viewer access (`dbviewer` read right for app-scoped users).
     "collections": {
       "drill_events": "drill_events"
     }
-  },
-  {
-    "name": "clickhouse_countly_drill",
-    "collections": {
-      "events_data": "events_data",
-      "drill_events": "drill_events"
-    }
   }
 ]
 ```
@@ -88,8 +81,8 @@ Requires DB Viewer access (`dbviewer` read right for app-scoped users).
 | Field | Type | Description |
 |---|---|---|
 | `[]` | Array | List of accessible databases. |
-| `[].name` | String | Database name. ClickHouse databases are prefixed with `clickhouse_`. |
-| `[].collections` | Object | Map of pretty collection/table labels to actual collection/table names. |
+| `[].name` | String | Database name. |
+| `[].collections` | Object | Map of pretty collection labels to actual collection names. |
 
 ### Error Responses
 
@@ -101,22 +94,13 @@ Requires DB Viewer access (`dbviewer` read right for app-scoped users).
 }
 ```
 
-- `404`
-
-```json
-{
-  "result": "ClickHouse plugin is disabled."
-}
-```
-
 Standard authentication and authorization errors from user validation can also be returned.
 
 ## Behavior
 
 - When `db`/`dbs`, `collection`, `document`, `aggregation`, and `action=get_indexes` are all omitted, this endpoint runs in database-list mode.
 - MongoDB collections `system.indexes` and `sessions_*` are excluded.
-- Collection/table entries are filtered by user access (`dbviewer` rights and app scoping).
-- ClickHouse databases/tables are included only if ClickHouse plugin is enabled.
+- Collection entries are filtered by user access (`dbviewer` rights and app scoping).
 - Collection names are transformed into UI-friendly labels in the `collections` object keys.
 
 ## Related Endpoints

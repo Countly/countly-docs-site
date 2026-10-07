@@ -18,7 +18,7 @@ last_update:
 
 ## Overview
 
-Searches consent event history with filtering, sorting, and pagination. Supports MongoDB and ClickHouse adapters.
+Searches consent change history (`countly.consent_history`) with filtering, sorting, and skip/limit pagination.
 
 ## Authentication
 
@@ -34,25 +34,21 @@ Requires `compliance_hub` `Read` permission.
 |---|---|---|---|
 | `app_id` | String | Yes | Target app ID. |
 | `sSearch` | String | No | Text search used against device ID. |
-| `filter` / `query` | JSON String (Object) | No | JSON-stringified filter object. |
+| `filter` / `query` | JSON String (Object) | No | JSON-stringified MongoDB filter object. `query` takes precedence when both are sent. |
 | `project` / `projection` | JSON String (Object) | No | Projection object for returned fields. |
 | `sort` | JSON String (Object) | No | Explicit sort object. |
 | `iSortCol_0` | Number | No | DataTables sort column index. |
 | `sSortDir_0` | String | No | DataTables sort direction (`asc`/`desc`). |
-| `limit` / `iDisplayLength` | Number | No | Page size (default `20`). |
-| `skip` / `iDisplayStart` | Number | No | Offset (MongoDB mode). |
-| `cursor` | String | No | Cursor token (ClickHouse mode). |
-| `paginationMode` | String | No | ClickHouse pagination mode, defaults to `snapshot`. |
-| `period` | String | No | Optional period filter. |
-| `db_override` | String | No | Adapter override (`clickhouse` uses ClickHouse path; other values use MongoDB path). |
-| `comparison` | String | No | Comparison mode forwarded to query execution layer. |
+| `limit` / `iDisplayLength` | Number | No | Page size. If omitted or `0`, no limit is applied. |
+| `skip` / `iDisplayStart` | Number | No | Offset. Default `0`. |
+| `period` | String | No | Optional period filter applied to `ts`. |
 | `sEcho` | String or Number | No | Echo value returned in DataTables-style response. |
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
 
 ## Examples
 
-### Search consents with MongoDB pagination
+### Search consents with pagination
 
 ```text
 /o/consent/search?
@@ -63,22 +59,9 @@ Requires `compliance_hub` `Read` permission.
   skip=0
 ```
 
-### Search consents with ClickHouse cursor
-
-```text
-/o/consent/search?
-  api_key=YOUR_API_KEY&
-  app_id=6991c75b024cb89cdc04efd2&
-  db_override=clickhouse&
-  limit=50&
-  paginationMode=snapshot
-```
-
 ## Response
 
 ### Success Response
-
-MongoDB path:
 
 ```json
 {
@@ -99,43 +82,14 @@ MongoDB path:
 }
 ```
 
-ClickHouse path (`db_override=clickhouse`):
-
-```json
-{
-  "sEcho": "1",
-  "iTotalRecords": 150,
-  "iTotalDisplayRecords": 150,
-  "aaData": [
-    {
-      "device_id": "device_123",
-      "uid": "user_1",
-      "type": "sessions",
-      "change": {
-        "sessions": true
-      },
-      "ts": 1739788800000
-    }
-  ],
-  "hasNextPage": true,
-  "nextCursor": "eyJ0cyI6MTczOTc4ODgwMDAwMCwiZGlkIjoiZGV2aWNlXzEyMyJ9",
-  "paginationMode": "snapshot",
-  "isApproximate": false
-}
-```
-
 ### Response Fields
 
 | Field | Type | Description |
 |---|---|---|
 | `sEcho` | String or Number | Echo value from request. |
 | `iTotalRecords` | Number | Total records matched for base query. |
-| `iTotalDisplayRecords` | Number | Display-count value (`filteredTotal` for MongoDB; total for ClickHouse). |
-| `aaData` | Array | Consent event rows transformed to compatibility shape. |
-| `hasNextPage` | Boolean | Present in ClickHouse mode when more rows are available. |
-| `nextCursor` | String | Next cursor token for ClickHouse pagination. |
-| `paginationMode` | String | ClickHouse pagination mode used. |
-| `isApproximate` | Boolean | Approximation indicator from ClickHouse query engine. |
+| `iTotalDisplayRecords` | Number | Count of records matching the full search filter (including `sSearch` and `period`). |
+| `aaData` | Array | Matching `consent_history` documents for the requested page. |
 
 ### Error Responses
 
@@ -177,8 +131,8 @@ ClickHouse path (`db_override=clickhouse`):
 
 | Mode | Trigger | Processing Path | Response Shape |
 |---|---|---|---|
-| MongoDB mode | `db_override` absent/unsupported | Queries consent history from drill-events MongoDB path with skip/limit pagination. | Raw DataTables-style object |
-| ClickHouse mode | `db_override=clickhouse` | Uses ClickHouse query adapter with cursor/snapshot pagination support. | Raw DataTables-style object with optional cursor fields |
+| Search mode | App has consent history records | Queries `consent_history` with filter, sort, and skip/limit pagination. | Raw DataTables-style object |
+| Empty mode | No consent history records for the app (base query) | Returns without running the paged query. | Raw DataTables-style object with empty `aaData` |
 
 ### Impact on Other Data
 
@@ -197,7 +151,6 @@ ClickHouse path (`db_override=clickhouse`):
 |---|---|---|
 | `countly.members` | Authentication and permission checks | Reads member account and feature access for read validation. |
 | `countly.apps` | App validation/context loading | Validates `app_id` and app context for search scope. |
-| `countly_drill.drill_events` | Primary consent-event history source | Reads `[CLY]_consent` event rows for MongoDB adapter. |
-| ClickHouse consent events table | Consent-event history source (ClickHouse adapter) | Reads consent events via ClickHouse query adapter when enabled. |
+| `countly.consent_history` | Consent change history source | Counts and reads consent change records for the app. |
 
 </details>

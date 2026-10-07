@@ -48,11 +48,6 @@ Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as 
 | `sSearch` | String | No | Search filter |
 | `iDisplayStart` | Number | No | Offset |
 | `iDisplayLength` | Number | No | Page size |
-| `limit` | Number | No | Explicit limit override |
-| `skip` | Number | No | Explicit skip override |
-| `cursor` | String | No | Cursor pagination token (ClickHouse mode) |
-| `paginationMode` | String | No | Cursor mode (`snapshot` or `live`) |
-| `dbOverride` | String | No | Query adapter override |
 
 ## Examples
 
@@ -61,7 +56,7 @@ Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as 
 ```
 
 ```text
-/o?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&method=user_details&calculate=eventsTable&uid=u_102&period=30days&event=purchase&dbOverride=clickhouse&paginationMode=snapshot
+/o?api_key=YOUR_API_KEY&app_id=YOUR_APP_ID&method=user_details&calculate=eventsTable&uid=u_102&period=30days&event=purchase&iDisplayStart=20&iDisplayLength=20
 ```
 
 ## Response
@@ -95,8 +90,6 @@ Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as 
 | `iTotalRecords` | Number | Total matched records |
 | `iTotalDisplayRecords` | Number | Displayed records |
 | `aaData` | Array | Event rows |
-| `hasNextPage` | Boolean | Returned for cursor-based pagination |
-| `nextCursor` | String | Cursor for next page |
 
 ### Error Responses
 
@@ -110,7 +103,7 @@ Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as 
 ## Behavior
 
 - Maps shorthand system event names (for example `view`, `crash`, `survey`) to internal keys.
-- Supports Mongo-like pagination and cursor pagination.
+- Supports DataTables-style offset pagination (`iDisplayStart` / `iDisplayLength`).
 - If endpoint returns error from backend query layer, response includes message wrapper.
 
 ## Related Endpoints

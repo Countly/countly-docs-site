@@ -70,7 +70,6 @@ From `plugins.setConfigs("drill", ...)` in `plugins/drill/api/api.js`:
 - `big_list_limit`: limit for big-list property value extraction.
 - `cache_threshold`: threshold for cached query usage.
 - `use_drill_snapshots` and `drill_snapshots_cache_time`: snapshot behavior.
-- `clickhouse_use_approximate_uniq`: ClickHouse unique-count behavior.
 
 ## Notes
 

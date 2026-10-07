@@ -17,7 +17,7 @@ last_update:
 
 ## Overview
 
-Queries documents from a MongoDB collection or ClickHouse table, with filtering, projection, sorting, and pagination.
+Queries documents from a MongoDB collection, with filtering, projection, sorting, and pagination.
 
 ## Authentication
 
@@ -33,29 +33,21 @@ Requires DB Viewer access (`dbviewer` read right for app-scoped users).
 |---|---|---|---|
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
-| `db` / `dbs` | String | Yes | Database name (`countly`, `countly_drill`, `countly_out`, `countly_fs`, or `clickhouse_*`). |
-| `collection` | String | Yes | Collection/table name. |
-| `limit` | Number | No | MongoDB default `20`; ClickHouse default `10`. |
-| `skip` | Number | No | MongoDB offset. Default `0`. |
+| `db` / `dbs` | String | Yes | Database name (`countly`, `countly_drill`, `countly_out`, or `countly_fs`). |
+| `collection` | String | Yes | Collection name. |
+| `limit` | Number | No | Page size. Default `20`, capped at `10000`. |
+| `skip` | Number | No | Offset. Default `0`. |
 | `filter` / `query` | JSON String | No | Query filter object. |
 | `projection` / `project` | JSON String | No | Field projection object. |
 | `sort` | JSON String | No | Sort object. |
-| `sSearch` | String | No | MongoDB `_id` regex shortcut. |
-| `cursor` | String | No | ClickHouse cursor pagination token. |
-| `paginationMode` | String | No | ClickHouse pagination mode. |
+| `sSearch` | String | No | Literal `_id` search shortcut (matched as an escaped regex). |
 
 ## Examples
 
-### Query collection (MongoDB)
+### Query collection
 
 ```plaintext
 /o/db?api_key=YOUR_API_KEY&db=countly&collection=members&limit=20&skip=0&sort={"_id":-1}
-```
-
-### Query table (ClickHouse)
-
-```plaintext
-/o/db?api_key=YOUR_API_KEY&db=clickhouse_countly_drill&collection=events_data&limit=50&filter={"a":"6991c75b024cb89cdc04efd2"}
 ```
 
 ## Response
@@ -90,10 +82,7 @@ Requires DB Viewer access (`dbviewer` read right for app-scoped users).
 | `total` | Number | Total matching rows. |
 | `pages` | Number | Total pages. |
 | `curPage` | Number | Current page number. |
-| `collections` | Array | Collection/table records. |
-| `hasNextPage` | Boolean | ClickHouse cursor mode only. |
-| `nextCursor` | String | ClickHouse cursor mode only. |
-| `paginationMode` | String | ClickHouse mode reported by backend. |
+| `collections` | Array | Collection documents. |
 
 ### Error Responses
 
@@ -129,22 +118,13 @@ Requires DB Viewer access (`dbviewer` read right for app-scoped users).
 }
 ```
 
-- `404`
-
-```json
-{
-  "result": "ClickHouse plugin is disabled."
-}
-```
-
 ## Behavior
 
-- MongoDB path parses `filter/query`, `projection/project`, and `sort` as EJSON.
-- Invalid MongoDB `filter/query` JSON returns `400`; invalid `projection`/`sort` falls back to `{}`.
-- For non-admin users, app-level base filters are merged into MongoDB query.
+- Parses `filter/query`, `projection/project`, and `sort` as EJSON.
+- Invalid `filter/query` JSON returns `400`; invalid `projection`/`sort` falls back to `{}`.
+- For non-admin users, app-level base filters are merged into the query.
 - For `members` collection, `password` and `api_key` are removed.
 - For `auth_tokens` collection, `_id` is redacted to `***redacted***`.
-- ClickHouse path supports plain object filter or `filter.rows` format and returns the same pagination envelope plus cursor fields.
 
 ## Related Endpoints
 
@@ -161,10 +141,9 @@ Requires DB Viewer access (`dbviewer` read right for app-scoped users).
 | Setting | Default | Affects | User-visible impact |
 |---|---|---|---|
 | `security.api_additional_headers` | Empty | HTTP response headers | Additional configured headers are appended to streamed MongoDB collection responses. |
-| `drill.clickhouse_use_approximate_uniq` | Plugin config | ClickHouse query behavior | Affects ClickHouse uniqueness calculations used by DB Viewer table query path. |
 
 **Database Collections**
 
-This endpoint reads from the collection/table specified by `db` and `collection`.
+This endpoint reads from the collection specified by `db` and `collection`.
 
 </details>

@@ -44,8 +44,6 @@ Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as 
 | `did` | String | No | Device ID alternative |
 | `period` | String | No | Requested period |
 | `bucket` | String | No | `daily`, `weekly`, `monthly`, `hourly` |
-| `dbOverride` | String | No | Query adapter override |
-| `comparisonMode` | Boolean/String | No | Comparison mode flag |
 
 ## Examples
 

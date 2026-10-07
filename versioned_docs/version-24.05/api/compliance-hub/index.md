@@ -20,8 +20,7 @@ Compliance Hub provides consent analytics and consent-history exploration APIs u
 
 ## Operational Notes
 
-- `search` endpoint supports adapter selection and can use MongoDB or ClickHouse data paths.
-- `searchOld` is a legacy backup path kept for historical compatibility.
+- `search` endpoint reads consent history from MongoDB (`countly.consent_history`) with skip/limit pagination.
 
 <details>
 <summary>Implementation details</summary>
@@ -32,8 +31,7 @@ Compliance Hub provides consent analytics and consent-history exploration APIs u
 |---|---|
 | `countly.consents` | Consent metric time-series used by `method=consents` endpoint. |
 | `countly.app_users{appId}` | Current per-user consent state and profile fields. |
-| `countly.consent_history` | Legacy consent history backup source used by `searchOld`. |
-| `countly_drill.drill_events` | Primary consent event history source used by `search`. |
+| `countly.consent_history` | Consent change history source used by `search`. |
 | `countly.members` | Used for endpoint authentication and Compliance Hub read permission validation. |
 | `countly.apps` | Used for app-scoped validation and context resolution on app-specific requests. |
 

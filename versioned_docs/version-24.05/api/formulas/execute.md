@@ -45,8 +45,6 @@ Requires `formulas` `Read` permission.
 | `previous` | Boolean/String | No | Include previous-period calculation when true. |
 | `metric_details` | Boolean/String | No | Include formula metadata (`title`, `description`, `unit`, `format`, `dplaces`). |
 | `allow_longtask` | Boolean/String | No | Enables long-task/report execution flow. |
-| `db_override` | String | No | Data adapter override (`compare` and `config` are ignored for adapter selection). |
-| `comparison` | Boolean/String | No | Enables comparison mode in query parameters. |
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
 

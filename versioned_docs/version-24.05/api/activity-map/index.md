@@ -174,12 +174,10 @@ A: The request is being processed in background due to query load/size.
 
 **Database Collections**
 
-Activity Map is read-only and relies on Drill data in ClickHouse.
+Activity Map is read-only and relies on Drill data in MongoDB.
 
 | Collection | Purpose | Key fields |
 |---|---|---|
-| `countly_drill.drill_events` (default) | Source data for geographic aggregation | `a`, `e`, `up.cc`, `up.rgn`, `up.cty`, `ts` |
-
-If `clickhouse.database` is customized, the source path becomes `<clickhouse.database>.drill_events`.
+| `countly_drill.drill_events` | Source data for geographic aggregation | `a`, `e`, `up.cc`, `up.rgn`, `up.cty`, `ts` |
 
 </details>

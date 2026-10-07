@@ -258,7 +258,7 @@ jobs:
           COUNTLY_ALLOW_MUTATION: ${{ vars.COUNTLY_ALLOW_MUTATION || 'false' }}
         run: |
           touch drift-report/pr-body.md
-          pages=$(git status --porcelain -uall -- "$DOCS_DIR" | awk '$1 != "D" {print $NF}' | grep -E '^[A-Za-z0-9_./-]+\.md$' | paste -sd, -)
+          pages=$(git status --porcelain -uall -- "$DOCS_DIR" | awk '$1 != "D" {print $NF}' | { grep -E '^[A-Za-z0-9_./-]+\.md$' || true; } | paste -sd, -)
           {
             echo ""
             echo "---"

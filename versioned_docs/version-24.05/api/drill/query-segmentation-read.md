@@ -49,7 +49,6 @@ Requires `drill` `Read` permission.
 | `skip` | Number | No | Offset for `list=true` table results. |
 | `sort` | JSON String (Object) | No | Sort object for `list=true` table results, for example `{"u":-1}` or `{"s0":1}`. |
 | `sortGraphBy` | String | No | Graph mode segment ordering. Use `u` to sort by users; default ordering is by total count `t`. |
-| `db_override` | String | No | `mongodb`, `clickhouse`, or `compare`. |
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
 
@@ -385,10 +384,9 @@ When a cached result is reused, the payload has the same result shape as the ori
   - `a` is set from `app_id`
   - `e` is set from `event`
   - custom events are queried as `e="[CLY]_custom"` with `n=<event>`
-- Runs segmentation query on selected backend.
+- Runs the segmentation aggregation on MongoDB `countly_drill.drill_events`.
 - If `projectionKey` is provided, fetches segmentation field types and returns grouped segment results.
 - If `list=true` is provided with `projectionKey`, uses table/list aggregation and pagination.
-- With `db_override=compare`, runs both MongoDB and ClickHouse and returns comparison-selected output.
 
 ## Query Object
 

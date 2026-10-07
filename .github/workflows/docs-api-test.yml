@@ -71,7 +71,7 @@ jobs:
           fi
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             # Plain file names only, since the list is written to GITHUB_ENV.
-            pages=$(git diff --name-only --diff-filter=AM "$BASE_SHA" HEAD -- "$COUNTLY_DOCS_ROOT/*.md" "$COUNTLY_DOCS_ROOT/**/*.md" | grep -E '^[A-Za-z0-9_./-]+$' | paste -sd, -)
+            pages=$(git diff --name-only --diff-filter=AM "$BASE_SHA" HEAD -- "$COUNTLY_DOCS_ROOT/*.md" "$COUNTLY_DOCS_ROOT/**/*.md" | { grep -E '^[A-Za-z0-9_./-]+$' || true; } | paste -sd, -)
             if [ -z "$pages" ]; then
               echo "No ${{ matrix.version }} endpoint pages added or changed." >> "$GITHUB_STEP_SUMMARY"
               echo "run=false" >> "$GITHUB_OUTPUT"

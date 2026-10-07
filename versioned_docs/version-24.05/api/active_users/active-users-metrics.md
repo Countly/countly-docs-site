@@ -39,8 +39,6 @@ Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as 
 | auth_token | String | Yes (or api_key) | Auth token for authentication |
 | app_id | String | Yes | Application ID to fetch metrics for |
 | period | String or Array | No | Time period: "yesterday", "hour", "7days", "30days", "60days", "day", "month", or custom array [start_timestamp, end_timestamp] (default: "30days") |
-| db_override | String | No | Override Drill adapter (ignored if set to "compare" or "config") |
-| comparison | Boolean | No | When true, enables QueryRunner comparison mode (runs query on all available adapters for comparison logging) |
 
 ## Examples
 
@@ -150,8 +148,6 @@ curl "https://your-server.com/o/active_users?api_key=YOUR_API_KEY&app_id=1234567
 
 - Requires Drill to be enabled; otherwise returns `drillDisabled: true` with empty data.
 - Calculates missing or stale entries in the background and returns `calculating: true` until refreshed.
-- `db_override` selects a Drill adapter unless set to `compare` or `config`.
-- `comparison=true` enables comparison mode for query execution.
 - For `period=month`, the response is grouped by month keys (`YYYY.M`) and values are averaged from daily values within each month.
 
 ## Related Endpoints

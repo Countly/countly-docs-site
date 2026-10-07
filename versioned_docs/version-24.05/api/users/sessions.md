@@ -46,8 +46,6 @@ Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as 
 | `periodOffset` | Number | No | Period offset in minutes |
 | `iSortCol_0` | Number | No | Sort column index |
 | `sSortDir_0` | String | No | Sort direction |
-| `dbOverride` | String | No | Query adapter override |
-| `comparisonMode` | Boolean/String | No | Comparison mode flag |
 
 ## Examples
 

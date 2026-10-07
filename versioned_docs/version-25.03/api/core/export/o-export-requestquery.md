@@ -20,6 +20,8 @@ last_update:
 
 Creates an asynchronous export task from a target API query and returns a task ID immediately.
 
+Only paths registered as export query producers are accepted. The named endpoint is re-run to build the collection and pipeline that get exported, so any other path is rejected with `400 "Path is not an export query producer"`.
+
 ## Authentication
 
 Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as a header. See [Authentication](../../index.md#authentication).
@@ -35,45 +37,54 @@ Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as 
 | `api_key` | String | Yes (or use `auth_token`) | Dashboard API authentication key. |
 | `auth_token` | String | Yes (or use `api_key`) | Dashboard auth token. |
 | `app_id` | String | No | Optional app ID attached to created export task metadata. |
-| `path` | String | Yes | Target API path to query. |
+| `path` | String | Yes | Target API path to query, including its query string. Must match a registered export query producer (see [Supported paths](#supported-paths)). |
 | `method` | String | No | Optional method value forwarded to request pipeline. |
 | `data` | JSON String (Object) | No | Request payload for target query. |
-| `db` | String | No | Database context for export cursor resolution (for example `countly_drill`). |
+| `db` | String | No | Ignored. The database is chosen by the matched export query producer, not by the caller. |
 | `type` | String | No | Export format (`json`, `csv`, `xls`, `xlsx`). |
 | `filename` | String | No | Export base file name (extension is appended from `type`). |
 | `type_name` | String | No | Task type label in task metadata (default: `tableExport`). |
 
 ## Parameter Semantics
 
-- `path` is normalized to start with `/`.
+- `path` is parsed as a URL. Its pathname must be `/o` or start with `/o/`, and it must match a registered producer's path plus its required query parameters; otherwise the request fails with `Path is not an export query producer`.
+- The producer's required parameters are forced onto `path`, so the caller cannot switch the target endpoint into a different mode.
+- The export reads from the database declared by the producer (`countly`, `countly_drill`, or `countly_out`).
+
+### Supported paths
+
+| Producer `path` | Required parameters | Database | Source |
+|---|---|---|---|
+| `/o` | `method=views`, `action=getExportQuery` | `countly` | Views |
+| `/o/surveys/survey/data` | `method=export`, `action=getExportQuery` | `countly_drill` | Surveys (Enterprise) |
+| `/o/heatmaps/export` | None | `countly` | Heatmaps (Enterprise) |
+
+A producer is only available when its feature is enabled.
 - `data` parse failures fall back to `{}`.
 - Task metadata stores report file name as `filename + "." + type`.
 
 ## Examples
 
-### Example 1: Create async CSV export task
+### Example 1: Create async CSV export of the Views table
 
 ```plaintext
 /o/export/requestQuery?
   api_key=YOUR_API_KEY&
   app_id=6991c75b024cb89cdc04efd2&
-  path=/o/analytics/events&
-  data={"app_id":"6991c75b024cb89cdc04efd2","period":"30days"}&
+  path=/o?method=views%26action=getExportQuery%26app_id=6991c75b024cb89cdc04efd2%26period=30days&
   type=csv&
-  filename=events-30days
+  filename=views-30days
 ```
 
-### Example 2: Create async drill export task
+### Example 2: Create async JSON export of heatmap data
 
 ```plaintext
 /o/export/requestQuery?
   api_key=YOUR_API_KEY&
   app_id=6991c75b024cb89cdc04efd2&
-  db=countly_drill&
-  path=/o/drill/query&
-  data={"query":{"appID":"6991c75b024cb89cdc04efd2"}}&
+  path=/o/heatmaps/export?app_id=6991c75b024cb89cdc04efd2&
   type=json&
-  filename=drill-query
+  filename=heatmaps
 ```
 
 ## Response
@@ -104,6 +115,13 @@ Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as 
 }
 ```
 
+**Status Code**: `400 Bad Request`
+```json
+{
+  "result": "Path is not an export query producer"
+}
+```
+
 ## Behavior
 
 ### Behavior Modes
@@ -111,7 +129,7 @@ Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as 
 | Mode | Trigger | Processing Path | Response Shape |
 |---|---|---|---|
 | Valid request mode | `path` is provided and request validates | Creates long task immediately (`force` mode), returns wrapped `task_id`, continues export in background. | Wrapped object `{ "result": { "task_id": "..." } }` |
-| Invalid request mode | Required params are missing (for example `path`) | Fails validation before task creation. | Wrapped string error (for example missing `path`) |
+| Invalid request mode | `path` is missing, unparseable, or not a registered export query producer | Fails validation before task creation. | Wrapped string error (for example missing `path`) |
 
 ### Impact on Other Data
 
