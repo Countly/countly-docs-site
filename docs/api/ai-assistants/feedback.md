@@ -134,6 +134,6 @@ curl "https://your-server.com/i/ai-assistants/feedback" \
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
-| `countly.ai_assistants_threads` | Endpoint data source | Reads the thread to check ownership. |
+| Mastra memory store (ClickHouse, `ClickhouseStore`) | Thread storage | Reads the thread to check ownership. |
 
 </details>

@@ -64,7 +64,6 @@ const sidebars = {
       dir('Attribution Ⓔ', 'attribution'),
       dir('Adjust Ⓔ', 'adjust'),
       dir('AppsFlyer Ⓔ', 'appsflyer'),
-      dir('Performance Monitoring Ⓔ', 'performance-monitoring'),
       dir('Geo Ⓔ', 'geo'),
       dir('Views', 'views'),
       dir('Times of Day', 'times-of-day'),
@@ -91,7 +90,6 @@ const sidebars = {
       dir('Crashes', 'crashes'),
       dir('Crash Symbolication Ⓔ', 'crash_symbolication'),
       dir('Crashes Jira Ⓔ', 'crashes-jira'),
-      dir('Error Logs', 'errorlogs'),
     ]),
     group('Security & Access', [
       dir('LDAP Ⓔ', 'ldap'),
@@ -117,7 +115,6 @@ const sidebars = {
       dir('Populator', 'populator'),
       dir('Server Stats', 'server-stats'),
       dir('System Logs', 'systemlogs'),
-      dir('System Utility', 'system-utility'),
       dir('Logger', 'logger'),
     ]),
     group('Dashboards & Reporting', [

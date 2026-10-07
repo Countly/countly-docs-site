@@ -44,28 +44,47 @@ Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as 
 |---|---|---|---|
 | `[pluginName]` | Object | Yes (at least one) | New configuration for that plugin. Use one key per plugin to update. |
 
+<!-- REVIEW: if `args` is not valid JSON, the parse error is swallowed and the raw string is kept; `Object.keys` then yields character indices, so keys such as `plugins.0`, `plugins.1` are stored (requestProcessor.js `/i/apps` parse). -->
 <!-- REVIEW: `args` is not validated by the handler; a request without `args` appears to fail on `Object.keys` instead of returning a validation error. The required status above is inferred. -->
 
 ## Examples
 
-### Example 1: Update one plugin's config
+### Example 1: Update a settings section that is not a plugin
 
 ```plaintext
-/i/apps/update/plugins?api_key=YOUR_API_KEY&app_id=64b0ac10c2c3ce0012dd1001&args={"push":{"gateway":"fcm"}}
+/i/apps/update/plugins?api_key=YOUR_API_KEY&app_id=64b0ac10c2c3ce0012dd1001&args={"my_section":{"enabled":true}}
+```
+
+### Example 2: Update a plugin that handles its own config
+
+```plaintext
+/i/apps/update/plugins?api_key=YOUR_API_KEY&app_id=64b0ac10c2c3ce0012dd1001&args={"push":{"rate":{"rate":100,"period":60}}}
 ```
 
 ## Response
 
 ### Success Response
 
+Example 1 (key is stored as sent and echoed back):
+
 ```json
 {
   "_id": "64b0ac10c2c3ce0012dd1001",
   "plugins": {
-    "push": {
-      "gateway": "fcm"
+    "my_section": {
+      "enabled": true
     }
   }
+}
+```
+
+Example 2 (the push plugin stores the config itself and its hook returns nothing, so `plugins` is empty and `result` is an empty string):
+
+```json
+{
+  "_id": "64b0ac10c2c3ce0012dd1001",
+  "plugins": {},
+  "result": ""
 }
 ```
 
@@ -83,7 +102,7 @@ If no keys were supplied in `args`:
 |---|---|---|
 | `_id` | String | App ID. |
 | `plugins` | Object | Applied configuration for each updated plugin. |
-| `result` | String | Present only when some plugin updates returned a non-object value; contains those messages joined by newlines. |
+| `result` | String | Present only when some plugin hooks returned a non-object value; contains those values joined by newlines. It is an empty string when a hook returned nothing (for example push). |
 
 ### Error Responses
 
@@ -119,8 +138,8 @@ If no keys were supplied in `args`:
 
 - Loads the app by `app_id`; returns `404` if it does not exist.
 - For every key in `args` that is an installed plugin, the update is first offered to that plugin through its `/i/apps/update/plugins/<name>` hook, which can validate or transform the config.
-- If the plugin does not handle the update itself, or the key is not an installed plugin, the value is stored in the app document under `plugins.<name>`.
-- Each stored update writes an `app_config_updated` system log entry with the config before and after.
+- If a plugin handles the update, it stores the config itself and the generic `app_config_updated` log is not written (the plugin may write its own, for example push writes `plugin_push_config_updated`). Push only acts on its known keys (such as `rate`); unknown keys are ignored.
+- If no plugin handles the update, or the key is not an installed plugin, the value is stored in the app document under `plugins.<name>` and an `app_config_updated` system log entry is written with the config before and after.
 
 ## Related Endpoints
 

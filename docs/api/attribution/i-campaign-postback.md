@@ -41,8 +41,9 @@ Receives an install postback for a campaign, matches it to an app user, records 
 | `click_url` | String | No | Link the user clicked. Stored as the referrer. For Countly tracking links (path starting with `/at/`), its query parameters are also read. |
 | `click_timestamp` | String | No | Time of the click; used as the event timestamp and stored as `last_click`. |
 | `advertising_id` | String | No | Legacy Android attribution. Used when no `aid_` parameter is given. |
-| `idfa` | String | No | Legacy iOS attribution. Used when no `aid_` parameter and no `advertising_id` are given; matched against the user's hashed device ID. |
+| `idfa` | String | No | Legacy iOS attribution. Used when no `aid_` parameter and no `advertising_id` are given. Must be the MD5 hash of the device ID; it is compared as-is to the user's `md5_did`. |
 | `device_id` | String | No | Device ID. Not stored as a segment. |
+| `adid` | String | No | Ignored. Not stored as a segment. |
 | Other parameters | String | No | Any other non-empty parameter is stored on the user's attribution record and recorded as a segment. |
 
 ## Examples
@@ -52,6 +53,8 @@ Receives an install postback for a campaign, matches it to an app user, records 
 ```plaintext
 /i/campaign/postback?cly_id=campaign-summer-2026&aid_idfa=ABCDEF12-3456-7890-ABCD-EF1234567890&click_timestamp=1767225600
 ```
+
+This succeeds only if an app user already has a matching `aid.idfa` value. Identifier values are lowercased before matching, so the stored value must be lowercase. Otherwise the endpoint returns `404` `User Not Found`.
 
 ## Response
 
@@ -101,6 +104,8 @@ Receives an install postback for a campaign, matches it to an app user, records 
 5. Records `aclk` and `ins` (click and install) metrics for the campaign, stores the attribution data on the user under `cmp`, sends the data to each configured campaign postback, and returns `Success`.
 
 <!-- REVIEW: when the app has a redirect URL configured, the code forwards the request but never sends a response to the caller. -->
+<!-- REVIEW: an `aid_*` parameter that appears only inside `click_url` (not in the request itself) makes the code read `params.qstring[name].length` on an undefined value and throw. -->
+<!-- REVIEW: the `advertising_id` path never sets `params.app_user`; since campaigns always have a `postbacks` array, reading `params.app_user.did` throws after the user update. -->
 <!-- REVIEW: when none of `aid_*`, `advertising_id` or `idfa` is supplied, no branch handles the request and no response is sent. -->
 
 ## Related Endpoints

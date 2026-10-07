@@ -115,6 +115,6 @@ curl "https://your-server.com/i/ai-assistants/delete-thread?api_key=YOUR_API_KEY
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
-| `countly.ai_assistants_threads` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
+| Mastra memory store (ClickHouse, `ClickhouseStore`) | Thread storage | Threads and their messages are kept in Mastra memory, stored in ClickHouse. |
 
 </details>

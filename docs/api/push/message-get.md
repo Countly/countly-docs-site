@@ -70,7 +70,7 @@ Requires `push` `Read` permission.
 
 | Field | Type | Description |
 |---|---|---|
-| `(root)` | Object | Full message object (`msg.json`) from push message model. |
+| `(root)` | Object | Message in the legacy v1 shape: the stored campaign converted back by `convertFromNewMessage` and `personalizationToLegacy`, with `contents[]` rebuilt from the referenced `content_messages` record. |
 | `_id` | String | Message ID. |
 | `status` | String | Current push message status. |
 | `platforms` | Array | Target platforms. |
@@ -84,7 +84,7 @@ Requires `push` `Read` permission.
 ```json
 {
   "errors": [
-    "_id is required"
+    "Missing _id argument"
   ]
 }
 ```
@@ -106,7 +106,7 @@ Standard authentication/authorization errors from read validation can also be re
 - Validates the message ID as ObjectID.
 - Reads the message by ID and joins recent `message_schedules` records.
 - Recomputes the returned `status` from the message plus latest schedule.
-- Returns raw message JSON payload via raw response body.
+- Converts the campaign to the legacy v1 message shape and returns it.
 
 ## Related Endpoints
 
@@ -120,6 +120,8 @@ Standard authentication/authorization errors from read validation can also be re
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
-| `countly.messages` | Push message storage | Reads one message document by ID. |
+| `countly.campaign_definitions` | Push message storage | Reads one push campaign by ID (scoped to `app_id`). |
+| `countly.message_schedules` | Schedules | Joins the latest 20 schedules. |
+| `countly.content_messages` | Message content | Joins the referenced content to rebuild `contents[]`. |
 
 </details>

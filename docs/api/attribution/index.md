@@ -15,6 +15,8 @@ This feature is part of [Countly Enterprise](https://count.ly/enterprise). To ge
 
 Attribution APIs manage campaigns and return campaign performance data such as clicks, installs, revenue, sessions, and total cost.
 
+Installs and sessions are attributed only through campaign postbacks and the legacy API request path. SDK traffic processed by the ingestor is not attributed to campaigns.
+
 ## Endpoint Index
 
 - [Campaign Read](o-campaign.md) - `/o/campaign`

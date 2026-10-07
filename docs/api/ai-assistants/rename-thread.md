@@ -40,7 +40,7 @@ Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as 
 | `api_key` | String | Yes (or `auth_token`) | API key authentication |
 | `auth_token` | String | Yes (or `api_key`) | Auth token authentication |
 | `threadId` | String | Yes | ID of the thread to rename |
-| `title` | String | Yes | New title. Maximum length 80 characters. Surrounding whitespace is trimmed and runs of whitespace are collapsed. |
+| `title` | String | Yes | New title. Maximum length 80 characters; a longer title is rejected with HTTP 400. Surrounding whitespace is trimmed and runs of whitespace are collapsed. |
 
 ## Examples
 
@@ -78,6 +78,13 @@ curl "https://your-server.com/i/ai-assistants/rename-thread" \
 }
 ```
 
+- **HTTP 400** - Title longer than 80 characters:
+```json
+{
+  "result": "Invalid parameters: Length of title is greater than max length value"
+}
+```
+
 - **HTTP 400** - Title is empty after normalization:
 ```json
 {
@@ -109,11 +116,10 @@ curl "https://your-server.com/i/ai-assistants/rename-thread" \
 ## Behavior
 
 1. Validates user authentication.
-2. Validates `threadId` and `title` (`title` max length 80).
-3. Normalizes the title: trims it, collapses whitespace and cuts it to 80 characters.
+2. Validates `threadId` and `title`. A `title` longer than 80 characters is rejected with HTTP 400.
+3. Normalizes the title: trims it and collapses whitespace.
 4. Loads the thread and compares its owner with the authenticated member.
 5. Saves the new title. Automatic title generation only fills empty titles, so it does not overwrite a title set here.
-<!-- REVIEW: it is unclear whether a title longer than 80 characters is rejected by the `max-length` validation (400) or cut to 80 characters by normalization. -->
 
 ## Related Endpoints
 
@@ -127,6 +133,6 @@ curl "https://your-server.com/i/ai-assistants/rename-thread" \
 
 | Collection | Used for | Data touched by this endpoint |
 |---|---|---|
-| `countly.ai_assistants_threads` | Endpoint data source | Stores endpoint-related records this endpoint reads or modifies. |
+| Mastra memory store (ClickHouse, `ClickhouseStore`) | Thread storage | Threads and their messages are kept in Mastra memory, stored in ClickHouse. |
 
 </details>

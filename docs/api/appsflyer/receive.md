@@ -79,9 +79,13 @@ Deferred attribution storage example:
   "result": "Success",
   "Records inserted": 1,
   "document": {
-    "event_name": "install",
     "appsflyer_id": "1700000000000-1234567",
-    "app_id": "6991c75b024cb89cdc04efd2"
+    "event_name": "install",
+    "media_source": "Meta",
+    "campaign": "Spring_Campaign",
+    "app_id": "6991c75b024cb89cdc04efd2",
+    "cd": "2026-10-01T12:00:00.000Z",
+    "_id": "6a1f0c2e9b1d4a0012ab3456"
   },
   "user": null
 }
@@ -94,8 +98,8 @@ Deferred attribution storage example:
 | `result` | String | Result message (`Success` on successful processing). |
 | `status` | String | Attribution status (present on the immediate attribution path). |
 | `Records inserted` | Number | Number of inserted records in the deferred path. |
-| `document` | Object | Stored callback payload in the deferred path. |
-| `user` | Object or null | Matched user object, if available. |
+| `document` | Object | Stored callback payload in the deferred path: all request parameters except `app_key`, plus `app_id` and the receive time `cd`. |
+| `user` | Object or null | Deferred path only. `null` when no user has this `appsflyer_id`, or the matched user object when that user has no device ID (`did`). |
 
 ### Error Responses
 
@@ -170,10 +174,12 @@ Deferred attribution storage example:
 3. Rejects locked apps only for populator traffic.
 4. Validates that `appsflyer_id` and an event name are present.
 5. Tries to find a user by `custom.appsflyer_id`.
-6. If matched, attributes immediately and returns `status: attributed`.
-7. If unmatched, stores the payload in `countly.appsflyer` and returns insert details.
+6. If a matching user with a device ID is found, attributes immediately and returns `status: attributed`.
+7. Otherwise (no user, or a user without a device ID), stores the payload in `countly.appsflyer` and returns insert details.
 
 When attribution succeeds, the event is recorded as `appsflyer_<event name>` and the fields are written to the user's custom properties (with `first_<field>` copies where missing).
+
+<!-- REVIEW: on the immediate path, if the internal `/i` request fails, the callback only logs the error and no response is sent to the caller. -->
 
 ## Limitations
 
