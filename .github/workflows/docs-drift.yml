@@ -1,9 +1,14 @@
 name: API docs drift check
 
-# Daily: compare the classic API endpoints in countly-platform (main) with docs/api/,
+# Daily: compare the classic API endpoints in countly-platform with docs/api/,
 # have Claude draft pages for undocumented endpoints and remove pages for deleted ones,
 # test the drafted pages against a live server, and open one pull request for review.
 # Nothing is published until that PR is merged.
+#
+# docs/api/ documents the newest stable release of DOCS_VERSION (for example 26.01.14),
+# not main, so customers never read about endpoints their server doesn't have yet.
+# Release candidates (26.01.15-flex-rc1) are skipped. Change DOCS_VERSION when the next
+# major version becomes the current docs.
 #
 # Secrets:
 #   PLATFORM_READ_TOKEN      fine-grained token with read-only Contents access to Countly/countly-platform
@@ -31,6 +36,7 @@ concurrency:
 
 env:
   DRIFT_BRANCH: docs-drift/auto
+  DOCS_VERSION: "26.01"
   MAX_ITEMS: ${{ inputs.max_items || '20' }}
 
 jobs:
@@ -43,11 +49,26 @@ jobs:
         with:
           persist-credentials: false
 
+      # Tags look like "26.01.14"; anything with a suffix (-rc1, -flex-rc1) is not a release.
+      - name: Find the newest release tag
+        id: tag
+        env:
+          TOKEN: ${{ secrets.PLATFORM_READ_TOKEN }}
+        run: |
+          tag=$(git ls-remote --tags --refs "https://x-access-token:${TOKEN}@github.com/Countly/countly-platform.git" \
+            | sed 's#.*refs/tags/##' | grep -E "^v?${DOCS_VERSION//./\\.}\.[0-9]+$" \
+            | awk '{v=$0; sub(/^v/, "", v); print v "\t" $0}' | sort -V | tail -1 | cut -f2)
+          if [ -z "$tag" ]; then
+            echo "::error::No $DOCS_VERSION release tag found in countly-platform."; exit 1
+          fi
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "Checking docs/api against countly-platform $tag." >> "$GITHUB_STEP_SUMMARY"
+
       - name: Check out countly-platform
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           repository: Countly/countly-platform
-          ref: main
+          ref: ${{ steps.tag.outputs.tag }}
           token: ${{ secrets.PLATFORM_READ_TOKEN }}
           persist-credentials: false
           path: countly-platform
@@ -96,7 +117,9 @@ jobs:
           prompt: |
             You maintain the Countly API reference in docs/api/ (a Docusaurus site). The file
             drift-report/drift.md lists where the docs and the code in countly-platform/ disagree.
-            countly-platform/ is read-only source code: never edit it.
+            countly-platform/ is read-only source code: never edit it. It is checked out at
+            ${{ steps.tag.outputs.tag }}, the newest release customers run. Document only what
+            that code does, even if you know of newer changes.
 
             Handle at most ${{ env.MAX_ITEMS }} endpoints this run: first everything under
             "Pages for removed endpoints", then entries from "Undocumented endpoints" in order.
@@ -139,7 +162,7 @@ jobs:
               `node scripts/platform-log.mjs -S"/o/dashboards/test" --since=2026-03-01 --format="%h %ad %s" --date=short -- plugins/dashboards/api/api.js`.
               Removed: the newest match is the removal. Added: the oldest match is when it
               appeared. No match since 2026-03-01 means it existed before the docs were written.
-            - Then run `node scripts/find-merge-pr.mjs <commit>`, and copy its "Commit:" and
+            - Then run `node scripts/find-merge-pr.mjs <commit> countly-platform ${{ steps.tag.outputs.tag }}`, and copy its "Commit:" and
               "Pull request:" lines into the PR description as they are. Never write a commit
               hash or PR number that did not come from those commands. If you can't find one,
               say so.
