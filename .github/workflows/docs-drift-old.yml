@@ -1,9 +1,11 @@
 name: API docs drift check (older versions)
 
-# Weekly: the same check as docs-drift.yml, for the older releases that still get patch
+# Daily: the same check as docs-drift.yml, for the older releases that still get patch
 # releases. For each version, compare the newest release tag of countly-server plus
 # countly-enterprise-plugins with that version's pages in versioned_docs/, have Claude
 # draft or remove pages, test them against that version's server, and open one PR per version.
+# Claude only runs when the docs and the code disagree and that version has no open drift PR;
+# otherwise the run just compares and stops.
 #
 # Secrets:
 #   PLATFORM_READ_TOKEN      read-only Contents access; must also cover the private Countly/countly-enterprise-plugins
@@ -13,7 +15,8 @@ name: API docs drift check (older versions)
 
 on:
   schedule:
-    - cron: "0 6 * * 1"
+    # An hour after docs-drift.yml, so the two Claude runs do not overlap.
+    - cron: "0 6 * * *"
   workflow_dispatch:
     inputs:
       version:
