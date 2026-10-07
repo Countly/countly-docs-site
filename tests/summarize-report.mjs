@@ -8,7 +8,7 @@ const {total, passed, failed, skipped} = report.summary;
 const failures = report.results.filter((r) => r.live.status === "failed");
 const cell = (value) => String(value || "").replaceAll("|", "\\|").replaceAll("\n", " ");
 
-console.log(`## API endpoint test: ${report.config.baseUrl}`);
+console.log("## API endpoint test");
 console.log("");
 console.log(`Pages: ${total}. Passed: ${passed}. Failed: ${failed}. Skipped: ${skipped}.`);
 if (report.stoppedEarly) {
