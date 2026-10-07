@@ -272,6 +272,21 @@ jobs:
             fi
           } >> drift-report/pr-body.md
 
+      - name: Check drafted pages for newer features
+        if: steps.draft.outcome == 'success'
+        run: |
+          {
+            echo ""
+            if node scripts/check-version-features.mjs > drift-report/version-features.log; then
+              echo "Version check: no page mentions a feature newer than $VERSION."
+            else
+              echo "**Version check: some pages mention features newer than $VERSION. Remove them before merging:**"
+              echo '```'
+              grep -F "version-$VERSION/" drift-report/version-features.log || cat drift-report/version-features.log
+              echo '```'
+            fi
+          } >> drift-report/pr-body.md
+
       - name: Open pull request
         id: cpr
         if: steps.draft.outcome == 'success'
