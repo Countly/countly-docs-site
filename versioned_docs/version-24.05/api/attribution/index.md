@@ -15,6 +15,8 @@ This feature is part of [Countly Enterprise](https://count.ly/enterprise). To ge
 
 Attribution APIs manage campaigns and return campaign performance data such as clicks, installs, revenue, sessions, and total cost.
 
+Campaign clicks are recorded when users open a campaign link ([Campaign Click](i-campaign-click.md)). Server-to-server postbacks ([Campaign Postback](i-campaign-postback.md)) record a click and an install for the matched user.
+
 ## Endpoint Index
 
 - [Campaign Read](o-campaign.md) - `/o/campaign`
@@ -23,6 +25,8 @@ Attribution APIs manage campaigns and return campaign performance data such as c
 - [Campaign Delete](i-campaign-delete.md) - `/i/campaign/delete`
 - [Campaign Hide](i-campaign-hide.md) - `/i/campaign/hide`
 - [Campaign Show](i-campaign-show.md) - `/i/campaign/show`
+- [Campaign Click](i-campaign-click.md) - `/i/campaign/click`
+- [Campaign Postback](i-campaign-postback.md) - `/i/campaign/postback`
 
 <details>
 <summary>Implementation details</summary>
