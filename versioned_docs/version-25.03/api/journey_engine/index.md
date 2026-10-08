@@ -33,6 +33,7 @@ The feature uses config stored in the `plugins` document:
 - [Publish Journey](journey-engine-journeys-publish.md) - `/i/journey-engine/journeys/publish`
 - [Pause Journey](journey-engine-journeys-pause.md) - `/i/journey-engine/journeys/pause`
 - [Resume Journey](journey-engine-journeys-resume.md) - `/i/journey-engine/journeys/resume`
+- [Approve or Reject Journey](journey-engine-approve.md) - `/i/journey-engine/approve`
 
 ### Versions
 - [List Versions](journey-engine-versions-list.md) - `/o/journey-engine/versions/list`

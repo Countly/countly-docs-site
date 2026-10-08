@@ -31,30 +31,32 @@
 /i/dashboards/track-view
 /i/funnels/track-view
 
-# Internal hook (24.05): crashes-jira listens to the crash resolve/unresolve calls to sync the Jira issue; it has no response of its own.
+# Internal hook (24.05, 25.03): crashes-jira listens to the crash resolve/unresolve calls to sync the Jira issue; it has no response of its own.
 /i/crashes
 
-# Deprecated in the code (replaced by /i/data-manager/user-properties/delete, which is documented) (24.05).
+# Deprecated in the code (replaced by /i/data-manager/user-properties/delete, which is documented) (24.05, 25.03).
 /i/data-manager/data-type/delete
 
-# Timeline maintenance routes (24.05): only used by the plugin's own tests, no dashboard or SDK calls them.
+# Timeline maintenance routes (24.05, 25.03): only used by the plugin's own tests, no dashboard or SDK calls them.
 /i/drill/fixusertimeline
 /i/drill/recalculatetimeline
 /i/drill/resettimeline
 
-# No handler (24.05): the geo plugin routes /i/geolocations/update to geo.update, which does not exist.
+# No handler (24.05, 25.03): the geo plugin routes /i/geolocations/update to geo.update, which does not exist.
 /i/geolocations/update
 
-# Prefix dispatchers (24.05): the sub-routes (start, stop, take-heap-snapshot, ...) each have their own page in system-utility.
+# Prefix dispatchers (24.05, 25.03): the sub-routes (start, stop, take-heap-snapshot, ...) each have their own page in system-utility.
 /i/inspector
 /i/profiler
 
-# Empty handlers (24.05): the journey_engine plugin registers the folders routes but the functions do nothing.
+# Empty handlers (24.05, 25.03): the journey_engine plugin registers the folders routes but the functions do nothing.
 /i/journey-engine/folders/delete
 /i/journey-engine/folders/save
 
-# License management (24.05): called by the dashboard's license panel, not a customer API; the license docs say the feature has no public endpoints.
+# License management (24.05, 25.03): called by the dashboard's license panel, not a customer API; the license docs say the feature has no public endpoints.
 /i/license-adopt-successor
 /i/license-deregister-instance
 /i/license-instance-state
+
+# License upload (24.05): part of the same license panel flow.
 /i/license/upload
