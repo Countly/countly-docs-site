@@ -23,6 +23,8 @@ Attribution APIs manage campaigns and return campaign performance data such as c
 - [Campaign Delete](i-campaign-delete.md) - `/i/campaign/delete`
 - [Campaign Hide](i-campaign-hide.md) - `/i/campaign/hide`
 - [Campaign Show](i-campaign-show.md) - `/i/campaign/show`
+- [Campaign Click](i-campaign-click.md) - `/i/campaign/click`
+- [Campaign Postback](i-campaign-postback.md) - `/i/campaign/postback`
 
 <details>
 <summary>Implementation details</summary>

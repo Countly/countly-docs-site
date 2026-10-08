@@ -31,7 +31,9 @@ The Star Rating feature enables in-app feedback collection using customizable st
 | [Set Widget Logo](./i-feedback-logo.md) | Set logo for specific widget |
 | [Record Feedback](./i-feedback-input.md) | Receive and store user feedback submission |
 | [Toggle Widget Status](./i-feedback-widgets-status.md) | Enable/disable specific widget |
+| [Create Widget](./i-feedback-widgets-create.md) | Create a new widget |
 | [Edit Widget](./i-feedback-widgets-edit.md) | Update widget configuration |
+| [Remove Widget](./i-feedback-widgets-remove.md) | Delete a widget and optionally its feedback |
 | [Get Feedback Data](./o-feedback-data.md) | Retrieve feedback submissions and ratings |
 | [Get Multiple Widgets](./o-feedback-multiple-widgets-by-id.md) | Fetch multiple widgets by ID |
 | [List All Widgets](./o-feedback-widgets.md) | Get all widgets for application |
