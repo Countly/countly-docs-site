@@ -192,9 +192,17 @@ jobs:
             No sources, test results, open questions, ignored endpoints, internal reasons or
             implementation details.
 
-            drift-report/review-notes.md is for the team: for each endpoint, its source lines (or
-            why none was found); each endpoint you added to docs-drift-ignore.txt, with the reason;
-            and each open question, with its file.
+            drift-report/review-notes.md is for the team and is posted to Slack as it is, so write
+            it for Slack: no Markdown headings (#), no tables, no shell commands. Use *bold* lines
+            as headings and short "• " bullets, in this order, leaving out empty sections:
+              *Questions for the developers*
+              One bullet each, in plain words: the endpoint in backticks, then the question.
+              *Left out of the docs*
+              One bullet each: the endpoint in backticks and why, in a few words.
+              *Sources*
+              One bullet per endpoint: the endpoint in backticks, then its "Commit:" and
+              "Pull request:" lines, or a few words on why none was found. If the same reason
+              applies to several endpoints, say it once.
 
       # The tool list above already limits the drafting step; this is the check
       # behind it, and it runs before anything executes repository code with
@@ -269,24 +277,4 @@ jobs:
           PR_NUMBER: ${{ steps.cpr.outputs.pull-request-number }}
           PR_URL: ${{ steps.cpr.outputs.pull-request-url }}
         run: |
-          if [ -z "$SLACK_BOT_TOKEN" ] || [ -z "$SLACK_CHANNEL" ]; then
-            echo "SLACK_BOT_TOKEN or SLACK_DOCS_CHANNEL is not set, so no Slack message was sent."
-            exit 0
-          fi
-          files=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER/files" --paginate --jq '.[] | select(.filename | startswith("docs/api/")) | .status')
-          added=$(echo "$files" | grep -c '^added$' || true)
-          removed=$(echo "$files" | grep -c '^removed$' || true)
-          changed=$(echo "$files" | grep -c '^modified$' || true)
-          left=$(node -e 'const r=require("./drift-report/drift.json"); console.log(r.missing.length + r.removed.length)')
-          text=$(printf '📘 *API docs update ready for review*\n%s pages added, %s removed, %s changed · %s items still to go\n<%s|Review the pull request>' "$added" "$removed" "$changed" "$left" "$PR_URL")
-          # Sources, open questions and test results stay out of the public PR; they go here.
-          if [ -s drift-report/review-notes.md ]; then
-            notes=$(head -c 3500 drift-report/review-notes.md)
-            [ "$(wc -c < drift-report/review-notes.md)" -gt 3500 ] && notes="$notes"$'\n…(truncated)'
-            text="$text"$'\n\n*Notes for reviewers*\n'"$notes"
-          fi
-          # Slack answers 200 even on failure, so check its "ok" field.
-          jq -n --arg channel "$SLACK_CHANNEL" --arg text "$text" '{channel: $channel, text: $text}' \
-            | curl -sS -X POST https://slack.com/api/chat.postMessage \
-                -H "Authorization: Bearer $SLACK_BOT_TOKEN" -H 'Content-Type: application/json; charset=utf-8' --data @- \
-            | jq -e '.ok' > /dev/null || { echo "::warning::Slack message was not sent. Check that the bot is in the channel."; }
+          scripts/post-drift-slack.sh "API docs update ready for review" "docs/api/"
