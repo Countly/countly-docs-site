@@ -31,29 +31,32 @@
 /i/dashboards/track-view
 /i/funnels/track-view
 
-# Internal hook (25.03): the crashes-jira plugin listens on /i/crashes to sync Jira after a crash is resolved or unresolved; customers call /i/crashes/resolve and the like, which the crashes pages cover.
+# Internal hook (24.05, 25.03): crashes-jira listens to the crash resolve/unresolve calls to sync the Jira issue; it has no response of its own.
 /i/crashes
 
-# Deprecated (25.03, marked "@deprecated" in the code): replaced by /i/data-manager/user-properties/delete.
+# Deprecated in the code (replaced by /i/data-manager/user-properties/delete, which is documented) (24.05, 25.03).
 /i/data-manager/data-type/delete
 
-# Internal maintenance (25.03): rebuilds or clears the dashboard's per-user event timeline data; used by support and developers, not a customer API.
+# Timeline maintenance routes (24.05, 25.03): only used by the plugin's own tests, no dashboard or SDK calls them.
 /i/drill/fixusertimeline
 /i/drill/recalculatetimeline
 /i/drill/resettimeline
 
-# Empty handlers (25.03): the journey_engine plugin registers these folder routes but the functions do nothing.
-/i/journey-engine/folders/delete
-/i/journey-engine/folders/save
-
-# No handler (25.03): the geo plugin routes /i/geolocations/update to a function that does not exist.
+# No handler (24.05, 25.03): the geo plugin routes /i/geolocations/update to geo.update, which does not exist.
 /i/geolocations/update
 
-# Dispatchers (25.03): the plugin registers the base path and routes by action; the start/stop/list actions are documented on their own pages.
+# Prefix dispatchers (24.05, 25.03): the sub-routes (start, stop, take-heap-snapshot, ...) each have their own page in system-utility.
 /i/inspector
 /i/profiler
 
-# License housekeeping driven by the dashboard's license panel (25.03): slot claims, releases and successor licenses exchanged with the license server; not a customer API.
+# Empty handlers (24.05, 25.03): the journey_engine plugin registers the folders routes but the functions do nothing.
+/i/journey-engine/folders/delete
+/i/journey-engine/folders/save
+
+# License management (24.05, 25.03): called by the dashboard's license panel, not a customer API; the license docs say the feature has no public endpoints.
 /i/license-adopt-successor
 /i/license-deregister-instance
 /i/license-instance-state
+
+# License upload (24.05): part of the same license panel flow.
+/i/license/upload
