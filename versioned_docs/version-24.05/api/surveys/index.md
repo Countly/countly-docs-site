@@ -68,6 +68,7 @@ These settings control survey appearance and behavior:
 - [Surveys - Update Survey Status](survey-status-update.md) - POST `/i/surveys/survey/status`
 - [Surveys - Update NPS Status](nps-status-update.md) - POST `/i/surveys/nps/status`
 - [Surveys - Upload Logo](upload-logo.md) - POST `/i/feedback/upload`
+- [Surveys - Submit Survey or NPS Response](feedback-inputs.md) - GET/POST `/i/feedback/inputs`
 
 ## Widget Lifecycle
 
