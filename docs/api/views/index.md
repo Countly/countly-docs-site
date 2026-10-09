@@ -15,6 +15,7 @@ The Views feature tracks page/screen views, supports segmented view analytics, p
 
 - [Views - Query](o-views.md)
 - [Views - Actions/Heatmap Read](o-actions.md)
+- [Views - View Segments Read](o-view-segments.md)
 - [Views - Rename](i-views-rename.md)
 - [Views - Omit Segments](i-views-omit-segments.md)
 - [Views - Delete](i-views-delete.md)

@@ -60,3 +60,16 @@
 
 # License upload (24.05): part of the same license panel flow.
 /i/license/upload
+
+# Demo data seeder: the push plugin's /i/push/message/demo fills an app with sample messages for the dashboard demo, not a customer API.
+/i/push/message/demo
+
+# Already documented as /i?method=ab_enroll_variant and /i?method=ab_opt_out: the ab-testing plugin forwards those /i calls to its internal /i/sdk handler, which is not reachable directly.
+/i/sdk?method=ab_enroll_variant
+/i/sdk?method=ab_opt_out
+
+# Dashboard notification acknowledgement: marks a notification as seen for the logged-in dashboard member, not a customer API.
+/i/users/ack
+
+# Not in use: the code comment says event popularity is only a test for a possible feature, and the MongoDB adapter returns an error.
+/o?method=cohort_event_popularity
