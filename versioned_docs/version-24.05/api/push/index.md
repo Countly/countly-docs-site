@@ -21,6 +21,7 @@ Push Notifications supports campaign creation, targeting, scheduling, API-trigge
 - [Message Toggle](./message-toggle.md)
 - [Message Test](./message-test.md)
 - [Message Push](./message-push.md)
+- [Message Pop](./message-pop.md)
 - [Message List](./message-all.md)
 - [Message Get](./message-get.md)
 - [Message Estimate](./message-estimate.md)

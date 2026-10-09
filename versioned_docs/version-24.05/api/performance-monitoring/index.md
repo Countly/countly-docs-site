@@ -17,17 +17,19 @@ This feature is part of [Countly Enterprise](https://count.ly/enterprise). To ge
 |---|---|
 | Feature | Performance Monitoring |
 | Type | Application performance monitoring (APM) traces |
-| Documented endpoint count | 2 |
-| Last updated | 2026-10-07 |
+| Documented endpoint count | 4 |
+| Last updated | 2026-10-09 |
 
 ## Overview
 
-Performance Monitoring tracks network and device traces reported by the SDKs. The endpoints documented here let you change the settings of an existing trace.
+Performance Monitoring tracks network and device traces reported by the SDKs. The endpoints documented here let you read device traces and the list of slow traces (issues), and change the settings of an existing trace.
 
 ## Quick Links
 
 | Endpoint | Path |
 |---|---|
+| [Performance Monitoring - Device Trace](o-apm-device.md) | `/o/apm/device` |
+| [Performance Monitoring - Issues](o-apm-issues.md) | `/o/apm/issues` |
 | [Performance Monitoring - Edit](i-apm-edit.md) | `/i/apm/edit` |
 | [Performance Monitoring - Change Status](i-apm-change-status.md) | `/i/apm/change-status` |
 
