@@ -20,6 +20,7 @@ Campaign clicks are recorded when users open a campaign link ([Campaign Click](i
 ## Endpoint Index
 
 - [Campaign Read](o-campaign.md) - `/o/campaign`
+- [Campaign Data](o-campaigndata.md) - `/o?method=campaigndata`
 - [Campaign Create](i-campaign-create.md) - `/i/campaign/create`
 - [Campaign Update](i-campaign-update.md) - `/i/campaign/update`
 - [Campaign Delete](i-campaign-delete.md) - `/i/campaign/delete`

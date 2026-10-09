@@ -38,6 +38,7 @@ The Star Rating feature enables in-app feedback collection using customizable st
 | [Get Multiple Widgets](./o-feedback-multiple-widgets-by-id.md) | Fetch multiple widgets by ID |
 | [List All Widgets](./o-feedback-widgets.md) | Get all widgets for application |
 | [Get Widget Details](./o-feedback-widget.md) | Retrieve single widget configuration |
+| [Get Ratings Metadata](./o-star.md) | List platforms and app versions that received ratings |
 
 ## Data Structure
 

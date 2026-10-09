@@ -17,6 +17,7 @@ Tasks endpoints manage asynchronous jobs stored in the task manager (create/reru
 - [Tasks - Edit Task](./i-tasks-edit.md) - `/i/tasks/edit`
 - [Tasks - Name Task](./i-tasks-name.md) - `/i/tasks/name`
 - [Tasks - Delete Task](./i-tasks-delete.md) - `/i/tasks/delete`
+- [Tasks - Stop Task](./i-tasks-stop.md) - `/i/tasks/stop`
 - [Tasks - Read All Tasks](./o-tasks-all.md) - `/o/tasks/all`
 - [Tasks - Count Tasks](./o-tasks-count.md) - `/o/tasks/count`
 - [Tasks - List Tasks](./o-tasks-list.md) - `/o/tasks/list`
