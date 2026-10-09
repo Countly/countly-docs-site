@@ -16,6 +16,14 @@ SDK feature manages runtime SDK configuration, enforcement overrides, and SDK me
 ### Core
 
 - [SDK Fetch Read](o-sdk.md) - `/o/sdk`
+- [SDK Fetch Write](i-sdk.md) - `/i/sdk`
+
+### SDK Logs & Connection Test
+
+- [SDK - SDK Logs Start](i-sdk-logs-start.md) - `/i/sdk_logs/start`
+- [SDK - SDK Logs Stop](i-sdk-logs-stop.md) - `/i/sdk_logs/stop`
+- [SDK - SDK Logs Delete](i-sdk-logs-delete.md) - `/i/sdk_logs/delete`
+- [SDK - Connection Test Arm/Disarm](i-sdk-test.md) - `/i/sdk-test`
 
 ### Configuration & Enforcement
 
