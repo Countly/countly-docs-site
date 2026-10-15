@@ -20,6 +20,9 @@ This index keeps a product-oriented view. Endpoint pages include request and res
 ### Queries
 - [Query Segmentation - Read](query-segmentation-read.md)
 - [Query Metadata - Read](query-metadata-read.md)
+- [Query Big Metadata - Read](query-big-metadata-read.md)
+- [Query Users - Read](query-users-read.md)
+- [Report - Create](report-create.md)
 
 ### Bookmarks
 - [Bookmarks - Read](bookmarks-read.md)
