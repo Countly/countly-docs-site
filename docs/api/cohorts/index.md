@@ -29,6 +29,7 @@ Cohorts are used for analytics segmentation, targeting workflows, and cohort com
 | [get_cohorts](read.md) | List cohorts with filtering, pagination, and visibility controls |
 | [get_cohort](cohort-single-read.md) | Read one cohort with creator/group metadata |
 | [cohortstate](cohort-state-read.md) | Read current cohort processing state |
+| [cohort](cohort-results-read.md) | Read the calculated results of one cohort |
 | [cohortdata](cohort-data-read.md) | Read cohort time-series/user data |
 | [get_cohort_list](cohort-list-read.md) | Read compact cohort name map |
 | [get_cohort_metrics](cohort-metrics-read.md) | Read calculated cohort metrics |

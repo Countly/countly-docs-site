@@ -51,6 +51,7 @@ const sidebars = {
     ]),
     group('Analytics & Insights', [
       dir('Drill Ⓔ', 'drill'),
+      dir('Performance Monitoring', 'performance-monitoring'),
       dir('Funnels Ⓔ', 'funnels'),
       dir('Flows Ⓔ', 'flows'),
       dir('Cohorts Ⓔ', 'cohorts'),
