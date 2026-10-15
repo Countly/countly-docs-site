@@ -339,11 +339,17 @@ async function main() {
   };
 
   // The report is uploaded as a workflow artifact from a public repo, so the credentials
-  // must not appear in it (request URLs carry api_key/auth_token/app_key).
+  // must not appear in it (request URLs carry api_key/auth_token/app_key, and a failed
+  // response can repeat them). Named values are hidden too, in URLs and in raw response text.
   let reportText = JSON.stringify(report, null, 2) + "\n";
   for (const secret of [CONFIG.apiKey, CONFIG.authToken, CONFIG.appKey].filter(Boolean)) {
     reportText = reportText.replaceAll(secret, "REDACTED");
+    reportText = reportText.replaceAll(encodeURIComponent(secret), "REDACTED");
   }
+  const SECRET_NAMES = "api_key|auth_token|app_key|countly-token|token|password|secret";
+  reportText = reportText
+    .replace(new RegExp(`([?&](?:${SECRET_NAMES})=)[^&"\\\\\\s]+`, "gi"), "$1REDACTED")
+    .replace(new RegExp(`(\\\\?"(?:${SECRET_NAMES})\\\\?"\\s*:\\s*\\\\?")[^"\\\\]+`, "gi"), "$1REDACTED");
   fs.writeFileSync(path.join(REPORTS_ROOT, "latest.json"), reportText, "utf8");
 
   console.log("");
@@ -453,6 +459,9 @@ async function validateDoc(doc) {
     result.live.response = response;
     if (response.ok) {
       result.live.status = "passed";
+      // A passed response can hold other members' keys, tokens or server settings
+      // (/o/users/all, /o/token/list, /o/configs), and nothing reads it later.
+      result.live.response = {ok: response.ok, status: response.status, statusText: response.statusText, contentType: response.contentType};
     }
     else if (isPermissionDenied(response)) {
       // The route exists and checked rights; the test user just lacks them.
