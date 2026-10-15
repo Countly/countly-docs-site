@@ -77,9 +77,6 @@
 # Legacy push API (v1 /i/pushes/create and /i/pushes/prepare); duplicates the documented /i/push/message/* endpoints. Ignored in 24.05.
 /i/pushes
 
-# Duplicate of the documented /o/sdk route (same handler), not used by the SDKs. Ignored in 24.05.
-/i/sdk
-
 # Dashboard internal: status tables of Drill data view timeline processing. Ignored in 24.05.
 /o?method=dataviews
 
