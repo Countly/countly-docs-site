@@ -338,11 +338,13 @@ async function main() {
     results
   };
 
-  fs.writeFileSync(
-    path.join(REPORTS_ROOT, "latest.json"),
-    JSON.stringify(report, null, 2) + "\n",
-    "utf8"
-  );
+  // The report is uploaded as a workflow artifact from a public repo, so the credentials
+  // must not appear in it (request URLs carry api_key/auth_token/app_key).
+  let reportText = JSON.stringify(report, null, 2) + "\n";
+  for (const secret of [CONFIG.apiKey, CONFIG.authToken, CONFIG.appKey].filter(Boolean)) {
+    reportText = reportText.replaceAll(secret, "REDACTED");
+  }
+  fs.writeFileSync(path.join(REPORTS_ROOT, "latest.json"), reportText, "utf8");
 
   console.log("");
   console.log("Summary");
