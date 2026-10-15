@@ -19,6 +19,14 @@ Performance Monitoring collects network and device traces from SDKs and lets you
 
 | Endpoint | Purpose |
 |---|---|
+| [Overview Read](o-apm-overview.md) | Read network and device traces with an overview |
+| [Network Trace Read](o-apm-network.md) | Read one network trace |
+| [Device Trace Read](o-apm-device.md) | Read one device trace |
+| [Issues Read](o-apm-issues.md) | List traces that exceed their threshold |
+| [Metric Read](o-apm-metric.md) | Read one metric of a trace |
+| [Samples Read](o-apm-samples.md) | Read samples of a metric of a trace |
+| [User Samples Read](o-apm-user-samples.md) | Read samples of one user |
+| [Network Latency Breakdown Read](o-apm-network-latency-breakdown.md) | Read network latency by country |
 | [Edit](i-apm-edit.md) | Change the threshold of a trace |
 | [Change Status](i-apm-change-status.md) | Mute or reopen the issue of a trace |
 

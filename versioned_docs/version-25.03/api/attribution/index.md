@@ -18,6 +18,7 @@ Attribution APIs manage campaigns and return campaign performance data such as c
 ## Endpoint Index
 
 - [Campaign Read](o-campaign.md) - `/o/campaign`
+- [Campaign Data Read](o-campaign-data.md) - `/o?method=campaigndata`
 - [Campaign Create](i-campaign-create.md) - `/i/campaign/create`
 - [Campaign Update](i-campaign-update.md) - `/i/campaign/update`
 - [Campaign Delete](i-campaign-delete.md) - `/i/campaign/delete`
