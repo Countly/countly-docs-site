@@ -35,12 +35,16 @@ Requires `drill` `Read` permission.
 
 ## Request Parameters
 
-The query parameters of [Query Segmentation - Read](query-segmentation-read.md) (`event`, `queryObject`, `period`, `bucket`, `projectionKey`, and so on) are accepted. The following are specific to reports:
+The query parameters of [Query Segmentation - Read](query-segmentation-read.md) (`projectionKey`, `list`, `limit`, and so on) are also accepted.
 
 | Parameter | Type | Required | Description |
 |---|---|---|---|
 | `method` | String | Yes | Must be `createReport`. |
 | `app_id` | String | Yes | Target app ID. |
+| `event` | String | Yes | Event key to query. |
+| `queryObject` | JSON String (Object) | Yes | Mongo-style Drill filter object. Use `{}` for no additional filters. |
+| `period` | String or Array | Conditional | Required unless `autoRefresh` is `true`. Same values as in [Query Segmentation - Read](query-segmentation-read.md). |
+| `bucket` | String or JSON String (Array) | Conditional | Required unless `autoRefresh` is `true`. `hourly`, `daily`, `weekly`, or `monthly`. |
 | `autoRefresh` | String | No | `true` creates an auto-refreshing report. `period` and `period_desc` are then set to `732days` and `bucket` is cleared. |
 | `report_name` | String | No | Name of the report. |
 | `report_desc` | String | No | Description of the report. |
