@@ -60,3 +60,22 @@
 
 # License upload (24.05): part of the same license panel flow.
 /i/license/upload
+
+# Legacy push API (v1 /i/pushes/create and /i/pushes/prepare); duplicates the documented /i/push/message/* endpoints. Ignored in 24.05.
+/i/pushes
+
+# Duplicate of the documented /o/sdk route (same handler), not used by the SDKs. Ignored in 24.05.
+/i/sdk
+
+# Internal hook name: the A/B testing handlers run behind /i?method=..., which is what the pages document. Ignored in 24.05.
+/i/sdk?method=ab_enroll_variant
+/i/sdk?method=ab_opt_out
+
+# Dashboard UI state: records that a member dismissed an in-dashboard notification, not a customer API. Ignored in 24.05.
+/i/users/ack
+
+# Dashboard internal: status tables of Drill data view timeline processing. Ignored in 24.05.
+/o?method=dataviews
+
+# Internal: called by the report creation flow to recalculate the daily/weekly/monthly parts of a saved report. Ignored in 24.05.
+/o?method=rerunsubreport
