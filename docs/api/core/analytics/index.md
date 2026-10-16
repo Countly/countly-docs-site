@@ -14,6 +14,7 @@ Analytics endpoints return aggregated usage, geography, event, and behavior metr
 ## Quick Links
 
 - [Analytics - Run Query](./o-query.md) - `/o` with `method=...`
+- [Analytics - Run Aggregate Query](./o-aggregate.md) - `/o/aggregate`
 - [Analytics - Read Dashboard](./o-analytics-dashboard.md) - `/o/analytics/dashboard`
 - [Analytics - Read Countries](./o-analytics-countries.md) - `/o/analytics/countries`
 - [Analytics - Read Sessions](./o-analytics-sessions.md) - `/o/analytics/sessions`
