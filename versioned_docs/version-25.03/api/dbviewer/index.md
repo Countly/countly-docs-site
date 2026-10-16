@@ -19,6 +19,8 @@ DBViewer configuration managed through user permissions. No feature-specific set
 - [O Db Collection](./o-db-collection.md)
 - [O Db Document](./o-db-document.md)
 - [O Db Indexes](./o-db-indexes.md)
+- [DB Viewer - Mongostat](./o-db-mongostat.md)
+- [DB Viewer - Mongotop](./o-db-mongotop.md)
 - [O Db](./o-db.md)
 
 <details>
