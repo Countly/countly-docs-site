@@ -20,6 +20,7 @@ SDK feature manages runtime SDK configuration, enforcement overrides, and SDK me
 
 ### SDK Logs & Connection Test
 
+- [SDK - SDK Logs Read](o-sdk-logs.md) - `/o?method=sdk_logs`
 - [SDK - SDK Logs Start](i-sdk-logs-start.md) - `/i/sdk_logs/start`
 - [SDK - SDK Logs Stop](i-sdk-logs-stop.md) - `/i/sdk_logs/stop`
 - [SDK - SDK Logs Delete](i-sdk-logs-delete.md) - `/i/sdk_logs/delete`

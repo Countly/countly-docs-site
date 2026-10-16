@@ -85,3 +85,12 @@
 
 # Internal: called by the report creation flow to recalculate the daily/weekly/monthly parts of a saved report. Ignored in 24.05.
 /o?method=rerunsubreport
+
+# Ops diagnostic for developers: runs the A/B testing model on sample input (global admin only).
+/o/ab-testing/test-models
+
+# Internal helper for the Data Manager dashboard view: lists metadata of the internal view event only.
+/o/data-manager/events/internal
+
+# Internal export query producer: returns a database pipeline for /o/export/requestQuery, not data for customers.
+/o/heatmaps/export
