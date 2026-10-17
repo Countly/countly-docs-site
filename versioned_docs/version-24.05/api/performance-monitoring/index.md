@@ -17,18 +17,24 @@ This feature is part of [Countly Enterprise](https://count.ly/enterprise). To ge
 |---|---|
 | Feature | Performance Monitoring |
 | Type | Application performance monitoring (APM) traces |
-| Documented endpoint count | 4 |
-| Last updated | 2026-10-09 |
+| Documented endpoint count | 10 |
+| Last updated | 2026-10-17 |
 
 ## Overview
 
-Performance Monitoring tracks network and device traces reported by the SDKs. The endpoints documented here let you read device traces and the list of slow traces (issues), and change the settings of an existing trace.
+Performance Monitoring tracks network and device traces reported by the SDKs. The endpoints documented here let you read the overview, network and device traces, metric data and samples, list the slow traces (issues), and change the settings of an existing trace.
 
 ## Quick Links
 
 | Endpoint | Path |
 |---|---|
+| [Performance Monitoring - Overview](o-apm-overview.md) | `/o/apm/overview` |
+| [Performance Monitoring - Network Latency Breakdown](o-apm-network-latency-breakdown.md) | `/o/apm/network-latency-breakdown` |
+| [Performance Monitoring - Network Trace](o-apm-network.md) | `/o/apm/network` |
 | [Performance Monitoring - Device Trace](o-apm-device.md) | `/o/apm/device` |
+| [Performance Monitoring - Metric Data](o-apm-metric.md) | `/o/apm/metric` |
+| [Performance Monitoring - Samples](o-apm-samples.md) | `/o/apm/samples` |
+| [Performance Monitoring - User Samples](o-apm-user-samples.md) | `/o/apm/user-samples` |
 | [Performance Monitoring - Issues](o-apm-issues.md) | `/o/apm/issues` |
 | [Performance Monitoring - Edit](i-apm-edit.md) | `/i/apm/edit` |
 | [Performance Monitoring - Change Status](i-apm-change-status.md) | `/i/apm/change-status` |
@@ -37,7 +43,7 @@ Performance Monitoring tracks network and device traces reported by the SDKs. Th
 
 ### Trace identifiers
 
-Both endpoints take the trace `id` as returned in the `id` field of the traces listed by the Performance Monitoring read endpoints (`/o/apm/...`), together with the trace `type` (`network` or `device`).
+The endpoints that work on one trace take the trace `id` as returned in the `id` field of the traces listed by the Performance Monitoring read endpoints (`/o/apm/...`), together with the trace `type` (`network` or `device`).
 
 ## Limitations & Troubleshooting
 
