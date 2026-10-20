@@ -20,6 +20,8 @@ DBViewer configuration managed through user permissions. No feature-specific set
 - [O Db Document](./o-db-document.md)
 - [O Db Indexes](./o-db-indexes.md)
 - [O Db](./o-db.md)
+- [O Db Mongostat](./o-db-mongostat.md)
+- [O Db Mongotop](./o-db-mongotop.md)
 
 <details>
 <summary>Implementation details</summary>
