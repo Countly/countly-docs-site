@@ -53,7 +53,7 @@ jobs:
       VERSION: ${{ matrix.version }}
       DOCS_DIR: versioned_docs/version-${{ matrix.version }}/api
       SIDEBAR: versioned_sidebars/version-${{ matrix.version }}-sidebars.json
-      IGNORE_FILE: docs-drift-ignore.txt
+      IGNORE_FILE: docs-drift-ignore-${{ matrix.version }}.txt
       DRIFT_BRANCH: docs-drift/${{ matrix.version }}
       MAX_ITEMS: ${{ inputs.max_items || '20' }}
       SELECTED: ${{ inputs.version || 'all' }}
@@ -163,7 +163,7 @@ jobs:
           claude_args: >-
             --model claude-sonnet-5-5
             --max-turns 200
-            --allowedTools "Read(./**),Glob,Grep,Write(${{ env.DOCS_DIR }}/**),Edit(${{ env.DOCS_DIR }}/**),Edit(${{ env.SIDEBAR }}),Edit(docs-drift-ignore.txt),Write(drift-report/pr-body.md),Edit(drift-report/pr-body.md),Write(drift-report/review-notes.md),Edit(drift-report/review-notes.md),Bash(node scripts/check-doc-drift.mjs:*),Bash(node scripts/find-merge-pr.mjs:*),Bash(node scripts/platform-log.mjs:*),Bash(git rm:*)"
+            --allowedTools "Read(./**),Glob,Grep,Write(${{ env.DOCS_DIR }}/**),Edit(${{ env.DOCS_DIR }}/**),Edit(${{ env.SIDEBAR }}),Edit(${{ env.IGNORE_FILE }}),Write(drift-report/pr-body.md),Edit(drift-report/pr-body.md),Write(drift-report/review-notes.md),Edit(drift-report/review-notes.md),Bash(node scripts/check-doc-drift.mjs:*),Bash(node scripts/find-merge-pr.mjs:*),Bash(node scripts/platform-log.mjs:*),Bash(git rm:*)"
             --disallowedTools "Read(//proc/**),Read(//sys/**),Read(/${{ runner.temp }}/**),Read(~/.claude/**),Read(~/.config/**),Read(~/.npmrc)"
           prompt: |
             You maintain version ${{ env.VERSION }} of the Countly API reference, in
@@ -198,7 +198,7 @@ jobs:
             For each undocumented endpoint:
             - Open the code at the listed file and line and read the handler.
             - If it is not something a customer would call (an internal event hook, dashboard
-              view tracking, a debug or sample route), add it to docs-drift-ignore.txt under a
+              view tracking, a debug or sample route), add it to ${{ env.IGNORE_FILE }} under a
               comment giving the reason and the version, and write no page.
             - Otherwise, if docs/ already has a page for it, copy that page into the matching
               folder in ${{ env.DOCS_DIR }}/ and then correct it against the ${{ env.VERSION }} code
@@ -215,7 +215,7 @@ jobs:
               drift-report/review-notes.md. Never write REVIEW notes or other HTML comments in
               pages: they are public.
 
-            Only change files under ${{ env.DOCS_DIR }}/, ${{ env.SIDEBAR }} and docs-drift-ignore.txt.
+            Only change files under ${{ env.DOCS_DIR }}/, ${{ env.SIDEBAR }} and ${{ env.IGNORE_FILE }}.
 
             Find the source for every change you make, so reviewers can check it. Use the repo
             the code lives in: countly-server for api/ and the open-source plugins,
@@ -240,7 +240,7 @@ jobs:
             in review-notes.md such as "confirm the error handling of <endpoint> with the developers".
 
             When finished, run
-            `node scripts/check-doc-drift.mjs countly-code ${{ env.DOCS_DIR }} docs-drift-ignore.txt drift-report`
+            `node scripts/check-doc-drift.mjs countly-code ${{ env.DOCS_DIR }} ${{ env.IGNORE_FILE }} drift-report`
             and confirm every endpoint you handled is gone from the new report.
             Then write two files.
 
@@ -340,7 +340,7 @@ jobs:
           add-paths: |
             ${{ env.DOCS_DIR }}/**
             ${{ env.SIDEBAR }}
-            docs-drift-ignore.txt
+            ${{ env.IGNORE_FILE }}
           commit-message: "docs(${{ env.VERSION }}): sync API reference with ${{ steps.tags.outputs.server }}"
           title: "docs(${{ env.VERSION }}): sync API reference with ${{ steps.tags.outputs.server }}"
           body-path: drift-report/pr-body.md

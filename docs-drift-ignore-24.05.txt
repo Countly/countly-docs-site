@@ -1,0 +1,105 @@
+# Endpoints the daily docs drift check (scripts/check-doc-drift.mjs) should skip for the 24.05 docs (versioned_docs/version-24.05).
+# One endpoint per line, written exactly as it appears in drift-report/drift.md.
+# Add an endpoint here when it is internal or deliberately undocumented, with a reason.
+
+# vue-example is a sample plugin for developers, not a product feature.
+/i/vue_example/delete
+/i/vue_example/save
+/i/vue_example/status
+/o?method=get-random-numbers
+/o?method=large-col
+/o?method=vue-records
+
+# Journey Engine event hooks, dispatched internally when a user moves through a funnel.
+/i/funnel/completed
+/i/funnel/excluded
+/i/funnel/step_abandoned
+/i/funnel/step_reached
+
+# Legacy alias: /i?method=populator_template duplicates the documented /i/populator/templates/* endpoints.
+/i?method=populator_template
+
+# Deprecated (marked "API deprecated" in the code); no current dashboard calls it.
+/i/ab-testing/update-experiment-position
+
+# Empty handler: the cognito plugin registers /i/cognito but the function does nothing.
+/i/cognito
+
+# UI page-view tracking: records that a member opened a dashboard page, not a customer API.
+/i/calculated_metrics/track-view
+/i/cohorts/track-view
+/i/dashboards/track-view
+/i/funnels/track-view
+
+# Internal hook (24.05, 25.03): crashes-jira listens to the crash resolve/unresolve calls to sync the Jira issue; it has no response of its own.
+/i/crashes
+
+# Deprecated in the code (replaced by /i/data-manager/user-properties/delete, which is documented) (24.05, 25.03).
+/i/data-manager/data-type/delete
+
+# Timeline maintenance routes (24.05, 25.03): only used by the plugin's own tests, no dashboard or SDK calls them.
+/i/drill/fixusertimeline
+/i/drill/recalculatetimeline
+/i/drill/resettimeline
+
+# No handler (24.05, 25.03): the geo plugin routes /i/geolocations/update to geo.update, which does not exist.
+/i/geolocations/update
+
+# Prefix dispatchers (24.05, 25.03): the sub-routes (start, stop, take-heap-snapshot, ...) each have their own page in system-utility.
+/i/inspector
+/i/profiler
+
+# Empty handlers (24.05, 25.03): the journey_engine plugin registers the folders routes but the functions do nothing.
+/i/journey-engine/folders/delete
+/i/journey-engine/folders/save
+
+# License management (24.05, 25.03): called by the dashboard's license panel, not a customer API; the license docs say the feature has no public endpoints.
+/i/license-adopt-successor
+/i/license-deregister-instance
+/i/license-instance-state
+
+# License upload (24.05): part of the same license panel flow.
+/i/license/upload
+
+# Demo data seeder: the push plugin's /i/push/message/demo fills an app with sample messages for the dashboard demo, not a customer API.
+/i/push/message/demo
+
+# Already documented as /i?method=ab_enroll_variant and /i?method=ab_opt_out: the ab-testing plugin forwards those /i calls to its internal /i/sdk handler, which is not reachable directly.
+/i/sdk?method=ab_enroll_variant
+/i/sdk?method=ab_opt_out
+
+# Dashboard notification acknowledgement: marks a notification as seen for the logged-in dashboard member, not a customer API.
+/i/users/ack
+
+# Not in use: the code comment says event popularity is only a test for a possible feature, and the MongoDB adapter returns an error.
+/o?method=cohort_event_popularity
+
+# Legacy push API (v1 /i/pushes/create and /i/pushes/prepare); duplicates the documented /i/push/message/* endpoints. Ignored in 24.05.
+/i/pushes
+
+# Duplicate of the documented /o/sdk route (same handler), not used by the SDKs. Ignored in 24.05.
+/i/sdk
+
+# Dashboard internal: status tables of Drill data view timeline processing. Ignored in 24.05.
+/o?method=dataviews
+
+# Internal: called by the report creation flow to recalculate the daily/weekly/monthly parts of a saved report. Ignored in 24.05.
+/o?method=rerunsubreport
+
+# Empty handler: the journey_engine plugin registers /o/journey-engine/folders but the function does nothing. Ignored in 24.05.
+/o/journey-engine/folders
+
+# Dashboard internal: feeds the dashboard's licence screen and licence server communication, not a customer API. Ignored in 24.05.
+/o/license
+
+# Dashboard internal: browser bookkeeping for license usage reports and the one-time activation mark (a write behind a GET route). Ignored in 25.03.
+/o/license-metrics-check
+
+# Prefix only: the handler dispatches to the documented /o/symbolication/test_* endpoints and returns nothing for the bare path. Ignored in 25.03.
+/o/symbolication
+
+# Prefix only: the handler dispatches to the documented /o/system/* endpoints (memory, disks, cpu, ...). Ignored in 25.03.
+/o/system
+
+# Internal: export-query producer for /o/export/requestQuery; it returns a database pipeline for the export job, not data for customers. Ignored in 25.03.
+/o/heatmaps/export

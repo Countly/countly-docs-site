@@ -1,4 +1,4 @@
-# Endpoints the daily docs drift check (scripts/check-doc-drift.mjs) should skip.
+# Endpoints the daily docs drift check (scripts/check-doc-drift.mjs) should skip for the latest docs (docs/api). Each older version has its own file, docs-drift-ignore-<version>.txt.
 # One endpoint per line, written exactly as it appears in drift-report/drift.md.
 # Add an endpoint here when it is internal or deliberately undocumented, with a reason.
 
