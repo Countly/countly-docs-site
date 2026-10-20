@@ -147,11 +147,36 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          count=$(gh pr list --head "$DRIFT_BRANCH" --state open --json number --jq length)
+          prs=$(gh pr list --head "$DRIFT_BRANCH" --state open --json url,createdAt)
+          count=$(echo "$prs" | jq length)
           echo "count=$count" >> "$GITHUB_OUTPUT"
+          # Days the open PR has waited for review, for the Slack reminder.
+          if [ "$count" != "0" ]; then
+            echo "url=$(echo "$prs" | jq -r '.[0].url')" >> "$GITHUB_OUTPUT"
+            echo "age_days=$(echo "$prs" | jq '.[0].createdAt | fromdateiso8601 | (now - .) / 86400 | floor')" >> "$GITHUB_OUTPUT"
+          fi
           if [ "$count" != "0" ]; then
             echo "A $VERSION drift PR is still open, so no new drafts were made this run." >> "$GITHUB_STEP_SUMMARY"
           fi
+
+      # A run makes no new drafts while a drift PR is open, so remind the team once it is 2 days old.
+      - name: Remind the team about the open drift PR
+        if: steps.selected.outputs.run == 'true' && steps.open_pr.outputs.count != '0' && fromJSON(steps.open_pr.outputs.age_days) >= 2
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL: ${{ secrets.SLACK_DOCS_CHANNEL }}
+          PR_URL: ${{ steps.open_pr.outputs.url }}
+          AGE: ${{ steps.open_pr.outputs.age_days }}
+        run: |
+          scripts/post-slack-note.sh "⏰ The API docs $VERSION update has waited $AGE days for review. New docs changes wait until it is merged or closed. <$PR_URL|Review the pull request>"
+
+      # Claude may only Edit these files (a Write rule for one path never matches), and
+      # Edit cannot create a file, so create them empty first.
+      - name: Create the report files Claude fills in
+        if: steps.selected.outputs.run == 'true' && steps.check.outputs.gaps != '0' && steps.open_pr.outputs.count == '0'
+        run: |
+          : > drift-report/pr-body.md
+          : > drift-report/review-notes.md
 
       - name: Draft doc changes with Claude
         id: draft
@@ -242,7 +267,7 @@ jobs:
             When finished, run
             `node scripts/check-doc-drift.mjs countly-code ${{ env.DOCS_DIR }} ${{ env.IGNORE_FILE }} drift-report`
             and confirm every endpoint you handled is gone from the new report.
-            Then write two files.
+            Then fill in two files. Both already exist and are empty: use the Edit tool, not Write.
 
             drift-report/pr-body.md is the public PR description. Write it for customers, in plain
             language, with exactly these sections and nothing else:
@@ -356,3 +381,13 @@ jobs:
           PR_URL: ${{ steps.cpr.outputs.pull-request-url }}
         run: |
           scripts/post-drift-slack.sh "API docs $VERSION update ready for review" "versioned_docs/"
+
+      - name: Tell the team the run failed
+        if: failure() && steps.selected.outputs.run == 'true'
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL: ${{ secrets.SLACK_DOCS_CHANNEL }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        # This can run after the drafting step, so use the committed script, never the working copy.
+        run: |
+          git show HEAD:scripts/post-slack-note.sh | bash -s -- "⚠️ The API docs $VERSION update check failed. <$RUN_URL|See the run>"
