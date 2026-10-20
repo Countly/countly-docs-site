@@ -18,6 +18,7 @@ The Hooks feature lets you automate actions when Countly events or schedules mat
 - [Hooks - Update Status](./i-hook-status.md)
 - [Hooks - Delete](./i-hook-delete.md)
 - [Hooks - Test](./i-hook-test.md)
+- [Hooks - API Endpoint Trigger](./o-hooks-trigger.md)
 
 ## Key Capabilities
 

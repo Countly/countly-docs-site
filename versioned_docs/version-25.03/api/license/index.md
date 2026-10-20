@@ -49,8 +49,9 @@ Common fields stored inside the JWT:
 License endpoints live in the Drill feature:
 
 - [Upload License](upload.md) - `POST /i/license/upload`
-- `GET /o/license-metrics/mau`
-- `GET /o/license-metrics/dp`
+- [License History](o-license-history.md) - `GET /o/license-history`
+- [MAU Metrics](o-license-metrics-mau.md) - `GET /o/license-metrics/mau`
+- [Data Point Metrics](o-license-metrics-dp.md) - `GET /o/license-metrics/dp`
 
 ## Notes
 
