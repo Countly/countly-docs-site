@@ -92,11 +92,20 @@
 # Dashboard internal: feeds the dashboard's licence screen and licence server communication, not a customer API. Ignored in 24.05.
 /o/license
 
+# Dashboard internal: browser bookkeeping for license usage reports and the one-time activation mark (a write behind a GET route). Ignored in 25.03.
+/o/license-metrics-check
+
+# Prefix only: the handler dispatches to the documented /o/symbolication/test_* endpoints and returns nothing for the bare path. Ignored in 25.03.
+/o/symbolication
+
+# Prefix only: the handler dispatches to the documented /o/system/* endpoints (memory, disks, cpu, ...). Ignored in 25.03.
+/o/system
+
+# Internal: export-query producer for /o/export/requestQuery; it returns a database pipeline for the export job, not data for customers. Ignored in 25.03.
+/o/heatmaps/export
+
 # Ops diagnostic for developers: runs the A/B testing model on sample input (global admin only).
 /o/ab-testing/test-models
 
 # Internal helper for the Data Manager dashboard view: lists metadata of the internal view event only.
 /o/data-manager/events/internal
-
-# Internal export query producer: returns a database pipeline for /o/export/requestQuery, not data for customers.
-/o/heatmaps/export
