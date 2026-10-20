@@ -96,7 +96,9 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          prs=$(gh pr list --head "$DRIFT_BRANCH" --state open --json url,createdAt)
+          prs=$(gh pr list --head "$DRIFT_BRANCH" --state open --json url,createdAt,isCrossRepository \
+            --jq '[.[] | select(.isCrossRepository == false)]')
+          # Only PRs from this repository: a fork can use the same branch name.
           count=$(echo "$prs" | jq length)
           echo "count=$count" >> "$GITHUB_OUTPUT"
           # Days the open PR has waited for review, for the Slack reminder.
