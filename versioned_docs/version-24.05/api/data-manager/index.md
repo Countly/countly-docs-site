@@ -21,6 +21,7 @@ This index is product-oriented by design. Endpoint pages contain request/respons
 
 ### Events
 - [Events Extended - Read](events-extended-read.md)
+- [Internal Events - Read](events-internal-read.md)
 - [Event Segments - Read](event-segments-read.md)
 - [Events - Create](events-create.md)
 - [Event Properties - Update](event-properties-update.md)
@@ -38,6 +39,7 @@ This index is product-oriented by design. Endpoint pages contain request/respons
 - [Property Expiration - Update](property-expiration-update.md)
 - [Data Types - Create](data-types-create.md)
 - [Property Values - Read](property-values-read.md)
+- [Property Values Count - Read](property-values-count-read.md)
 
 ### Transformations
 - [Transformations - Read](transformations-read.md)

@@ -86,10 +86,10 @@
 # Internal: called by the report creation flow to recalculate the daily/weekly/monthly parts of a saved report. Ignored in 24.05.
 /o?method=rerunsubreport
 
-# Empty handler: the journey_engine plugin registers /o/journey-engine/folders but the function does nothing. Ignored in 25.03.
+# Empty handler: the journey_engine plugin registers /o/journey-engine/folders but the function does nothing. Ignored in 24.05.
 /o/journey-engine/folders
 
-# Dashboard internal: license screen bootstrap, returns the install identity and license-server channel details for the browser. Ignored in 25.03.
+# Dashboard internal: feeds the dashboard's licence screen and licence server communication, not a customer API. Ignored in 24.05.
 /o/license
 
 # Dashboard internal: browser bookkeeping for license usage reports and the one-time activation mark (a write behind a GET route). Ignored in 25.03.
