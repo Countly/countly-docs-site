@@ -103,3 +103,9 @@
 
 # Internal: export-query producer for /o/export/requestQuery; it returns a database pipeline for the export job, not data for customers. Ignored in 25.03.
 /o/heatmaps/export
+
+# Ops diagnostic for developers: runs the A/B testing model on sample input (global admin only).
+/o/ab-testing/test-models
+
+# Internal helper for the Data Manager dashboard view: lists metadata of the internal view event only.
+/o/data-manager/events/internal
