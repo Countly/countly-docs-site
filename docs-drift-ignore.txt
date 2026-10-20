@@ -86,6 +86,12 @@
 # Internal: called by the report creation flow to recalculate the daily/weekly/monthly parts of a saved report. Ignored in 24.05.
 /o?method=rerunsubreport
 
+# Empty handler: the journey_engine plugin registers /o/journey-engine/folders but the function does nothing. Ignored in 24.05.
+/o/journey-engine/folders
+
+# Dashboard internal: feeds the dashboard's licence screen and licence server communication, not a customer API. Ignored in 24.05.
+/o/license
+
 # Ops diagnostic for developers: runs the A/B testing model on sample input (global admin only).
 /o/ab-testing/test-models
 
