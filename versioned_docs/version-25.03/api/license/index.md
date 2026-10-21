@@ -55,5 +55,5 @@ License endpoints live in the Drill feature:
 
 ## Notes
 
-- This feature does not register public API endpoints.
+- The License feature has no endpoints of its own. Its endpoints are part of Drill (see above).
 - Dashboard locking is enforced by the Drill frontend logic.
