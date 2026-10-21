@@ -397,11 +397,13 @@ jobs:
         run: |
           note="⚠️ The API docs $VERSION update check failed. <$RUN_URL|See the run>"
           if [ -s "${EXECUTION_FILE:-}" ]; then
+            # Tool names only for the log; Slack also gets a refused command's first word, if it is a plain name.
+            echo "Refused tool calls: $(jq -r '[.[] | select(.type == "result")] | last | .permission_denials // [] | map(.tool_name) | join(", ")' "$EXECUTION_FILE")"
             refused=$(jq -r '[.[] | select(.type == "result")] | last | .permission_denials // []
-              | map(.tool_name + (if .tool_name == "Bash" then " " + ((.tool_input.command // "") | split(" ")[0]) else "" end))
+              | map(.tool_name + (if .tool_name == "Bash" then " " + ((.tool_input.command // "") | [splits("\\s+")] | map(select(. != "")) | (.[0] // "")
+                  | if test("^[A-Za-z0-9._-]{1,40}$") then . else "(command hidden)" end) else "" end))
               | join(", ")' "$EXECUTION_FILE")
             last=$(jq -r '[.[] | select(.type == "result")] | last | (.result // "")[0:1500]' "$EXECUTION_FILE")
-            echo "Refused tool calls: ${refused:-none}"
             note="$note"$'\n'"Refused tool calls: ${refused:-none}"$'\n'"Claude's last message:"$'\n'"${last:-none}"
           fi
           git show HEAD:scripts/post-slack-note.sh | bash -s -- "$note"
