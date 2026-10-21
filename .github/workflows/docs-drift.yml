@@ -130,6 +130,7 @@ jobs:
           : > drift-report/review-notes.md
 
       - name: Draft doc changes with Claude
+        id: draft
         if: steps.check.outputs.gaps != '0' && steps.open_pr.outputs.count == '0'
         uses: anthropics/claude-code-action@ed670b4cf9de2a5a570d130d2f6197b9e543cd64 # v1.0.240
         with:
@@ -312,6 +313,20 @@ jobs:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
           SLACK_CHANNEL: ${{ secrets.SLACK_DOCS_CHANNEL }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          EXECUTION_FILE: ${{ steps.draft.outputs.execution_file }}
         # This can run after the drafting step, so use the committed script, never the working copy.
+        # The log is public and the code Claude reads is private: the log gets only the names of
+        # refused tools, and Claude's last message goes to the private Slack channel only.
         run: |
-          git show HEAD:scripts/post-slack-note.sh | bash -s -- "⚠️ The API docs update check failed. <$RUN_URL|See the run>"
+          note="⚠️ The API docs update check failed. <$RUN_URL|See the run>"
+          if [ -s "${EXECUTION_FILE:-}" ]; then
+            # Tool names only for the log; Slack also gets a refused command's first word, if it is a plain name.
+            echo "Refused tool calls: $(jq -r '[.[] | select(.type == "result")] | last | .permission_denials // [] | map(.tool_name) | join(", ")' "$EXECUTION_FILE")"
+            refused=$(jq -r '[.[] | select(.type == "result")] | last | .permission_denials // []
+              | map(.tool_name + (if .tool_name == "Bash" then " " + ((.tool_input.command // "") | [splits("\\s+")] | map(select(. != "")) | (.[0] // "")
+                  | if test("^[A-Za-z0-9._-]{1,40}$") then . else "(command hidden)" end) else "" end))
+              | join(", ")' "$EXECUTION_FILE")
+            last=$(jq -r '[.[] | select(.type == "result")] | last | (.result // "")[0:1500]' "$EXECUTION_FILE")
+            note="$note"$'\n'"Refused tool calls: ${refused:-none}"$'\n'"Claude's last message:"$'\n'"${last:-none}"
+          fi
+          git show HEAD:scripts/post-slack-note.sh | bash -s -- "$note"
