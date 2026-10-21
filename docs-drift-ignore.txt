@@ -58,9 +58,6 @@
 /i/license-deregister-instance
 /i/license-instance-state
 
-# License upload (24.05): part of the same license panel flow.
-/i/license/upload
-
 # Demo data seeder: the push plugin's /i/push/message/demo fills an app with sample messages for the dashboard demo, not a customer API.
 /i/push/message/demo
 
