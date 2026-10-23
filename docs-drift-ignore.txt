@@ -106,3 +106,6 @@
 
 # Internal helper for the Data Manager dashboard view: lists metadata of the internal view event only.
 /o/data-manager/events/internal
+
+# Dev-only debug endpoint (the code comment says so): returns the raw journey graph, block logs and pending waits of one user for a debug visualization.
+/o/journey-engine/user-status

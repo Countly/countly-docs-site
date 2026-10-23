@@ -27,6 +27,8 @@ Push Notifications supports campaign creation, targeting, scheduling, API-trigge
 - [User History](./user.md)
 - [MIME Info](./mime.md)
 - [Read Dashboard](./dashboard.md)
+- [Read App Config](./app-config.md)
+- [Generate VAPID Keys](./vapid-keys.md)
 
 ## Configuration & Settings
 

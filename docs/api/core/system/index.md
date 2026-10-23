@@ -20,6 +20,7 @@ System endpoints expose operational runtime information for Countly, including v
 - [Kafka Events List](./o-system-kafka-events.md) - `/o/system/kafka/events`
 - [Kafka Events Meta Read](./o-system-kafka-events-meta.md) - `/o/system/kafka/events/meta`
 - [Observability Read](./o-system-observability.md) - `/o/system/observability`
+- [User Sync History Read](./o-system-usersync.md) - `/o/system/usersync`
 
 ## Configuration & Settings
 
