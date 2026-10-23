@@ -11,7 +11,11 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           persist-credentials: false
-      - run: mkdir -p drift-report && : > drift-report/pr-body.md && pwd && ls -la docs/api/heatmaps
+      - run: |
+          mkdir -p drift-report
+          : > drift-report/pr-body.md
+          pwd
+          ls -la docs/api/heatmaps
       - name: Probe
         id: draft
         uses: anthropics/claude-code-action@ed670b4cf9de2a5a570d130d2f6197b9e543cd64 # v1.0.240
