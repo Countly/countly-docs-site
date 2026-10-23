@@ -99,9 +99,9 @@ jobs:
           ref: ${{ steps.tags.outputs.server }}
           persist-credentials: false
           path: countly-server
-          # Full history without file contents, so the PR can cite where each change came from.
+          # Full history with file contents, so the PR can cite where each change came from.
+          # No blob filter: the checkout keeps no token, so it could not fetch old file versions later.
           fetch-depth: 0
-          filter: blob:none
           sparse-checkout: |
             api
             plugins
@@ -116,7 +116,6 @@ jobs:
           persist-credentials: false
           path: countly-enterprise-plugins
           fetch-depth: 0
-          filter: blob:none
           sparse-checkout: |
             plugins
 
@@ -246,6 +245,11 @@ jobs:
               pages: they are public.
 
             Only change files under ${{ env.DOCS_DIR }}/, ${{ env.SIDEBAR }} and ${{ env.IGNORE_FILE }}.
+
+            Read and search code with the Read, Grep and Glob tools. Bash runs only the commands
+            named in this prompt, each on its own: no cd, pipes, ";" or "&&". A refused call is no
+            reason to stop: go on with the next endpoint, and always finish by filling in the two
+            report files.
 
             Find the source for every change you make, so reviewers can check it. Use the repo
             the code lives in: countly-server for api/ and the open-source plugins,
@@ -400,11 +404,13 @@ jobs:
         run: |
           note="⚠️ The API docs $VERSION update check failed. <$RUN_URL|See the run>"
           if [ -s "${EXECUTION_FILE:-}" ]; then
-            # Tool names only for the log; Slack also gets a refused command's first word, if it is a plain name.
+            # Tool names only for the log; Slack also gets a refused command's first word, if it is a plain name,
+            # and the path of a refused write.
             echo "Refused tool calls: $(jq -r '[.[] | select(.type == "result")] | last | .permission_denials // [] | map(.tool_name) | join(", ")' "$EXECUTION_FILE")"
             refused=$(jq -r '[.[] | select(.type == "result")] | last | .permission_denials // []
               | map(.tool_name + (if .tool_name == "Bash" then " " + ((.tool_input.command // "") | [splits("\\s+")] | map(select(. != "")) | (.[0] // "")
-                  | if test("^[A-Za-z0-9._-]{1,40}$") then . else "(command hidden)" end) else "" end))
+                  | if test("^[A-Za-z0-9._-]{1,40}$") then . else "(command hidden)" end)
+                elif .tool_input.file_path then " " + (.tool_input.file_path | ltrimstr(env.GITHUB_WORKSPACE + "/")) else "" end))
               | join(", ")' "$EXECUTION_FILE")
             last=$(jq -r '[.[] | select(.type == "result")] | last | (.result // "")[0:1500]' "$EXECUTION_FILE")
             note="$note"$'\n'"Refused tool calls: ${refused:-none}"$'\n'"Claude's last message:"$'\n'"${last:-none}"
