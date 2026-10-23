@@ -187,11 +187,14 @@ jobs:
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ github.token }}
+          # No helper agents, as in countly-platform's drift review: since 21 Oct 2026 Claude
+          # starts them in CI, and their work is lost. Every run here has refused its page
+          # writes since that same day.
           claude_args: >-
             --model claude-sonnet-5-5
-            --max-turns 200
+            --max-turns 400
             --allowedTools "Read(./**),Glob,Grep,Write(${{ env.DOCS_DIR }}/**),Edit(${{ env.DOCS_DIR }}/**),Edit(${{ env.SIDEBAR }}),Edit(${{ env.IGNORE_FILE }}),Write(drift-report/pr-body.md),Edit(drift-report/pr-body.md),Write(drift-report/review-notes.md),Edit(drift-report/review-notes.md),Bash(node scripts/check-doc-drift.mjs:*),Bash(node scripts/find-merge-pr.mjs:*),Bash(node scripts/platform-log.mjs:*),Bash(git rm:*)"
-            --disallowedTools "Read(//proc/**),Read(//sys/**),Read(/${{ runner.temp }}/**),Read(~/.claude/**),Read(~/.config/**),Read(~/.npmrc)"
+            --disallowedTools "Agent,Task,Workflow,Read(//proc/**),Read(//sys/**),Read(/${{ runner.temp }}/**),Read(~/.claude/**),Read(~/.config/**),Read(~/.npmrc)"
           prompt: |
             You maintain version ${{ env.VERSION }} of the Countly API reference, in
             ${{ env.DOCS_DIR }}/ (a versioned Docusaurus site). Its sidebar is
