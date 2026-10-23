@@ -1,62 +1,242 @@
 name: debug write probe (temporary)
+
+# Daily: compare the classic API endpoints in countly-platform with docs/api/,
+# have Claude draft pages for undocumented endpoints and remove pages for deleted ones,
+# test the drafted pages against a live server, and open one pull request for review.
+# Nothing is published until that PR is merged.
+#
+# docs/api/ documents the newest stable release of DOCS_VERSION (for example 26.01.14),
+# not main, so customers never read about endpoints their server doesn't have yet.
+# Release candidates (26.01.15-flex-rc1) are skipped. Change DOCS_VERSION when the next
+# major version becomes the current docs.
+#
+# Secrets:
+#   PLATFORM_READ_TOKEN      fine-grained token with read-only Contents access to Countly/countly-platform
+#   CLAUDE_CODE_OAUTH_TOKEN  from `claude setup-token`, run by someone on a Claude subscription
+#   COUNTLY_*                optional test server, same secrets as docs-api-test.yml
+#   SLACK_BOT_TOKEN          optional; with SLACK_DOCS_CHANNEL, posts a Slack note when a PR is opened
+#   SLACK_DOCS_CHANNEL       channel ID the bot posts to (same setup as countly-backup-documentation)
+
 on:
   pull_request:
     branches: [main]
+
 permissions:
   contents: read
   pull-requests: read
+
+concurrency:
+  group: docs-drift-probe
+  cancel-in-progress: false
+
+env:
+  DRIFT_BRANCH: docs-drift/auto
+  DOCS_VERSION: "26.01"
+  MAX_ITEMS: '3'
+
 jobs:
-  probe:
+  drift:
     if: github.head_ref == 'debug/drift-write-probe'
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        platform: [without, with]
     steps:
+      # Neither checkout keeps its token: the Claude step reads files, and the
+      # pull request step passes its own.
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           persist-credentials: false
-      - if: matrix.platform == 'with'
+
+      # Tags look like "26.01.14"; anything with a suffix (-rc1, -flex-rc1) is not a release.
+      - name: Find the newest release tag
+        id: tag
+        env:
+          TOKEN: ${{ secrets.PLATFORM_READ_TOKEN }}
+        run: |
+          tag=$(git ls-remote --tags --refs "https://x-access-token:${TOKEN}@github.com/Countly/countly-platform.git" \
+            | sed 's#.*refs/tags/##' | grep -E "^v?${DOCS_VERSION//./\\.}\.[0-9]+$" \
+            | awk '{v=$0; sub(/^v/, "", v); print v "\t" $0}' | sort -V | tail -1 | cut -f2)
+          if [ -z "$tag" ]; then
+            echo "::error::No $DOCS_VERSION release tag found in countly-platform."; exit 1
+          fi
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "Checking docs/api against countly-platform $tag." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Check out countly-platform
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           repository: Countly/countly-platform
-          ref: 26.01.16
+          ref: ${{ steps.tag.outputs.tag }}
           token: ${{ secrets.PLATFORM_READ_TOKEN }}
           persist-credentials: false
           path: countly-platform
+          # Full history without file contents, so the PR can cite where each change came from.
           fetch-depth: 0
           filter: blob:none
           sparse-checkout: |
             api
             plugins
-      - run: |
-          mkdir -p drift-report
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 20
+
+      - name: Compare code with docs
+        id: check
+        run: |
+          node scripts/check-doc-drift.mjs countly-platform
+          cat drift-report/drift.md >> "$GITHUB_STEP_SUMMARY"
+          echo "gaps=$(node -e 'const r=require("./drift-report/drift.json"); console.log(r.missing.length + r.removed.length)')" >> "$GITHUB_OUTPUT"
+
+      # One drift PR at a time: while one is open for review, new runs only report.
+      - name: Look for an open drift PR
+        id: open_pr
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          prs=$(gh pr list --head "$DRIFT_BRANCH" --state open --json url,createdAt,isCrossRepository \
+            --jq '[.[] | select(.isCrossRepository == false)]')
+          # Only PRs from this repository: a fork can use the same branch name.
+          count=$(echo "$prs" | jq length)
+          echo "count=$count" >> "$GITHUB_OUTPUT"
+          # Days the open PR has waited for review, for the Slack reminder.
+          if [ "$count" != "0" ]; then
+            echo "url=$(echo "$prs" | jq -r '.[0].url')" >> "$GITHUB_OUTPUT"
+            echo "age_days=$(echo "$prs" | jq '.[0].createdAt | fromdateiso8601 | (now - .) / 86400 | floor')" >> "$GITHUB_OUTPUT"
+          fi
+          if [ "$count" != "0" ]; then
+            echo "A drift PR is still open, so no new drafts were made this run." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      # A run makes no new drafts while a drift PR is open, so remind the team once it is 2 days old.
+      - name: Remind the team about the open drift PR
+        if: steps.open_pr.outputs.count != '0' && fromJSON(steps.open_pr.outputs.age_days) >= 2
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL: ${{ secrets.SLACK_DOCS_CHANNEL }}
+          PR_URL: ${{ steps.open_pr.outputs.url }}
+          AGE: ${{ steps.open_pr.outputs.age_days }}
+        run: |
+          scripts/post-slack-note.sh "⏰ The API docs update has waited $AGE days for review. New docs changes wait until it is merged or closed. <$PR_URL|Review the pull request>"
+
+      # Claude may only Edit these files (a Write rule for one path never matches), and
+      # Edit cannot create a file, so create them empty first.
+      - name: Create the report files Claude fills in
+        if: steps.check.outputs.gaps != '0' && steps.open_pr.outputs.count == '0'
+        run: |
           : > drift-report/pr-body.md
-      - name: Probe
+          : > drift-report/review-notes.md
+
+      - name: Draft doc changes with Claude
         id: draft
+        if: steps.check.outputs.gaps != '0' && steps.open_pr.outputs.count == '0'
         uses: anthropics/claude-code-action@ed670b4cf9de2a5a570d130d2f6197b9e543cd64 # v1.0.240
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          # The workflow's own token, so the Claude GitHub App does not need to be installed.
           github_token: ${{ github.token }}
+          # No helper agents, as in countly-platform's drift review: since 21 Oct 2026 Claude
+          # starts them in CI, and their work is lost. Every run here has refused its page
+          # writes since that same day.
           claude_args: >-
             --model claude-sonnet-5-5
-            --max-turns 20
-            --allowedTools "Read(./**),Glob,Grep,Write(docs/api/**),Edit(docs/api/**),Edit(sidebars.js),Write(drift-report/pr-body.md),Edit(drift-report/pr-body.md),Bash(node scripts/check-doc-drift.mjs:*),Bash(git rm:*)"
+            --max-turns 400
+            --allowedTools "Read(./**),Glob,Grep,Write(docs/api/**),Edit(docs/api/**),Edit(sidebars.js),Edit(docs-drift-ignore.txt),Write(drift-report/pr-body.md),Edit(drift-report/pr-body.md),Write(drift-report/review-notes.md),Edit(drift-report/review-notes.md),Bash(node scripts/check-doc-drift.mjs:*),Bash(node scripts/find-merge-pr.mjs:*),Bash(node scripts/platform-log.mjs:*),Bash(git rm:*)"
             --disallowedTools "Agent,Task,Workflow,Read(//proc/**),Read(//sys/**),Read(/${{ runner.temp }}/**),Read(~/.claude/**),Read(~/.config/**),Read(~/.npmrc)"
           prompt: |
-            Permission test. Make exactly these tool calls in order, and continue even if one is refused:
-            1. Write tool: create docs/api/heatmaps/probe-relative.md containing "a" (use the path as given).
-            2. Write tool: create the absolute path <current directory>/docs/api/heatmaps/probe-absolute.md containing "b".
-            3. Read docs/api/heatmaps/index.md, then Edit tool: append the line "probe" to it.
-            4. Bash: run `cd docs && ls`.
-            5. Write tool: create docs/api/newfolder/probe.md containing "c".
-            Then report, for each call, whether it worked and the exact error text if not.
+            You maintain the Countly API reference in docs/api/ (a Docusaurus site). The file
+            drift-report/drift.md lists where the docs and the code in countly-platform/ disagree.
+            countly-platform/ is read-only source code: never edit it. It is checked out at
+            ${{ steps.tag.outputs.tag }}, the newest release customers run. Document only what
+            that code does, even if you know of newer changes.
+
+            Handle at most ${{ env.MAX_ITEMS }} endpoints this run: first everything under
+            "Pages for removed endpoints", then entries from "Undocumented endpoints" in order.
+
+            For each removed endpoint:
+            - Search countly-platform/ to confirm the endpoint really is gone.
+            - If it is gone, delete the page with `git rm`, and remove links to it from other
+              pages in docs/api/ (search for its file name).
+            - If the feature's whole plugin is gone from countly-platform/plugins/, delete the
+              entire docs/api/<feature>/ folder and its entry in sidebars.js in one go, instead
+              of page by page. The whole folder counts as one endpoint towards the limit.
+            - If it still exists and the page's Endpoint block is simply wrong, fix the page.
+
+            For each undocumented endpoint:
+            - Open the code at the listed file and line and read the handler.
+            - If it is not something a customer would call (an internal event hook, dashboard
+              view tracking, a debug or sample route), add it to docs-drift-ignore.txt under a
+              comment giving the reason, and write no page.
+            - Otherwise write a page in the matching docs/api/<feature>/ folder. First read two
+              existing pages in that folder and copy their structure exactly: frontmatter
+              (sidebar_label, keywords, last_update with today's date), section order and
+              headings (Endpoint, Overview, Authentication, Permissions, Request Parameters,
+              Response, Examples, and whatever else they use), table formats, and the
+              Enterprise note if the folder's pages have one. Link the new page from the
+              folder's index.md.
+            - If the feature has no folder yet, create one with an index.md modelled on another
+              feature's index.md, and add a dir(...) entry to the right group in sidebars.js.
+            - Document only what the code shows: parameters it reads, checks it makes, the
+              permission it validates, and the response it returns. Do not invent fields or
+              behaviour. Where the code leaves something unclear, write the page anyway,
+              leave the unclear detail out, and add a question about it to
+              drift-report/review-notes.md. Never write REVIEW notes or other HTML comments in
+              pages: they are public.
+
+            Only change files under docs/api/, sidebars.js and docs-drift-ignore.txt.
+
+            Find the source for every change you make, so reviewers can check it:
+            - A whole plugin removed: `node scripts/platform-log.mjs -1 --format=%h -- plugins/<name>`
+              gives the commit that deleted it.
+            - One endpoint removed or added: search the file that defines (or defined) its
+              route, always with a path and a date, for example
+              `node scripts/platform-log.mjs -S"/o/dashboards/test" --since=2026-03-01 --format="%h %ad %s" --date=short -- plugins/dashboards/api/api.js`.
+              Removed: the newest match is the removal. Added: the oldest match is when it
+              appeared. No match since 2026-03-01 means it existed before the docs were written.
+            - Then run `node scripts/find-merge-pr.mjs <commit> countly-platform ${{ steps.tag.outputs.tag }}`, and copy its "Commit:" and
+              "Pull request:" lines into drift-report/review-notes.md as they are. Never write a commit
+              hash or PR number that did not come from those commands. If you can't find one,
+              say so.
+
+            This repository is public, and so are the pages and the PR description.
+            drift-report/review-notes.md is not: it is posted only to the team's private Slack
+            channel. Put sources, open questions and anything reviewers should check there.
+            Never write author names, commit titles or messages, server hostnames, or details of
+            server bugs, crashes or security fixes in any file; for those, write a neutral note
+            in review-notes.md such as "confirm the error handling of <endpoint> with the developers".
+
+            When finished, run `node scripts/check-doc-drift.mjs countly-platform` and confirm
+            every endpoint you handled is gone from the new report.
+            Then fill in two files. Both already exist and are empty: use the Edit tool, not Write.
+
+            drift-report/pr-body.md is the public PR description. Write it for customers, in plain
+            language, with exactly these sections and nothing else:
+              ## What this PR does
+              One sentence, for example "Updates the 26.01 API reference to match the latest 26.01 release."
+              ## Removed
+              ## Fixed
+              ## Added
+              One bullet per endpoint: the path in backticks and a short plain description of the
+              change. Leave out a section that has nothing in it.
+            No sources, test results, open questions, ignored endpoints, internal reasons or
+            implementation details.
+
+            drift-report/review-notes.md is for the team and is posted to Slack as it is, so write
+            it for Slack: no Markdown headings (#), no tables, no shell commands. Use *bold* lines
+            as headings and short "• " bullets, in this order, leaving out empty sections:
+              *Questions for the developers*
+              One bullet each, in plain words: the endpoint in backticks, then the question.
+              *Left out of the docs*
+              One bullet each: the endpoint in backticks and why, in a few words.
+              *Sources*
+              One bullet per endpoint: the endpoint in backticks, then its "Commit:" and
+              "Pull request:" lines, or a few words on why none was found. If the same reason
+              applies to several endpoints, say it once.
+
       - name: Show refusals
         if: always()
         env:
           EXECUTION_FILE: ${{ steps.draft.outputs.execution_file }}
         run: |
-          jq -c '[.[] | select(.type == "result")] | last | {num_turns, permission_denials: [.permission_denials[] | {tool_name, path: (.tool_input.file_path // .tool_input.command)}], result}' "$EXECUTION_FILE"
-          jq -c '.[] | select(.type == "system" and .subtype == "init") | {cwd, permissionMode, claude_code_version}' "$EXECUTION_FILE"
+          jq -c '[.[] | select(.type == "result")] | last | {num_turns, d: [.permission_denials[] | {tool_name, path: (.tool_input.file_path // ((.tool_input.command // "") | split(" ") | .[0:2] | join(" ")))}]}' "$EXECUTION_FILE"
+          # The error text each refused call got back.
+          jq -r '.[] | select(.type == "user") | .message.content[]? | select(.type == "tool_result" and .is_error == true) | (.content | tostring)[0:300]' "$EXECUTION_FILE"
           git status --short
