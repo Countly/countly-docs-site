@@ -32,7 +32,7 @@ concurrency:
 env:
   DRIFT_BRANCH: docs-drift/auto
   DOCS_VERSION: "26.01"
-  MAX_ITEMS: '3'
+  MAX_ITEMS: '20'
 
 jobs:
   drift:
@@ -240,3 +240,5 @@ jobs:
           # The error text each refused call got back.
           jq -r '.[] | select(.type == "user") | .message.content[]? | select(.type == "tool_result" and .is_error == true) | (.content | tostring)[0:300]' "$EXECUTION_FILE"
           git status --short
+          wc -c drift-report/pr-body.md drift-report/review-notes.md
+          jq -r '[.[] | select(.type == "result")] | last | .result' "$EXECUTION_FILE" | head -c 1500
