@@ -1,0 +1,41 @@
+name: debug write probe (temporary)
+on:
+  push:
+    branches: [debug/drift-write-probe]
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - run: mkdir -p drift-report && : > drift-report/pr-body.md && pwd && ls -la docs/api/heatmaps
+      - name: Probe
+        id: draft
+        uses: anthropics/claude-code-action@ed670b4cf9de2a5a570d130d2f6197b9e543cd64 # v1.0.240
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          github_token: ${{ github.token }}
+          claude_args: >-
+            --model claude-sonnet-5-5
+            --max-turns 20
+            --allowedTools "Read(./**),Glob,Grep,Write(docs/api/**),Edit(docs/api/**),Edit(sidebars.js),Write(drift-report/pr-body.md),Edit(drift-report/pr-body.md),Bash(node scripts/check-doc-drift.mjs:*),Bash(git rm:*)"
+            --disallowedTools "Agent,Task,Workflow,Read(//proc/**),Read(//sys/**),Read(/${{ runner.temp }}/**),Read(~/.claude/**),Read(~/.config/**),Read(~/.npmrc)"
+          prompt: |
+            Permission test. Make exactly these tool calls in order, and continue even if one is refused:
+            1. Write tool: create docs/api/heatmaps/probe-relative.md containing "a" (use the path as given).
+            2. Write tool: create the absolute path <current directory>/docs/api/heatmaps/probe-absolute.md containing "b".
+            3. Read docs/api/heatmaps/index.md, then Edit tool: append the line "probe" to it.
+            4. Read drift-report/pr-body.md, then Edit tool: put "body" in it.
+            5. Write tool: create docs/api/newfolder/probe.md containing "c".
+            Then report, for each call, whether it worked and the exact error text if not.
+      - name: Show refusals
+        if: always()
+        env:
+          EXECUTION_FILE: ${{ steps.draft.outputs.execution_file }}
+        run: |
+          jq -c '[.[] | select(.type == "result")] | last | {num_turns, permission_denials: [.permission_denials[] | {tool_name, path: (.tool_input.file_path // .tool_input.command)}], result}' "$EXECUTION_FILE"
+          jq -c '.[] | select(.type == "system" and .subtype == "init") | {cwd, permissionMode, tools: (.tools|length), claude_code_version}' "$EXECUTION_FILE"
+          git status --short
