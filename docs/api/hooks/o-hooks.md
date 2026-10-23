@@ -22,7 +22,7 @@ Runs a hook that uses the API endpoint trigger. `{path}` is the path configured 
 
 ## Authentication
 
-The handler does not check `api_key` or `auth_token`; the hook is selected by `{path}` only.
+The handler does not check `api_key` or `auth_token`; the hook is selected by `{path}` only. Anyone who knows the path can call it, so treat the path as a secret.
 
 ## Permissions
 
