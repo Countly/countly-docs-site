@@ -100,8 +100,10 @@ jobs:
           persist-credentials: false
           path: countly-server
           # Full history with file contents, so the PR can cite where each change came from.
-          # No blob filter: the checkout keeps no token, so it could not fetch old file versions later.
+          # The checkout keeps no token, so it cannot fetch old file versions later. With sparse-checkout
+          # and no filter, actions/checkout fetches with blob:none; this filter skips only files over 1 GB.
           fetch-depth: 0
+          filter: blob:limit=1g
           sparse-checkout: |
             api
             plugins
@@ -116,6 +118,7 @@ jobs:
           persist-credentials: false
           path: countly-enterprise-plugins
           fetch-depth: 0
+          filter: blob:limit=1g
           sparse-checkout: |
             plugins
 
