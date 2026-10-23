@@ -34,6 +34,7 @@ The feature uses config stored in the `plugins` document:
 - [Pause Journey](journey-engine-journeys-pause.md) - `/i/journey-engine/journeys/pause`
 - [Resume Journey](journey-engine-journeys-resume.md) - `/i/journey-engine/journeys/resume`
 - [Approve Journey](journey-engine-approve.md) - `/i/journey-engine/approve`
+- [Approval Queue](journey-engine-approval-queue.md) - `/o/journey-engine/approval-queue`
 
 ### Versions
 - [List Versions](journey-engine-versions-list.md) - `/o/journey-engine/versions/list`
@@ -50,6 +51,7 @@ The feature uses config stored in the `plugins` document:
 - [Performance Over Time](journey-engine-stats-performance.md) - `/o/journey-engine/stats/performance`
 - [Active Users](journey-engine-stats-active-users.md) - `/o/journey-engine/stats/active-users`
 - [Active Users Detail](journey-engine-stats-active-users-detail.md) - `/o/journey-engine/stats/active-users/detail`
+- [Content Interaction Stats](journey-engine-stats-content.md) - `/o/journey-engine/stats/content`
 
 ### Logs & Instances
 - [Journey Instances](journey-engine-journey-instances-list.md) - `/o/journey-engine/journey-instances/list`
@@ -57,6 +59,8 @@ The feature uses config stored in the `plugins` document:
 - [Journey Block Logs](journey-engine-journey-block-logs-list.md) - `/o/journey-engine/journey-block-logs/list`
 
 ### Utilities
+- [Settings](journey-engine-settings.md) - `/o/journey-engine/settings`
+- [User Content](journey-engine-user-content.md) - `/o/journey-engine/user-content`
 - [Create Custom Event](journey-engine-event-create.md) - `/i/journey-engine/event`
 - [Debug Journey (Admin)](journey-engine-debug.md) - `/o/journey-engine/debug`
 
