@@ -16,6 +16,13 @@ if (!sha) {
   console.error("Usage: node scripts/find-merge-pr.mjs <commit> [path-to-repo] [branch-or-tag]");
   process.exit(2);
 }
+// The drift reviewer runs this, so accept only the code checkouts, a commit hash and a plain
+// branch or tag name, as platform-log.mjs does.
+const REPOS = new Set(["countly-platform", "countly-server", "countly-enterprise-plugins"]);
+if (!REPOS.has(platformArg) || !/^[0-9a-f]{7,40}$/.test(sha) || !/^[A-Za-z0-9][A-Za-z0-9._\/-]*$/.test(refArg)) {
+  console.error(`Not allowed: use a commit hash, one of ${[...REPOS].join(", ")}, and a branch or tag name.`);
+  process.exit(2);
+}
 const PLATFORM = path.resolve(platformArg);
 const git = (...args) => execFileSync("git", ["-C", PLATFORM, ...args], {encoding: "utf8"}).trim();
 const succeeds = (...args) => {
