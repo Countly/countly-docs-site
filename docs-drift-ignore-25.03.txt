@@ -100,3 +100,6 @@
 
 # Internal: export-query producer for /o/export/requestQuery; it returns a database pipeline for the export job, not data for customers. Ignored in 25.03.
 /o/heatmaps/export
+
+# Ops diagnostic (25.03): runs the compiled Bayesian model on sample input for global admins; not a customer API.
+/o/ab-testing/test-models
