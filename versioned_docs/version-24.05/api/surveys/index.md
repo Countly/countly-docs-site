@@ -56,7 +56,6 @@ These settings control survey appearance and behavior:
 - [Surveys - NPS Overview Metrics](nps-overview.md) - GET `/o/surveys/nps/overview`
 - [Surveys - Survey Data](survey-data.md) - GET `/o/surveys/survey/data`
 - [Surveys - NPS Data](nps-data.md) - GET `/o/surveys/nps/data`
-- [Surveys - Question Map](question-map.md) - GET `/o/surveys/survey/question_map`
 
 ### Write Endpoints
 - [Surveys - Create Survey](survey-create.md) - POST `/i/surveys/survey/create`

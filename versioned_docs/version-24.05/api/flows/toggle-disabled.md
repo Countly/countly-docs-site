@@ -1,14 +1,14 @@
 ---
-sidebar_label: "Update Status"
+sidebar_label: "Toggle Disabled"
 keywords:
-  - "/i/flows/updateDisabled"
-  - "updateDisabled"
+  - "/i/flows/toggleDisabled"
+  - "toggleDisabled"
   - "flows"
 last_update:
-  date: "2026-02-16"
+  date: "2026-10-31"
 ---
 
-# Update flow disabled status
+# Toggle flow disabled status
 
 :::note Enterprise
 This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To get access, [contact sales](https://count.ly/demo) or [compare versions](https://countly.com/pricing). Existing customers can reach the [support portal](https://support.countly.com/hc/en-us/requests/new) with questions.
@@ -17,12 +17,12 @@ This endpoint is part of [Countly Enterprise](https://count.ly/enterprise). To g
 ## Endpoint
 
 ```text
-/i/flows/updateDisabled
+/i/flows/toggleDisabled
 ```
 
 ## Overview
 
-Bulk-updates the `disabled` flag for multiple flows.
+Enables or disables a single flow.
 
 ## Authentication
 
@@ -37,31 +37,29 @@ Requires `flows` `Create` permission for this endpoint.
 | Parameter | Type | Required | Description |
 |---|---|---|---|
 | `app_id` | String | Yes | Target app ID. |
-| `data` | JSON String (Object) | Yes | Object mapping `flow_id -> true/false`. |
+| `_id` | String | Yes | Flow ID to update. |
+| `disabled` | Boolean | No | `true` disables the flow. Any other value, or leaving it out, enables it. |
 | `api_key` | String | Conditional | Required if `auth_token` is not provided. |
 | `auth_token` | String | Conditional | Required if `api_key` is not provided. |
 
 ## Examples
 
-### Disable two flows
+### Disable a flow
 
 ```text
-/i/flows/updateDisabled?
+/i/flows/toggleDisabled?
   app_id=64f5c0d8f4f7ac0012ab3456&
-  data={
-    "64f5c0d8f4f7ac0012ab3456_67bd31c92e7f0b0012ab4567": true,
-    "64f5c0d8f4f7ac0012ab3456_67bd31c92e7f0b0012ab4568": true
-  }
+  _id=64f5c0d8f4f7ac0012ab3456_67bd31c92e7f0b0012ab4567&
+  disabled=true
 ```
 
-### Re-enable one flow
+### Re-enable a flow
 
 ```text
-/i/flows/updateDisabled?
+/i/flows/toggleDisabled?
   app_id=64f5c0d8f4f7ac0012ab3456&
-  data={
-    "64f5c0d8f4f7ac0012ab4567": false
-  }
+  _id=64f5c0d8f4f7ac0012ab3456_67bd31c92e7f0b0012ab4567&
+  disabled=false
 ```
 
 ## Response
@@ -78,7 +76,7 @@ Requires `flows` `Create` permission for this endpoint.
 
 | Field | Type | Description |
 |---|---|---|
-| `result` | String | `Success` when bulk update executes. |
+| `result` | String | `Success` when the flow is updated. |
 
 ### Error Responses
 
@@ -86,7 +84,7 @@ Requires `flows` `Create` permission for this endpoint.
 
 ```json
 {
-  "result": "Nothing to update"
+  "result": "Missing request parameter: _id"
 }
 ```
 
@@ -94,23 +92,15 @@ Requires `flows` `Create` permission for this endpoint.
 
 ```json
 {
-  "result": "<bulk update error object or message>"
-}
-```
-
-- `500`
-
-```json
-{
-  "result": "Invalid paramerer 'data'"
+  "result": "data base error. Please chack logs."
 }
 ```
 
 ## Behavior
 
-- Parses `data` JSON object.
-- Builds bulk update operations in `flow_schemas` by `_id` and `app_id`.
-- Sets `disabled=true` only when value is literal `true` or string `"true"`; otherwise sets `false`.
+- Updates the `disabled` field of the flow with the given `_id` and `app_id`.
+- Sets `disabled=true` only when the value is boolean `true` or the string `"true"`; otherwise sets `false`.
+- A disabled flow cannot be calculated until it is enabled again.
 
 ## Related Endpoints
 

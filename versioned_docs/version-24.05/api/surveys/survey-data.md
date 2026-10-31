@@ -120,7 +120,6 @@ Pass `api_key` or `auth_token` as a query parameter, or send `countly-token` as 
 ## Related Endpoints
 
 - [Surveys - Survey Overview Metrics](survey-overview.md)
-- [Surveys - Survey Question Map](question-map.md)
 
 <details>
 <summary>Implementation details</summary>
