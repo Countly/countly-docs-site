@@ -100,3 +100,15 @@
 
 # Internal: export-query producer for /o/export/requestQuery; it returns a database pipeline for the export job, not data for customers. Ignored in 25.03.
 /o/heatmaps/export
+
+# Ops diagnostic (24.05): runs the Bayesian model on sample input, global admin only, not a customer API.
+/o/ab-testing/test-models
+
+# Gateway monitor (24.05): internal gateway throttling and traffic monitoring for the dashboard's gateway screen, not a customer API.
+/i/gateway/delete-app-settings
+/i/gateway/save-app-settings
+/i/gateway/save-settings
+/o?method=gateway_traffic_data
+/o/gateway/analytics
+/o/gateway/get-settings
+/o/gateway/live-throttle

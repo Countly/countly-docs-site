@@ -39,7 +39,6 @@ This index is product-oriented by design. Endpoint pages contain request/respons
 - [Property Expiration - Update](property-expiration-update.md)
 - [Data Types - Create](data-types-create.md)
 - [Property Values - Read](property-values-read.md)
-- [Property Values Count - Read](property-values-count-read.md)
 
 ### Transformations
 - [Transformations - Read](transformations-read.md)

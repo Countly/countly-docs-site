@@ -44,7 +44,7 @@ Flows helps you analyze user journeys across events, views, and crash groups. Yo
 - [Flows - Edit](edit.md)
 - [Flows - Calculate](calculate.md)
 - [Flows - Delete](delete.md)
-- [Flows - Update Status](update-status.md)
+- [Flows - Toggle Disabled](toggle-disabled.md)
 
 ## Data Sources
 
