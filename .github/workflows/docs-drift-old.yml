@@ -195,7 +195,7 @@ jobs:
           claude_args: >-
             --model claude-sonnet-5-5
             --max-turns 400
-            --allowedTools "Read(./**),Glob,Grep,Write(${{ env.DOCS_DIR }}/**),Edit(${{ env.DOCS_DIR }}/**),Edit(${{ env.SIDEBAR }}),Edit(${{ env.IGNORE_FILE }}),Write(drift-report/pr-body.md),Edit(drift-report/pr-body.md),Write(drift-report/review-notes.md),Edit(drift-report/review-notes.md),Bash(node scripts/check-doc-drift.mjs:*),Bash(node scripts/find-merge-pr.mjs:*),Bash(node scripts/platform-log.mjs:*),Bash(git rm:*)"
+            --allowedTools "Read(./**),Glob,Grep,Write(${{ env.DOCS_DIR }}/**),Edit(${{ env.DOCS_DIR }}/**),Edit(${{ env.SIDEBAR }}),Edit(${{ env.IGNORE_FILE }}),Write(drift-report/pr-body.md),Edit(drift-report/pr-body.md),Write(drift-report/review-notes.md),Edit(drift-report/review-notes.md),Bash(node scripts/check-doc-drift.mjs:*),Bash(node scripts/find-merge-pr.mjs:*),Bash(node scripts/platform-log.mjs:*),Bash(node scripts/check-doc-links.mjs:*),Bash(git rm:*)"
             --disallowedTools "Agent,Task,Workflow,Read(//proc/**),Read(//sys/**),Read(/${{ runner.temp }}/**),Read(~/.claude/**),Read(~/.config/**),Read(~/.npmrc)"
           prompt: |
             You maintain version ${{ env.VERSION }} of the Countly API reference, in
@@ -279,6 +279,10 @@ jobs:
             When finished, run
             `node scripts/check-doc-drift.mjs countly-code ${{ env.DOCS_DIR }} ${{ env.IGNORE_FILE }} drift-report`
             and confirm every endpoint you handled is gone from the new report.
+            Then run `node scripts/check-doc-links.mjs ${{ env.DOCS_DIR }}`. It lists every link that points
+            to a page that does not exist. Fix each one: remove the link, or the table row or bullet
+            it is in, if the page was deleted; correct the path if the page moved. Run it again until
+            it reports no broken links. The pull request is not opened while any link is broken.
             Then fill in two files. Both already exist and are empty: use the Edit tool, not Write.
 
             drift-report/pr-body.md is the public PR description. Write it for customers, in plain
@@ -325,6 +329,18 @@ jobs:
           if git status --porcelain -uall | awk '$1 != "D" {print $NF}' | grep '\.md$' | xargs -r grep -l '<!-- *REVIEW'; then
             echo "::error::These pages contain REVIEW comments. Move them to drift-report/review-notes.md."; exit 1
           fi
+
+      # Claude fixes broken links itself (see the prompt). This checks again, so a pull request
+      # never links to a page that does not exist; such a link would break the site deploy
+      # after merge. Runs the committed script: the step above makes sure Claude changed no scripts.
+      - name: Check for broken links
+        id: links
+        if: steps.draft.outcome == 'success'
+        run: |
+          node scripts/check-doc-links.mjs "$DOCS_DIR" > drift-report/broken-links.txt || {
+            cat drift-report/broken-links.txt
+            echo "::error::Some pages link to pages that do not exist, so no pull request was opened."; exit 1
+          }
 
       - name: Test drafted pages
         if: steps.draft.outcome == 'success'
@@ -401,11 +417,15 @@ jobs:
           SLACK_CHANNEL: ${{ secrets.SLACK_DOCS_CHANNEL }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           EXECUTION_FILE: ${{ steps.draft.outputs.execution_file }}
+          LINKS_OUTCOME: ${{ steps.links.outcome }}
         # This can run after the drafting step, so use the committed script, never the working copy.
         # The log is public and the code Claude reads is private: the log gets only the names of
         # refused tools, and Claude's last message goes to the private Slack channel only.
         run: |
           note="⚠️ The API docs $VERSION update check failed. <$RUN_URL|See the run>"
+          if [ "$LINKS_OUTCOME" = failure ]; then
+            note="$note"$'\n'"No pull request was opened, because these pages link to pages that do not exist:"$'\n'"$(head -20 drift-report/broken-links.txt)"
+          fi
           if [ -s "${EXECUTION_FILE:-}" ]; then
             # Tool names only for the log; Slack also gets a refused command's first word, if it is a plain name,
             # and the path of a refused write.
