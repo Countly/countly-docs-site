@@ -116,7 +116,6 @@ All survey endpoints require:
 ## Related Features
 
 - **[Cohorts](../cohorts/index.md)** - Segment users for survey targeting
-- **[Journey Engine](../journey_engine/index.md)** - Deliver surveys via automated journeys
 
 ## Common Use Cases
 

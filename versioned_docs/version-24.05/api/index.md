@@ -98,8 +98,6 @@ Features marked with **Ⓔ** require an Enterprise license.
 | [Surveys](./surveys/index.md) **Ⓔ** | In-app surveys (NPS, ratings, feedback) |
 | [Remote Config](./remote-config/index.md) | Server-side feature flags and variables |
 | [AB Testing](./ab-testing/index.md) **Ⓔ** | Experiment variants and results |
-| [Content](./content/index.md) **Ⓔ** | In-app content management |
-| [Journey Engine](./journey_engine/index.md) **Ⓔ** | Automated user journeys |
 
 ### Crashes &amp; Errors
 
