@@ -26,6 +26,7 @@ Push Notifications supports campaign creation, targeting, scheduling, API-trigge
 - [Message Get](./message-get.md)
 - [Message Estimate](./message-estimate.md)
 - [User History](./user.md)
+- [Test Users Lookup](./test-users.md)
 - [MIME Info](./mime.md)
 - [Read Dashboard](./dashboard.md)
 
